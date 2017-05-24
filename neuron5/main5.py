@@ -16,7 +16,7 @@ from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 import random
 import time
-from neuron4 import Neuron4
+from neuron5 import Neuron5
 
 class Main(QtGui.QWidget):
     deltatime = 0.001
