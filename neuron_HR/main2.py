@@ -10,6 +10,36 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import seaborn as sb
 
+
+
+class Neuron_HR():
+    def __init__(self):
+        self.set_neuron_palm()
+        
+        
+    def set_neuron_palm(self):
+        self.dt = 0.01
+        
+        self.sea = 1
+        self.b = 3
+        self.c = 1
+        self.d = 5
+        self.r = 0.001
+        self.s = 4
+        
+        self.dx = 0
+        self.dy = 0
+        self.dz = 0
+        self.xr = -1.6
+        
+    def propagation(self):
+        
+
+
+
+
+
+
 dt = 0.01
 t = np.arange(0, 2000, dt)
 
