@@ -10,36 +10,41 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import seaborn as sb
 
-
-
 class Neuron_HR():
-    def __init__(self):
-        self.set_neuron_palm()
+    #コンストラクタ
+    def __init__(self, dt=0.01, simtime=1000, a=1, b=3, c=1, d=5, r=0.001, s=4, xr=-1.6):
+        self.set_neuron_palm(dt, simtime, a, b, c, d, r, s, xr)
         
+    def set_neuron_palm(self, dt, simtime, a, b, c, d, r, s, xr):
+        self.dt = dt
+        self.simtime = simtime
+        self.tmhist = np.arange(0, self.simtime, self.deltatime)
+        self.a = a * np.ones((self.numneu, len(self.tmhist)))
+        self.b = b * np.ones((self.numneu, len(self.tmhist)))
+        self.c = c * np.ones((self.numneu, len(self.tmhist)))
+        self.d = d * np.ones((self.numneu, len(self.tmhist)))
+        self.r = r * np.ones((self.numneu, len(self.tmhist)))
+        self.s = s * np.ones((self.numneu, len(self.tmhist)))
+        self.xr = xr * np.ones((self.numneu, len(self.tmhist)))
         
-    def set_neuron_palm(self):
-        self.dt = 0.01
-        
-        self.sea = 1
-        self.b = 3
-        self.c = 1
-        self.d = 5
-        self.r = 0.001
-        self.s = 4
-        
-        self.dx = 0
-        self.dy = 0
-        self.dz = 0
-        self.xr = -1.6
-        
+        x = -2 * np.ones((self.numneu, len(self.tmhist)))
+        y = -5 * np.ones((self.numneu, len(self.tmhist)))
+        z = 0 * np.ones((self.numneu, len(self.tmhist)))
+        I = 2 * np.ones((self.numneu, len(self.tmhist)))        
+        self.dx = 0 * np.ones((self.numneu, len(self.tmhist)))
+        self.dy = 0 * np.ones((self.numneu, len(self.tmhist)))
+        self.dz = 0 * np.ones((self.numneu, len(self.tmhist)))
+    
+    #1ステップ処理    
     def propagation(self):
+        dx = y[i] - a * x[i]*x[i]*x[i] + b * x[i]*x[i] - z[i] + I[i] + np.random.randn()
+        dy = c - d * x[i] * x[i] - y[i]
+        dz = r*(s*(x[i] - xr) - z[i])
         
-
-
-
-
-
-
+        x[i+1] = x[i] + dt * dx
+        y[i+1] = y[i] + dt * dy
+        z[i+1] = z[i] + dt * dz
+        
 dt = 0.01
 t = np.arange(0, 2000, dt)
 
