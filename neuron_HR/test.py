@@ -1,18 +1,14 @@
-import matplotlib as mpl
-from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
-import matplotlib.pyplot as plt
 
-mpl.rcParams['legend.fontsize'] = 10
+def test_f(x):
+    return x**2
 
-fig = plt.figure()
-ax = fig.gca(projection='3d')
-theta = np.linspace(-4 * np.pi, 4 * np.pi, 100)
-z = np.linspace(-2, 2, 100)
-r = z**2 + 1
-x = r * np.sin(theta)
-y = r * np.cos(theta)
-ax.plot(x, y, z, label='parametric curve')
-ax.legend()
-
-plt.show()
+x = np.array([(1,2), (3,4)])
+y = np.array([(5,6), (7,8)])
+y[0,:] = x[0,:]
+z = test_f(x)
+w = x[:, 0]
+v = w[1]
+print(x)
+print(w)
+print(v)
