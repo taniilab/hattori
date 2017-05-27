@@ -12,13 +12,15 @@ import seaborn as sb
 
 class Neuron_HR():
     #constructor
-    def __init__(self, dt=0.01, simtime=1000, a=1, b=3, c=1, d=5, r=0.001, s=4, xr=-1.6, esyn=2, tausyn=2):
-        self.set_neuron_palm(dt, simtime, a, b, c, d, r, s, xr, esyn, tausyn)
+    def __init__(self, numneu=1, dt=0.01, simtime=1000, a=1, b=3, c=1, d=5, r=0.001, s=4, xr=-1.6, esyn=2, tausyn=2, xth=2):
+        self.set_neuron_palm(numneu, dt, simtime, a, b, c, d, r, s, xr, esyn, tausyn, xth)
         
-    def set_neuron_palm(self, dt, simtime, a, b, c, d, r, s, xr, esyn, tausyn):
+    def set_neuron_palm(self, numneu, dt, simtime, a, b, c, d, r, s, xr, esyn, tausyn, xth):
+        self.numneu = numneu
         self.dt = dt
         self.simtime = simtime
-        self.tmhist = np.arange(0, self.simtime, self.deltatime)
+        self.tmhist = np.arange(0, self.simtime, self.dt)
+        self.allsteps = len(self.tmhist)
         self.a = a * np.ones((self.numneu, len(self.tmhist)))
         self.b = b * np.ones((self.numneu, len(self.tmhist)))
         self.c = c * np.ones((self.numneu, len(self.tmhist)))
@@ -43,6 +45,7 @@ class Neuron_HR():
     
         #current step
         self.curstep = 0
+        self.xth = xth
     
     def alpha_function(self, t):
         if t<=0 or t>100:
@@ -57,7 +60,7 @@ class Neuron_HR():
         self.ai = self.a[:, self.curstep]
         self.bi = self.b[:, self.curstep]
         self.ci = self.c[:, self.curstep]
-        self.di = self.d[:, self.curstep]
+        self.di = self.d[:, self.curstep]   
         self.ri = self.r[:, self.curstep]
         self.si = self.s[:, self.curstep]
         self.xri = self.xr[:, self.curstep]
@@ -71,8 +74,12 @@ class Neuron_HR():
         
         #calculate synaptic input        
         for i in range(0, self.numneu):
-            self.gsyn[i, :]= self.alpha_function(self.curstep - self.apstep[i, :])
+            #recording fire time  
+            if self.xi[i] > self.xth:
+                self.apstep[i, :] = self.curstep
+         
             #sum of the synaptic current for each neuron
+            self.gsyn[i, :]= self.alpha_function(self.curstep - self.apstep[i, :])
             for j in range(0, self.numneu):
                 self.Isynapse[i] += self.gsyn[i, j] * (self.xi[i] - self.esyn[i, j])
         
@@ -80,12 +87,15 @@ class Neuron_HR():
         self.dyi = (self.ci - self.di * self.xi**2 - self.yi) * self.dt
         self.dzi = (self.ri * (self.si * (self.xi - self.xri) - self.zi)) * self.dt
         
-        #Euler first order approximation        
-        self.x[:, self.curstep+1] = self.xi + self.dxi
-        self.y[:, self.curstep+1] = self.yi + self.dyi
-        self.z[:, self.curstep+1] = self.zi + self.dzi
-        self.curstep+=1
+        #Euler first order approximation
+        if self.curstep < self.allsteps:        
+            self.x[:, self.curstep+1] = self.xi + self.dxi
+            self.y[:, self.curstep+1] = self.yi + self.dyi                      
+            self.z[:, self.curstep+1] = self.zi + self.dzi
+            self.curstep+=1
         
+        
+       
 """    
 fig = plt.figure(figsize = (12, 18))
 ax = fig.add_subplot(2, 1, 1)
