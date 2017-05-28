@@ -8,14 +8,14 @@ Created on Wed May 24 11:37:33 2017
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-import seaborn as sb
+#import seaborn as sb
 
 class Neuron_HR():
     #constructor
-    def __init__(self, numneu=1, dt=0.01, simtime=1000, a=1, b=3, c=1, d=5, r=0.001, s=4, xr=-1.6, esyn=2, tausyn=2, xth=2):
-        self.set_neuron_palm(numneu, dt, simtime, a, b, c, d, r, s, xr, esyn, tausyn, xth)
+    def __init__(self, numneu=2, dt=0.01, simtime=3000, a=1, b=3, c=1, d=5, r=0.001, s=4, xr=-1.6, esyn=2, tausyn=2, xth=0, Iext=0):
+        self.set_neuron_palm(numneu, dt, simtime, a, b, c, d, r, s, xr, esyn, tausyn, xth, Iext)
         
-    def set_neuron_palm(self, numneu, dt, simtime, a, b, c, d, r, s, xr, esyn, tausyn, xth):
+    def set_neuron_palm(self, numneu, dt, simtime, a, b, c, d, r, s, xr, esyn, tausyn, xth, Iext):
         self.numneu = numneu
         self.dt = dt
         self.simtime = simtime
@@ -35,10 +35,10 @@ class Neuron_HR():
         self.apstep = -100 * np.ones((self.numneu, self.numneu))
     
     
-        self.x = -2 * np.ones((self.numneu, len(self.tmhist)))
+        self.x = -1.2 * np.ones((self.numneu, len(self.tmhist)))
         self.y = -5 * np.ones((self.numneu, len(self.tmhist)))
         self.z = 0 * np.ones((self.numneu, len(self.tmhist)))
-        self.I = 2 * np.ones((self.numneu, self.numneu))        
+        self.Iext = Iext * np.ones((self.numneu, len(self.tmhist)))        
         self.dx = 0 * np.ones((self.numneu, len(self.tmhist)))
         self.dy = 0 * np.ones((self.numneu, len(self.tmhist)))
         self.dz = 0 * np.ones((self.numneu, len(self.tmhist)))
@@ -46,12 +46,14 @@ class Neuron_HR():
         #current step
         self.curstep = 0
         self.xth = xth
+        self.aaa = "kashikoma"
+
     
     def alpha_function(self, t):
         if t<=0 or t>100:
             return 0
         else:
-            return (t/self.tausyn**2) * np.exp(-t/self.tausyn)
+            return (t/self.tausyn[0,0]**2) * np.exp(-t/self.tausyn[0,0])
     
     
     # 1 step processing
@@ -79,21 +81,26 @@ class Neuron_HR():
                 self.apstep[i, :] = self.curstep
          
             #sum of the synaptic current for each neuron
-            self.gsyn[i, :]= self.alpha_function(self.curstep - self.apstep[i, :])
+            for j in range(0, self.numneu):
+                self.gsyn[i, j]= self.alpha_function(self.curstep - self.apstep[i, j])
+                
             for j in range(0, self.numneu):
                 self.Isynapse[i] += self.gsyn[i, j] * (self.xi[i] - self.esyn[i, j])
         
-        self.dxi = (self.yi - self.ai * self.xi**3 + self.bi * self.xi**2 - self.zi + self.Isynapse) * self.dt
+        self.dxi = (self.yi - self.ai * self.xi**3 + self.bi * self.xi**2 - self.zi + self.Isynapse + self.Iext[:, self.curstep]+ np.random.randn(self.numneu)/5) * self.dt
         self.dyi = (self.ci - self.di * self.xi**2 - self.yi) * self.dt
         self.dzi = (self.ri * (self.si * (self.xi - self.xri) - self.zi)) * self.dt
         
-        #Euler first order approximation
-        if self.curstep < self.allsteps:        
-            self.x[:, self.curstep+1] = self.xi + self.dxi
-            self.y[:, self.curstep+1] = self.yi + self.dyi                      
-            self.z[:, self.curstep+1] = self.zi + self.dzi
-            self.curstep+=1
-        
+        #Euler first order approximation   
+        self.x[:, self.curstep+1] = self.xi + self.dxi
+        self.y[:, self.curstep+1] = self.yi + self.dyi                      
+        self.z[:, self.curstep+1] = self.zi + self.dzi
+
+        self.Isynapse = np.zeros(self.numneu)
+        self.curstep+=1
+        self.aaa = "puri"
+            
+
         
        
 """    

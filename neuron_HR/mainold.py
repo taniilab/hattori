@@ -8,7 +8,7 @@ Created on Wed May 24 11:37:33 2017
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-import seaborn as sb
+#import seaborn as sb
 
 dt = 0.01
 t = np.arange(0, 2000, dt)
@@ -25,14 +25,14 @@ dy = 0
 dz = 0
 xr = -1.6
 
-x = [-2.0] * np.size(t)
+x = [-1.5] * np.size(t)
 y = [-5.0] * np.size(t)
 z = [0] * np.size(t)
 I = [2]* np.size(t)
 
 for i in range(0, np.size(t)-1):
-    dx = y[i] - a * x[i]*x[i]*x[i] + b * x[i]*x[i] - z[i] + I[i] + np.random.randn()
-    dy = c - d * x[i] * x[i] - y[i]
+    dx = y[i] - a * x[i]**3 + b * x[i]**2 - z[i] + I[i] + np.random.randn()
+    dy = c - d * x[i]**2 - y[i]
     dz = r*(s*(x[i] - xr) - z[i])
     
     x[i+1] = x[i] + dt * dx

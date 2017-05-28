@@ -12,3 +12,9 @@ v = w[1]
 print(x)
 print(w)
 print(v)
+
+
+p = np.random.rand(3,4)
+print(p)
+p = 0
+print(p)
