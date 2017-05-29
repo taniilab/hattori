@@ -12,7 +12,7 @@ from mpl_toolkits.mplot3d import Axes3D
 
 class Neuron_HR():
     #constructor
-    def __init__(self, numneu=1, dt=0.05, simtime=20000, a=1, b=3, c=1, d=5, r=0.001, s=4, xr=-1.6, esyn=0, Pmax=1, tausyn=30, xth=1.3, Iext=0.5, D=0):
+    def __init__(self, numneu=4, dt=0.05, simtime=20000, a=1, b=3, c=1, d=5, r=0.001, s=4, xr=-1.6, esyn=0, Pmax=1, tausyn=30, xth=1.3, Iext=0.5, D=0):
         self.set_neuron_palm(numneu, dt, simtime, a, b, c, d, r, s, xr, esyn, Pmax, tausyn, xth, Iext, D)
         
     def set_neuron_palm(self, numneu, dt, simtime, a, b, c, d, r, s, xr, esyn, Pmax, tausyn, xth, Iext, D):
@@ -100,8 +100,7 @@ class Neuron_HR():
         self.z[:, self.curstep+1] = self.zi + self.dzi
 
         self.curstep+=1
-        self.aaa = "puri"
-            
+
 
         
        
