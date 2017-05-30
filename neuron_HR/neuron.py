@@ -12,7 +12,7 @@ from mpl_toolkits.mplot3d import Axes3D
 
 class Neuron_HR():
     #constructor
-    def __init__(self, numneu=4, dt=0.05, simtime=20000, a=1, b=3, c=1, d=5, r=0.001, s=4, xr=-1.6, esyn=0, Pmax=1, tausyn=30, xth=1.3, Iext=0.5, D=0):
+    def __init__(self, numneu=1, dt=0.05, simtime=30000, a=1, b=3, c=1, d=5, r=0.001, s=4, xr=-1.6, esyn=0, Pmax=3, tausyn=30, xth=1.3, Iext=1.35, D=0):
         self.set_neuron_palm(numneu, dt, simtime, a, b, c, d, r, s, xr, esyn, Pmax, tausyn, xth, Iext, D)
         
     def set_neuron_palm(self, numneu, dt, simtime, a, b, c, d, r, s, xr, esyn, Pmax, tausyn, xth, Iext, D):
@@ -41,7 +41,8 @@ class Neuron_HR():
         self.dx = 0 * np.ones((self.numneu, len(self.tmhist)))
         self.dy = 0 * np.ones((self.numneu, len(self.tmhist)))
         self.dz = 0 * np.ones((self.numneu, len(self.tmhist)))
-    
+        self.cnct = np.ones((self.numneu, self.numneu))
+        
         #current step
         self.curstep = 0
         self.xth = xth
@@ -88,7 +89,7 @@ class Neuron_HR():
                 self.gsyn[i, j]= self.alpha_function(self.curstep*self.dt - self.aptm[j, i])
                 
             for j in range(0, self.numneu):
-                self.Isyni[i] += self.gsyn[i, j] * (self.esyn[i, j] - self.xi[i])
+                self.Isyni[i] += (self.cnct[i, j] * self.gsyn[i, j] * (self.esyn[i, j] - self.xi[i]))
         
         self.dxi = (self.yi - self.ai * self.xi**3 + self.bi * self.xi**2 - self.zi + self.Isyni + self.Iext[:, self.curstep]+ np.random.randn(self.numneu)*self.D) * self.dt
         self.dyi = (self.ci - self.di * self.xi**2 - self.yi) * self.dt

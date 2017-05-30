@@ -4,6 +4,7 @@ Created on Sat May 27 10:49:16 2017
 
 @author: Hattori
 """
+# coding: UTF-8
 from multiprocessing import Pool
 import sys
 import os
@@ -41,18 +42,18 @@ class Main():
         if process == 0:
             self.pid = os.getpid()
             self.progress_co = 0
-            self.nr = Neuron(Iext=0, r=0.006, D=5, Pmax=1)     
+            self.nr = Neuron(Iext=0, r=0.006, D=3, tausyn=10)     
             for i in range(0, self.nr.allsteps-1):      
                 self.nr.propagation()
                 if self.progress_co % 100000 == 0:
-                    logging.warning('process id : %d : %d steps', self.pid, self.progress_co)
+                    logging.warning('process id : %d : %4d steps', self.pid, self.progress_co)
                 self.progress_co += 1                      
             return self.nr
             
         elif process == 1:
             self.pid = os.getpid()
             self.progress_co = 0
-            self.nr = Neuron(Iext=0, r=0.006, D=5, Pmax=3)        
+            self.nr = Neuron(Iext=0, r=0.006, D=3.5, tausyn=30)        
             for i in range(0, self.nr.allsteps-1):      
                 self.nr.propagation()
                 if self.progress_co % 100000 == 0:
@@ -63,7 +64,7 @@ class Main():
         elif process == 2:
             self.pid = os.getpid()
             self.progress_co = 0
-            self.nr = Neuron(Iext=0, r=0.006, D=5, Pmax=5)        
+            self.nr = Neuron(Iext=0, r=0.006, D=3.5, tausyn=60)        
             for i in range(0, self.nr.allsteps-1):      
                 self.nr.propagation()
                 if self.progress_co % 100000 == 0:
@@ -74,7 +75,7 @@ class Main():
         elif process == 3:
             self.pid = os.getpid()
             self.progress_co = 0
-            self.nr = Neuron(Iext=0, r=0.006, D=5, Pmax=7)        
+            self.nr = Neuron(Iext=0, r=0.006, D=3.5, tausyn=80)        
             for i in range(0, self.nr.allsteps-1):      
                 self.nr.propagation()
                 if self.progress_co % 100000 == 0:
@@ -85,7 +86,7 @@ class Main():
         elif process == 4:
             self.pid = os.getpid()
             self.progress_co = 0
-            self.nr = Neuron(Iext=0, r=0.006, D=5, Pmax=9)        
+            self.nr = Neuron(Iext=0, r=0.006, D=3.5, tausyn=150)        
             for i in range(0, self.nr.allsteps-1):      
                 self.nr.propagation()
                 if self.progress_co % 100000 == 0:
@@ -96,7 +97,7 @@ class Main():
         elif process == 5:
             self.pid = os.getpid()
             self.progress_co = 0
-            self.nr = Neuron(Iext=0, r=0.006, D=5)        
+            self.nr = Neuron(Iext=0, r=0.006, D=3, tausyn=5)        
             for i in range(0, self.nr.allsteps-1):      
                 self.nr.propagation()
                 if self.progress_co % 100000 == 0:
@@ -148,8 +149,7 @@ def main():
     
     elapsed_time = time.time() - starttime
     print("elapsed_time:{0}".format(elapsed_time) + "[sec]")    
-    print(cb[0].x[0])
-    print(cb[0].Isyn[0])
+    print("おしまいのかしこま!!!")
     
     pool.close()
     pool.join()
