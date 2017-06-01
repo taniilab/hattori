@@ -11,15 +11,11 @@ from mpl_toolkits.mplot3d import Axes3D
 
 class Neuron_HR():
     #constructor
-<<<<<<< HEAD
-    def __init__(self, Syncp=3, numneu=4, dt=0.05, simtime=2000, a=1, b=3, c=1, d=5, r=0.001, s=4, xr=-1.56, esyn=0, Pmax=3, tausyn=10, xth=1.3, theta=-0.25, Iext=1.35, D=0):
-        self.set_neuron_palm(Syncp, numneu, dt, simtime, a, b, c, d, r, s, xr, esyn, Pmax, tausyn, xth, theta, Iext, D)
-=======
-    def __init__(self, numneu=1, dt=0.05, simtime=30000, a=1, b=3, c=1, d=5, r=0.001, s=4, xr=-1.6, esyn=0, Pmax=3, tausyn=30, xth=1.3, Iext=1.35, D=0):
-        self.set_neuron_palm(numneu, dt, simtime, a, b, c, d, r, s, xr, esyn, Pmax, tausyn, xth, Iext, D)
->>>>>>> origin/master
+    def __init__(self, Syncp=2, numneu=3, dt=0.01, simtime=4000, a=1, b=3, c=1, d=5, r=0.001, s=4, xr=-1.56, esyn=0, Pmax=3, tausyn=10, xth=1.3, theta=-0.25, Iext=1.35, noise="OU", alpha=0, D=1):
+        self.set_neuron_palm(Syncp, numneu, dt, simtime, a, b, c, d, r, s, xr, esyn, Pmax, tausyn, xth, theta, Iext, noise, alpha, D)
+
         
-    def set_neuron_palm(self, Syncp, numneu, dt, simtime, a, b, c, d, r, s, xr, esyn, Pmax, tausyn, xth, theta, Iext, D):
+    def set_neuron_palm(self, Syncp, numneu, dt, simtime, a, b, c, d, r, s, xr, esyn, Pmax, tausyn, xth, theta, Iext, noise, alpha, D):
         #type of synaptic coupling
         self.Syncp = Syncp
         #number of neuron
@@ -45,12 +41,11 @@ class Neuron_HR():
         self.z = 0 * np.ones((self.numneu, len(self.tmhist)))
         self.dx = 0 * np.ones((self.numneu, len(self.tmhist)))
         self.dy = 0 * np.ones((self.numneu, len(self.tmhist)))
-<<<<<<< HEAD
         self.dz = 0 * np.ones((self.numneu, len(self.tmhist)))                
         #connection relationship between neurons
         self.cnct = np.ones((self.numneu, self.numneu))
         for i in range(0, self.numneu):
-            self.cnct[i, i] = 0
+            self.cnct[i, i] = 1
         #synaptic current        
         self.Isyn = np.zeros((self.numneu, len(self.tmhist)))
         #synaptic conductance        
@@ -62,17 +57,17 @@ class Neuron_HR():
         self.Iext = Iext * np.ones((self.numneu, len(self.tmhist)))        
         #firing time        
         self.aptm = -100 * np.ones((self.numneu, self.numneu))
-=======
-        self.dz = 0 * np.ones((self.numneu, len(self.tmhist)))
-        self.cnct = np.ones((self.numneu, self.numneu))
-        
->>>>>>> origin/master
+
         #current step
         self.curstep = 0
         #thresholds
         self.xth = xth
         self.theta = theta 
-        #intensity of noise
+        #noise palameter
+        self.noise = noise
+        self.n = np.zeros((self.numneu, len(self.tmhist)))   
+        self.dn = np.zeros((self.numneu, len(self.tmhist)))   
+        self.alpha = alpha
         self.D = D
         #muximum synaptic conductance
         self.Pmax = Pmax
@@ -80,7 +75,7 @@ class Neuron_HR():
     def alpha_function(self, t):
         if t<=0:
             return 0
-        elif (self.Pmax * t/self.tausyn) * np.exp(-t/self.tausyn) < 0.001:
+        elif (self.Pmax * t/self.tausyn*0.1) * np.exp(-t/self.tausyn*0.1) < 0.001:
             return 0
         else:
             return (self.Pmax * t/self.tausyn) * np.exp(-t/self.tausyn)
@@ -103,6 +98,8 @@ class Neuron_HR():
         self.dyi = self.dy[:, self.curstep]
         self.dzi = self.dz[:, self.curstep]
         self.Isyni = self.Isyn[:, self.curstep]
+        self.ni = self.Isyn[:, self.curstep]
+        self.dni = self.Isyn[:, self.curstep]
         
         #calculate synaptic input
         for i in range(0, self.numneu):
@@ -111,7 +108,6 @@ class Neuron_HR():
                 self.aptm[i, :] = self.curstep * self.dt  
         
             #sum of the synaptic current for each neuron
-<<<<<<< HEAD
             if self.Syncp == 2:        
                 for j in range(0, self.numneu):
                     self.gsyn[i, j]= self.Pmax * (1/(1 + np.exp(-10*(self.x[j, self.curstep-self.tausyn]-self.theta))))
@@ -123,28 +119,25 @@ class Neuron_HR():
                     self.gsyn[i, j]= self.alpha_function(self.curstep*self.dt - self.aptm[j, i])        
                 for j in range(0, self.numneu):
                     self.Isyni[i] += (self.cnct[i, j] * self.gsyn[i, j] * (self.esyn[i, j] - self.xi[i]))
-            
-=======
-            for j in range(0, self.numneu):
-                self.gsyn[i, j]= self.alpha_function(self.curstep*self.dt - self.aptm[j, i])
-                
-            for j in range(0, self.numneu):
-                self.Isyni[i] += (self.cnct[i, j] * self.gsyn[i, j] * (self.esyn[i, j] - self.xi[i]))
->>>>>>> origin/master
+
+        #こんがらがってきた
+        if self.noise == "OU":
+            self.dni = (-self.alpha * self.ni + self.D * np.random.randn(self.numneu)) * self.dt
+            self.n[:, self.curstep+1] = self.dni + self.ni
+        else:
+            self.ni = self.D * np.random.randn(self.numneu)
         
-        self.dxi = (self.yi - self.ai * self.xi**3 + self.bi * self.xi**2 - self.zi + self.Isyni + self.Iext[:, self.curstep]+ np.random.randn(self.numneu)*self.D) * self.dt
+        self.dxi = (self.yi - self.ai * self.xi**3 + self.bi * self.xi**2 - self.zi + self.Isyni + self.Iext[:, self.curstep] + self.ni) * self.dt
         self.dyi = (self.ci - self.di * self.xi**2 - self.yi) * self.dt
         self.dzi = (self.ri * (self.si * (self.xi - self.xri) - self.zi)) * self.dt
         
+                   
         #Euler first order approximation   
         self.x[:, self.curstep+1] = self.xi + self.dxi
         self.y[:, self.curstep+1] = self.yi + self.dyi                      
         self.z[:, self.curstep+1] = self.zi + self.dzi
 
         self.curstep+=1
-
-
-        
        
 """    
 fig = plt.figure(figsize = (12, 18))

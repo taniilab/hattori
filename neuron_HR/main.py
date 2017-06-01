@@ -9,6 +9,7 @@ import sys
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.gridspec as grs
 from mpl_toolkits.mplot3d import Axes3D
 #import seaborn as sb
 from neuron import Neuron_HR as Neuron
@@ -28,12 +29,12 @@ type of synaptic coupling
 3.alpha function
 4.alpha function with excitatory and inhibitory synapse
 """
-palm1 = {"Syncp":2, "Iext":2.5, "b":2.9, "r":0.006, "D":0, "tausyn":3}
-palm2 = {"Syncp":2, "Iext":2.5, "b":2.9, "r":0.006, "D":0, "tausyn":3}
-palm3 = {"Syncp":2, "Iext":2.5, "b":2.9, "r":0.006, "D":0, "tausyn":3}
-palm4 = {"Syncp":4, "Iext":2.5, "b":2.9, "r":0.006, "D":0, "tausyn":3}
-palm5 = {"Syncp":4, "Iext":2.5, "b":2.9, "r":0.006, "D":0, "tausyn":3}
-palm6 = {"Syncp":4, "Iext":2.5, "b":2.9, "r":0.006, "D":0, "tausyn":3}
+palm1 = {"noise":"OU", "Syncp":2, "Iext":0, "b":2.9, "r":0.006, "D":5, "tausyn":1}
+palm2 = {"noise":"OU", "Syncp":2, "Iext":0, "b":2.9, "r":0.006, "D":5, "tausyn":5}
+palm3 = {"noise":"OU", "Syncp":2, "Iext":0, "b":2.9, "r":0.006, "D":5, "tausyn":15}
+palm4 = {"noise":"OU", "Syncp":4, "Iext":0, "b":2.9, "r":0.006, "D":5, "tausyn":1}
+palm5 = {"noise":"OU", "Syncp":4, "Iext":0, "b":2.9, "r":0.006, "D":5, "tausyn":5}
+palm6 = {"noise":"OU", "Syncp":4, "Iext":0, "b":2.9, "r":0.006, "D":5, "tausyn":15}
 
 class Main():
     def plot(self, process):
@@ -41,11 +42,7 @@ class Main():
         if process == 0:
             self.pid = os.getpid()
             self.progress_co = 0
-<<<<<<< HEAD
             self.nr = Neuron(**palm1)     
-=======
-            self.nr = Neuron(Iext=0, r=0.006, D=3, tausyn=10)     
->>>>>>> origin/master
             for i in range(0, self.nr.allsteps-1):      
                 self.nr.propagation()
                 if self.progress_co % 100000 == 0:
@@ -56,11 +53,7 @@ class Main():
         elif process == 1:
             self.pid = os.getpid()
             self.progress_co = 0
-<<<<<<< HEAD
             self.nr = Neuron(**palm2)        
-=======
-            self.nr = Neuron(Iext=0, r=0.006, D=3.5, tausyn=30)        
->>>>>>> origin/master
             for i in range(0, self.nr.allsteps-1):      
                 self.nr.propagation()
                 if self.progress_co % 100000 == 0:
@@ -71,11 +64,7 @@ class Main():
         elif process == 2:
             self.pid = os.getpid()
             self.progress_co = 0
-<<<<<<< HEAD
             self.nr = Neuron(**palm3)        
-=======
-            self.nr = Neuron(Iext=0, r=0.006, D=3.5, tausyn=60)        
->>>>>>> origin/master
             for i in range(0, self.nr.allsteps-1):      
                 self.nr.propagation()
                 if self.progress_co % 100000 == 0:
@@ -86,11 +75,7 @@ class Main():
         elif process == 3:
             self.pid = os.getpid()
             self.progress_co = 0
-<<<<<<< HEAD
             self.nr = Neuron(**palm4)        
-=======
-            self.nr = Neuron(Iext=0, r=0.006, D=3.5, tausyn=80)        
->>>>>>> origin/master
             for i in range(0, self.nr.allsteps-1):      
                 self.nr.propagation()
                 if self.progress_co % 100000 == 0:
@@ -101,11 +86,7 @@ class Main():
         elif process == 4:
             self.pid = os.getpid()
             self.progress_co = 0
-<<<<<<< HEAD
             self.nr = Neuron(**palm5)        
-=======
-            self.nr = Neuron(Iext=0, r=0.006, D=3.5, tausyn=150)        
->>>>>>> origin/master
             for i in range(0, self.nr.allsteps-1):      
                 self.nr.propagation()
                 if self.progress_co % 100000 == 0:
@@ -116,11 +97,7 @@ class Main():
         elif process == 5:
             self.pid = os.getpid()
             self.progress_co = 0
-<<<<<<< HEAD
             self.nr = Neuron(**palm6)        
-=======
-            self.nr = Neuron(Iext=0, r=0.006, D=3, tausyn=5)        
->>>>>>> origin/master
             for i in range(0, self.nr.allsteps-1):      
                 self.nr.propagation()
                 if self.progress_co % 100000 == 0:
@@ -137,26 +114,39 @@ def main():
     main = Main()
     cb = pool.map(main.plot, range(numsim))
         
-    for i in range(0, numsim):
-        fig, ax = plt.subplots(nrows = cb[i].numneu+1, figsize=(12,12))  
-        
+    for i in range(0, numsim):       
         #initialize
+        ax =[]
         lines = []
         tm = np.arange(0, cb[i].allsteps*cb[i].dt, cb[i].dt)
+
+        fig = plt.figure(figsize=(12, 12))
+        gs = grs.GridSpec(3, cb[i].numneu)
         
+        for j in range(0, cb[i].numneu):
+            ax.append(plt.subplot(gs[0, j]))             
+        ax.append(plt.subplot(gs[1, :]))
+        ax.append(plt.subplot(gs[2, :]))
+        
+        
+        #plot
         for j in range(0, cb[i].numneu):
             lines.append([])        
             if cb[i].numneu == 1: 
                 lines[j], = ax[j].plot(tm, cb[i].x[j], color="indigo", markevery=[0, -1])
             else:
                 lines[j], = ax[j].plot(tm, cb[i].x[j], color="indigo", markevery=[0, -1])
-        """
-        ax[cb[i].numneu] = plt.subplot2grid((2, cb[i].numneu), (1, 0), colspan=cb[i].numneu)    
-        ax[cb[i].numneu].plot(tm, cb[i].x[0], color="indigo", markevery=[0, -1])
-        """
         ax[cb[i].numneu].plot(tm, cb[i].Isyn[0], color="indigo", markevery=[0, -1])
+        ax[cb[i].numneu+1].plot(tm, cb[i].Isyn[0], color="coral", markevery=[0, -1])
+        ax2 = ax[cb[i].numneu+1].twinx()
+        ax2.plot( tm, cb[i].x[0], color="indigo", markevery=[0, -1])
+
+        #adjusting
+        for j in range(0, cb[i].numneu+2):
+            ax[j].grid(which='major',color='thistle',linestyle='-')
+        fig.tight_layout()
         
-        #plot
+        #record
         for j in range(0, cb[i].numneu):
             d = datetime.datetime.today()
             filename = str(d.year) + '_' + str(d.month) + '_' + str(d.day) + '_' + str(d.hour) + '_' + str(d.minute) + '_' + str(d.second) + '_' + str(i) + "HR_model.csv"
@@ -172,7 +162,7 @@ def main():
     
     elapsed_time = time.time() - starttime
     print("elapsed_time:{0}".format(elapsed_time) + "[sec]")    
-    print("おしまいのかしこま!!!")
+    print("ちょう終わりました～♪")
     
     pool.close()
     pool.join()

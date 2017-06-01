@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 def test_f(x):
     return x**2
@@ -18,3 +19,4 @@ p = np.random.rand(3,4)
 print(p)
 p = 0
 print(p)
+
