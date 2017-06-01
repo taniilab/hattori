@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
 """
 Created on Sat May 27 10:49:16 2017
 
 @author: Hattori
 """
+# coding: UTF-8
 from multiprocessing import Pool
 import sys
 import os
@@ -17,23 +17,23 @@ import time
 import datetime
 import logging
 
-    
-def main():
-    nr = Neuron()
-    for i in range(0, nr.allsteps-1):
-        nr.propagation()
-    
-    fig = plt.figure(figsize=(12,8))
-    ax = fig.add_subplot(2, 1, 1)
-    print(len(nr.tmhist))
-    print(len(nr.x[0, :]))
-    lines = ax.plot(nr.tmhist, nr.x[0, :])
-    plt.grid(True)
-    plt.show()
-        
-
 starttime = time.time()
 elapsed_time = 0
+
+#palameter setting
+"""
+type of synaptic coupling
+1.electrical synapse
+2.chemical synapse
+3.alpha function
+4.alpha function with excitatory and inhibitory synapse
+"""
+palm1 = {"Syncp":2, "Iext":2.5, "b":2.9, "r":0.006, "D":0, "tausyn":3}
+palm2 = {"Syncp":2, "Iext":2.5, "b":2.9, "r":0.006, "D":0, "tausyn":3}
+palm3 = {"Syncp":2, "Iext":2.5, "b":2.9, "r":0.006, "D":0, "tausyn":3}
+palm4 = {"Syncp":4, "Iext":2.5, "b":2.9, "r":0.006, "D":0, "tausyn":3}
+palm5 = {"Syncp":4, "Iext":2.5, "b":2.9, "r":0.006, "D":0, "tausyn":3}
+palm6 = {"Syncp":4, "Iext":2.5, "b":2.9, "r":0.006, "D":0, "tausyn":3}
 
 class Main():
     def plot(self, process):
@@ -41,18 +41,18 @@ class Main():
         if process == 0:
             self.pid = os.getpid()
             self.progress_co = 0
-            self.nr = Neuron(Iext=0, r=0.006, D=5, Pmax=1)     
+            self.nr = Neuron(**palm1)     
             for i in range(0, self.nr.allsteps-1):      
                 self.nr.propagation()
                 if self.progress_co % 100000 == 0:
-                    logging.warning('process id : %d : %d steps', self.pid, self.progress_co)
+                    logging.warning('process id : %d : %4d steps', self.pid, self.progress_co)
                 self.progress_co += 1                      
             return self.nr
             
         elif process == 1:
             self.pid = os.getpid()
             self.progress_co = 0
-            self.nr = Neuron(Iext=0, r=0.006, D=5, Pmax=3)        
+            self.nr = Neuron(**palm2)        
             for i in range(0, self.nr.allsteps-1):      
                 self.nr.propagation()
                 if self.progress_co % 100000 == 0:
@@ -63,7 +63,7 @@ class Main():
         elif process == 2:
             self.pid = os.getpid()
             self.progress_co = 0
-            self.nr = Neuron(Iext=0, r=0.006, D=5, Pmax=5)        
+            self.nr = Neuron(**palm3)        
             for i in range(0, self.nr.allsteps-1):      
                 self.nr.propagation()
                 if self.progress_co % 100000 == 0:
@@ -74,7 +74,7 @@ class Main():
         elif process == 3:
             self.pid = os.getpid()
             self.progress_co = 0
-            self.nr = Neuron(Iext=0, r=0.006, D=5, Pmax=7)        
+            self.nr = Neuron(**palm4)        
             for i in range(0, self.nr.allsteps-1):      
                 self.nr.propagation()
                 if self.progress_co % 100000 == 0:
@@ -85,7 +85,7 @@ class Main():
         elif process == 4:
             self.pid = os.getpid()
             self.progress_co = 0
-            self.nr = Neuron(Iext=0, r=0.006, D=5, Pmax=9)        
+            self.nr = Neuron(**palm5)        
             for i in range(0, self.nr.allsteps-1):      
                 self.nr.propagation()
                 if self.progress_co % 100000 == 0:
@@ -96,7 +96,7 @@ class Main():
         elif process == 5:
             self.pid = os.getpid()
             self.progress_co = 0
-            self.nr = Neuron(Iext=0, r=0.006, D=5)        
+            self.nr = Neuron(**palm6)        
             for i in range(0, self.nr.allsteps-1):      
                 self.nr.propagation()
                 if self.progress_co % 100000 == 0:
@@ -148,8 +148,7 @@ def main():
     
     elapsed_time = time.time() - starttime
     print("elapsed_time:{0}".format(elapsed_time) + "[sec]")    
-    print(cb[0].x[0])
-    print(cb[0].Isyn[0])
+    print("おしまいのかしこま!!!")
     
     pool.close()
     pool.join()
