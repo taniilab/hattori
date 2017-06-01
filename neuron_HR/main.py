@@ -41,7 +41,11 @@ class Main():
         if process == 0:
             self.pid = os.getpid()
             self.progress_co = 0
+<<<<<<< HEAD
             self.nr = Neuron(**palm1)     
+=======
+            self.nr = Neuron(Iext=0, r=0.006, D=3, tausyn=10)     
+>>>>>>> origin/master
             for i in range(0, self.nr.allsteps-1):      
                 self.nr.propagation()
                 if self.progress_co % 100000 == 0:
@@ -52,7 +56,11 @@ class Main():
         elif process == 1:
             self.pid = os.getpid()
             self.progress_co = 0
+<<<<<<< HEAD
             self.nr = Neuron(**palm2)        
+=======
+            self.nr = Neuron(Iext=0, r=0.006, D=3.5, tausyn=30)        
+>>>>>>> origin/master
             for i in range(0, self.nr.allsteps-1):      
                 self.nr.propagation()
                 if self.progress_co % 100000 == 0:
@@ -63,7 +71,11 @@ class Main():
         elif process == 2:
             self.pid = os.getpid()
             self.progress_co = 0
+<<<<<<< HEAD
             self.nr = Neuron(**palm3)        
+=======
+            self.nr = Neuron(Iext=0, r=0.006, D=3.5, tausyn=60)        
+>>>>>>> origin/master
             for i in range(0, self.nr.allsteps-1):      
                 self.nr.propagation()
                 if self.progress_co % 100000 == 0:
@@ -74,7 +86,11 @@ class Main():
         elif process == 3:
             self.pid = os.getpid()
             self.progress_co = 0
+<<<<<<< HEAD
             self.nr = Neuron(**palm4)        
+=======
+            self.nr = Neuron(Iext=0, r=0.006, D=3.5, tausyn=80)        
+>>>>>>> origin/master
             for i in range(0, self.nr.allsteps-1):      
                 self.nr.propagation()
                 if self.progress_co % 100000 == 0:
@@ -85,7 +101,11 @@ class Main():
         elif process == 4:
             self.pid = os.getpid()
             self.progress_co = 0
+<<<<<<< HEAD
             self.nr = Neuron(**palm5)        
+=======
+            self.nr = Neuron(Iext=0, r=0.006, D=3.5, tausyn=150)        
+>>>>>>> origin/master
             for i in range(0, self.nr.allsteps-1):      
                 self.nr.propagation()
                 if self.progress_co % 100000 == 0:
@@ -96,7 +116,11 @@ class Main():
         elif process == 5:
             self.pid = os.getpid()
             self.progress_co = 0
+<<<<<<< HEAD
             self.nr = Neuron(**palm6)        
+=======
+            self.nr = Neuron(Iext=0, r=0.006, D=3, tausyn=5)        
+>>>>>>> origin/master
             for i in range(0, self.nr.allsteps-1):      
                 self.nr.propagation()
                 if self.progress_co % 100000 == 0:
