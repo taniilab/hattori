@@ -11,7 +11,7 @@ from mpl_toolkits.mplot3d import Axes3D
 
 class Neuron_HR():
     #constructor
-    def __init__(self, Syncp=2, numneu=3, dt=0.01, simtime=4000, a=1, b=3, c=1, d=5, r=0.001, s=4, xr=-1.56, esyn=0, Pmax=3, tausyn=10, xth=1.3, theta=-0.25, Iext=1.35, noise="OU", alpha=0, D=1):
+    def __init__(self, Syncp=2, numneu=1, dt=0.02, simtime=5000, a=1, b=3, c=1, d=5, r=0.001, s=4, xr=-1.56, esyn=0, Pmax=3, tausyn=10, xth=1.3, theta=-0.25, Iext=1.35, noise="OU", alpha=0.5, D=1):
         self.set_neuron_palm(Syncp, numneu, dt, simtime, a, b, c, d, r, s, xr, esyn, Pmax, tausyn, xth, theta, Iext, noise, alpha, D)
 
         
@@ -122,7 +122,7 @@ class Neuron_HR():
 
         #こんがらがってきた
         if self.noise == "OU":
-            self.dni = (-self.alpha * self.ni + self.D * np.random.randn(self.numneu)) * self.dt
+            self.dni = (-self.alpha * self.ni + self.D * np.random.randn(self.numneu))* self.dt
             self.n[:, self.curstep+1] = self.dni + self.ni
         else:
             self.ni = self.D * np.random.randn(self.numneu)
@@ -130,6 +130,7 @@ class Neuron_HR():
         self.dxi = (self.yi - self.ai * self.xi**3 + self.bi * self.xi**2 - self.zi + self.Isyni + self.Iext[:, self.curstep] + self.ni) * self.dt
         self.dyi = (self.ci - self.di * self.xi**2 - self.yi) * self.dt
         self.dzi = (self.ri * (self.si * (self.xi - self.xri) - self.zi)) * self.dt
+
         
                    
         #Euler first order approximation   
