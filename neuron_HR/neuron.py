@@ -11,7 +11,7 @@ from mpl_toolkits.mplot3d import Axes3D
 
 class Neuron_HR():
     #constructor
-    def __init__(self, Syncp=2, numneu=1, dt=0.02, simtime=5000, a=1, b=3, c=1, d=5, r=0.001, s=4, xr=-1.56, esyn=0, Pmax=3, tausyn=10, xth=1.3, theta=-0.25, Iext=1.35, noise="OU", alpha=0.5, D=1):
+    def __init__(self, Syncp=1, numneu=1, dt=0.01, simtime=5000, a=1, b=3, c=1, d=5, r=0.001, s=4, xr=-1.56, esyn=0, Pmax=3, tausyn=10, xth=1.3, theta=-0.25, Iext=1.35, noise="OU", alpha=0.5, D=1):
         self.set_neuron_palm(Syncp, numneu, dt, simtime, a, b, c, d, r, s, xr, esyn, Pmax, tausyn, xth, theta, Iext, noise, alpha, D)
 
         
@@ -45,7 +45,7 @@ class Neuron_HR():
         #connection relationship between neurons
         self.cnct = np.ones((self.numneu, self.numneu))
         for i in range(0, self.numneu):
-            self.cnct[i, i] = 1
+            self.cnct[i, i] = 0
         #synaptic current        
         self.Isyn = np.zeros((self.numneu, len(self.tmhist)))
         #synaptic conductance        
@@ -69,6 +69,7 @@ class Neuron_HR():
         self.dn = np.zeros((self.numneu, len(self.tmhist)))   
         self.alpha = alpha
         self.D = D
+        self.g = np.random.randn(self.numneu, len(self.tmhist))
         #muximum synaptic conductance
         self.Pmax = Pmax
     
@@ -98,8 +99,8 @@ class Neuron_HR():
         self.dyi = self.dy[:, self.curstep]
         self.dzi = self.dz[:, self.curstep]
         self.Isyni = self.Isyn[:, self.curstep]
-        self.ni = self.Isyn[:, self.curstep]
-        self.dni = self.Isyn[:, self.curstep]
+        self.ni = self.n[:, self.curstep]
+        self.dni = self.dn[:, self.curstep]
         
         #calculate synaptic input
         for i in range(0, self.numneu):
@@ -122,17 +123,14 @@ class Neuron_HR():
 
         #こんがらがってきた
         if self.noise == "OU":
-            self.dni = (-self.alpha * self.ni + self.D * np.random.randn(self.numneu))* self.dt
-            self.n[:, self.curstep+1] = self.dni + self.ni
+            self.n[:, self.curstep+1] = self.ni + (-self.alpha * self.ni + self.D * self.g[:, self.curstep])* self.dt
         else:
-            self.ni = self.D * np.random.randn(self.numneu)
+            self.n[:, self.curstep+1] = self.D * self.g[:, self.curstep]
         
         self.dxi = (self.yi - self.ai * self.xi**3 + self.bi * self.xi**2 - self.zi + self.Isyni + self.Iext[:, self.curstep] + self.ni) * self.dt
         self.dyi = (self.ci - self.di * self.xi**2 - self.yi) * self.dt
         self.dzi = (self.ri * (self.si * (self.xi - self.xri) - self.zi)) * self.dt
 
-        
-                   
         #Euler first order approximation   
         self.x[:, self.curstep+1] = self.xi + self.dxi
         self.y[:, self.curstep+1] = self.yi + self.dyi                      

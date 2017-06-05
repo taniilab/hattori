@@ -29,12 +29,12 @@ type of synaptic coupling
 3.alpha function
 4.alpha function with excitatory and inhibitory synapse
 """
-palm1 = {"noise":"white", "Syncp":4, "Iext":0, "b":2.9, "r":0.006, "D":1, "tausyn":5}
-palm2 = {"noise":"white", "Syncp":4, "Iext":0, "b":2.9, "r":0.006, "D":2, "tausyn":5}
-palm3 = {"noise":"white", "Syncp":4, "Iext":0, "b":2.9, "r":0.006, "D":4, "tausyn":5}
-palm4 = {"noise":"white", "Syncp":4, "Iext":0, "b":2.9, "r":0.006, "D":6, "tausyn":5}
-palm5 = {"noise":"white", "Syncp":4, "Iext":0, "b":2.9, "r":0.006, "D":8, "tausyn":5}
-palm6 = {"noise":"white", "Syncp":4, "Iext":0, "b":2.9, "r":0.006, "D":10, "tausyn":5}
+palm1 = {"noise":"OU", "Syncp":4, "Iext":0, "b":2.9, "r":0.006, "D":5, "tausyn":5, "alpha":0.1}
+palm2 = {"noise":"OU", "Syncp":4, "Iext":0, "b":2.9, "r":0.006, "D":5, "tausyn":5, "alpha":0.3}
+palm3 = {"noise":"OU", "Syncp":4, "Iext":0, "b":2.9, "r":0.006, "D":5, "tausyn":5, "alpha":0.5}
+palm4 = {"noise":"OU", "Syncp":4, "Iext":0, "b":2.9, "r":0.006, "D":5, "tausyn":5, "alpha":0.6}
+palm5 = {"noise":"OU", "Syncp":4, "Iext":0, "b":2.9, "r":0.006, "D":5, "tausyn":5, "alpha":0.8}
+palm6 = {"noise":"OU", "Syncp":4, "Iext":0, "b":2.9, "r":0.006, "D":5, "tausyn":5, "alpha":1}
 
 class Main():
     def plot(self, process):
