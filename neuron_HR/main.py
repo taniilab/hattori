@@ -6,6 +6,7 @@ Created on Sat May 27 10:49:16 2017
 # coding: UTF-8
 from multiprocessing import Pool
 import sys
+
 import os
 import numpy as np
 import matplotlib.pyplot as plt
@@ -23,19 +24,33 @@ elapsed_time = 0
 
 #palameter setting
 """
-type of synaptic coupling
+type of synaptic coupling(Syncp)
 1.electrical synapse
 2.chemical synapse
 3.alpha function
 4.alpha function with excitatory and inhibitory synapse
-"""
-palm1 = {"noise":"OU", "Syncp":4, "Iext":0, "b":2.9, "r":0.006, "D":5, "tausyn":5, "alpha":0.1}
-palm2 = {"noise":"OU", "Syncp":4, "Iext":0, "b":2.9, "r":0.006, "D":5, "tausyn":5, "alpha":0.3}
-palm3 = {"noise":"OU", "Syncp":4, "Iext":0, "b":2.9, "r":0.006, "D":5, "tausyn":5, "alpha":0.5}
-palm4 = {"noise":"OU", "Syncp":4, "Iext":0, "b":2.9, "r":0.006, "D":5, "tausyn":5, "alpha":0.6}
-palm5 = {"noise":"OU", "Syncp":4, "Iext":0, "b":2.9, "r":0.006, "D":5, "tausyn":5, "alpha":0.8}
-palm6 = {"noise":"OU", "Syncp":4, "Iext":0, "b":2.9, "r":0.006, "D":5, "tausyn":5, "alpha":1}
 
+type of noise(noise)
+0.none
+1.White Gaussian process
+2.Ornstein-Uhlenbeck process
+3.sin wave
+"""
+
+palm1 = {"noise":3, "Syncp":2, "b":2.3, "r":0.006, "D":5, "tausyn":5, "alpha":0.5}
+palm2 = {"noise":3, "Syncp":2, "b":2.4, "r":0.006, "D":5, "tausyn":5, "alpha":0.5}
+palm3 = {"noise":3, "Syncp":2, "b":2.5, "r":0.006, "D":5, "tausyn":5, "alpha":0.5}
+palm4 = {"noise":3, "Syncp":2, "b":2.6, "r":0.006, "D":5, "tausyn":5, "alpha":0.5}
+palm5 = {"noise":3, "Syncp":2, "b":2.7, "r":0.006, "D":5, "tausyn":5, "alpha":0.5}
+palm6 = {"noise":3, "Syncp":2, "b":2.8, "r":0.006, "D":5, "tausyn":5, "alpha":0.5}
+"""
+palm1 = {"Syncp":2, "Iext":1.5, "b":2.6, "r":0.001, "s":2, "tausyn":5}
+palm2 = {"Syncp":2, "Iext":1.5, "b":2.6, "r":0.001, "s":3, "tausyn":5}
+palm3 = {"Syncp":2, "Iext":1.5, "b":2.6, "r":0.001, "s":4, "tausyn":5}
+palm4 = {"Syncp":2, "Iext":2.5, "b":2.6, "r":0.001, "s":2, "tausyn":5}
+palm5 = {"Syncp":2, "Iext":2.5, "b":2.6, "r":0.001, "s":3, "tausyn":5}
+palm6 = {"Syncp":2, "Iext":2.5, "b":2.6, "r":0.001, "s":4, "tausyn":5}
+"""
 class Main():
     def plot(self, process):
         #parallel processing on each setting value

@@ -11,7 +11,7 @@ from mpl_toolkits.mplot3d import Axes3D
 
 class Neuron_HR():
     #constructor
-    def __init__(self, Syncp=1, numneu=1, dt=0.01, simtime=5000, a=1, b=3, c=1, d=5, r=0.001, s=4, xr=-1.56, esyn=0, Pmax=3, tausyn=10, xth=1.3, theta=-0.25, Iext=1.35, noise="OU", alpha=0.5, D=1):
+    def __init__(self, Syncp=1, numneu=1, dt=0.02, simtime=5000, a=1, b=3, c=1, d=5, r=0.001, s=4, xr=-1.56, esyn=0, Pmax=3, tausyn=10, xth=1.3, theta=-0.25, Iext=1.35, noise=0, alpha=0.5, D=1):
         self.set_neuron_palm(Syncp, numneu, dt, simtime, a, b, c, d, r, s, xr, esyn, Pmax, tausyn, xth, theta, Iext, noise, alpha, D)
 
         
@@ -45,7 +45,7 @@ class Neuron_HR():
         #connection relationship between neurons
         self.cnct = np.ones((self.numneu, self.numneu))
         for i in range(0, self.numneu):
-            self.cnct[i, i] = 0
+            self.cnct[i, i] = 1
         #synaptic current        
         self.Isyn = np.zeros((self.numneu, len(self.tmhist)))
         #synaptic conductance        
@@ -121,11 +121,15 @@ class Neuron_HR():
                 for j in range(0, self.numneu):
                     self.Isyni[i] += (self.cnct[i, j] * self.gsyn[i, j] * (self.esyn[i, j] - self.xi[i]))
 
-        #こんがらがってきた
-        if self.noise == "OU":
-            self.n[:, self.curstep+1] = self.ni + (-self.alpha * self.ni + self.D * self.g[:, self.curstep])* self.dt
-        else:
+        #noise
+        if self.noise == 1:
             self.n[:, self.curstep+1] = self.D * self.g[:, self.curstep]
+        elif self.noise == 2:
+            self.n[:, self.curstep+1] = self.ni + (-self.alpha * self.ni + self.D * self.g[:, self.curstep])* self.dt
+        elif self.noise == 3:
+            self.n[:, self.curstep+1] = self.alpha * np.sin(self.curstep/10000)
+        else:
+            self.n[:, self.curstep+1] = 0
         
         self.dxi = (self.yi - self.ai * self.xi**3 + self.bi * self.xi**2 - self.zi + self.Isyni + self.Iext[:, self.curstep] + self.ni) * self.dt
         self.dyi = (self.ci - self.di * self.xi**2 - self.yi) * self.dt
