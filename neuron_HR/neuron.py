@@ -11,11 +11,17 @@ from mpl_toolkits.mplot3d import Axes3D
 
 class Neuron_HR():
     #constructor
-    def __init__(self, Syncp=1, numneu=1, dt=0.02, simtime=5000, a=1, b=3, c=1, d=5, r=0.001, s=4, xr=-1.56, esyn=0, Pmax=3, tausyn=10, xth=1.3, theta=-0.25, Iext=1.35, noise=0, alpha=0.5, D=1):
-        self.set_neuron_palm(Syncp, numneu, dt, simtime, a, b, c, d, r, s, xr, esyn, Pmax, tausyn, xth, theta, Iext, noise, alpha, D)
+    def __init__(self, Syncp=1, numneu=1, dt=0.02, simtime=20000, a=1, b=3, c=1,
+                 d=5, r=0.001, s=4, xr=-1.56, esyn=0, Pmax=1, tausyn=10, 
+                 xth=1.3, theta=-0.25, Iext=0, noise=0, ramda=-10, alpha=0.5,
+                 D=1):
+        self.set_neuron_palm(Syncp, numneu, dt, simtime, a, b, c, d, r, s, xr, 
+                             esyn, Pmax, tausyn, xth, theta, Iext, noise, 
+                             ramda, alpha, D)
 
-        
-    def set_neuron_palm(self, Syncp, numneu, dt, simtime, a, b, c, d, r, s, xr, esyn, Pmax, tausyn, xth, theta, Iext, noise, alpha, D):
+    def set_neuron_palm(self, Syncp, numneu, dt, simtime, a, b, c, d, r, s, xr,
+                        esyn, Pmax, tausyn, xth, theta, Iext, noise, ramda, 
+                        alpha, D):
         #type of synaptic coupling
         self.Syncp = Syncp
         #number of neuron
@@ -54,7 +60,7 @@ class Neuron_HR():
         self.esyn = esyn * np.ones((self.numneu, self.numneu))
         self.tausyn = tausyn
         #external current
-        self.Iext = Iext * np.ones((self.numneu, len(self.tmhist)))        
+        self.Iext = Iext * np.ones((self.numneu, len(self.tmhist))) 
         #firing time        
         self.aptm = -100 * np.ones((self.numneu, self.numneu))
 
@@ -67,6 +73,7 @@ class Neuron_HR():
         self.noise = noise
         self.n = np.zeros((self.numneu, len(self.tmhist)))   
         self.dn = np.zeros((self.numneu, len(self.tmhist)))   
+        self.ramda = ramda
         self.alpha = alpha
         self.D = D
         self.g = np.random.randn(self.numneu, len(self.tmhist))
@@ -111,7 +118,7 @@ class Neuron_HR():
             #sum of the synaptic current for each neuron
             if self.Syncp == 2:        
                 for j in range(0, self.numneu):
-                    self.gsyn[i, j]= self.Pmax * (1/(1 + np.exp(-10*(self.x[j, self.curstep-self.tausyn]-self.theta))))
+                    self.gsyn[i, j]= self.Pmax * (1/(1 + np.exp(self.ramda*(self.x[j, self.curstep-self.tausyn]-self.theta))))
                 for j in range(0, self.numneu):
                     self.Isyni[i] += (self.cnct[i, j] * self.gsyn[i, j] * (self.esyn[i, j] - self.xi[i]))
                            
@@ -125,12 +132,13 @@ class Neuron_HR():
         if self.noise == 1:
             self.n[:, self.curstep+1] = self.D * self.g[:, self.curstep]
         elif self.noise == 2:
-            self.n[:, self.curstep+1] = self.ni + (-self.alpha * self.ni + self.D * self.g[:, self.curstep])* self.dt
+            self.n[:, self.curstep+1] = self.ni + (-self.alpha * self.ni + (self.zi*5 +self.D) * self.g[:, self.curstep])* self.dt
         elif self.noise == 3:
             self.n[:, self.curstep+1] = self.alpha * np.sin(self.curstep/10000)
         else:
             self.n[:, self.curstep+1] = 0
         
+
         self.dxi = (self.yi - self.ai * self.xi**3 + self.bi * self.xi**2 - self.zi + self.Isyni + self.Iext[:, self.curstep] + self.ni) * self.dt
         self.dyi = (self.ci - self.di * self.xi**2 - self.yi) * self.dt
         self.dzi = (self.ri * (self.si * (self.xi - self.xri) - self.zi)) * self.dt

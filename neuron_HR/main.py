@@ -36,13 +36,13 @@ type of noise(noise)
 2.Ornstein-Uhlenbeck process
 3.sin wave
 """
-
-palm1 = {"noise":3, "Syncp":2, "b":2.3, "r":0.006, "D":5, "tausyn":5, "alpha":0.5}
-palm2 = {"noise":3, "Syncp":2, "b":2.4, "r":0.006, "D":5, "tausyn":5, "alpha":0.5}
-palm3 = {"noise":3, "Syncp":2, "b":2.5, "r":0.006, "D":5, "tausyn":5, "alpha":0.5}
-palm4 = {"noise":3, "Syncp":2, "b":2.6, "r":0.006, "D":5, "tausyn":5, "alpha":0.5}
-palm5 = {"noise":3, "Syncp":2, "b":2.7, "r":0.006, "D":5, "tausyn":5, "alpha":0.5}
-palm6 = {"noise":3, "Syncp":2, "b":2.8, "r":0.006, "D":5, "tausyn":5, "alpha":0.5}
+#613 revepotentialいじっても影響ほとんどなし？ 
+palm1 = {"noise":2, "Syncp":1, "s":4.0, "r":0.006, "D":3.5, "tausyn":5, "Pmax":5.0}
+palm2 = {"noise":2, "Syncp":1, "s":4.0, "r":0.006, "D":3.5, "tausyn":5, "Pmax":4.0}
+palm3 = {"noise":2, "Syncp":1, "s":4.0, "r":0.006, "D":3.5, "tausyn":5, "Pmax":3.0}
+palm4 = {"noise":2, "Syncp":1, "s":4.0, "r":0.006, "D":3.5, "tausyn":5, "Pmax":2.0}
+palm5 = {"noise":2, "Syncp":1, "s":4.0, "r":0.006, "D":3.5, "tausyn":5, "Pmax":1.0}
+palm6 = {"noise":2, "Syncp":1, "s":4.0, "r":0.006, "D":3.5, "tausyn":5, "Pmax":0.5}
 """
 palm1 = {"Syncp":2, "Iext":1.5, "b":2.6, "r":0.001, "s":2, "tausyn":5}
 palm2 = {"Syncp":2, "Iext":1.5, "b":2.6, "r":0.001, "s":3, "tausyn":5}
@@ -152,7 +152,7 @@ def main():
             else:
                 lines[j], = ax[j].plot(tm, cb[i].x[j], color="indigo", markevery=[0, -1])
         ax[cb[i].numneu].plot(tm, cb[i].n[0], color="indigo", markevery=[0, -1])
-        ax[cb[i].numneu+1].plot(tm, cb[i].Isyn[0], color="coral", markevery=[0, -1])
+        ax[cb[i].numneu+1].plot(tm, cb[i].z[0], color="coral", markevery=[0, -1])
         ax2 = ax[cb[i].numneu+1].twinx()
         ax2.plot( tm, cb[i].x[0], color="indigo", markevery=[0, -1])
 
