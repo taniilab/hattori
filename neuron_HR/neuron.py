@@ -11,9 +11,9 @@ from mpl_toolkits.mplot3d import Axes3D
 
 class Neuron_HR():
     #constructor
-    def __init__(self, Syncp=1, numneu=1, dt=0.02, simtime=20000, a=1, b=3, c=1,
+    def __init__(self, Syncp=1, numneu=1, dt=0.02, simtime=2000, a=1, b=3, c=1,
                  d=5, r=0.001, s=4, xr=-1.56, esyn=0, Pmax=1, tausyn=10, 
-                 xth=1.3, theta=-0.25, Iext=0, noise=0, ramda=-10, alpha=0.5,
+                 xth=1.0, theta=-0.25, Iext=0, noise=0, ramda=-10, alpha=0.5,
                  D=1):
         self.set_neuron_palm(Syncp, numneu, dt, simtime, a, b, c, d, r, s, xr, 
                              esyn, Pmax, tausyn, xth, theta, Iext, noise, 
@@ -132,7 +132,7 @@ class Neuron_HR():
         if self.noise == 1:
             self.n[:, self.curstep+1] = self.D * self.g[:, self.curstep]
         elif self.noise == 2:
-            self.n[:, self.curstep+1] = self.ni + (-self.alpha * self.ni + (self.zi*5 +self.D) * self.g[:, self.curstep])* self.dt
+            self.n[:, self.curstep+1] = self.ni + (-self.alpha * self.ni + self.D * self.g[:, self.curstep])* self.dt
         elif self.noise == 3:
             self.n[:, self.curstep+1] = self.alpha * np.sin(self.curstep/10000)
         else:
