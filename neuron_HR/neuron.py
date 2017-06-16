@@ -14,14 +14,14 @@ class Neuron_HR():
     def __init__(self, Syncp=1, numneu=1, dt=0.02, simtime=2000, a=1, b=3, c=1,
                  d=5, r=0.001, s=4, xr=-1.56, esyn=0, Pmax=1, tausyn=10, 
                  xth=1.0, theta=-0.25, Iext=0, noise=0, ramda=-10, alpha=0.5,
-                 D=1):
+                 beta=0, D=1):
         self.set_neuron_palm(Syncp, numneu, dt, simtime, a, b, c, d, r, s, xr, 
                              esyn, Pmax, tausyn, xth, theta, Iext, noise, 
-                             ramda, alpha, D)
+                             ramda, alpha, beta, D)
 
     def set_neuron_palm(self, Syncp, numneu, dt, simtime, a, b, c, d, r, s, xr,
                         esyn, Pmax, tausyn, xth, theta, Iext, noise, ramda, 
-                        alpha, D):
+                        alpha, beta, D):
         #type of synaptic coupling
         self.Syncp = Syncp
         #number of neuron
@@ -75,6 +75,7 @@ class Neuron_HR():
         self.dn = np.zeros((self.numneu, len(self.tmhist)))   
         self.ramda = ramda
         self.alpha = alpha
+        self.beta = beta
         self.D = D
         self.g = np.random.randn(self.numneu, len(self.tmhist))
         #muximum synaptic conductance
@@ -132,7 +133,7 @@ class Neuron_HR():
         if self.noise == 1:
             self.n[:, self.curstep+1] = self.D * self.g[:, self.curstep]
         elif self.noise == 2:
-            self.n[:, self.curstep+1] = self.ni + (-self.alpha * self.ni + self.D * self.g[:, self.curstep])* self.dt
+            self.n[:, self.curstep+1] = self.ni + (-self.alpha * (self.ni - self.beta) + self.D * self.g[:, self.curstep])* self.dt
         elif self.noise == 3:
             self.n[:, self.curstep+1] = self.alpha * np.sin(self.curstep/10000)
         else:
