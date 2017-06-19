@@ -15,21 +15,20 @@ v6.00 メイン関数を並列処理化
 memo: ouba=8, 10 強すぎ？　step細かくしないと発散する
 """
 from multiprocessing import Pool
-import sys
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-import random
 import time
 from neuron6 import Neuron6 as Neuron
 import pandas as pd
 import datetime
 
-#子プロセスのprintはspyderのコンソールに表示されない仕様なので、loggingを使う
+# 
 import logging
 
 starttime = time.time()
 elapsed_time = 0
+
 
 class Main():
     def plot(self, process):
