@@ -45,35 +45,7 @@ palm4 = {"noise":2, "Syncp":1, "s":4.0, "r":0.006, "D":3.5, "tausyn":5, "Pmax":2
 palm5 = {"noise":2, "Syncp":1, "s":4.0, "r":0.006, "D":3.5, "tausyn":5, "Pmax":1.0}
 palm6 = {"noise":2, "Syncp":1, "s":4.0, "r":0.006, "D":3.5, "tausyn":5, "Pmax":0.5}
 """
-palm1 = {"noise":2, "alpha":0.5, "beta":0.0, "D":1.0, "Syncp":2, "Iext":0.0,"tausyn":5}
-palm2 = {"noise":2, "alpha":0.5, "beta":0.0, "D":2.0, "Syncp":2, "Iext":0.0,"tausyn":5}
-palm3 = {"noise":2, "alpha":0.5, "beta":0.0, "D":3.0, "Syncp":2, "Iext":0.0,"tausyn":5}
-palm4 = {"noise":2, "alpha":0.5, "beta":0.0, "D":4.0, "Syncp":2, "Iext":0.0,"tausyn":5}
-palm5 = {"noise":2, "alpha":0.5, "beta":0.0, "D":5.0, "Syncp":2, "Iext":0.0,"tausyn":5}
-palm6 = {"noise":2, "alpha":0.5, "beta":0.0, "D":3.5, "Syncp":2, "Iext":0.0,"tausyn":5}
-
-palm1 = {"noise":2, "alpha":0.5, "beta":0.0, "D":1.0, "Syncp":2, "Iext":0.0,"tausyn":5}
-palm2 = {"noise":2, "alpha":0.5, "beta":0.0, "D":2.0, "Syncp":2, "Iext":0.0,"tausyn":5}
-palm3 = {"noise":2, "alpha":0.5, "beta":0.0, "D":3.0, "Syncp":2, "Iext":0.0,"tausyn":5}
-palm4 = {"noise":2, "alpha":0.5, "beta":0.0, "D":4.0, "Syncp":2, "Iext":0.0,"tausyn":5}
-palm5 = {"noise":2, "alpha":0.5, "beta":0.0, "D":5.0, "Syncp":2, "Iext":0.0,"tausyn":5}
-palm6 = {"noise":2, "alpha":0.5, "beta":0.0, "D":3.5, "Syncp":2, "Iext":0.0,"tausyn":5}
-
-palm1 = {"noise":2, "alpha":0.5, "beta":0.0, "D":1.0, "Syncp":2, "Iext":0.0,"tausyn":5}
-palm2 = {"noise":2, "alpha":0.5, "beta":0.0, "D":2.0, "Syncp":2, "Iext":0.0,"tausyn":5}
-palm3 = {"noise":2, "alpha":0.5, "beta":0.0, "D":3.0, "Syncp":2, "Iext":0.0,"tausyn":5}
-palm4 = {"noise":2, "alpha":0.5, "beta":0.0, "D":4.0, "Syncp":2, "Iext":0.0,"tausyn":5}
-palm5 = {"noise":2, "alpha":0.5, "beta":0.0, "D":5.0, "Syncp":2, "Iext":0.0,"tausyn":5}
-palm6 = {"noise":2, "alpha":0.5, "beta":0.0, "D":3.5, "Syncp":2, "Iext":0.0,"tausyn":5}
-
-palm1 = {"noise":2, "alpha":0.5, "beta":0.0, "D":1.0, "Syncp":2, "Iext":0.0,"tausyn":5}
-palm2 = {"noise":2, "alpha":0.5, "beta":0.0, "D":2.0, "Syncp":2, "Iext":0.0,"tausyn":5}
-palm3 = {"noise":2, "alpha":0.5, "beta":0.0, "D":3.0, "Syncp":2, "Iext":0.0,"tausyn":5}
-palm4 = {"noise":2, "alpha":0.5, "beta":0.0, "D":4.0, "Syncp":2, "Iext":0.0,"tausyn":5}
-palm5 = {"noise":2, "alpha":0.5, "beta":0.0, "D":5.0, "Syncp":2, "Iext":0.0,"tausyn":5}
-palm6 = {"noise":2, "alpha":0.5, "beta":0.0, "D":3.5, "Syncp":2, "Iext":0.0,"tausyn":5}
-
-palm1 = {"noise":2, "alpha":0.5, "beta":0.0, "D":1.0, "Syncp":2, "Iext":0.0,"tausyn":5}
+palm1 = {"noise":2, "alpha":0.0, "beta":0.0, "D":0.0, "Syncp":2, "Iext":1.35,"tausyn":5}
 palm2 = {"noise":2, "alpha":0.5, "beta":0.0, "D":2.0, "Syncp":2, "Iext":0.0,"tausyn":5}
 palm3 = {"noise":2, "alpha":0.5, "beta":0.0, "D":3.0, "Syncp":2, "Iext":0.0,"tausyn":5}
 palm4 = {"noise":2, "alpha":0.5, "beta":0.0, "D":4.0, "Syncp":2, "Iext":0.0,"tausyn":5}
@@ -153,7 +125,7 @@ class Main():
             pass                    
         
 def main():
-    numsim = 6
+    numsim = 1
     pool = Pool(numsim) 
     main = Main()
     cb = pool.map(main.plot, range(numsim))
