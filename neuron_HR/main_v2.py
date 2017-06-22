@@ -17,6 +17,7 @@ import time
 import datetime
 import logging
 import itertools
+import math
 
 starttime = time.time()
 elapsed_time = 0
@@ -56,14 +57,16 @@ class Main():
 
     def form_palm(self):
         self.palm = []
-        self.cycle_multiproc = int(6*10*10 / 6)
+        self.cycle_multiproc = int(12000 / 6)
         self.multiproc_co = 0
         self.palco = 0
-        for i, j, k in itertools.product(range(6), range(10), range(10)):
+        for i, j, k, l in itertools.product(range(10), range(10), range(6),
+                                            range(20)):
             self.palm.append({})
-            self.palm[self.palco] = {"noise": 2, "alpha": j*0.1, "beta": k*0.1,
-                                     "D": i, "Syncp": 2, "Iext": 0.0,
-                                     "tausyn": 5}
+            self.palm[self.palco] = {"noise": 2, "alpha": round(i*0.1, 1),
+                                     "beta": round(j*0.1, 1), "D": 2,
+                                     "Syncp": 2, "Pmax": round(k*0.4, 1),
+                                     "tausyn": round(l, 1)}
             self.palco += 1
 
 
@@ -82,21 +85,27 @@ def main():
         # record
         for k, j in itertools.product(range(6), range(1)):
             d = datetime.datetime.today()
-            filename = (str(d.year) + '_' + str(d.month) + '_' + str(d.day) +
-                        '_' + str(d.hour) + '_' + str(d.minute) + '_' +
-                        str(d.second) + '_' + str(k) + "HR_model.csv")
+            filename = (str(d.year) + '_' + str(d.month) + '_' +
+                        str(d.day) + '_' + str(d.hour) + '_' +
+                        str(d.minute) + '_' + str(d.second) + '_' +
+                        str(k) + '_D_' + str(cb[k].D) + '_alpha_' +
+                        str(cb[k].alpha) + '_beta_' + str(cb[k].beta) +
+                        '_tausyn_' + str(cb[k].tausyn) + '_Pmax_' +
+                        str(cb[k].Pmax) + '_' + "HR.csv")
 
             df = pd.DataFrame({'t': cb[k].tmhist, 'x': cb[k].x[j],
                                'y': cb[k].y[j], 'z': cb[k].z[j],
                                'Isyn': cb[k].Isyn[j], 'alpha': cb[k].alpha,
-                               'beta': cb[k].beta, 'D': cb[k].D})
-            df.to_csv('./results/' + filename)
+                               'beta': cb[k].beta, 'D': cb[k].D,
+                               'tausyn': cb[k].tausyn, 'Pmax': cb[k].Pmax})
+            df.to_csv('C:/Users/Hattori/Documents/HR_results/' + filename)
 
         pool.close()
         pool.join()
         print("まだ終わらないぴっぴ！")
         print("ちょう絶クールに計算するわ")
 
+    # sample plotting
     for i in range(0, process):
         # initialize
         ax = []

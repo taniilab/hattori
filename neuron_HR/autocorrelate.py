@@ -20,7 +20,7 @@ memo
 2017_6_20_12_20_48_5HR_model.csv
 """
 
-allfiles = glob.glob('./results/a/*.csv')
+allfiles = glob.glob('C:/Users/Hattori/Documents/HR_outputs/results/pippi14/*.csv')
 list = []
 list3 = []
 cor2 = []
@@ -31,6 +31,7 @@ for file_ in allfiles:
     df = pd.read_csv(file_, index_col=0)
     list.append(df.as_matrix())
 
+"""
 for i in range(0, len(list)):
     # autocorrelate
     dtt = list[i]
@@ -48,10 +49,20 @@ for i in range(0, len(list)):
     amp_spec.append([np.sqrt(c.real ** 2 + c.imag ** 2) for c in fft_res[i]])
 
 
-fig, ax = plt.subplots(nrows=len(list)*2, figsize=(13, 50))
+fig, ax = plt.subplots(nrows=len(list)*2, figsize=(5, 50))
 fig.tight_layout()
 fig.subplots_adjust(left=0.05, bottom=0.03)
 for i in range(0, len(list)):
     p = list[i]
     ax[i*2].plot(p[:, 4], cor2[i])
     ax[i*2+1].plot(freqlist, amp_spec[i])
+"""
+
+# wave plot
+fig, ax = plt.subplots(nrows=len(list), figsize=(5, 50))
+fig.tight_layout()
+for i in range(0, len(list)):
+    p = list[i]
+    ax[i].plot(p[:, 4], p[:, 5])
+    ax[i].set_xlabel('D = ' + str(p[1, 0]) + 'alpha = '+str(p[1, 2]) +
+                     'beta = ' + str(p[1, 3]))
