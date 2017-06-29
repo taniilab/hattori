@@ -1,5 +1,14 @@
+# -*- coding: utf-8 -*-
+"""
+Created on ???
+
+arrange images
+
+@author: Hattori
+"""
 from PIL import Image
 import glob
+import itertools
 
 path = 'C:/Users/Hattori/Documents/HR_results/photo/'
 
@@ -12,34 +21,27 @@ num_z = 10
 horpx = 2100
 verpx = 1400
 
-pic_list = []
 
-for i in range(num_y):
-    pic_list.append([])
+def tiling(files):
+    canvas = Image.new('RGB', (horpx*num_x, verpx*num_y), (255, 255, 255))
 
-print(pic_list)
-files = glob.glob(path + 'alpha_0.5_beta_0.?_tausyn_?.?_Pmax_0.4.png')
+    filename =
 
-for i in range(0, 10):
-    for j in range(0, 10):
-        pic_list[i].append(Image.open(files[j], 'r'))
+    for i, j in itertools.product(range(0, 10), range(0, 10)):
+        pic_list[i].append(Image.open(files[j+i*10], 'r'))
+        canvas.paste(pic_list[i][j], (horpx*i, verpx*j))
 
-print(pic_list)
+    canvas.save(path + '/tile/' + str(filename) + '.jpg', 'JPEG', quality=90, optimize=True)
 
-canvas = Image.new('RGB', (horpx*num_x, verpx*num_y), (255, 255, 255))
 
-canvas.paste(pic_list[0][0], (0, 0))
-canvas.paste(pic_list[1][3], (2000, 2000))
+for i in range(0, 6):
+    # initialize
+    files = []
+    pic_list = []
+    for i in range(num_y):
+        pic_list.append([])
 
-"""
-f1 = Image.open('./kanon.jpg', 'r')
-f2 = Image.open('./pinon.jpg', 'r')
-f3 = Image.open('./junon.jpg', 'r')
-
-canvas = Image.new('RGB', (2000, 2000), (255, 255, 255))
-
-canvas.paste(f1, (0, 0))
-canvas.paste(f2, (400, 0))
-canvas.paste(f3, (0, 400))
-"""
-canvas.save(path + '/tile/test2.jpg', 'JPEG', quality=90, optimize=True)
+    # open
+    files = glob.glob(path + 'alpha_0.5_beta_0.?_tausyn_?.?_Pmax_' +
+                      str(round(0.4*i)) + '.png')
+    tiling(files, )
