@@ -30,6 +30,7 @@ print('start')
 df = pd.read_csv(path, delimiter='\t', skiprows=[0, 1])
 #df = pd.read_csv(path, delimiter=',', skiprows=[0, 1])
 print(df)
+df = df.replace('0', np.nan)
 
 """
 # test
@@ -46,6 +47,8 @@ v_set[counter] = df.ix[:df["Section[1] (mV)"].count(), 1]
 for i in range(2, 21):
     text = "Section[" + str(i) + "] (mV)"
     v_set[counter] = pd.concat([v_set[counter], df.ix[:df[text].count(), i]], ignore_index=True)
+    print(v_set[counter])
+    print(df.ix[:df[text].count(), i])
 counter += 1
 
 # state
