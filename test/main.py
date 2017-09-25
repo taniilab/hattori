@@ -9,23 +9,23 @@ a = 1
 b = 3
 c = 1
 d = 5
-r = 0.001
+r = 0.003
 s = 4
 
 dx = 0
 dy = 0
 dz = 0
-i = -10
-xr = -1.5
+i = -10 
+xr = -1.56
 
-x = [-0.5] * np.size(t)
-y = [-0.5] * np.size(t)
-z = [-5] * np.size(t)
+x = [-0.7] * np.size(t)
+y = [-3.0] * np.size(t)
+z = [-1.6] * np.size(t)
 
 
 for i in range(0, np.size(t)-1):
-    dx = y[i] - a * x[i]*x[i]*x[i] + b * x[i]*x[i]
-    dy = c - d * x[i] * x[i] - y[i]
+    dx = y[i] - a * x[i]**3 + b * x[i]**2 - z[i]
+    dy = c - d * x[i]**2 - y[i]
     dz = r*(s*(x[i] - xr) - z[i])
     
     x[i+1] = x[i] + dt * dx
@@ -41,7 +41,7 @@ x = np.arange(-3,3, 0.0001)
 xnull = [0] * np.size(x)
 ynull = [0] * np.size(x)
 for i in range(0, np.size(x)):
-    xnull[i] =  a*x[i]**3 - b*x[i]**2
+    xnull[i] =  a*x[i]**3 - b*x[i]**2 - 1.6
     ynull[i] =  c - d * x[i]**2
 
 lines, = ax[1].plot(x, xnull)
@@ -68,3 +68,4 @@ dU = dU/N
 ax[1].quiver(V, U, dV, dU, units = 'xy', width = 0.025)
 ax[1].set_ylim(-10, 2.5)
 ax[1].set_xlim(-3, 3)
+fig.subplots_adjust(left=0.075, bottom=0.05, right=0.95, top=0.95, wspace=0.15, hspace=0.15)
