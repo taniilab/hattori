@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 fig, ax = plt.subplots(nrows = 2, figsize = (12, 15))
-dt = 0.0001
+dt = 0.001
 t = np.arange(0, 50, dt)
 
 a = 1
@@ -18,13 +18,13 @@ dz = 0
 i = -10 
 xr = -1.56
 
-x = [-0.7] * np.size(t)
-y = [-3.0] * np.size(t)
+x = [-1.5] * np.size(t)
+y = [-10.2] * np.size(t)
 z = [-1.6] * np.size(t)
 
 
 for i in range(0, np.size(t)-1):
-    dx = y[i] - a * x[i]**3 + b * x[i]**2 - z[i]
+    dx = y[i] - a * x[i]**3 + b * x[i]**2 -z[i]
     dy = c - d * x[i]**2 - y[i]
     dz = r*(s*(x[i] - xr) - z[i])
     
@@ -41,7 +41,7 @@ x = np.arange(-3,3, 0.0001)
 xnull = [0] * np.size(x)
 ynull = [0] * np.size(x)
 for i in range(0, np.size(x)):
-    xnull[i] =  a*x[i]**3 - b*x[i]**2 - 1.6
+    xnull[i] =  a*x[i]**3 - b*x[i]**2
     ynull[i] =  c - d * x[i]**2
 
 lines, = ax[1].plot(x, xnull)
