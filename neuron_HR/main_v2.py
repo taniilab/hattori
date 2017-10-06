@@ -10,14 +10,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as grs
 from mpl_toolkits.mplot3d import Axes3D
-#import seaborn as sb
+import seaborn as sb
 from neuron import Neuron_HR as Neuron
 import pandas as pd
 import time
 import datetime
 import logging
 import itertools
-import math
 
 starttime = time.time()
 elapsed_time = 0
@@ -29,6 +28,7 @@ type of synaptic coupling(Syncp)
 2.chemical synapse
 3.alpha function
 4.alpha function with excitatory and inhibitory synapse
+5.depressing synapse
 
 type of noise(noise)
 0.none
@@ -59,16 +59,24 @@ class Main():
         self.palm = []
         self.cycle_multiproc = int(12000 / 6)
         self.multiproc_co = 0
-        self.palco = 0
+        self.palm_counter = 0
+
+        for i, j, k, l in itertools.product(range(60), range(1), range(1),
+                                            range(1)):
+            self.palm.append({})
+            self.palm[self.palm_counter] = {"Syncp": 3, "Iext": round(i*0.1, 1)}
+            self.palm_counter += 1
+        
+        """
         for i, j, k, l in itertools.product(range(10), range(10), range(6),
                                             range(20)):
             self.palm.append({})
-            self.palm[self.palco] = {"noise": 2, "alpha": round(i*0.1, 1),
+            self.palm[self.palm_counter] = {"noise": 2, "alpha": round(i*0.1, 1),
                                      "beta": round(j*0.1, 1), "D": 2,
                                      "Syncp": 2, "Pmax": round(k*0.4, 1),
                                      "tausyn": round(l, 1)}
-            self.palco += 1
-
+            self.palm_counter += 1
+        """
 
 def main():
     process = 6
@@ -91,9 +99,11 @@ def main():
                         str(k) + '_D_' + str(cb[k].D) + '_alpha_' +
                         str(cb[k].alpha) + '_beta_' + str(cb[k].beta) +
                         '_tausyn_' + str(cb[k].tausyn) + '_Pmax_' +
-                        str(cb[k].Pmax) + '_' + "HR.csv")
+                        str(cb[k].Pmax) + '_Iext_' + str(cb[k].Iext[j, 1]) +
+                        '_' + "HR.csv")
 
-            df = pd.DataFrame({'t': cb[k].tmhist, 'x': cb[k].x[j],
+            df = pd.DataFrame({'t': cb[k].tmhist, 'Iext': cb[k].Iext[j, 1],
+                               'x': cb[k].x[j],
                                'y': cb[k].y[j], 'z': cb[k].z[j],
                                'Isyn': cb[k].Isyn[j], 'alpha': cb[k].alpha,
                                'beta': cb[k].beta, 'D': cb[k].D,
@@ -102,8 +112,8 @@ def main():
 
         pool.close()
         pool.join()
-        print("まだ終わらないぴっぴ！")
-        print("ちょう絶クールに計算するわ")
+        print("じゅ")
+        print("ぴっぴ")
 
     # sample plotting
     for i in range(0, process):

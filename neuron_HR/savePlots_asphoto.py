@@ -11,8 +11,8 @@ import itertools
 import numpy as np
 from PIL import Image
 
-files = glob.glob('C:/Users/Hattori/Documents/HR_results/*.csv')
-path = 'C:/Users/Hattori/Documents/HR_results/photo/'
+files = glob.glob('C:/Users/Hattori/Documents/HR_results/runge/*.csv')
+path = 'C:/Users/Hattori/Documents/HR_results/runge/photo/'
 # files = glob.glob('C:/Users/Hattori/Documents/xx/*.csv')
 # path = 'C:/Users/Hattori/Documents/xx/photo/'
 
@@ -20,12 +20,12 @@ im_ju = Image.open('junon.jpg', 'r')
 im_pi = Image.open('pinon.jpg', 'r')
 im_ka = Image.open('kanon.jpg', 'r')
 
-line = 100
-column = 120
+line = 20
+column = 3
 counter = 0
 file_sets = [[0 for i in range(line)] for j in range(column)]
 
-# split file list
+# in order to avoid out of mempry,  split file list
 for i, j in itertools.product(range(column), range(line)):
     file_sets[i][j] = files[counter]
     if counter != line*column:
@@ -44,10 +44,13 @@ for i in range(column):
     # plt.imshow(np.array(im_ju))
     for i in range(len(list)):
         hr = list[i]
+        """
         title = ('alpha_' + str(hr[1, 3]) + '_beta_' + str(hr[1, 4]) +
                  '_tausyn_' + str(hr[1, 6]) + '_Pmax_' + str(hr[1, 2]))
+        """
+        title = 'Iext_' + str(hr[1, 1])
         plt.title(title)
-        plt.plot(hr[:, 5], hr[:, 7])
+        plt.plot(hr[:, 6], hr[:, 8])
         plt.savefig(filename=path + title + '.png', dpi=350)
         plt.clf()
         print(str(i + counter) + '個目のファイルを処理')

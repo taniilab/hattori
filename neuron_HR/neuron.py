@@ -11,8 +11,8 @@ from mpl_toolkits.mplot3d import Axes3D
 
 class Neuron_HR():
     # constructor
-    def __init__(self, Syncp=1, numneu=1, dt=0.03, simtime=6000, a=1, b=3, c=1,
-                 d=5, r=0.001, s=4, xr=-1.56, esyn=0, Pmax=1, tausyn=10,
+    def __init__(self, Syncp=1, numneu=1, dt=0.02, simtime=2000, a=1, b=3, c=1,
+                 d=5, r=0.004, s=4, xr=-1.56, esyn=0, Pmax=1, tausyn=10,
                  xth=1.0, theta=-0.25, Iext=0, noise=0, ramda=-10, alpha=0.5,
                  beta=0, D=1):
         self.set_neuron_palm(Syncp, numneu, dt, simtime, a, b, c, d, r, s, xr,
@@ -45,9 +45,19 @@ class Neuron_HR():
         self.x = 0 * np.ones((self.numneu, len(self.tmhist)))
         self.y = 0 * np.ones((self.numneu, len(self.tmhist)))
         self.z = 0 * np.ones((self.numneu, len(self.tmhist)))
-        self.dx = 0 * np.ones((self.numneu, len(self.tmhist)))
-        self.dy = 0 * np.ones((self.numneu, len(self.tmhist)))
-        self.dz = 0 * np.ones((self.numneu, len(self.tmhist)))
+        self.k1x = 0 * np.ones(self.numneu)
+        self.k1y = 0 * np.ones(self.numneu)
+        self.k1z = 0 * np.ones(self.numneu)
+        self.k2x = 0 * np.ones(self.numneu)
+        self.k2y = 0 * np.ones(self.numneu)
+        self.k2z = 0 * np.ones(self.numneu)
+        self.k3x = 0 * np.ones(self.numneu)
+        self.k3y = 0 * np.ones(self.numneu)
+        self.k3z = 0 * np.ones(self.numneu)
+        self.k4x = 0 * np.ones(self.numneu)
+        self.k4y = 0 * np.ones(self.numneu)
+        self.k4z = 0 * np.ones(self.numneu)
+
         # connection relationship between neurons
         self.cnct = np.ones((self.numneu, self.numneu))
         for i in range(0, self.numneu):
@@ -141,9 +151,6 @@ class Neuron_HR():
         self.xi = self.x[:, self.curstep]
         self.yi = self.y[:, self.curstep]
         self.zi = self.z[:, self.curstep]
-        self.dxi = self.dx[:, self.curstep]
-        self.dyi = self.dy[:, self.curstep]
-        self.dzi = self.dz[:, self.curstep]
         self.Isyni = self.Isyn[:, self.curstep]
         self.ni = self.n[:, self.curstep]
         self.dni = self.dn[:, self.curstep]
@@ -165,16 +172,58 @@ class Neuron_HR():
         else:
             self.n[:, self.curstep+1] = 0
 
-        self.dxi = (self.yi - self.ai * self.xi**3 + self.bi * self.xi**2 -
+        self.k1x = (self.yi - self.ai * self.xi**3 + self.bi * self.xi**2 -
                     self.zi + self.Isyni +
-                    self.Iext[:, self.curstep] + self.ni) * self.dt
-        self.dyi = (self.ci - self.di * self.xi**2 - self.yi) * self.dt
-        self.dzi = (self.ri * (self.si * (self.xi - self.xri) -
-                    self.zi)) * self.dt
+                    self.Iext[:, self.curstep] + self.ni)
+        self.k1y = (self.ci - self.di * self.xi**2 - self.yi)
+        self.k1z = (self.ri * (self.si * (self.xi - self.xri) -
+                    self.zi))
 
-        # Euler first order approximation
-        self.x[:, self.curstep+1] = self.xi + self.dxi
-        self.y[:, self.curstep+1] = self.yi + self.dyi
-        self.z[:, self.curstep+1] = self.zi + self.dzi
+        self.k2x = ((self.yi + (self.dt/2) * self.k1y) - self.ai *
+                    (self.xi + (self.dt/2) * self.k1x)**3 + self.bi *
+                    (self.xi + (self.dt/2) * self.k1x)**2 -
+                    (self.zi + (self.dt/2) * self.k1z) + self.Isyni +
+                    self.Iext[:, self.curstep] + self.ni)
+        self.k2y = (self.ci - self.di * (self.xi + (self.dt/2) *
+                    self.k1x)**2 - (self.yi + (self.dt/2) * self.k1y))
+        self.k2z = (self.ri * (self.si * ((self.xi + (self.dt/2) *
+                    self.k1x) - self.xri) -
+                    (self.zi + (self.dt/2) * self.k1z)))
 
+        self.k3x = ((self.yi + (self.dt/2) * self.k2y) - self.ai *
+                    (self.xi + (self.dt/2) * self.k2x)**3 + self.bi *
+                    (self.xi + (self.dt/2) * self.k2x)**2 -
+                    (self.zi + (self.dt/2) * self.k2z) + self.Isyni +
+                    self.Iext[:, self.curstep] + self.ni)
+        self.k3y = (self.ci - self.di * (self.xi + (self.dt/2) *
+                    self.k2x)**2 - (self.yi + (self.dt/2) * self.k2y))
+        self.k3z = (self.ri * (self.si * ((self.xi + (self.dt/2) *
+                    self.k2x) - self.xri) -
+                    (self.zi + (self.dt/2) * self.k2z)))
+
+        self.k4x = ((self.yi + (self.dt) * self.k3y) - self.ai *
+                    (self.xi + (self.dt) * self.k3x)**3 + self.bi *
+                    (self.xi + (self.dt) * self.k3x)**2 -
+                    (self.zi + (self.dt) * self.k3z) + self.Isyni +
+                    self.Iext[:, self.curstep] + self.ni)
+        self.k4y = (self.ci - self.di * (self.xi + (self.dt) *
+                    self.k3x)**2 - (self.yi + (self.dt) * self.k3y))
+        self.k4z = (self.ri * (self.si * ((self.xi + (self.dt) *
+                    self.k3x) - self.xri) -
+                    (self.zi + (self.dt) * self.k3z)))
+
+        # the first order Euler method
+        self.x[:, self.curstep+1] = self.xi + self.k1x * self.dt
+        self.y[:, self.curstep+1] = self.yi + self.k1y * self.dt
+        self.z[:, self.curstep+1] = self.zi + self.k1z * self.dt
+
+        # the fourth order Runge-Kutta method
+        """
+        self.x[:, self.curstep+1] = (self.xi + (self.k1x + 2*self.k2x +
+                                     2*self.k3x + self.k4x) * self.dt * 1/6)
+        self.y[:, self.curstep+1] = (self.yi + (self.k1y + 2*self.k2y +
+                                     2*self.k3y + self.k4y) * self.dt * 1/6)
+        self.z[:, self.curstep+1] = (self.zi + (self.k1z + 2*self.k2z +
+                                     2*self.k3z + self.k4z) * self.dt * 1/6)
+        """
         self.curstep += 1
