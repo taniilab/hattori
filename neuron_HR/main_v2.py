@@ -42,11 +42,13 @@ class Main():
     def __init__(self, numproc):
         self.numproc = numproc
 
-    def plot(self, process):
+    def simulate(self, process):
         # parallel processing on each setting value
         self.pid = os.getpid()
         self.progress_co = 0
-        self.nr = Neuron(**self.palm[process+self.multiproc_co])
+        self.nr = Neuron(**self.parm[process+self.multiproc_co])
+        self.nr.parm_dict = self.parm[process+self.multiproc_co]
+
         for i in range(0, self.nr.allsteps-1):
             self.nr.propagation()
             if self.progress_co % 100000 == 0:
@@ -55,37 +57,39 @@ class Main():
             self.progress_co += 1
         return self.nr
 
-    def form_palm(self):
-        self.palm = []
+    def form_parm(self):
+        self.parm = []
         self.cycle_multiproc = int(12000 / 6)
         self.multiproc_co = 0
-        self.palm_counter = 0
+        self.parm_counter = 0
 
         for i, j, k, l in itertools.product(range(60), range(1), range(1),
                                             range(1)):
-            self.palm.append({})
-            self.palm[self.palm_counter] = {"Syncp": 3, "Iext": round(i*0.1, 1)}
-            self.palm_counter += 1
-        
+            self.parm.append({})
+            self.parm[self.parm_counter] = {"Syncp": 3,
+                                            "Iext": round(i*0.1, 1)}
+            self.parm_counter += 1
+
         """
         for i, j, k, l in itertools.product(range(10), range(10), range(6),
                                             range(20)):
-            self.palm.append({})
-            self.palm[self.palm_counter] = {"noise": 2, "alpha": round(i*0.1, 1),
+            self.parm.append({})
+            self.parm[self.parm_counter] = {"noise": 2, "alpha": round(i*0.1, 1),
                                      "beta": round(j*0.1, 1), "D": 2,
                                      "Syncp": 2, "Pmax": round(k*0.4, 1),
                                      "tausyn": round(l, 1)}
-            self.palm_counter += 1
+            self.parm_counter += 1
         """
+
 
 def main():
     process = 6
     main = Main(process)
-    main.form_palm()
+    main.form_parm()
 
     for i in range(0, main.cycle_multiproc):
         pool = Pool(process)
-        cb = pool.map(main.plot, range(process))
+        cb = pool.map(main.simulate, range(process))
 
         print(main.multiproc_co)
         main.multiproc_co += process
@@ -93,14 +97,18 @@ def main():
         # record
         for k, j in itertools.product(range(6), range(1)):
             d = datetime.datetime.today()
+
+            # generate file name
+            cb[k].parm_dict = str(cb[k].parm_dict)
+            cb[k].parm_dict = cb[k].parm_dict.replace(':', '_')
+            cb[k].parm_dict = cb[k].parm_dict.replace('{', '_')
+            cb[k].parm_dict = cb[k].parm_dict.replace('}', '_')
+            cb[k].parm_dict = cb[k].parm_dict.replace('\'', '')
+            cb[k].parm_dict = cb[k].parm_dict.replace(',', '_')
             filename = (str(d.year) + '_' + str(d.month) + '_' +
                         str(d.day) + '_' + str(d.hour) + '_' +
                         str(d.minute) + '_' + str(d.second) + '_' +
-                        str(k) + '_D_' + str(cb[k].D) + '_alpha_' +
-                        str(cb[k].alpha) + '_beta_' + str(cb[k].beta) +
-                        '_tausyn_' + str(cb[k].tausyn) + '_Pmax_' +
-                        str(cb[k].Pmax) + '_Iext_' + str(cb[k].Iext[j, 1]) +
-                        '_' + "HR.csv")
+                        cb[k].parm_dict + '_' + "HR.csv")
 
             df = pd.DataFrame({'t': cb[k].tmhist, 'Iext': cb[k].Iext[j, 1],
                                'x': cb[k].x[j],

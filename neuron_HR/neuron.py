@@ -12,7 +12,7 @@ from mpl_toolkits.mplot3d import Axes3D
 class Neuron_HR():
     # constructor
     # 0.02
-    def __init__(self, Syncp=1, numneu=1, dt=0.001, simtime=2000, a=1, b=3, c=1,
+    def __init__(self, Syncp=1, numneu=1, dt=0.05, simtime=5000, a=1, b=3, c=1,
                  d=5, r=0.004, s=4, xr=-1.56, esyn=0, Pmax=1, tausyn=10,
                  xth=1.0, theta=-0.25, Iext=0, noise=0, ramda=-10, alpha=0.5,
                  beta=0, D=1):
@@ -23,6 +23,9 @@ class Neuron_HR():
     def set_neuron_palm(self, Syncp, numneu, dt, simtime, a, b, c, d, r, s, xr,
                         esyn, Pmax, tausyn, xth, theta, Iext, noise, ramda,
                         alpha, beta, D):
+        # parameters (used by main.py)
+        self.parm_dict = {}
+
         # type of synaptic coupling
         self.Syncp = Syncp
         # number of neuron
@@ -214,17 +217,18 @@ class Neuron_HR():
                     (self.zi + (self.dt) * self.k3z)))
 
         # the first order Euler method
+        """
         self.x[:, self.curstep+1] = self.xi + self.k1x * self.dt
         self.y[:, self.curstep+1] = self.yi + self.k1y * self.dt
         self.z[:, self.curstep+1] = self.zi + self.k1z * self.dt
-
+              """
         # the fourth order Runge-Kutta method
-        """
+
         self.x[:, self.curstep+1] = (self.xi + (self.k1x + 2*self.k2x +
                                      2*self.k3x + self.k4x) * self.dt * 1/6)
         self.y[:, self.curstep+1] = (self.yi + (self.k1y + 2*self.k2y +
                                      2*self.k3y + self.k4y) * self.dt * 1/6)
         self.z[:, self.curstep+1] = (self.zi + (self.k1z + 2*self.k2z +
                                      2*self.k3z + self.k4z) * self.dt * 1/6)
-        """
+
         self.curstep += 1
