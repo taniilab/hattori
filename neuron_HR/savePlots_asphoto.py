@@ -11,8 +11,8 @@ import itertools
 import numpy as np
 from PIL import Image
 
-files = glob.glob('C:/Users/Hattori/Documents/HR_results/runge/*.csv')
-path = 'C:/Users/Hattori/Documents/HR_results/runge/photo/'
+files = glob.glob('C:/Users/Hattori/Documents/HR_results/euler_dt0001/*.csv')
+path = 'C:/Users/Hattori/Documents/HR_results/euler_dt0001/photo/'
 # files = glob.glob('C:/Users/Hattori/Documents/xx/*.csv')
 # path = 'C:/Users/Hattori/Documents/xx/photo/'
 

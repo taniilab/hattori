@@ -11,7 +11,8 @@ from mpl_toolkits.mplot3d import Axes3D
 
 class Neuron_HR():
     # constructor
-    def __init__(self, Syncp=1, numneu=1, dt=0.02, simtime=2000, a=1, b=3, c=1,
+    # 0.02
+    def __init__(self, Syncp=1, numneu=1, dt=0.001, simtime=2000, a=1, b=3, c=1,
                  d=5, r=0.004, s=4, xr=-1.56, esyn=0, Pmax=1, tausyn=10,
                  xth=1.0, theta=-0.25, Iext=0, noise=0, ramda=-10, alpha=0.5,
                  beta=0, D=1):
