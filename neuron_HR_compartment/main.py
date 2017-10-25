@@ -17,9 +17,11 @@ import time
 import datetime 
 import logging
 import itertools
+from picture import Picture
 
 starttime = time.time()
 elapsed_time = 0
+save_path = "C:/Users/Hattori/Documents/HR_results/depressing_synapse"
 
 # palameter setting
 """
@@ -50,6 +52,12 @@ class Main():
         self.nr.parm_dict = self.parm[process+self.multiproc_co]
 
         for i in range(0, self.nr.allsteps-1):
+            if (self.nr.curstep * self.nr.dt) > 500:
+                #self.nr.cnct[0, 0] = 0.0
+                self.nr.cnct[1, 0] = 1.0
+                #self.nr.cnct[1, 1] = 0.0
+                self.nr.cnct[0, 1] = 1.0
+            
             self.nr.propagation()
             if self.progress_co % 100000 == 0:
                 logging.warning('process id : %d : %4d steps',
@@ -60,10 +68,9 @@ class Main():
 
     def form_parm(self):
         self.parm = []
-        self.cycle_multiproc = int(120 / 6)
         self.multiproc_co = 0
         self.parm_counter = 0
-        
+
         """
         for i, j, k, l in itertools.product(range(12), range(1), range(1),
                                             range(1)):
@@ -71,24 +78,29 @@ class Main():
             self.parm[self.parm_counter] = {"numneu": 10, "Syncp": 4,
                                             "Iext": round(i*0.1+1.5, 1)}
             self.parm_counter += 1
-
         """
-        for i, j, k, l in itertools.product(range(1), range(15), range(6),
+        for i, j, k, l in itertools.product(range(4), range(3), range(1),
                                             range(1)):
             self.parm.append({})
-            self.parm[self.parm_counter] = {"numneu": 1,
+            self.parm[self.parm_counter] = {"numneu": 2,
                                             "b": 3.6,
-                                            "Syncp": 4,
-                                            "Iext": 2.15}
+                                            "Syncp": 3,
+                                            "Iext": 1.3,
+                                            "tausyn": 2 + i*5,
+                                            "Pmax": 3 + j*4,
+                                            "ase": round(0.3*i, 1)}
             self.parm_counter += 1
-        
+
+        self.cycle_multiproc = int(self.parm_counter / 6)
 
 
 def main():
+    if not os.path.isdir(save_path):
+        os.mkdir(save_path)
     process = 6
     main = Main(process)
     main.form_parm()
-    
+
     for i in range(0, main.cycle_multiproc):
 
         pool = Pool(process)
@@ -124,56 +136,17 @@ def main():
                                'Isyn': cb[k].Isyn[j], 'alpha': cb[k].alpha,
                                'beta': cb[k].beta, 'D': cb[k].D,
                                'tausyn': cb[k].tausyn, 'Pmax': cb[k].Pmax})
-            df.to_csv('C:/Users/Hattori/Documents/HR_results/' + filename)
+            df.to_csv(save_path + '/' + filename)
 
         pool.close()
         pool.join()
 
-        print("じゅ")
-        print("ぴっぴ")
-
-    # sample plotting
-    for i in range(0, process):
-        # initialize
-        ax = []
-        lines = []
-        tm = np.arange(0, cb[i].allsteps*cb[i].dt, cb[i].dt)
-
-        fig = plt.figure(figsize=(12, 12))
-        gs = grs.GridSpec(3, cb[i].numneu)
-
-        for j in range(0, cb[i].numneu):
-            ax.append(plt.subplot(gs[0, j]))
-        ax.append(plt.subplot(gs[1, :]))
-        ax.append(plt.subplot(gs[2, :]))
-
-        # plot
-        for j in range(0, cb[i].numneu):
-            lines.append([])
-            if cb[i].numneu == 1:
-                lines[j], = ax[j].plot(tm, cb[i].x[j], color="indigo",
-                                       markevery=[0, -1])
-            else:
-                lines[j], = ax[j].plot(tm, cb[i].x[j], color="indigo",
-                                       markevery=[0, -1])
-
-        ax[cb[i].numneu].plot(tm, cb[i].Isyn[0], color="coral",
-                              markevery=[0, -1])
-        ax2 = ax[cb[i].numneu].twinx()
-        ax2.plot(tm, cb[i].x[0], color="indigo", markevery=[0, -1])
-
-        ax[cb[i].numneu+1].plot(tm, cb[i].z[0], color="coral",
-                                markevery=[0, -1])
-        ax2 = ax[cb[i].numneu+1].twinx()
-        ax2.plot(tm, cb[i].x[0], color="indigo", markevery=[0, -1])
-
-        # adjusting
-        for j in range(0, cb[i].numneu+2):
-            ax[j].grid(which='major', color='thistle', linestyle='-')
-        fig.tight_layout()
-
     elapsed_time = time.time() - starttime
-    print("elapsed_time:{0}".format(elapsed_time) + "[sec]")
+    print("elapsed_time:{0}".format(elapsed_time) + "[sec]\n")
+
+    pic = Picture(save_path)
+    pic.run()
+
     print("ちょう終わりました～♪")
 
 

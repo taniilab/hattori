@@ -6,8 +6,8 @@ import seaborn as sns
 
 # 2 cells burst 13.csv
 #single cell burst 14.csv
-path_v = """C:/Users/Hattori/Documents/2017_11_12_touhoku/files_voltage/14_voltage.csv"""
-path_i = """C:/Users/Hattori/Documents/2017_11_12_touhoku/files_current/14_current.csv"""
+path_v = """C:/Users/Hattori/Documents/2017_11_12_touhoku/files_voltage/3_voltage.csv"""
+path_i = """C:/Users/Hattori/Documents/2017_11_12_touhoku/files_current/3_current.csv"""
 
 fsize = 20
 

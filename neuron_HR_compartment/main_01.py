@@ -63,7 +63,7 @@ class Main():
         self.cycle_multiproc = int(120 / 6)
         self.multiproc_co = 0
         self.parm_counter = 0
-        
+
         """
         for i, j, k, l in itertools.product(range(12), range(1), range(1),
                                             range(1)):
@@ -76,19 +76,19 @@ class Main():
         for i, j, k, l in itertools.product(range(1), range(15), range(6),
                                             range(1)):
             self.parm.append({})
-            self.parm[self.parm_counter] = {"numneu": 1,
-                                            "b": 3.6,
+            self.parm[self.parm_counter] = {"numneu": 10, "noise": 2,
+                                            "D": round(j, 1),
                                             "Syncp": 4,
-                                            "Iext": 2.15}
+                                            "Pmax": round(k*0.4, 1),
+                                            }
             self.parm_counter += 1
-        
 
 
 def main():
     process = 6
     main = Main(process)
     main.form_parm()
-    
+
     for i in range(0, main.cycle_multiproc):
 
         pool = Pool(process)

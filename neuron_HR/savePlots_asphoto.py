@@ -12,8 +12,9 @@ import itertools
 import numpy as np
 from PIL import Image
 
-files = glob.glob('C:/Users/Hattori/Documents/HR_results/accuracy_euler_dt0001/*.csv')
-path = 'C:/Users/Hattori/Documents/HR_results/accuracy_euler_dt0001/photo/'
+folder = 'tmp2'
+files = glob.glob('C:/Users/Hattori/Documents/HR_results/' + folder + '/*.csv')
+path = 'C:/Users/Hattori/Documents/HR_results/' + folder + '/photo/'
 # files = glob.glob('C:/Users/Hattori/Documents/xx/*.csv')
 # path = 'C:/Users/Hattori/Documents/xx/photo/'
 
@@ -21,8 +22,8 @@ im_ju = Image.open('junon.jpg', 'r')
 im_pi = Image.open('pinon.jpg', 'r')
 im_ka = Image.open('kanon.jpg', 'r')
 
-line = 20
-column = 3
+line = 1
+column = len(files)
 counter = 0
 file_sets = [[0 for i in range(line)] for j in range(column)]
 
@@ -48,10 +49,9 @@ for i in range(column):
     # plt.imshow(np.array(im_ju))
     for i in range(len(list)):
         hr = list[i]
-        title = 'Iext_' + str(hr[1, 1])
-        plt.title(title)
+        plt.title(filenames[i])
         plt.plot(hr[:, 6], hr[:, 8])
-        plt.savefig(filename=path + filenames[i] + '.png', dpi=350)
+        plt.savefig(filename=path + filenames[i] + '.jpg', dpi=350)
         plt.clf()
         print(str(i + counter) + '個目のファイルを処理')
     counter += line
