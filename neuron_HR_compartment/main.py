@@ -14,7 +14,7 @@ import seaborn as sb
 from neuron import Neuron_HR as Neuron
 import pandas as pd
 import time
-import datetime 
+import datetime
 import logging
 import itertools
 from picture import Picture
@@ -52,9 +52,9 @@ class Main():
         self.nr.parm_dict = self.parm[process+self.multiproc_co]
 
         for i in range(0, self.nr.allsteps-1):
-            if (self.nr.curstep * self.nr.dt) > 500:
+            if (self.nr.curstep * self.nr.dt) > 400:
                 #self.nr.cnct[0, 0] = 0.0
-                self.nr.cnct[1, 0] = 1.0
+                #self.nr.cnct[1, 0] = 1.0
                 #self.nr.cnct[1, 1] = 0.0
                 self.nr.cnct[0, 1] = 1.0
             
@@ -79,15 +79,16 @@ class Main():
                                             "Iext": round(i*0.1+1.5, 1)}
             self.parm_counter += 1
         """
-        for i, j, k, l in itertools.product(range(4), range(3), range(1),
+        # i * j * k * l = 6n!!
+        for i, j, k, l in itertools.product(range(6), range(1), range(1),
                                             range(1)):
             self.parm.append({})
             self.parm[self.parm_counter] = {"numneu": 2,
                                             "b": 3.6,
-                                            "Syncp": 3,
-                                            "Iext": 1.3,
-                                            "tausyn": 2 + i*5,
-                                            "Pmax": 3 + j*4,
+                                            "Syncp": 4,
+                                            "Iext": 1.5,
+                                            "tausyn": round(5+i*3, 1),
+                                            "Pmax": 15,
                                             "ase": round(0.3*i, 1)}
             self.parm_counter += 1
 
@@ -146,7 +147,7 @@ def main():
 
     pic = Picture(save_path)
     pic.run()
-
+    print(cb[0].t_ap)
     print("ちょう終わりました～♪")
 
 

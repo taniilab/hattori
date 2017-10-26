@@ -33,9 +33,17 @@ class Picture():
             filename = os.path.basename(file_).replace('.csv', '')
 
             plt.title(filename)
-            plt.plot(matrix[:, 6], matrix[:, 8])
+            linex, = plt.plot(matrix[:, 6], matrix[:, 8], lw=1)
+            # plt.plot(matrix[:, 6], matrix[:, 9], lw=1)
+            linez, = plt.plot(matrix[:, 6], matrix[:, 10], lw=1)
             plt.savefig(filename=self.nowdir + '/plots/' + filename + '.jpg',
                         dpi=350)
+            linex.remove()
+            linez.remove()
+
+            lineisyn, = plt.plot(matrix[:, 6], matrix[:, 2], lw=1)
+            plt.savefig(filename=self.nowdir + '/plots/' + filename +
+                        'syn.jpg', dpi=350)
             plt.clf()
 
             print(str(self.counter) + '個目のファイルを処理します')

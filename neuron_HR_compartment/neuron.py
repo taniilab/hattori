@@ -10,9 +10,9 @@ import numpy as np
 class Neuron_HR():
     # constructor
     # 0.02
-    def __init__(self, Syncp=1, numneu=1, dt=0.05, simtime=1000, a=1, b=3.15,
+    def __init__(self, Syncp=1, numneu=1, dt=0.02, simtime=1000, a=1, b=3.15,
                  c=1, d=5, r=0.004, s=4, xr=-1.6, esyn=0, Pmax=3, tausyn=10,
-                 xth=1.0, theta=-0.25, Iext=0, noise=0, ramda=-10, alpha=0.5,
+                 xth=0.25, theta=-0.25, Iext=0, noise=0, ramda=-10, alpha=0.5,
                  beta=0, D=1,
                  tau_r=50, tau_i=50, use=1, ase=1):
         self.set_neuron_palm(Syncp, numneu, dt, simtime, a, b, c, d, r, s, xr,
@@ -47,7 +47,7 @@ class Neuron_HR():
         self.xr = xr * np.ones((self.numneu, len(self.tmhist)))
         self.x = 0 * np.ones((self.numneu, len(self.tmhist)))
         self.y = 0 * np.ones((self.numneu, len(self.tmhist)))
-        self.z = 0 * np.ones((self.numneu, len(self.tmhist)))
+        self.z = -xr * np.ones((self.numneu, len(self.tmhist)))
         self.k1x = 0 * np.ones(self.numneu)
         self.k1y = 0 * np.ones(self.numneu)
         self.k1z = 0 * np.ones(self.numneu)
@@ -83,6 +83,8 @@ class Neuron_HR():
 
         # synaptic current
         self.Isyn = np.zeros((self.numneu, len(self.tmhist)))
+        self.Isyn_hist = np.zeros((self.numneu, self.numneu, 5))
+        
         # synaptic conductance
         self.gsyn = np.zeros((self.numneu, self.numneu))
         # synaptic reversal potential
@@ -92,7 +94,7 @@ class Neuron_HR():
         self.Iext = np.zeros((self.numneu, len(self.tmhist)))
         self.Iext[0, :] = Iext
         # firing time
-        self.t_ap = -100 * np.ones((self.numneu, self.numneu))
+        self.t_ap = -100 * np.ones((self.numneu, self.numneu, 5))
 
         # current step
         self.curstep = 0
@@ -120,6 +122,8 @@ class Neuron_HR():
         # chemical synapse and alpha function
         self.Pmax = Pmax
         
+        self.fire_tmp = np.zeros(self.numneu)
+        
         print(self.a[0, 0])
         print(self.b[0, 0])
         print(self.c[0, 0])
@@ -141,7 +145,7 @@ class Neuron_HR():
         return y.astype(np.int)
 
     def alpha_function(self, t):
-        if t <= 0:
+        if t < 0:
             return 0
         elif ((self.Pmax * t/self.tausyn*0.1) *
               np.exp(-t/self.tausyn*0.1)) < 0.001:
@@ -151,9 +155,13 @@ class Neuron_HR():
 
     def calc_synaptic_input(self, i):
         # recording fire time
-        if self.xi[i] > self.xth:
-            self.t_ap[i, :] = self.curstep * self.dt
-
+        if self.xi[i] > self.xth and (self.curstep *
+                                      self.dt - self.fire_tmp[i]) > 30:
+            for k in range(0, 4):
+                self.t_ap[i, :, 4-k] = self.t_ap[i, :, 3-k]
+            self.t_ap[i, :, 0] = self.curstep * self.dt
+            self.fire_tmp[i] = self.curstep * self.dt
+        
         # sum of the synaptic current for each neuron
         if self.Syncp == 1:
             pass
@@ -177,7 +185,16 @@ class Neuron_HR():
         elif self.Syncp == 4:
             for j in range(0, self.numneu):
                 self.gsyn[i, j] =\
-                    self.alpha_function(self.curstep*self.dt - self.t_ap[j, i])
+                    (self.alpha_function(self.curstep*self.dt -
+                                         self.t_ap[j, i, 0]) +
+                     self.alpha_function(self.curstep*self.dt -
+                                         self.t_ap[j, i, 1]) +
+                     self.alpha_function(self.curstep*self.dt -
+                                         self.t_ap[j, i, 2]) +
+                     self.alpha_function(self.curstep*self.dt -
+                                         self.t_ap[j, i, 3]) +
+                     self.alpha_function(self.curstep*self.dt -
+                                         self.t_ap[j, i, 4]))
 
         elif self.Syncp == 5:
             pass
@@ -239,9 +256,9 @@ class Neuron_HR():
 
         # solve a defferential equation
         self.k1syn_r = ((self.syn_ii/self.tau_r) - self.use * self.syn_ri *
-                        self.delta_func(self.curstep * self.dt - self.t_ap))
+                        self.delta_func(self.curstep * self.dt - self.t_ap[:, :, 0]))
         self.k1syn_e = -((self.syn_ei/self.tau_i) + self.use * self.syn_ri *
-                         self.delta_func(self.curstep*self.dt - self.t_ap))
+                         self.delta_func(self.curstep*self.dt - self.t_ap[:, :, 0]))
         self.k1x = (self.yi - self.ai * self.xi**3 + self.bi * self.xi**2 -
                     self.zi + self.Isyni +
                     self.Iext[:, self.curstep] + self.ni)
@@ -253,11 +270,11 @@ class Neuron_HR():
                           self.syn_ei - (self.dt/2) * self.k1syn_e) /
                          self.tau_r) - self.use *
                         (self.syn_ri + (self.dt/2) * self.k1syn_r) *
-                        self.delta_func(self.curstep * self.dt - self.t_ap))
+                        self.delta_func(self.curstep * self.dt - self.t_ap[:, :, 0]))
         self.k2syn_e = -(((self.syn_ei + (self.dt/2) * self.k1syn_e) /
                           self.tau_r) + self.use *
                          (self.syn_ri + (self.dt/2) * self.k1syn_r) *
-                         self.delta_func(self.curstep * self.dt - self.t_ap))
+                         self.delta_func(self.curstep * self.dt - self.t_ap[:, :, 0]))
         self.k2x = ((self.yi + (self.dt/2) * self.k1y) - self.ai *
                     (self.xi + (self.dt/2) * self.k1x)**3 + self.bi *
                     (self.xi + (self.dt/2) * self.k1x)**2 -
@@ -273,11 +290,11 @@ class Neuron_HR():
                           self.syn_ei - (self.dt/2) * self.k2syn_e) /
                          self.tau_r) - self.use *
                         (self.syn_ri + (self.dt/2) * self.k2syn_r) *
-                        self.delta_func(self.curstep * self.dt - self.t_ap))
+                        self.delta_func(self.curstep * self.dt - self.t_ap[:, :, 0]))
         self.k3syn_e = -(((self.syn_ei + (self.dt/2) * self.k2syn_e) /
                           self.tau_r) + self.use *
                          (self.syn_ri + (self.dt/2) * self.k2syn_r) *
-                         self.delta_func(self.curstep * self.dt - self.t_ap))
+                         self.delta_func(self.curstep * self.dt - self.t_ap[:, :, 0]))
         self.k3x = ((self.yi + (self.dt/2) * self.k2y) - self.ai *
                     (self.xi + (self.dt/2) * self.k2x)**3 + self.bi *
                     (self.xi + (self.dt/2) * self.k2x)**2 -
@@ -293,11 +310,11 @@ class Neuron_HR():
                           self.syn_ei - self.dt * self.k3syn_e) /
                          self.tau_r) - self.use *
                         (self.syn_ri + self.dt * self.k1syn_r) *
-                        self.delta_func(self.curstep * self.dt - self.t_ap))
+                        self.delta_func(self.curstep * self.dt - self.t_ap[:, :, 0]))
         self.k4syn_e = -(((self.syn_ei + self.dt * self.k3syn_e) /
                           self.tau_r) + self.use *
                          (self.syn_ri + self.dt * self.k3syn_r) *
-                         self.delta_func(self.curstep * self.dt - self.t_ap))
+                         self.delta_func(self.curstep * self.dt - self.t_ap[:, :, 0]))
         self.k4x = ((self.yi + (self.dt) * self.k3y) - self.ai *
                     (self.xi + (self.dt) * self.k3x)**3 + self.bi *
                     (self.xi + (self.dt) * self.k3x)**2 -
