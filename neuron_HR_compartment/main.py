@@ -147,7 +147,7 @@ def main():
 
     pic = Picture(save_path)
     pic.run()
-    print(cb[0].t_ap)
+    print(cb[0].t_ap[1, :, :])
     print("ちょう終わりました～♪")
 
 

@@ -123,16 +123,6 @@ class Neuron_HR():
         self.Pmax = Pmax
         
         self.fire_tmp = np.zeros(self.numneu)
-        
-        print(self.a[0, 0])
-        print(self.b[0, 0])
-        print(self.c[0, 0])
-        print(self.d[0, 0])
-        print(self.r[0, 0])
-        print(self.s[0, 0])
-        print(self.xr[0, 0])
-        print("\n")
-        print(self.cnct)
 
     def synaptic_connection(self):
         #self.cnct[0, 0] = 0.0
@@ -145,7 +135,7 @@ class Neuron_HR():
         return y.astype(np.int)
 
     def alpha_function(self, t):
-        if t < 0:
+        if t <= 0:
             return 0
         elif ((self.Pmax * t/self.tausyn*0.1) *
               np.exp(-t/self.tausyn*0.1)) < 0.001:
