@@ -94,7 +94,7 @@ class Neuron_HR():
         self.Iext = np.zeros((self.numneu, len(self.tmhist)))
         self.Iext[0, :] = Iext
         # firing time
-        self.t_ap = -100 * np.ones((self.numneu, self.numneu, 5))
+        self.t_ap = -100 * np.ones((self.numneu, self.numneu, 2))
 
         # current step
         self.curstep = 0
@@ -121,21 +121,15 @@ class Neuron_HR():
 
         # chemical synapse and alpha function
         self.Pmax = Pmax
-        
-        self.fire_tmp = np.zeros(self.numneu)
 
-    def synaptic_connection(self):
-        #self.cnct[0, 0] = 0.0
-        self.cnct[1, 0] = 1.0
-        #self.cnct[1, 1] = 0.0
-        self.cnct[0, 1] = 1.0
+        self.fire_tmp = np.zeros(self.numneu)
 
     def delta_func(self, t):
         y = t == 0
         return y.astype(np.int)
 
     def alpha_function(self, t):
-        if t <= 0:
+        if t < 0:
             return 0
         elif ((self.Pmax * t/self.tausyn*0.1) *
               np.exp(-t/self.tausyn*0.1)) < 0.001:
@@ -147,11 +141,10 @@ class Neuron_HR():
         # recording fire time
         if self.xi[i] > self.xth and (self.curstep *
                                       self.dt - self.fire_tmp[i]) > 30:
-            for k in range(0, 4):
-                self.t_ap[i, :, 4-k] = self.t_ap[i, :, 3-k]
+            self.t_ap[i, :, 1] = self.t_ap[i, :, 0]
             self.t_ap[i, :, 0] = self.curstep * self.dt
             self.fire_tmp[i] = self.curstep * self.dt
-        
+
         # sum of the synaptic current for each neuron
         if self.Syncp == 1:
             pass
@@ -178,22 +171,23 @@ class Neuron_HR():
                     (self.alpha_function(self.curstep*self.dt -
                                          self.t_ap[j, i, 0]) +
                      self.alpha_function(self.curstep*self.dt -
-                                         self.t_ap[j, i, 1]) +
-                     self.alpha_function(self.curstep*self.dt -
-                                         self.t_ap[j, i, 2]) +
-                     self.alpha_function(self.curstep*self.dt -
-                                         self.t_ap[j, i, 3]) +
-                     self.alpha_function(self.curstep*self.dt -
-                                         self.t_ap[j, i, 4]))
+                                         self.t_ap[j, i, 1]))
+
 
         elif self.Syncp == 5:
             pass
 
         # summation
         for j in range(0, self.numneu):
+            if i == 1:
+                self.Isyni[i] += (self.gsyn[i, j] *
+                                  (self.esyn[i, j] - self.xi[i]))
+
+            """
             self.Isyni[i] +=\
                 (self.cnct[i, j] * self.gsyn[i, j] *
                  (self.esyn[i, j] - self.xi[i]))
+            """
 
     # one step processing
     def propagation(self):

@@ -87,8 +87,9 @@ class Main():
                                             "b": 3.6,
                                             "Syncp": 4,
                                             "Iext": 1.5,
-                                            "tausyn": round(5+i*3, 1),
-                                            "Pmax": 15,
+                                            "tausyn": 10,
+                                            "Pmax": round(0.3+0.3*i, 1),
+                                            "esyn": 0,
                                             "ase": round(0.3*i, 1)}
             self.parm_counter += 1
 
@@ -147,7 +148,6 @@ def main():
 
     pic = Picture(save_path)
     pic.run()
-    print(cb[0].t_ap[1, :, :])
     print("ちょう終わりました～♪")
 
 
