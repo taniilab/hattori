@@ -10,18 +10,18 @@ import numpy as np
 class Neuron_HR():
     # constructor
     # 0.02
-    def __init__(self, Syncp=1, numneu=1, dt=0.02, simtime=1000, a=1, b=3.15,
+    def __init__(self, Syncp=1, numneu=1, dt=0.05, simtime=2000, a=1, b=3.15,
                  c=1, d=5, r=0.004, s=4, xr=-1.6, esyn=0, Pmax=3, tausyn=10,
                  xth=0.25, theta=-0.25, Iext=0, noise=0, ramda=-10, alpha=0.5,
                  beta=0, D=1,
-                 tau_r=50, tau_i=50, use=1, ase=1):
+                 tau_r=50, tau_i=50, use=1, ase=1, gcmp=2):
         self.set_neuron_palm(Syncp, numneu, dt, simtime, a, b, c, d, r, s, xr,
                              esyn, Pmax, tausyn, xth, theta, Iext, noise,
-                             ramda, alpha, beta, D, tau_r, tau_i, use, ase)
+                             ramda, alpha, beta, D, tau_r, tau_i, use, ase, gcmp)
 
     def set_neuron_palm(self, Syncp, numneu, dt, simtime, a, b, c, d, r, s, xr,
                         esyn, Pmax, tausyn, xth, theta, Iext, noise, ramda,
-                        alpha, beta, D, tau_r, tau_i, use, ase):
+                        alpha, beta, D, tau_r, tau_i, use, ase, gcmp):
         # parameters (used by main.py)
         self.parm_dict = {}
 
@@ -77,6 +77,9 @@ class Neuron_HR():
         self.k3syn_e = 0 * np.ones(self.numneu)
         self.k4syn_r = 0 * np.ones(self.numneu)
         self.k4syn_e = 0 * np.ones(self.numneu)
+
+        # compartment conductance
+        self.gcmp = gcmp
 
         # connection relationship
         self.cnct = np.zeros((self.numneu, self.numneu))
@@ -140,7 +143,7 @@ class Neuron_HR():
     def calc_synaptic_input(self, i):
         # recording fire time
         if self.xi[i] > self.xth and (self.curstep *
-                                      self.dt - self.fire_tmp[i]) > 30:
+                                      self.dt - self.fire_tmp[i]) > 10:
             self.t_ap[i, :, 1] = self.t_ap[i, :, 0]
             self.t_ap[i, :, 0] = self.curstep * self.dt
             self.fire_tmp[i] = self.curstep * self.dt
@@ -173,21 +176,34 @@ class Neuron_HR():
                      self.alpha_function(self.curstep*self.dt -
                                          self.t_ap[j, i, 1]))
 
-
+        # compartment
         elif self.Syncp == 5:
+            for j in range(0, self.numneu):
+                self.gsyn[i, j] = self.gcmp
+                         
+        elif self.Syncp == 6:
             pass
 
         # summation
         for j in range(0, self.numneu):
+            """
             if i == 1:
                 self.Isyni[i] += (self.gsyn[i, j] *
                                   (self.esyn[i, j] - self.xi[i]))
-
             """
-            self.Isyni[i] +=\
-                (self.cnct[i, j] * self.gsyn[i, j] *
-                 (self.esyn[i, j] - self.xi[i]))
-            """
+            if self.Syncp == 5:
+                if self.curstep < 800:
+                    self.Isyni[i] +=\
+                          (self.cnct[i, j] * self.gsyn[i, j] *
+                           (self.xi[j] - self.xi[i]))                
+                else:
+                    self.Isyni[i] +=\
+                          (self.cnct[i, j] * self.gsyn[i, j] *
+                           (self.x[j, self.curstep-800] - self.x[i, self.curstep]))
+            else:
+                self.Isyni[i] +=\
+                          (self.cnct[i, j] * self.gsyn[i, j] *
+                           (self.esyn[i, j] - self.xi[i]))
 
     # one step processing
     def propagation(self):

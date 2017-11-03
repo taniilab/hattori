@@ -56,8 +56,8 @@ class Main():
                 #self.nr.cnct[0, 0] = 0.0
                 #self.nr.cnct[1, 0] = 1.0
                 #self.nr.cnct[1, 1] = 0.0
-                self.nr.cnct[0, 1] = 1.0
-            
+                self.nr.cnct[1, 0] = 1.0
+
             self.nr.propagation()
             if self.progress_co % 100000 == 0:
                 logging.warning('process id : %d : %4d steps',
@@ -85,10 +85,10 @@ class Main():
             self.parm.append({})
             self.parm[self.parm_counter] = {"numneu": 2,
                                             "b": 3.6,
-                                            "Syncp": 4,
-                                            "Iext": 1.5,
+                                            "Syncp": 5,
+                                            "Iext": 1.2,
                                             "tausyn": 10,
-                                            "Pmax": round(0.3+0.3*i, 1),
+                                            "gcmp": round(1+0.3*i, 1),
                                             "esyn": 0,
                                             "ase": round(0.3*i, 1)}
             self.parm_counter += 1
