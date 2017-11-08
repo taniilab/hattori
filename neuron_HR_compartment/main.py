@@ -52,11 +52,15 @@ class Main():
         self.nr.parm_dict = self.parm[process+self.multiproc_co]
 
         for i in range(0, self.nr.allsteps-1):
-            if (self.nr.curstep * self.nr.dt) > 400:
-                #self.nr.cnct[0, 0] = 0.0
-                #self.nr.cnct[1, 0] = 1.0
-                #self.nr.cnct[1, 1] = 0.0
+            if (self.nr.curstep * self.nr.dt) > 1000:
+                self.nr.cnct[0, 1] = 1.0
                 self.nr.cnct[1, 0] = 1.0
+                self.nr.cnct[1, 2] = 1.0
+                self.nr.cnct[2, 1] = 1.0
+                self.nr.cnct[2, 3] = 1.0
+                self.nr.cnct[3, 2] = 1.0
+                self.nr.cnct[3, 4] = 1.0
+                self.nr.cnct[4, 3] = 1.0
 
             self.nr.propagation()
             if self.progress_co % 100000 == 0:
@@ -80,17 +84,15 @@ class Main():
             self.parm_counter += 1
         """
         # i * j * k * l = 6n!!
-        for i, j, k, l in itertools.product(range(6), range(1), range(1),
+        for i, j, k, l in itertools.product(range(15), range(24), range(1),
                                             range(1)):
             self.parm.append({})
-            self.parm[self.parm_counter] = {"numneu": 2,
+            self.parm[self.parm_counter] = {"numneu": 5,
                                             "b": 3.6,
                                             "Syncp": 5,
-                                            "Iext": 1.2,
-                                            "tausyn": 10,
-                                            "gcmp": round(1+0.3*i, 1),
-                                            "esyn": 0,
-                                            "ase": round(0.3*i, 1)}
+                                            "Iext": 1+0.5*i,
+                                            "gcmp": round(0.1+0.2*i, 1),
+                                            "esyn": 0}
             self.parm_counter += 1
 
         self.cycle_multiproc = int(self.parm_counter / 6)

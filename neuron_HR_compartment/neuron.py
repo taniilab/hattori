@@ -10,7 +10,7 @@ import numpy as np
 class Neuron_HR():
     # constructor
     # 0.02
-    def __init__(self, Syncp=1, numneu=1, dt=0.05, simtime=2000, a=1, b=3.15,
+    def __init__(self, Syncp=1, numneu=1, dt=0.05, simtime=4000, a=1, b=3.15,
                  c=1, d=5, r=0.004, s=4, xr=-1.6, esyn=0, Pmax=3, tausyn=10,
                  xth=0.25, theta=-0.25, Iext=0, noise=0, ramda=-10, alpha=0.5,
                  beta=0, D=1,
@@ -140,6 +140,10 @@ class Neuron_HR():
         else:
             return (self.Pmax * t/self.tausyn) * np.exp(-t/self.tausyn)
 
+    def step_func(self, t):
+        y = t > 0
+        return y.astype(np.int)
+
     def calc_synaptic_input(self, i):
         # recording fire time
         if self.xi[i] > self.xth and (self.curstep *
@@ -192,14 +196,11 @@ class Neuron_HR():
                                   (self.esyn[i, j] - self.xi[i]))
             """
             if self.Syncp == 5:
-                if self.curstep < 800:
-                    self.Isyni[i] +=\
-                          (self.cnct[i, j] * self.gsyn[i, j] *
-                           (self.xi[j] - self.xi[i]))                
-                else:
-                    self.Isyni[i] +=\
-                          (self.cnct[i, j] * self.gsyn[i, j] *
-                           (self.x[j, self.curstep-800] - self.x[i, self.curstep]))
+                self.Isyni[i] +=\
+                      (self.cnct[i, j] * self.gsyn[i, j] * 
+                       (self.x[j, self.curstep] -
+                        self.x[i, self.curstep]))
+
             else:
                 self.Isyni[i] +=\
                           (self.cnct[i, j] * self.gsyn[i, j] *
