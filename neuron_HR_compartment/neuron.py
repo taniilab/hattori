@@ -10,7 +10,7 @@ import numpy as np
 class Neuron_HR():
     # constructor
     # 0.02
-    def __init__(self, Syncp=1, numneu=1, dt=0.05, simtime=4000, a=1, b=3.15,
+    def __init__(self, Syncp=1, numneu=1, dt=0.03, simtime=3000, a=1, b=3.15,
                  c=1, d=5, r=0.004, s=4, xr=-1.6, esyn=0, Pmax=3, tausyn=10,
                  xth=0.25, theta=-0.25, Iext=0, noise=0, ramda=-10, alpha=0.5,
                  beta=0, D=1,
@@ -333,6 +333,8 @@ class Neuron_HR():
         self.syn_e[:, self.curstep+1] = self.syn_ei + self.k1syn_e * self.dt
         self.syn_i[:, self.curstep+1] = 1 - (self.syn_r[:, self.curstep+1] +
                                              self.syn_e[:, self.curstep+1])
+
+        
         self.x[:, self.curstep+1] = self.xi + self.k1x * self.dt
         self.y[:, self.curstep+1] = self.yi + self.k1y * self.dt
         self.z[:, self.curstep+1] = self.zi + self.k1z * self.dt
@@ -357,3 +359,4 @@ class Neuron_HR():
                                      2*self.k3z + self.k4z) * self.dt * 1/6)
 
         self.curstep += 1
+
