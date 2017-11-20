@@ -74,7 +74,6 @@ class Main():
 
     def form_parm(self):
         self.parm = []
-        self.cycle_multiproc = int(self.parm_counter / 6)
         self.multiproc_co = 0
         self.parm_counter = 0
 
@@ -98,7 +97,7 @@ class Main():
                                             "Pmax": round(5*i),
                                             "tausyn": 0.1}
             self.parm_counter += 1
-
+        self.cycle_multiproc = int(self.parm_counter / 6)
 
 
 def main():
