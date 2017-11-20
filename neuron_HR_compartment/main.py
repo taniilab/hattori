@@ -21,7 +21,7 @@ from picture import Picture
 
 starttime = time.time()
 elapsed_time = 0
-save_path = "C:/Users/Hattori/Documents/HR_results/depressing_synapse"
+save_path = "C:/Users/Hattori/Documents/HR_results/20171115alphafunction"
 
 # palameter setting
 """
@@ -53,25 +53,28 @@ class Main():
 
         for i in range(0, self.nr.allsteps-1):
             if (self.nr.curstep * self.nr.dt) > 1000:
-                self.nr.cnct[0, 1] = 1.0
-                self.nr.cnct[1, 0] = 1.0
-                self.nr.cnct[1, 2] = 1.0
-                self.nr.cnct[2, 1] = 1.0
-                self.nr.cnct[2, 3] = 1.0
-                self.nr.cnct[3, 2] = 1.0
-                self.nr.cnct[3, 4] = 1.0
-                self.nr.cnct[4, 3] = 1.0
+                #self.nr.cnct[0, 1] = 1.0
+                #self.nr.cnct[1, 0] = 1.0
+                #self.nr.cnct[1, 2] = 1.0
+                #self.nr.cnct[2, 1] = 1.0
+                #self.nr.cnct[2, 3] = 1.0
+                #self.nr.cnct[3, 2] = 1.0
+                #self.nr.cnct[3, 4] = 1.0
+                #self.nr.cnct[4, 3] = 1.0
+                pass
 
             self.nr.propagation()
-            if self.progress_co % 100000 == 0:
+            if self.progress_co % 1000 == 0:
                 logging.warning('process id : %d : %4d steps',
                                 self.pid, self.progress_co)
+
 
             self.progress_co += 1
         return self.nr
 
     def form_parm(self):
         self.parm = []
+        self.cycle_multiproc = int(self.parm_counter / 6)
         self.multiproc_co = 0
         self.parm_counter = 0
 
@@ -79,25 +82,23 @@ class Main():
         for i, j, k, l in itertools.product(range(12), range(1), range(1),
                                             range(1)):
             self.parm.append({})
-            self.parm[self.parm_counter] = {"numneu": 10, "Syncp": 4,
+            self.parm[self.parm_counter] = {"numneu": +10, "Syncp": 4,
                                             "Iext": round(i*0.1+1.5, 1)}
             self.parm_counter += 1
         """
         # i * j * k * l = 6n!!
-        for i, j, k, l in itertools.product(range(1), range(18), range(1),
+        for i, j, k, l in itertools.product(range(6), range(1), range(1),
                                             range(1)):
             self.parm.append({})
             self.parm[self.parm_counter] = {"numneu": 5,
                                             "b": 3.6,
-                                            "c": 1,
-                                            "d": round(5 + 0.1*j, 1),
-                                            "Syncp": 5,
-                                            "Iext": 1.3,
-                                            "gcmp": 0.5,
-                                            "esyn": 0}
+                                            "Syncp": 4,
+                                            "Iext": 2.0,
+                                            "gcmp": round(5+3*i, 1),
+                                            "Pmax": round(5*i),
+                                            "tausyn": 0.1}
             self.parm_counter += 1
 
-        self.cycle_multiproc = int(self.parm_counter / 6)
 
 
 def main():

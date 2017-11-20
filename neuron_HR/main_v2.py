@@ -60,7 +60,7 @@ class Main():
 
     def form_parm(self):
         self.parm = []
-        self.cycle_multiproc = int(120 / 6)
+        self.cycle_multiproc = int(6 / 6)
         self.multiproc_co = 0
         self.parm_counter = 0
         
@@ -73,13 +73,13 @@ class Main():
             self.parm_counter += 1
 
         """
-        for i, j, k, l in itertools.product(range(1), range(15), range(6),
+        for i, j, k, l in itertools.product(range(1), range(6), range(1),
                                             range(1)):
             self.parm.append({})
             self.parm[self.parm_counter] = {"numneu": 1,
                                             "b": 3.6,
-                                            "Syncp": 4,
-                                            "Iext": 2.15}
+                                            "Syncp": 1,
+                                            "Iext": round(1+0.2*j, 1)}
             self.parm_counter += 1
         
 

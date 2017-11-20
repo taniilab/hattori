@@ -47,7 +47,7 @@ class Neuron_HR():
         self.xr = xr * np.ones((self.numneu, len(self.tmhist)))
         self.x = 0 * np.ones((self.numneu, len(self.tmhist)))
         self.y = 0 * np.ones((self.numneu, len(self.tmhist)))
-        self.z = -xr * np.ones((self.numneu, len(self.tmhist)))
+        self.z = 0 * np.ones((self.numneu, len(self.tmhist)))
         self.k1x = 0 * np.ones(self.numneu)
         self.k1y = 0 * np.ones(self.numneu)
         self.k1z = 0 * np.ones(self.numneu)
@@ -130,6 +130,12 @@ class Neuron_HR():
     def delta_func(self, t):
         y = t == 0
         return y.astype(np.int)
+    
+    def discrete_delta_func(self, steps):
+        if steps <= (self.gcmp/self.dt):
+            return self.Iext
+        else:
+            return 0
 
     def alpha_function(self, t):
         if t < 0:
@@ -183,8 +189,13 @@ class Neuron_HR():
         # compartment
         elif self.Syncp == 5:
             for j in range(0, self.numneu):
+                """
+                if self.x[j, self.curstep] > -0.5:
+                     self.gsyn[i, j] = self.gcmp * self.Pmax
+                else:
+                """
                 self.gsyn[i, j] = self.gcmp
-                         
+
         elif self.Syncp == 6:
             pass
 
@@ -196,10 +207,15 @@ class Neuron_HR():
                                   (self.esyn[i, j] - self.xi[i]))
             """
             if self.Syncp == 5:
+                """
                 self.Isyni[i] +=\
-                      (self.cnct[i, j] * self.gsyn[i, j] * 
-                       (self.x[j, self.curstep] -
+                      (self.cnct[i, j] * self.gsyn[i, j] *
+                       (self.x[j, self.curstep-500] -
                         self.x[i, self.curstep]))
+                """
+
+                self.Isyni[i] +=\
+                    (self.cnct[i, j] * self.discrete_delta_func((self.curstep - (self.t_ap[j, j, 0]/self.dt))))
 
             else:
                 self.Isyni[i] +=\

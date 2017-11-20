@@ -87,7 +87,7 @@ class Picture():
                 linetmp3, = plt.plot(self.tmp0, self.tmp3, lw=1)
                 linetmp4, = plt.plot(self.tmp0, self.tmp4, lw=1)
                 linetmp5, = plt.plot(self.tmp0, self.tmp5, lw=1)
-                plt.ylim(-3.0, 3.0)
+                plt.ylim(-2, 3)
                 plt.savefig(filename=self.nowdir + '/plots/' + filename +
                             'prop.jpg', dpi=350)
                 self.gcounter = 0
