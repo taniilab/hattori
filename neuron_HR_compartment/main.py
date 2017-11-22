@@ -21,8 +21,8 @@ from picture import Picture
 
 starttime = time.time()
 elapsed_time = 0
-#save_path = "C:/Users/Hattori/Documents/HR_results/20171115alphafunction"
-save_path = "C:/Users/6969p/Documents/HR_results/20171115alphafunction"
+save_path = "C:/Users/Hattori/Documents/HR_results/20171115alphafunction"
+#save_path = "C:/Users/6969p/Documents/HR_results/20171115alphafunction"
 
 # palameter setting
 """
@@ -93,12 +93,12 @@ class Main():
             self.parm[self.parm_counter] = {"numneu": 5,
                                             "b": 3.6,
                                             "Syncp": 5,
-                                            "Iext_amp": 2.0,
+                                            "Iext_amp": round(10+1*i, 1),
                                             "Iext_width": 10.0,
-                                            "Iext_duty": 10,
+                                            "Iext_duty": 0,
                                             "Iext_num": 200,
-                                            "gcmp": round(5+3*i, 1),
-                                            "Pmax": round(5*i),
+                                            "gcmp": 17,
+                                            "Pmax": round(5*j, 1),
                                             "tausyn": 0.1}
             self.parm_counter += 1
         self.cycle_multiproc = int(self.parm_counter / 6)
