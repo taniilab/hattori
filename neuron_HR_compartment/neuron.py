@@ -10,17 +10,20 @@ import numpy as np
 class Neuron_HR():
     # constructor
     # 0.02
-    def __init__(self, Syncp=1, numneu=1, dt=0.03, simtime=3000, a=1, b=3.15,
+    def __init__(self, Syncp=1, numneu=1, dt=0.03, simtime=1200, a=1, b=3.15,
                  c=1, d=5, r=0.004, s=4, xr=-1.6, esyn=0, Pmax=3, tausyn=10,
-                 xth=0.25, theta=-0.25, Iext=0, noise=0, ramda=-10, alpha=0.5,
+                 xth=0.25, theta=-0.25, Iext_amp=0, Iext_width=0, Iext_duty=0,
+                 Iext_num=0, noise=0, ramda=-10, alpha=0.5,
                  beta=0, D=1,
                  tau_r=50, tau_i=50, use=1, ase=1, gcmp=2):
         self.set_neuron_palm(Syncp, numneu, dt, simtime, a, b, c, d, r, s, xr,
-                             esyn, Pmax, tausyn, xth, theta, Iext, noise,
+                             esyn, Pmax, tausyn, xth, theta, Iext_amp,
+                             Iext_width, Iext_duty, Iext_num, noise,
                              ramda, alpha, beta, D, tau_r, tau_i, use, ase, gcmp)
 
     def set_neuron_palm(self, Syncp, numneu, dt, simtime, a, b, c, d, r, s, xr,
-                        esyn, Pmax, tausyn, xth, theta, Iext, noise, ramda,
+                        esyn, Pmax, tausyn, xth, theta, Iext_amp,
+                        Iext_width, Iext_duty, Iext_num,  noise, ramda,
                         alpha, beta, D, tau_r, tau_i, use, ase, gcmp):
         # parameters (used by main.py)
         self.parm_dict = {}
@@ -87,7 +90,7 @@ class Neuron_HR():
         # synaptic current
         self.Isyn = np.zeros((self.numneu, len(self.tmhist)))
         self.Isyn_hist = np.zeros((self.numneu, self.numneu, 5))
-        
+
         # synaptic conductance
         self.gsyn = np.zeros((self.numneu, self.numneu))
         # synaptic reversal potential
@@ -95,7 +98,25 @@ class Neuron_HR():
         self.tausyn = tausyn
         # external current
         self.Iext = np.zeros((self.numneu, len(self.tmhist)))
-        self.Iext[0, :] = Iext
+        # square wave
+        self.Iext_co = 0
+        self.Iext_amp = Iext_amp
+        self.Iext_width = Iext_width
+        self.Iext_duty = Iext_duty
+        while self.Iext_co < Iext_num:
+            self.iext_tmp1 = 0 + int(self.Iext_co*Iext_width*(1+Iext_duty)/self.dt)
+            self.iext_tmp2 = int(Iext_width*Iext_duty / self.dt + self.iext_tmp1)
+            self.iext_tmp3 = int(1 + self.iext_tmp2)
+            self.iext_tmp4 = int(Iext_width / self.dt + self.iext_tmp3)
+            self.Iext[0, self.iext_tmp1:self.iext_tmp2] = 0
+            self.Iext[0, self.iext_tmp3:self.iext_tmp4] = Iext_amp
+            print("kanopero")
+            print(self.Iext_amp)
+            print(self.Iext_width)
+            print(self.Iext_duty)
+            print(self.Iext_co)
+            self.Iext_co += 1
+
         # firing time
         self.t_ap = -100 * np.ones((self.numneu, self.numneu, 2))
 
@@ -106,7 +127,7 @@ class Neuron_HR():
         self.theta = theta
         # noise palameter
         self.noise = noise
-        self.n = np.ones((self.numneu, len(self.tmhist)))
+        self.n = np.zeros((self.numneu, len(self.tmhist)))
 
         """
         self.tmp = int(1000/self.dt)
@@ -207,16 +228,16 @@ class Neuron_HR():
                                   (self.esyn[i, j] - self.xi[i]))
             """
             if self.Syncp == 5:
-                """
+                
                 self.Isyni[i] +=\
                       (self.cnct[i, j] * self.gsyn[i, j] *
-                       (self.x[j, self.curstep-500] -
+                       (self.x[j, self.curstep] -
                         self.x[i, self.curstep]))
                 """
 
                 self.Isyni[i] +=\
                     (self.cnct[i, j] * self.discrete_delta_func((self.curstep - (self.t_ap[j, j, 0]/self.dt))))
-
+                """
             else:
                 self.Isyni[i] +=\
                           (self.cnct[i, j] * self.gsyn[i, j] *

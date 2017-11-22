@@ -67,6 +67,11 @@ class Picture():
                         'syn.jpg', dpi=350)
             linesyn.remove()
 
+            lineiext, = plt.plot(matrix[:, 6], matrix[:, 1], lw=1)
+            plt.savefig(filename=self.nowdir + '/plots/' + filename +
+                        'iext.jpg', dpi=350)
+            lineiext.remove()
+
             if self.gcounter == 0:
                 self.tmp0 = matrix[:, 6]
                 self.tmp1 = matrix[:, 8]

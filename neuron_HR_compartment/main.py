@@ -21,7 +21,8 @@ from picture import Picture
 
 starttime = time.time()
 elapsed_time = 0
-save_path = "C:/Users/Hattori/Documents/HR_results/20171115alphafunction"
+#save_path = "C:/Users/Hattori/Documents/HR_results/20171115alphafunction"
+save_path = "C:/Users/6969p/Documents/HR_results/20171115alphafunction"
 
 # palameter setting
 """
@@ -52,15 +53,15 @@ class Main():
         self.nr.parm_dict = self.parm[process+self.multiproc_co]
 
         for i in range(0, self.nr.allsteps-1):
-            if (self.nr.curstep * self.nr.dt) > 1000:
-                #self.nr.cnct[0, 1] = 1.0
-                #self.nr.cnct[1, 0] = 1.0
-                #self.nr.cnct[1, 2] = 1.0
-                #self.nr.cnct[2, 1] = 1.0
-                #self.nr.cnct[2, 3] = 1.0
-                #self.nr.cnct[3, 2] = 1.0
-                #self.nr.cnct[3, 4] = 1.0
-                #self.nr.cnct[4, 3] = 1.0
+            if (self.nr.curstep * self.nr.dt) > 200:
+                self.nr.cnct[0, 1] = 1.0
+                self.nr.cnct[1, 0] = 1.0
+                self.nr.cnct[1, 2] = 1.0
+                self.nr.cnct[2, 1] = 1.0
+                self.nr.cnct[2, 3] = 1.0
+                self.nr.cnct[3, 2] = 1.0
+                self.nr.cnct[3, 4] = 1.0
+                self.nr.cnct[4, 3] = 1.0
                 pass
 
             self.nr.propagation()
@@ -91,8 +92,11 @@ class Main():
             self.parm.append({})
             self.parm[self.parm_counter] = {"numneu": 5,
                                             "b": 3.6,
-                                            "Syncp": 4,
-                                            "Iext": 2.0,
+                                            "Syncp": 5,
+                                            "Iext_amp": 2.0,
+                                            "Iext_width": 10.0,
+                                            "Iext_duty": 10,
+                                            "Iext_num": 200,
                                             "gcmp": round(5+3*i, 1),
                                             "Pmax": round(5*i),
                                             "tausyn": 0.1}
