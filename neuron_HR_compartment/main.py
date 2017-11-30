@@ -21,8 +21,9 @@ from picture import Picture
 
 starttime = time.time()
 elapsed_time = 0
-save_path = "C:/Users/Hattori/Documents/HR_results/20171115alphafunction"
-#save_path = "C:/Users/6969p/Documents/HR_results/20171115alphafunction"
+# save_path = "C:/Users/Hattori/Documents/HR_results/20171115alphafunction"
+# save_path = "C:/Users/6969p/Documents/HR_results/20171115alphafunction"
+save_path = "F:/simulation"
 
 # palameter setting
 """
@@ -68,9 +69,8 @@ class Main():
             if self.progress_co % 1000 == 0:
                 logging.warning('process id : %d : %4d steps',
                                 self.pid, self.progress_co)
-
-
             self.progress_co += 1
+
         return self.nr
 
     def form_parm(self):
@@ -87,19 +87,24 @@ class Main():
             self.parm_counter += 1
         """
         # i * j * k * l = 6n!!
-        for i, j, k, l in itertools.product(range(6), range(1), range(1),
+        for i, j, k, l in itertools.product(range(12), range(6), range(1),
                                             range(1)):
             self.parm.append({})
             self.parm[self.parm_counter] = {"numneu": 5,
                                             "b": 3.6,
                                             "Syncp": 5,
-                                            "Iext_amp": round(10+1*i, 1),
+                                            "Iext_amp": round(0.5*0.5*i, 1),
+                                            "Iofs": 2.1,
                                             "Iext_width": 10.0,
                                             "Iext_duty": 0,
-                                            "Iext_num": 200,
-                                            "gcmp": 17,
-                                            "Pmax": round(5*j, 1),
-                                            "tausyn": 0.1}
+                                            "Iext_num": 1000,
+                                            "gcmp": 0.5*j}
+            
+            """
+                                            "noise": 2,
+                                            "alpha": round(0.1+0.2*i, 1),
+                                            "D": round(0.5+j, 1)}
+            """
             self.parm_counter += 1
         self.cycle_multiproc = int(self.parm_counter / 6)
 
