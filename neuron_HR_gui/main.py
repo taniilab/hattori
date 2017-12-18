@@ -27,6 +27,7 @@ class CentralWidget(QWidget):
         layout1_2 = QHBoxLayout()
         layout1 = QVBoxLayout()
         self.slider1 = QSlider(Qt.Horizontal)
+        self.slider1.setRange(1, 5)
         self.label1 = QLabel('a :')
         layout1_2.addWidget(self.label1)
         layout1_2.addWidget(self.slider1)
@@ -37,6 +38,7 @@ class CentralWidget(QWidget):
         layout2_2 = QHBoxLayout()
         layout2 = QVBoxLayout()
         self.slider2 = QSlider(Qt.Horizontal)
+        self.slider2.setRange(1, 5)
         self.label2 = QLabel('b :')
         layout2_2.addWidget(self.label2)
         layout2_2.addWidget(self.slider2)
@@ -47,6 +49,7 @@ class CentralWidget(QWidget):
         layout3_2 = QHBoxLayout()
         layout3 = QVBoxLayout()
         self.slider3 = QSlider(Qt.Horizontal)
+        self.slider3.setRange(1, 5)
         self.label3 = QLabel('c :')
         layout3_2.addWidget(self.label3)
         layout3_2.addWidget(self.slider3)
@@ -57,6 +60,7 @@ class CentralWidget(QWidget):
         layout4_2 = QHBoxLayout()
         layout4 = QVBoxLayout()
         self.slider4 = QSlider(Qt.Horizontal)
+        self.slider4.setRange(1, 10)
         self.label4 = QLabel('d :')
         layout4_2.addWidget(self.label4)
         layout4_2.addWidget(self.slider4)
@@ -67,6 +71,7 @@ class CentralWidget(QWidget):
         layout5_2 = QHBoxLayout()
         layout5 = QVBoxLayout()
         self.slider5 = QSlider(Qt.Horizontal)
+        self.slider5.setRange(0.0001, 0.001)
         self.label5 = QLabel('r :')
         layout5_2.addWidget(self.label5)
         layout5_2.addWidget(self.slider5)
@@ -77,6 +82,7 @@ class CentralWidget(QWidget):
         layout6_2 = QHBoxLayout()
         layout6 = QVBoxLayout()
         self.slider6 = QSlider(Qt.Horizontal)
+        self.slider6.setRange(-4, 4)
         self.label6 = QLabel('s :')
         layout6_2.addWidget(self.label6)
         layout6_2.addWidget(self.slider6)
@@ -88,6 +94,7 @@ class CentralWidget(QWidget):
         layout7 = QVBoxLayout()
         self.slider7 = QSlider(Qt.Horizontal)
         self.label7 = QLabel('xr :')
+        self.slider7.setRange(-3, 3)
         layout7_2.addWidget(self.label7)
         layout7_2.addWidget(self.slider7)
         self.textbox7 = QLineEdit()
@@ -97,6 +104,7 @@ class CentralWidget(QWidget):
         layout8_2 = QHBoxLayout()
         layout8 = QVBoxLayout()
         self.slider8 = QSlider(Qt.Horizontal)
+        self.slider8.setRange(0, 15)
         self.label8 = QLabel('I :')
         layout8_2.addWidget(self.label8)
         layout8_2.addWidget(self.slider8)
@@ -139,6 +147,14 @@ class CentralWidget(QWidget):
         self.textbox6.textChanged.connect(self.text6_changed)
         self.textbox7.textChanged.connect(self.text7_changed)
         self.textbox8.textChanged.connect(self.text8_changed)
+        self.slider1.valueChanged.connect(self.slider1_changed)
+        self.slider2.valueChanged.connect(self.slider2_changed)
+        self.slider3.valueChanged.connect(self.slider3_changed)
+        self.slider4.valueChanged.connect(self.slider4_changed)
+        self.slider5.valueChanged.connect(self.slider5_changed)
+        self.slider6.valueChanged.connect(self.slider6_changed)
+        self.slider7.valueChanged.connect(self.slider7_changed)
+        self.slider8.valueChanged.connect(self.slider8_changed)
 
     # slot
     def text1_changed(self):
@@ -164,6 +180,30 @@ class CentralWidget(QWidget):
 
     def text8_changed(self):
         self.glaph.replot_i(float(self.textbox8.text()))
+
+    def slider1_changed(self):
+        self.textbox1.setText(str(self.slider1.value()))
+
+    def slider2_changed(self):
+        self.textbox2.setText(str(self.slider2.value()))
+
+    def slider3_changed(self):
+        self.textbox3.setText(str(self.slider3.value()))
+
+    def slider4_changed(self):
+        self.textbox4.setText(str(self.slider4.value()))
+
+    def slider5_changed(self):
+        self.textbox5.setText(str(self.slider5.value()))
+
+    def slider6_changed(self):
+        self.textbox6.setText(str(self.slider6.value()))
+
+    def slider7_changed(self):
+        self.textbox7.setText(str(self.slider7.value()))
+
+    def slider8_changed(self):
+        self.textbox8.setText(str(self.slider8.value()))
 
 
 class MainWindow(QMainWindow):
