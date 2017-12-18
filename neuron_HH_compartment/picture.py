@@ -19,8 +19,6 @@ class Picture():
                  path='C:/Users/Hattori/Documents/HR_results'):
 
         self.nowdir = path
-        if not os.path.isdir(self.nowdir + '/plots'):
-            os.mkdir(self.nowdir + '/plots')
         self.csvs = path + '/' + '*.csv'
         self.files = {}
         self.counter = 0
@@ -36,15 +34,20 @@ class Picture():
         self.gcounter = 0
 
         self.d = datetime.datetime.today()
-        self.dirtmp = (self.nowdir + '/tmp/' +
+        self.dirtmp1 =(self.nowdir + '/tmp')
+        self.dirtmp2 = (self.nowdir + '/tmp/' +
                        str(self.d.year) + '_' + str(self.d.month) +
                        '_' + str(self.d.day) + '_' +
                        str(self.d.hour) + '_' + str(self.d.minute) +
                        '_' + str(self.d.second))
-            
-        if not os.path.isdir(self.dirtmp):
-            os.mkdir(self.dirtmp)
-            
+
+        if not os.path.isdir(self.nowdir + '/plots'):
+            os.mkdir(self.nowdir + '/plots')
+        if not os.path.isdir(self.dirtmp1):
+            os.mkdir(self.dirtmp1)
+        if not os.path.isdir(self.dirtmp2):
+            os.mkdir(self.dirtmp2)
+
 
     def run(self):
 
@@ -54,34 +57,38 @@ class Picture():
             filename = os.path.basename(file_).replace('.csv', '')
 
             plt.title(filename)
-            linex, = plt.plot(matrix[:, 6], matrix[:, 8], lw=1)
-            # plt.plot(matrix[:, 6], matrix[:, 9], lw=1)
-            linez, = plt.plot(matrix[:, 6], matrix[:, 10], lw=1)
+            linev, = plt.plot(matrix[:, 6],  matrix[:, 2], lw=1)
             plt.savefig(filename=self.nowdir + '/plots/' + filename + '.jpg',
                         dpi=350)
-            linex.remove()
-            linez.remove()
+            linev.remove()
+            lineIsyn, = plt.plot(matrix[:, 6],  matrix[:, 1], lw=1)
+            plt.savefig(filename=self.nowdir + '/plots/' + filename + 'Isyn' + '.jpg',
+                        dpi=350)
 
-            linesyn, = plt.plot(matrix[:, 6], matrix[:, 2], lw=1)
+            lineIsyn.remove()
+
+            """
+            lineiext, = plt.plot(matrix[:, 6], matrix[:, 1], lw=1)
             plt.savefig(filename=self.nowdir + '/plots/' + filename +
-                        'syn.jpg', dpi=350)
-            linesyn.remove()
+                        'iext.jpg', dpi=350)
+            lineiext.remove()
+            """
 
             if self.gcounter == 0:
                 self.tmp0 = matrix[:, 6]
-                self.tmp1 = matrix[:, 8]
+                self.tmp1 = matrix[:, 2]
                 self.gcounter += 1
             elif self.gcounter == 1:
-                self.tmp2 = matrix[:, 8]
+                self.tmp2 = matrix[:, 2]
                 self.gcounter += 1
             elif self.gcounter == 2:
-                self.tmp3 = matrix[:, 8]
+                self.tmp3 = matrix[:, 2]
                 self.gcounter += 1
             elif self.gcounter == 3:
-                self.tmp4 = matrix[:, 8]
+                self.tmp4 = matrix[:, 2]
                 self.gcounter += 1
             elif self.gcounter == 4:
-                self.tmp5 = matrix[:, 8]
+                self.tmp5 = matrix[:, 2]
                 linetmp1, = plt.plot(self.tmp0, self.tmp1, lw=1)
                 linetmp2, = plt.plot(self.tmp0, self.tmp2, lw=1)
                 linetmp3, = plt.plot(self.tmp0, self.tmp3, lw=1)
@@ -100,4 +107,4 @@ class Picture():
             self.counter += 1
 
             # move csv file            
-            shutil.move(file_, self.dirtmp)
+            shutil.move(file_, self.dirtmp2)

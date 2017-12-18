@@ -108,7 +108,7 @@ class Neuron_HR():
         self.Iext_duty = Iext_duty
         while self.Iext_co < Iext_num:
             if self.Iext_duty == 0:
-                self.Iext[0, :] = Iext_amp
+                self.Iext[0, (500/self.dt):(1800/self.dt)] = Iext_amp
             else:
                 self.iext_tmp1 = 0 + int(self.Iext_co*Iext_width*(1+Iext_duty)/self.dt)
                 self.iext_tmp2 = int(Iext_width*Iext_duty / self.dt + self.iext_tmp1)

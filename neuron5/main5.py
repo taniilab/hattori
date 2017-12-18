@@ -208,7 +208,7 @@ class Main(QtGui.QWidget):
 
         #比率調整
         sizePolicy1 = self.groupBox.sizePolicy()
-        sizePolicy2 = self.groupBox.sizePolicy()
+        sizePolicy2 = self.groupBox2.sizePolicy()
         sizePolicy1.setHorizontalStretch(2)
         sizePolicy2.setHorizontalStretch(7)
         self.groupBox.setSizePolicy(sizePolicy1)

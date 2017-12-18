@@ -55,16 +55,12 @@ class Main():
 
         for i in range(0, self.nr.allsteps-1):
             if (self.nr.curstep * self.nr.dt) > 200:
-                self.nr.cnct[0, 1] = 1.0
-                self.nr.cnct[1, 0] = 1.0
-                self.nr.cnct[1, 2] = 1.0
-                self.nr.cnct[2, 1] = 1.0
-                self.nr.cnct[2, 3] = 1.0
-                self.nr.cnct[3, 2] = 1.0
-                self.nr.cnct[3, 4] = 1.0
-                self.nr.cnct[4, 3] = 1.0
+                
+                for j in range(19):
+                    self.nr.cnct[j, j+1] = 1.0
+                    self.nr.cnct[j+1, j] = 1.0
                 pass
-
+                
             self.nr.propagation()
             if self.progress_co % 1000 == 0:
                 logging.warning('process id : %d : %4d steps',
@@ -87,19 +83,19 @@ class Main():
             self.parm_counter += 1
         """
         # i * j * k * l = 6n!!
-        for i, j, k, l in itertools.product(range(12), range(6), range(1),
+        for i, j, k, l in itertools.product(range(6), range(1), range(1),
                                             range(1)):
             self.parm.append({})
-            self.parm[self.parm_counter] = {"numneu": 5,
+            self.parm[self.parm_counter] = {"numneu": 20,
                                             "b": 3.6,
                                             "Syncp": 5,
-                                            "Iext_amp": round(0.5*0.5*i, 1),
-                                            "Iofs": 2.1,
+                                            "Iext_amp": 2.6,
+                                            "Iofs": 0,
                                             "Iext_width": 10.0,
                                             "Iext_duty": 0,
                                             "Iext_num": 1000,
-                                            "gcmp": 0.5*j}
-            
+                                            "gcmp": 0.5+0.5*i}
+
             """
                                             "noise": 2,
                                             "alpha": round(0.1+0.2*i, 1),

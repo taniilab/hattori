@@ -21,7 +21,9 @@ from picture import Picture
 
 starttime = time.time()
 elapsed_time = 0
-save_path = "C:/Users/Hattori/Documents/HR_results/20171115alphafunction"
+# save_path = "C:/Users/Hattori/Documents/HR_results/20171115alphafunction"
+# save_path = "C:/Users/6969p/Documents/HR_results/20171115alphafunction"
+save_path = "F:/simulation/HH"
 
 # palameter setting
 """
@@ -52,24 +54,19 @@ class Main():
         self.nr.parm_dict = self.parm[process+self.multiproc_co]
 
         for i in range(0, self.nr.allsteps-1):
-            if (self.nr.curstep * self.nr.dt) > 1000:
-                #self.nr.cnct[0, 1] = 1.0
-                #self.nr.cnct[1, 0] = 1.0
-                #self.nr.cnct[1, 2] = 1.0
-                #self.nr.cnct[2, 1] = 1.0
-                #self.nr.cnct[2, 3] = 1.0
-                #self.nr.cnct[3, 2] = 1.0
-                #self.nr.cnct[3, 4] = 1.0
-                #self.nr.cnct[4, 3] = 1.0
+            if (self.nr.curstep * self.nr.dt) > 200:
+                
+                for j in range(self.nr.numneu):
+                    self.nr.cnct[j, j+1] = 1.0
+                    self.nr.cnct[j+1, j] = 1.0
                 pass
-
+                
             self.nr.propagation()
             if self.progress_co % 1000 == 0:
                 logging.warning('process id : %d : %4d steps',
                                 self.pid, self.progress_co)
-
-
             self.progress_co += 1
+
         return self.nr
 
     def form_parm(self):
@@ -86,16 +83,17 @@ class Main():
             self.parm_counter += 1
         """
         # i * j * k * l = 6n!!
-        for i, j, k, l in itertools.product(range(6), range(1), range(1),
+        for i, j, k, l in itertools.product(range(12), range(6), range(1),
                                             range(1)):
             self.parm.append({})
-            self.parm[self.parm_counter] = {"numneu": 5,
-                                            "b": 3.6,
-                                            "Syncp": 4,
-                                            "Iext": 2.0,
-                                            "gcmp": round(5+3*i, 1),
-                                            "Pmax": round(5*i),
-                                            "tausyn": 0.1}
+            self.parm[self.parm_counter] = {"numneu":20,
+                                            "Syncp": 5,
+                                            "Iext_amp": 20 + 10*j,
+                                            "Iext_width": 10,
+                                            "Iext_duty": 0,
+                                            "Iext_num": 1000,
+                                            "gcmp": 0.03*i}
+
             self.parm_counter += 1
         self.cycle_multiproc = int(self.parm_counter / 6)
 
@@ -134,14 +132,12 @@ def main():
             filename = (str(d.year) + '_' + str(d.month) + '_' +
                         str(d.day) + '_' + str(d.hour) + '_' +
                         str(d.minute) + '_' + str(d.second) + '_' +
-                        cb[k].parm_dict + '_' + 'N' + str(j) + '_' + "HR.csv")
+                        cb[k].parm_dict + '_' + 'N' + str(j) + '_' + "HH.csv")
 
-            df = pd.DataFrame({'t': cb[k].tmhist, 'Iext': cb[k].Iext[j, 1],
-                               'x': cb[k].x[j],
-                               'y': cb[k].y[j], 'z': cb[k].z[j],
-                               'Isyn': cb[k].Isyn[j], 'alpha': cb[k].alpha,
-                               'beta': cb[k].beta, 'D': cb[k].D,
-                               'tausyn': cb[k].tausyn, 'Pmax': cb[k].Pmax})
+            df = pd.DataFrame({'t': cb[k].tmhist, 'Iext': cb[k].Iext_amp,
+                               'V': cb[k].V[j],
+                               'm': cb[k].m[j], 'h': cb[k].h[j],
+                               'n': cb[k].n[j], 'Isyn': cb[k].Isyn[j]})
             df.to_csv(save_path + '/' + filename)
 
         pool.close()
