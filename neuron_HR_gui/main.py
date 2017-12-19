@@ -22,71 +22,110 @@ class CentralWidget(QWidget):
         layout_glaph = QVBoxLayout()
         layout_glaph.addWidget(self.glaph)
         layout_glaph.addWidget(navi)
-
+        
+        # HR model palm range
+        self.a_max = 3
+        self.a_min = -1
+        self.b_max = 5
+        self.b_min = 1
+        self.c_max = 3
+        self.c_min = 1
+        self.d_max = 10
+        self.d_min = 1
+        self.r_max = 0.1
+        self.r_min = 0.001
+        self.s_max = 5
+        self.s_min = 1
+        self.xr_max = 3
+        self.xr_min = -3
+        self.i_max = 10
+        self.i_min = -10
+        
+        self.slider_min = 1
+        self.slider_max = 100
+        
         # HR model palameter
         layout1_2 = QHBoxLayout()
         layout1 = QVBoxLayout()
         self.slider1 = QSlider(Qt.Horizontal)
-        self.slider1.setRange(1, 5)
+        self.slider1.setRange(self.slider_min, self.slider_max)
+        self.slider1.setValue(int(self.glaph.a - self.a_min) /
+                              (self.a_max - self.a_min)*self.slider_max)
         self.label1 = QLabel('a :')
         layout1_2.addWidget(self.label1)
         layout1_2.addWidget(self.slider1)
         self.textbox1 = QLineEdit()
+        self.textbox1.setText(str(self.glaph.a))
         layout1.addWidget(self.textbox1)
         layout1.addLayout(layout1_2)
 
         layout2_2 = QHBoxLayout()
         layout2 = QVBoxLayout()
         self.slider2 = QSlider(Qt.Horizontal)
-        self.slider2.setRange(1, 5)
+        self.slider2.setRange(self.slider_min, self.slider_max)
+        self.slider2.setValue(int(self.glaph.b - self.b_min) /
+                              (self.b_max - self.b_min)*self.slider_max)
         self.label2 = QLabel('b :')
         layout2_2.addWidget(self.label2)
         layout2_2.addWidget(self.slider2)
         self.textbox2 = QLineEdit()
+        self.textbox2.setText(str(self.glaph.b))
         layout2.addWidget(self.textbox2)
         layout2.addLayout(layout2_2)
 
         layout3_2 = QHBoxLayout()
         layout3 = QVBoxLayout()
         self.slider3 = QSlider(Qt.Horizontal)
-        self.slider3.setRange(1, 5)
+        self.slider3.setRange(self.slider_min, self.slider_max)
+        self.slider3.setValue(int(self.glaph.c - self.c_min) /
+                              (self.c_max - self.c_min)*self.slider_max)
         self.label3 = QLabel('c :')
         layout3_2.addWidget(self.label3)
         layout3_2.addWidget(self.slider3)
         self.textbox3 = QLineEdit()
+        self.textbox3.setText(str(self.glaph.c))
         layout3.addWidget(self.textbox3)
         layout3.addLayout(layout3_2)
 
         layout4_2 = QHBoxLayout()
         layout4 = QVBoxLayout()
         self.slider4 = QSlider(Qt.Horizontal)
-        self.slider4.setRange(1, 10)
+        self.slider4.setRange(self.slider_min, self.slider_max)
+        self.slider4.setValue(int(self.glaph.d - self.d_min) /
+                              (self.d_max - self.d_min)*self.slider_max)
         self.label4 = QLabel('d :')
         layout4_2.addWidget(self.label4)
         layout4_2.addWidget(self.slider4)
         self.textbox4 = QLineEdit()
+        self.textbox4.setText(str(self.glaph.d))
         layout4.addWidget(self.textbox4)
         layout4.addLayout(layout4_2)
 
         layout5_2 = QHBoxLayout()
         layout5 = QVBoxLayout()
         self.slider5 = QSlider(Qt.Horizontal)
-        self.slider5.setRange(0.0001, 0.001)
+        self.slider5.setRange(self.slider_min, self.slider_max)
+        self.slider5.setValue(int(self.glaph.r - self.r_min) /
+                              (self.r_max - self.r_min)*self.slider_max)
         self.label5 = QLabel('r :')
         layout5_2.addWidget(self.label5)
         layout5_2.addWidget(self.slider5)
         self.textbox5 = QLineEdit()
+        self.textbox5.setText(str(self.glaph.r))
         layout5.addWidget(self.textbox5)
         layout5.addLayout(layout5_2)
 
         layout6_2 = QHBoxLayout()
         layout6 = QVBoxLayout()
         self.slider6 = QSlider(Qt.Horizontal)
-        self.slider6.setRange(-4, 4)
+        self.slider6.setRange(self.slider_min, self.slider_max)
+        self.slider6.setValue(int(self.glaph.s - self.s_min) /
+                              (self.s_max - self.s_min)*self.slider_max)
         self.label6 = QLabel('s :')
         layout6_2.addWidget(self.label6)
         layout6_2.addWidget(self.slider6)
         self.textbox6 = QLineEdit()
+        self.textbox6.setText(str(self.glaph.s))
         layout6.addWidget(self.textbox6)
         layout6.addLayout(layout6_2)
 
@@ -94,21 +133,27 @@ class CentralWidget(QWidget):
         layout7 = QVBoxLayout()
         self.slider7 = QSlider(Qt.Horizontal)
         self.label7 = QLabel('xr :')
-        self.slider7.setRange(-3, 3)
+        self.slider7.setRange(self.slider_min, self.slider_max)
+        self.slider7.setValue(int(self.glaph.xr - self.xr_min) /
+                              (self.xr_max - self.xr_min)*self.slider_max)
         layout7_2.addWidget(self.label7)
         layout7_2.addWidget(self.slider7)
         self.textbox7 = QLineEdit()
+        self.textbox7.setText(str(self.glaph.xr))
         layout7.addWidget(self.textbox7)
         layout7.addLayout(layout7_2)
 
         layout8_2 = QHBoxLayout()
         layout8 = QVBoxLayout()
         self.slider8 = QSlider(Qt.Horizontal)
-        self.slider8.setRange(0, 15)
+        self.slider8.setRange(self.slider_min, self.slider_max)
+        self.slider8.setValue(int(self.glaph.i - self.i_min) /
+                              (self.i_max - self.i_min)*self.slider_max)
         self.label8 = QLabel('I :')
         layout8_2.addWidget(self.label8)
         layout8_2.addWidget(self.slider8)
         self.textbox8 = QLineEdit()
+        self.textbox8.setText(str(self.glaph.i))
         layout8.addWidget(self.textbox8)
         layout8.addLayout(layout8_2)
 
@@ -158,52 +203,92 @@ class CentralWidget(QWidget):
 
     # slot
     def text1_changed(self):
-        self.glaph.replot_a(float(self.textbox1.text()))
+        if self.textbox1.text() is "":
+            self.glaph.replot_a(float(self.glaph.tmp_a))
+        else:
+            self.glaph.replot_a(float(self.textbox1.text()))
 
     def text2_changed(self):
-        self.glaph.replot_b(float(self.textbox2.text()))
+        if self.textbox2.text() is "":
+            self.glaph.replot_b(float(self.glaph.tmp_b))
+        else:
+            self.glaph.replot_b(float(self.textbox2.text()))
 
     def text3_changed(self):
-        self.glaph.replot_c(float(self.textbox3.text()))
+        if self.textbox3.text() is "":
+            self.glaph.replot_c(float(self.glaph.tmp_c))
+        else:
+            self.glaph.replot_c(float(self.textbox3.text()))
 
     def text4_changed(self):
-        self.glaph.replot_d(float(self.textbox4.text()))
+        if self.textbox4.text() is "":
+            self.glaph.replot_d(float(self.glaph.tmp_d))
+        else:
+            self.glaph.replot_d(float(self.textbox4.text()))
 
     def text5_changed(self):
-        self.glaph.replot_r(float(self.textbox5.text()))
+        if self.textbox5.text() is "":
+            self.glaph.replot_r(float(self.glaph.tmp_r))
+        else:
+            self.glaph.replot_r(float(self.textbox5.text()))
 
     def text6_changed(self):
-        self.glaph.replot_s(float(self.textbox6.text()))
+        if self.textbox6.text() is "":
+            self.glaph.replot_s(float(self.glaph.tmp_s))
+        else:
+            self.glaph.replot_s(float(self.textbox6.text()))
 
     def text7_changed(self):
-        self.glaph.replot_xr(float(self.textbox7.text()))
+        if self.textbox7.text() is "":
+            self.glaph.replot_xr(float(self.glaph.tmp_xr))
+        else:
+            self.glaph.replot_xr(float(self.textbox7.text()))
 
     def text8_changed(self):
-        self.glaph.replot_i(float(self.textbox8.text()))
+        if self.textbox8.text() is "":
+            self.glaph.replot_i(float(self.glaph.tmp_i))
+        else:
+            self.glaph.replot_i(float(self.textbox8.text()))
 
     def slider1_changed(self):
-        self.textbox1.setText(str(self.slider1.value()))
+        self.s1palm = round((self.slider1.value()/self.slider_max) *
+                             (self.a_max-self.a_min)+self.a_min, 3)
+        self.textbox1.setText(str(self.s1palm))
 
     def slider2_changed(self):
-        self.textbox2.setText(str(self.slider2.value()))
+        self.s2palm = str((self.slider2.value()/self.slider_max) *
+                          (self.b_max-self.b_min)+self.b_min)
+        self.textbox2.setText(self.s2palm)
 
     def slider3_changed(self):
-        self.textbox3.setText(str(self.slider3.value()))
+        self.s3palm = str((self.slider3.value()/self.slider_max) *
+                          (self.c_max-self.c_min)+self.c_min)
+        self.textbox3.setText(self.s3palm)
 
     def slider4_changed(self):
-        self.textbox4.setText(str(self.slider4.value()))
+        self.s4palm = str((self.slider4.value()/self.slider_max) *
+                          (self.d_max-self.d_min)+self.d_min)
+        self.textbox4.setText(self.s4palm)
 
     def slider5_changed(self):
-        self.textbox5.setText(str(self.slider5.value()))
+        self.s5palm = str((self.slider5.value()/self.slider_max) *
+                          (self.r_max-self.r_min)+self.r_min)
+        self.textbox5.setText(self.s5palm)
 
     def slider6_changed(self):
-        self.textbox6.setText(str(self.slider6.value()))
+        self.s6palm = str((self.slider6.value()/self.slider_max) *
+                          (self.s_max-self.s_min)+self.s_min)
+        self.textbox6.setText(self.s6palm)
 
     def slider7_changed(self):
-        self.textbox7.setText(str(self.slider7.value()))
+        self.s7palm = str((self.slider7.value()/self.slider_max) *
+                          (self.xr_max-self.xr_min)+self.xr_min)
+        self.textbox7.setText(self.s7palm)
 
     def slider8_changed(self):
-        self.textbox8.setText(str(self.slider8.value()))
+        self.s8palm = str((self.slider8.value()/self.slider_max) *
+                          (self.i_max-self.i_min)+self.i_min)
+        self.textbox8.setText(self.s8palm)
 
 
 class MainWindow(QMainWindow):
@@ -321,7 +406,7 @@ class PlotCanvas(FigureCanvas):
             self.y[i+1] = self.y[i] + self.dt * self.dy
             self.z[i+1] = self.z[i] + self.dt * self.dz
 
-        self.line, = self.ax.plot(self.t, self.x)
+        self.line, = self.ax.plot(self.t, self.x, "b")
         self.draw()
 
 if __name__ == '__main__':

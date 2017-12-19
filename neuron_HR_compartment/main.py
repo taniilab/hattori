@@ -83,18 +83,20 @@ class Main():
             self.parm_counter += 1
         """
         # i * j * k * l = 6n!!
-        for i, j, k, l in itertools.product(range(6), range(1), range(1),
+        for i, j, k, l in itertools.product(range(6), range(6), range(1),
                                             range(1)):
             self.parm.append({})
             self.parm[self.parm_counter] = {"numneu": 20,
                                             "b": 3.6,
                                             "Syncp": 5,
-                                            "Iext_amp": 2.6,
+                                            "Iext_amp": round(0.5+0.5*j, 2),
                                             "Iofs": 0,
                                             "Iext_width": 10.0,
                                             "Iext_duty": 0,
                                             "Iext_num": 1000,
-                                            "gcmp": 0.5+0.5*i}
+                                            "gcmp": 0.5,
+                                            "xr": round(-1.5 + 0.1*i, 2)
+                                            }
 
             """
                                             "noise": 2,
