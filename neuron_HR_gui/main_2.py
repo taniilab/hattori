@@ -360,8 +360,8 @@ class MainWindow(QMainWindow):
         self.left = 100
         self.top = 100
         self.title = 'Hindmarsh-Rose model - simulater'
-        self.width = 2048
-        self.height = 1900
+        self.width = 1280
+        self.height = 1024
         self.initUI()
 
     def initUI(self):
@@ -500,7 +500,10 @@ class PlotCanvas(FigureCanvas):
         self.gcmp = gcmp
         self.n = 0
         self.delay
-        
+        self.iext = np.zeros(self.steps)
+        for j in range(int(500/self.dt), int(2000/self.dt)):
+            self.iext[j] = i-(j/40000)
+                  
         for i in range(0, self.steps-1):
             """
             if self.x[i] > self.delay:
@@ -511,7 +514,8 @@ class PlotCanvas(FigureCanvas):
                 self.k1x = (self.y[i] - self.a * self.x[i]**3 + self.b * self.x[i]**2 - 
                             self.z[i] + self.i + self.n)
             """
-            self.k1x = (self.y[i] - self.a * self.x[i]**3 + self.b * self.x[i]**2 - self.z[i] + self.i + self.n)
+            self.k1x = (self.y[i] - self.a * self.x[i]**3 + self.b * self.x[i]**2 - self.z[i] + self.iext[i] + self.n)
+
             self.k1y = (self.c - self.d * self.x[i]**2 - self.y[i])
             self.k1z = (self.r * (self.s * (self.x[i] - self.xr) - self.z[i]))
             self.x[i+1] = self.x[i] + self.k1x * self.dt
