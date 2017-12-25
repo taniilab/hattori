@@ -7,6 +7,7 @@ Created on Wed May 24 11:37:33 2017
 import numpy as np
 
 
+
 class Neuron_HR():
     # constructor
     # 0.02

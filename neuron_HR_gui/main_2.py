@@ -353,6 +353,7 @@ class CentralWidget(QWidget):
         self.textbox10.setText(self.s10palm)
 
 
+
 class MainWindow(QMainWindow):
 
     def __init__(self):
