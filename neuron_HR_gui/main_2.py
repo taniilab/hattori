@@ -503,7 +503,7 @@ class PlotCanvas(FigureCanvas):
         self.delay
         self.iext = np.zeros(self.steps)
         for j in range(int(500/self.dt), int(2000/self.dt)):
-            self.iext[j] = i-(j/40000)
+            self.iext[j] = i
                   
         for i in range(0, self.steps-1):
             """
