@@ -10,21 +10,21 @@ import numpy as np
 class Neuron_HR():
     # constructor
     # 0.02
-    def __init__(self, Syncp=1, numneu=1, dt=0.03, simtime=2000, a=1, b=3.15,
+    def __init__(self, Syncp=1, numneu=1, dt=0.03, simtime=20000, a=1, b=3.15,
                  c=1, d=5, r=0.004, s=4, xr=-1.6, esyn=0, Pmax=3, tausyn=10,
                  xth=0.25, theta=-0.25, Iofs=0, Iext_amp=0, Iext_width=0, Iext_duty=0,
                  Iext_num=0, noise=0, ramda=-10, alpha=0.5,
                  beta=0, D=1,
-                 tau_r=50, tau_i=50, use=1, ase=1, gcmp=2, delay=0):
+                 tau_r=50, tau_i=50, use=1, ase=1, gcmp=2, delay=0, syn_delay=0):
         self.set_neuron_palm(Syncp, numneu, dt, simtime, a, b, c, d, r, s, xr,
                              esyn, Pmax, tausyn, xth, theta, Iext_amp,
                              Iofs, Iext_width, Iext_duty, Iext_num, noise,
-                             ramda, alpha, beta, D, tau_r, tau_i, use, ase, gcmp, delay)
+                             ramda, alpha, beta, D, tau_r, tau_i, use, ase, gcmp, delay, syn_delay)
 
     def set_neuron_palm(self, Syncp, numneu, dt, simtime, a, b, c, d, r, s, xr,
                         esyn, Pmax, tausyn, xth, theta, Iext_amp, Iofs, 
                         Iext_width, Iext_duty, Iext_num,  noise, ramda,
-                        alpha, beta, D, tau_r, tau_i, use, ase, gcmp, delay):
+                        alpha, beta, D, tau_r, tau_i, use, ase, gcmp, delay, syn_delay):
         # parameters (used by main.py)
         self.parm_dict = {}
 
@@ -139,6 +139,7 @@ class Neuron_HR():
 
         # chemical synapse and alpha function
         self.Pmax = Pmax
+        self.syn_delay = syn_delay
 
         self.fire_tmp = np.zeros(self.numneu)
 
@@ -197,14 +198,14 @@ class Neuron_HR():
             for j in range(0, self.numneu):
                 self.gsyn[i, j] =\
                     (self.alpha_function(self.curstep*self.dt -
-                                         self.t_ap[j, i, 0]) +
+                                         self.t_ap[j, i, 0] - self.syn_delay) +
                      self.alpha_function(self.curstep*self.dt -
-                                         self.t_ap[j, i, 1]))
+                                         self.t_ap[j, i, 1] - self.syn_delay))
 
         # compartment
         elif self.Syncp == 5:
-            for j in range(0, self.numneu):
-                """
+    
+            
                 if self.x[j, self.curstep] > -0.5:
                      self.gsyn[i, j] = self.gcmp * self.Pmax
                 else:
@@ -234,7 +235,7 @@ class Neuron_HR():
                 """
             else:
                 self.Isyni[i] +=\
-                          (self.cnct[i, j] * self.gsyn[i, j] *
+                          (self.gsyn[i, j] *
                            (self.esyn[i, j] - self.xi[i]))
 
     # one step processing

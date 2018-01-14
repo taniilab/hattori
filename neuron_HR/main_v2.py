@@ -73,13 +73,18 @@ class Main():
             self.parm_counter += 1
 
         """
-        for i, j, k, l in itertools.product(range(1), range(6), range(1),
+        for i, j, k, l in itertools.product(range(4), range(12), range(1),
                                             range(1)):
             self.parm.append({})
             self.parm[self.parm_counter] = {"numneu": 1,
-                                            "b": 3.6,
-                                            "Syncp": 1,
-                                            "Iext": round(1+0.2*j, 1)}
+                                            "b": 3.3,
+                                            "r":0.01,
+                                            "xr":-3,
+                                            "Syncp": 4,
+                                            "syn_delay": 10,
+                                            "noise":2,
+                                            "alpha": round(0.3+i*0.1, 1),
+                                            "D": round(1+2*j, 1)}
             self.parm_counter += 1
         
 

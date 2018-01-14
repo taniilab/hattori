@@ -15,14 +15,14 @@ class Neuron_HR():
     def __init__(self, Syncp=1, numneu=1, dt=0.05, simtime=1000, a=1, b=3, c=1,
                  d=5, r=0.004, s=4, xr=-1.56, esyn=0, Pmax=3, tausyn=10,
                  xth=1.0, theta=-0.25, Iext=0, noise=0, ramda=-10, alpha=0.5,
-                 beta=0, D=1):
+                 beta=0, D=1, syn_delay=0):
         self.set_neuron_palm(Syncp, numneu, dt, simtime, a, b, c, d, r, s, xr,
                              esyn, Pmax, tausyn, xth, theta, Iext, noise,
-                             ramda, alpha, beta, D)
+                             ramda, alpha, beta, D, syn_delay)
 
     def set_neuron_palm(self, Syncp, numneu, dt, simtime, a, b, c, d, r, s, xr,
                         esyn, Pmax, tausyn, xth, theta, Iext, noise, ramda,
-                        alpha, beta, D):
+                        alpha, beta, D, syn_delay):
         # parameters (used by main.py)
         self.parm_dict = {}
 
@@ -95,6 +95,7 @@ class Neuron_HR():
         self.g = np.random.randn(self.numneu, len(self.tmhist))
         # muximum synaptic conductance
         self.Pmax = Pmax
+        self.syn_delay = syn_delay
 
     def alpha_function(self, t):
         if t <= 0:
@@ -132,7 +133,7 @@ class Neuron_HR():
         elif self.Syncp == 4:
             for j in range(0, self.numneu):
                 self.gsyn[i, j] =\
-                    self.alpha_function(self.curstep*self.dt - self.aptm[j, i])
+                    self.alpha_function(self.curstep*self.dt - self.aptm[j, i] - self.syn_delay)
                     
         for j in range(0, self.numneu):
             self.Isyni[i] +=\

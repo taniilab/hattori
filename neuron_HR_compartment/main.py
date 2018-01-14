@@ -23,7 +23,7 @@ starttime = time.time()
 elapsed_time = 0
 # save_path = "C:/Users/Hattori/Documents/HR_results/20171115alphafunction"
 # save_path = "C:/Users/6969p/Documents/HR_results/20171115alphafunction"
-save_path = "F:/simulation"
+save_path = "C:/Users/6969p/Downloads/HRtest"
 
 # palameter setting
 """
@@ -53,14 +53,17 @@ class Main():
         self.nr = Neuron(**self.parm[process+self.multiproc_co])
         self.nr.parm_dict = self.parm[process+self.multiproc_co]
 
+        
         for i in range(0, self.nr.allsteps-1):
+            """
             if (self.nr.curstep * self.nr.dt) > 200:
                 
                 for j in range(19):
                     self.nr.cnct[j, j+1] = 1.0
                     self.nr.cnct[j+1, j] = 1.0
                 pass
-                
+            """   
+        
             self.nr.propagation()
             if self.progress_co % 1000 == 0:
                 logging.warning('process id : %d : %4d steps',
@@ -83,20 +86,19 @@ class Main():
             self.parm_counter += 1
         """
         # i * j * k * l = 6n!!
-        for i, j, k, l in itertools.product(range(6), range(6), range(1),
+        for i, j, k, l in itertools.product(range(8), range(12), range(1),
                                             range(1)):
             self.parm.append({})
-            self.parm[self.parm_counter] = {"numneu": 20,
-                                            "b": 3.6,
-                                            "Syncp": 5,
-                                            "Iext_amp": round(0.5+0.5*j, 2),
-                                            "Iofs": 0,
-                                            "Iext_width": 10.0,
-                                            "Iext_duty": 0,
-                                            "Iext_num": 1000,
-                                            "gcmp": 0.5,
-                                            "xr": round(-1.5 + 0.1*i, 2)
-                                            }
+            self.parm[self.parm_counter] = {"numneu": 1,
+                                            "b": 3.3,
+                                            "r":0.01,
+                                            "xr":-3,
+                                            "Syncp": 4,
+                                            "syn_delay": 10,
+                                            "noise":2,
+                                            "alpha": 0.5,
+                                            "D": round(1+2*j, 1),
+                                            "Pmax": round(1+i, 1)}
 
             """
                                             "noise": 2,

@@ -38,7 +38,7 @@ class CentralWidget(QWidget):
         self.s_max = 5
         self.s_min = 1
         self.xr_max = 3
-        self.xr_min = -6
+        self.xr_min = -3
         self.i_max = 10
         self.i_min = -10
         self.gcmp_max = 20
@@ -244,8 +244,7 @@ class CentralWidget(QWidget):
     # slot
     def text1_changed(self):
         if self.textbox1.text() is "":
-            #self.glaph.replot_a(float(self.glaph.tmp_a))
-            pass
+            self.glaph.replot_a(float(self.glaph.tmp_a))
         else:
             self.glaph.replot_a(float(self.textbox1.text()))
 
@@ -388,14 +387,15 @@ class PlotCanvas(FigureCanvas):
         self.plot_init()
 
     def plot_init(self):
-        self.dt = 0.01
-        self.t = np.arange(0, 3000, self.dt)
+        self.dt = 0.05
+        self.t = np.arange(0, 10000, self.dt)
         self.steps = len(self.t)
         self.x = -1.6 * np.ones(self.steps)
         self.y = 0 * np.ones(self.steps)
         self.z = 0 * np.ones(self.steps)
         self.m = 0 * np.ones(self.steps)
         self.h = 0 * np.ones(self.steps)
+        self.ica = 0 * np.ones(self.steps)
 
         self.a = 1
         self.b = 3.3
@@ -403,14 +403,15 @@ class PlotCanvas(FigureCanvas):
         self.d = 5
         self.r = 0.01
         self.s = 4
-        self.i = 5.6
-        self.xr = -3
+        self.i = 0
+        self.xr = -2.5
         self.gcmp = 0
         self.delay = 0
 
-        self.ax = self.figure.add_subplot(111)
+        self.ax = self.figure.add_subplot(211)
         self.ax.set_title('N0')
         plt.title('Hindmarsh-Rose model')
+        self.ax2 = self.figure.add_subplot(212)
 
         self.tmp_a = self.a
         self.tmp_b = self.b
@@ -428,67 +429,76 @@ class PlotCanvas(FigureCanvas):
 
     def replot_a(self, a):
         self.line.remove()
+        self.line2.remove()
         self.tmp_a = a
         self.plot(self.tmp_a, self.b, self.c, self.d, self.r, self.s, self.xr,
                   self.i, self.gcmp, self.delay)
 
     def replot_b(self, b):
         self.line.remove()
+        self.line2.remove()
         self.tmp_b = b
         self.plot(self.a, self.tmp_b, self.c, self.d, self.r, self.s, self.xr,
                   self.i, self.gcmp, self.delay)
 
     def replot_c(self, c):
         self.line.remove()
+        self.line2.remove()
         self.tmp_c = c
         self.plot(self.a, self.b, self.tmp_c, self.d, self.r, self.s, self.xr,
                   self.i, self.gcmp, self.delay)
 
     def replot_d(self, d):
         self.line.remove()
-
+        self.line2.remove()
         self.tmp_d = d
         self.plot(self.a, self.b, self.c, self.tmp_d, self.r, self.s, self.xr,
                   self.i, self.gcmp, self.delay)
 
     def replot_r(self, r):
         self.line.remove()
-
+        self.line2.remove()
+        
         self.tmp_r = r
         self.plot(self.a, self.b, self.c, self.d, self.tmp_r, self.s, self.xr,
                   self.i, self.gcmp, self.delay)
 
     def replot_s(self, s):
         self.line.remove()
-
+        self.line2.remove()
+        
         self.tmp_s = s
         self.plot(self.a, self.b, self.c, self.d, self.r, self.tmp_s, self.xr,
                   self.i, self.gcmp, self.delay)
 
     def replot_xr(self, xr):
         self.line.remove()
-
+        self.line2.remove()
+        
         self.tmp_xr = xr
         self.plot(self.a, self.b, self.c, self.d, self.r, self.s, self.tmp_xr,
                   self.i, self.gcmp, self.delay)
 
     def replot_i(self, i):
         self.line.remove()
-
+        self.line2.remove()
+        
         self.tmp_i = i
         self.plot(self.a, self.b, self.c, self.d, self.r, self.s, self.xr,
                   self.tmp_i, self.gcmp, self.delay)
 
     def replot_gcmp(self, gcmp):
         self.line.remove()
-
+        self.line2.remove()
+        
         self.tmp_gcmp = gcmp
         self.plot(self.a, self.b, self.c, self.d, self.r, self.s, self.xr,
                   self.i, self.tmp_gcmp, self.delay)
 
     def replot_delay(self, delay):
         self.line.remove()
-
+        self.line2.remove()
+        
         self.tmp_delay = delay
         self.plot(self.a, self.b, self.c, self.d, self.r, self.s, self.xr,
                   self.i, self.gcmp, self.tmp_delay)
@@ -503,8 +513,8 @@ class PlotCanvas(FigureCanvas):
         self.xr = xr
         self.i = i
         self.gcmp = gcmp
+        self.delay = delay
         self.n = 0
-        self.delay
         self.iext = np.zeros(self.steps)
         for j in range(int(500/self.dt), int(2000/self.dt)):
             self.iext[j] = i
@@ -519,19 +529,36 @@ class PlotCanvas(FigureCanvas):
                 self.k1x = (self.y[i] - self.a * self.x[i]**3 + self.b * self.x[i]**2 - 
                             self.z[i] + self.i + self.n)
             """
+            self.ica[i] = (self.m[i]**2)*self.h[i]
             self.k1x = (self.y[i] - self.a * self.x[i]**3 + self.b * self.x[i]**2 -
-                        self.z[i] + self.iext[i] + self.n)
+                        self.z[i] + self.iext[i] + self.gcmp * self.ica[i] +
+                        self.n)
 
             self.k1y = (self.c - self.d * self.x[i]**2 - self.y[i])
             self.k1z = (self.r * (self.s * (self.x[i] - self.xr) - self.z[i]))
-
+            
+            self.m_inf = 1/(1 + np.exp(-(self.x[i]+1.5)/0.25))
+            self.h_inf = 1/(1 + np.exp(-(self.x[i]+2.3)/0.17))
+            self.t_m = 0.612 + (1/(np.exp(-(self.x[i]+4)/0.5)+np.exp((self.x[i]+0.42)/0.5)))*20
+            if self.x[i] > -2.1:
+                self.t_h = 28 + (np.exp(-(self.x[i]+0.6)/0.26))*20
+            else:
+                self.t_h = (np.exp((self.x[i]+15)/2.2))*20
+                
+            self.dm = -1*(self.m[i] -self.m_inf)/self.t_m
+            self.dh = -1*(self.h[i] -self.h_inf)/self.t_h
+            self.dn = -0.5*self.n +np.random.randn() *self.delay
         
             self.x[i+1] = self.x[i] + self.k1x * self.dt
             self.y[i+1] = self.y[i] + self.k1y * self.dt
             self.z[i+1] = self.z[i] + self.k1z * self.dt
-
-                
+            self.m[i+1] = self.m[i] + self.dm * self.dt
+            self.h[i+1] = self.h[i] + self.dh * self.dt
+            self.n += (self.dn * self.dt)
+            
         self.line, = self.ax.plot(self.t, self.x)
+        self.line2, = self.ax2.plot(self.t, self.ica)
+
         self.draw()
 
 if __name__ == '__main__':

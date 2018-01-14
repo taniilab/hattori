@@ -45,6 +45,20 @@ class CentralWidget(QWidget):
         self.gcmp_min = 0
         self.delay_max = 150
         self.delay_min = 0
+        
+        self.theta_min = 0
+        self.theta_max = 1
+        self.mu_min = -2
+        self.mu_max = 2
+        self.D_min = 0
+        self.D_max = 20
+        
+        self.syn_tau_min = 0
+        self.syn_tau_max = 100
+        self.Pmax_min = 0
+        self.Pmax_max = 100
+        self.syn_delay_min = 0
+        self.syn_delay_max = 1000
 
         self.slider_min = 1
         self.slider_max = 100
@@ -189,6 +203,90 @@ class CentralWidget(QWidget):
         self.textbox10.setText(str(self.glaph.delay))
         layout10.addWidget(self.textbox10)
         layout10.addLayout(layout10_2)
+        
+        layout11_2 = QHBoxLayout()
+        layout11 = QVBoxLayout()
+        self.slider11 = QSlider(Qt.Horizontal)
+        self.slider11.setRange(self.slider_min, self.slider_max)
+        self.slider11.setValue(int(self.glaph.theta - self.theta_min) /
+                              (self.theta_max - self.theta_min)*self.slider_max)
+        self.label11 = QLabel('theta :')
+        layout11_2.addWidget(self.label11)
+        layout11_2.addWidget(self.slider11)
+        self.textbox11 = QLineEdit()
+        self.textbox11.setText(str(self.glaph.theta))
+        layout11.addWidget(self.textbox11)
+        layout11.addLayout(layout11_2)
+        
+        layout12_2 = QHBoxLayout()
+        layout12 = QVBoxLayout()
+        self.slider12 = QSlider(Qt.Horizontal)
+        self.slider12.setRange(self.slider_min, self.slider_max)
+        self.slider12.setValue(int(self.glaph.mu - self.mu_min) /
+                              (self.mu_max - self.mu_min)*self.slider_max)
+        self.label12 = QLabel('mu :')
+        layout12_2.addWidget(self.label12)
+        layout12_2.addWidget(self.slider12)
+        self.textbox12 = QLineEdit()
+        self.textbox12.setText(str(self.glaph.mu))
+        layout12.addWidget(self.textbox12)
+        layout12.addLayout(layout12_2)
+        
+        layout13_2 = QHBoxLayout()
+        layout13 = QVBoxLayout()
+        self.slider13 = QSlider(Qt.Horizontal)
+        self.slider13.setRange(self.slider_min, self.slider_max)
+        self.slider13.setValue(int(self.glaph.D - self.D_min) /
+                              (self.D_max - self.D_min)*self.slider_max)
+        self.label13 = QLabel('D :')
+        layout13_2.addWidget(self.label13)
+        layout13_2.addWidget(self.slider13)
+        self.textbox13 = QLineEdit()
+        self.textbox13.setText(str(self.glaph.D))
+        layout13.addWidget(self.textbox13)
+        layout13.addLayout(layout13_2)
+        
+        layout14_2 = QHBoxLayout()
+        layout14 = QVBoxLayout()
+        self.slider14 = QSlider(Qt.Horizontal)
+        self.slider14.setRange(self.slider_min, self.slider_max)
+        self.slider14.setValue(int(self.glaph.syn_tau - self.syn_tau_min) /
+                              (self.syn_tau_max - self.syn_tau_min)*self.slider_max)
+        self.label14 = QLabel('syn_tau :')
+        layout14_2.addWidget(self.label14)
+        layout14_2.addWidget(self.slider14)
+        self.textbox14 = QLineEdit()
+        self.textbox14.setText(str(self.glaph.syn_tau))
+        layout14.addWidget(self.textbox14)
+        layout14.addLayout(layout14_2)
+
+        layout15_2 = QHBoxLayout()
+        layout15 = QVBoxLayout()
+        self.slider15 = QSlider(Qt.Horizontal)
+        self.slider15.setRange(self.slider_min, self.slider_max)
+        self.slider15.setValue(int(self.glaph.Pmax - self.Pmax_min) /
+                              (self.Pmax_max - self.Pmax_min)*self.slider_max)
+        self.label15 = QLabel('Pmax :')
+        layout15_2.addWidget(self.label15)
+        layout15_2.addWidget(self.slider15)
+        self.textbox15 = QLineEdit()
+        self.textbox15.setText(str(self.glaph.Pmax))
+        layout15.addWidget(self.textbox15)
+        layout15.addLayout(layout15_2)
+
+        layout16_2 = QHBoxLayout()
+        layout16 = QVBoxLayout()
+        self.slider16 = QSlider(Qt.Horizontal)
+        self.slider16.setRange(self.slider_min, self.slider_max)
+        self.slider16.setValue(int(self.glaph.Pmax - self.syn_delay_min) /
+                              (self.syn_delay_max - self.syn_delay_min)*self.slider_max)
+        self.label16 = QLabel('syn_delay :')
+        layout16_2.addWidget(self.label16)
+        layout16_2.addWidget(self.slider16)
+        self.textbox16 = QLineEdit()
+        self.textbox16.setText(str(self.glaph.syn_delay))
+        layout16.addWidget(self.textbox16)
+        layout16.addLayout(layout16_2)
 
         layout_palm = QVBoxLayout()
         layout_palm.addLayout(layout1)
@@ -201,7 +299,13 @@ class CentralWidget(QWidget):
         layout_palm.addLayout(layout8)
         layout_palm.addLayout(layout9)
         layout_palm.addLayout(layout10)
-
+        layout_palm.addLayout(layout11)
+        layout_palm.addLayout(layout12)
+        layout_palm.addLayout(layout13)
+        layout_palm.addLayout(layout14)
+        layout_palm.addLayout(layout15)
+        layout_palm.addLayout(layout16)
+        
         groupBox1 = QGroupBox("palm")
         groupBox2 = QGroupBox("glaph")
         sizePolicy1 = groupBox1.sizePolicy()
@@ -229,6 +333,12 @@ class CentralWidget(QWidget):
         self.textbox8.textChanged.connect(self.text8_changed)
         self.textbox9.textChanged.connect(self.text9_changed)
         self.textbox10.textChanged.connect(self.text10_changed)
+        self.textbox11.textChanged.connect(self.text11_changed)
+        self.textbox12.textChanged.connect(self.text12_changed)
+        self.textbox13.textChanged.connect(self.text13_changed)
+        self.textbox14.textChanged.connect(self.text14_changed)
+        self.textbox15.textChanged.connect(self.text15_changed)
+        self.textbox16.textChanged.connect(self.text16_changed)
         self.slider1.valueChanged.connect(self.slider1_changed)
         self.slider2.valueChanged.connect(self.slider2_changed)
         self.slider3.valueChanged.connect(self.slider3_changed)
@@ -239,69 +349,111 @@ class CentralWidget(QWidget):
         self.slider8.valueChanged.connect(self.slider8_changed)
         self.slider9.valueChanged.connect(self.slider9_changed)
         self.slider10.valueChanged.connect(self.slider10_changed)
+        self.slider11.valueChanged.connect(self.slider11_changed)
+        self.slider12.valueChanged.connect(self.slider12_changed)
+        self.slider13.valueChanged.connect(self.slider13_changed)
+        self.slider14.valueChanged.connect(self.slider14_changed)
+        self.slider15.valueChanged.connect(self.slider15_changed)
+        self.slider16.valueChanged.connect(self.slider16_changed)
 
 
     # slot
     def text1_changed(self):
         if self.textbox1.text() is "":
-            #self.glaph.replot_a(float(self.glaph.tmp_a))
             pass
         else:
             self.glaph.replot_a(float(self.textbox1.text()))
 
     def text2_changed(self):
         if self.textbox2.text() is "":
-            self.glaph.replot_b(float(self.glaph.tmp_b))
+            pass
         else:
             self.glaph.replot_b(float(self.textbox2.text()))
 
     def text3_changed(self):
         if self.textbox3.text() is "":
-            self.glaph.replot_c(float(self.glaph.tmp_c))
+            pass
         else:
             self.glaph.replot_c(float(self.textbox3.text()))
 
     def text4_changed(self):
         if self.textbox4.text() is "":
-            self.glaph.replot_d(float(self.glaph.tmp_d))
+            pass
         else:
             self.glaph.replot_d(float(self.textbox4.text()))
 
     def text5_changed(self):
         if self.textbox5.text() is "":
-            self.glaph.replot_r(float(self.glaph.tmp_r))
+            pass
         else:
             self.glaph.replot_r(float(self.textbox5.text()))
 
     def text6_changed(self):
         if self.textbox6.text() is "":
-            self.glaph.replot_s(float(self.glaph.tmp_s))
+            pass
         else:
             self.glaph.replot_s(float(self.textbox6.text()))
 
     def text7_changed(self):
         if self.textbox7.text() is "":
-            self.glaph.replot_xr(float(self.glaph.tmp_xr))
+            pass
         else:
             self.glaph.replot_xr(float(self.textbox7.text()))
 
     def text8_changed(self):
         if self.textbox8.text() is "":
-            self.glaph.replot_i(float(self.glaph.tmp_i))
+            pass
         else:
             self.glaph.replot_i(float(self.textbox8.text()))
 
     def text9_changed(self):
         if self.textbox9.text() is "":
-            self.glaph.replot_gcmp(float(self.glaph.tmp_gcmp))
+            pass
         else:
             self.glaph.replot_gcmp(float(self.textbox9.text()))
 
     def text10_changed(self):
         if self.textbox10.text() is "":
-            self.glaph.replot_delay(float(self.glaph.tmp_delay))
+            pass
         else:
             self.glaph.replot_delay(float(self.textbox10.text()))
+
+    def text11_changed(self):
+        if self.textbox11.text() is "":
+            pass
+        else:
+            self.glaph.replot_theta(float(self.textbox11.text()))
+
+    def text12_changed(self):
+        if self.textbox12.text() is "":
+            pass
+        else:
+            self.glaph.replot_mu(float(self.textbox12.text()))
+
+    def text13_changed(self):
+        if self.textbox13.text() is "":
+            pass
+        else:
+            self.glaph.replot_D(float(self.textbox13.text()))
+
+    def text14_changed(self):
+        if self.textbox14.text() is "":
+            pass
+        else:
+            self.glaph.replot_syn_tau(float(self.textbox14.text()))
+
+    def text15_changed(self):
+        if self.textbox15.text() is "":
+            pass
+        else:
+            self.glaph.replot_Pmax(float(self.textbox15.text()))
+
+    def text16_changed(self):
+        if self.textbox16.text() is "":
+            pass
+        else:
+            self.glaph.replot_syn_delay(float(self.textbox16.text()))
+
 
     def slider1_changed(self):
         self.s1palm = round((self.slider1.value()/self.slider_max) *
@@ -353,6 +505,35 @@ class CentralWidget(QWidget):
                            (self.delay_max-self.delay_min)+self.delay_min)
         self.textbox10.setText(self.s10palm)
 
+    def slider11_changed(self):
+        self.s11palm = round((self.slider11.value()/self.slider_max) *
+                             (self.theta_max-self.theta_min)+self.theta_min, 3)
+        self.textbox11.setText(str(self.s11palm))
+
+    def slider12_changed(self):
+        self.s12palm = str((self.slider12.value()/self.slider_max) *
+                           (self.mu_max-self.mu_min)+self.mu_min)
+        self.textbox12.setText(self.s12palm)
+
+    def slider13_changed(self):
+        self.s13palm = str((self.slider13.value()/self.slider_max) *
+                          (self.D_max-self.D_min)+self.D_min)
+        self.textbox13.setText(self.s13palm)
+
+    def slider14_changed(self):
+        self.s14palm = str((self.slider14.value()/self.slider_max) *
+                           (self.syn_tau_max-self.syn_tau_min)+self.syn_tau_min)
+        self.textbox14.setText(self.s14palm)
+
+    def slider15_changed(self):
+        self.s15palm = str((self.slider15.value()/self.slider_max) *
+                           (self.Pmax_max-self.Pmax_min)+self.Pmax_min)
+        self.textbox15.setText(self.s15palm)
+
+    def slider16_changed(self):
+        self.s16palm = str((self.slider16.value()/self.slider_max) *
+                           (self.syn_delay_max-self.syn_delay_min)+self.syn_delay_min)
+        self.textbox16.setText(self.s16palm)
 
 
 class MainWindow(QMainWindow):
@@ -388,7 +569,7 @@ class PlotCanvas(FigureCanvas):
         self.plot_init()
 
     def plot_init(self):
-        self.dt = 0.01
+        self.dt = 0.02
         self.t = np.arange(0, 3000, self.dt)
         self.steps = len(self.t)
         self.x = -1.6 * np.ones(self.steps)
@@ -396,6 +577,10 @@ class PlotCanvas(FigureCanvas):
         self.z = 0 * np.ones(self.steps)
         self.m = 0 * np.ones(self.steps)
         self.h = 0 * np.ones(self.steps)
+        self.I_syn = np.zeros(self.steps)
+        self.gsyn = np.zeros(self.steps)
+
+        self.t_ap = -10000
 
         self.a = 1
         self.b = 3.3
@@ -403,10 +588,17 @@ class PlotCanvas(FigureCanvas):
         self.d = 5
         self.r = 0.01
         self.s = 4
-        self.i = 5.6
+        self.i = 1
         self.xr = -3
         self.gcmp = 0
         self.delay = 0
+        self.theta = 0.5
+        self.mu = 0
+        self.D = 5
+        self.syn_tau = 1
+        self.Pmax = 15
+        self.syn_delay = 1
+        self.fire_tmp = 200
 
         self.ax = self.figure.add_subplot(111)
         self.ax.set_title('N0')
@@ -423,92 +615,97 @@ class PlotCanvas(FigureCanvas):
         self.tmp_gcmp = self.gcmp
         self.tmp_delay = self.delay
 
-        self.plot(self.a, self.b, self.c, self.d, self.r, self.s, self.xr,
-                  self.i, self.gcmp, self.delay)
+        self.plot()
+
+    def replot(self):
+        self.line1.remove()
+        self.line2.remove()
+        self.plot()
 
     def replot_a(self, a):
-        self.line.remove()
-        self.tmp_a = a
-        self.plot(self.tmp_a, self.b, self.c, self.d, self.r, self.s, self.xr,
-                  self.i, self.gcmp, self.delay)
+        self.a = a
+        self.replot()
 
     def replot_b(self, b):
-        self.line.remove()
-        self.tmp_b = b
-        self.plot(self.a, self.tmp_b, self.c, self.d, self.r, self.s, self.xr,
-                  self.i, self.gcmp, self.delay)
+        self.b = b
+        self.replot()
 
     def replot_c(self, c):
-        self.line.remove()
-        self.tmp_c = c
-        self.plot(self.a, self.b, self.tmp_c, self.d, self.r, self.s, self.xr,
-                  self.i, self.gcmp, self.delay)
+        self.c = c
+        self.replot()
 
     def replot_d(self, d):
-        self.line.remove()
-
-        self.tmp_d = d
-        self.plot(self.a, self.b, self.c, self.tmp_d, self.r, self.s, self.xr,
-                  self.i, self.gcmp, self.delay)
+        self.d = d
+        self.replot()
 
     def replot_r(self, r):
-        self.line.remove()
-
-        self.tmp_r = r
-        self.plot(self.a, self.b, self.c, self.d, self.tmp_r, self.s, self.xr,
-                  self.i, self.gcmp, self.delay)
+        self.r = r
+        self.replot()
 
     def replot_s(self, s):
-        self.line.remove()
-
-        self.tmp_s = s
-        self.plot(self.a, self.b, self.c, self.d, self.r, self.tmp_s, self.xr,
-                  self.i, self.gcmp, self.delay)
+        self.s = s
+        self.replot()
 
     def replot_xr(self, xr):
-        self.line.remove()
-
-        self.tmp_xr = xr
-        self.plot(self.a, self.b, self.c, self.d, self.r, self.s, self.tmp_xr,
-                  self.i, self.gcmp, self.delay)
+        self.xr = xr
+        self.replot()
 
     def replot_i(self, i):
-        self.line.remove()
-
-        self.tmp_i = i
-        self.plot(self.a, self.b, self.c, self.d, self.r, self.s, self.xr,
-                  self.tmp_i, self.gcmp, self.delay)
+        self.i = i
+        self.replot()
 
     def replot_gcmp(self, gcmp):
-        self.line.remove()
-
-        self.tmp_gcmp = gcmp
-        self.plot(self.a, self.b, self.c, self.d, self.r, self.s, self.xr,
-                  self.i, self.tmp_gcmp, self.delay)
+        self.gcmp = gcmp
+        self.replot()
 
     def replot_delay(self, delay):
-        self.line.remove()
+        self.delay = delay
+        self.replot()
 
-        self.tmp_delay = delay
-        self.plot(self.a, self.b, self.c, self.d, self.r, self.s, self.xr,
-                  self.i, self.gcmp, self.tmp_delay)
+    def replot_theta(self, theta):
+        self.theta = theta
+        self.replot()
 
-    def plot(self, a, b, c, d, r, s, xr, i, gcmp, delay):
-        self.a = a
-        self.b = b
-        self.c = c
-        self.d = d
-        self.r = r
-        self.s = s
-        self.xr = xr
-        self.i = i
-        self.gcmp = gcmp
-        self.n = 0
-        self.delay
+    def replot_mu(self, mu):
+        self.mu = mu
+        self.replot()
+
+    def replot_D(self, D):
+        self.D = D
+        self.replot()
+
+    def replot_syn_tau(self, syn_tau):
+        self.syn_tau = syn_tau
+        self.replot()
+
+    def replot_Pmax(self, Pmax):
+        self.Pmax = Pmax
+        self.replot()
+
+    def replot_syn_delay(self, syn_delay):
+        self.syn_delay = syn_delay
+        self.replot()
+
+    def alpha_func(self, t):
+        if t < 0:
+            print("kanopero")
+            return 0
+        elif ((self.Pmax * t/self.syn_tau) *
+              np.exp(-t/self.syn_tau)) < 0.0001:
+            print("pippi")
+
+            return 0
+        else:
+            print("ju")
+
+            return (self.Pmax * t/self.syn_tau) * np.exp(-t/self.syn_tau)
+
+    def plot(self):
         self.iext = np.zeros(self.steps)
-        for j in range(int(500/self.dt), int(2000/self.dt)):
-            self.iext[j] = i
-                  
+        self.n = np.zeros(self.steps)
+        for j in range(int(500/self.dt), int(503/self.dt)):
+            self.iext[j] = self.i
+
         for i in range(0, self.steps-1):
             """
             if self.x[i] > self.delay:
@@ -519,19 +716,31 @@ class PlotCanvas(FigureCanvas):
                 self.k1x = (self.y[i] - self.a * self.x[i]**3 + self.b * self.x[i]**2 - 
                             self.z[i] + self.i + self.n)
             """
+            
+            #firing time
+            # and (self.dt * i - self.fire_tmp) > 5
+            if self.x[i] > 1:
+                self.t_ap = self.dt * i
+                self.fire_tmp = self.dt * i
+            
+            self.gsyn[i] = self.alpha_func(self.dt * i - self.t_ap - self.syn_delay)
+            self.I_syn[i] = self.gsyn[i] * (self.gcmp - self.x[i])
+            self.dn = - self.theta*(self.n[i] - self.mu) + self.D * np.random.randn()
             self.k1x = (self.y[i] - self.a * self.x[i]**3 + self.b * self.x[i]**2 -
-                        self.z[i] + self.iext[i] + self.n)
+                        self.z[i] + self.iext[i] + self.n[i]+ self.I_syn[i])
 
             self.k1y = (self.c - self.d * self.x[i]**2 - self.y[i])
             self.k1z = (self.r * (self.s * (self.x[i] - self.xr) - self.z[i]))
 
-        
+            self.n[i+1] = self.n[i] + self.dn * self.dt
             self.x[i+1] = self.x[i] + self.k1x * self.dt
             self.y[i+1] = self.y[i] + self.k1y * self.dt
             self.z[i+1] = self.z[i] + self.k1z * self.dt
 
                 
-        self.line, = self.ax.plot(self.t, self.x)
+        self.line1, = self.ax.plot(self.t, self.x, markevery=5)
+        self.line2, = self.ax.plot(self.t, self.I_syn, markevery=5)
+
         self.draw()
 
 if __name__ == '__main__':
