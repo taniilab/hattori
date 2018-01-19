@@ -39,7 +39,7 @@ class CentralWidget(QWidget):
         self.s_min = 1
         self.xr_max = 3
         self.xr_min = -6
-        self.i_max = 10
+        self.i_max = 100
         self.i_min = -10
         self.gcmp_max = 20
         self.gcmp_min = 0
@@ -388,8 +388,8 @@ class PlotCanvas(FigureCanvas):
         self.plot_init()
 
     def plot_init(self):
-        self.dt = 0.01
-        self.t = np.arange(0, 3000, self.dt)
+        self.dt = 0.04
+        self.t = np.arange(0, 2000, self.dt)
         self.steps = len(self.t)
         self.x = -1.6 * np.ones(self.steps)
         self.y = 0 * np.ones(self.steps)
@@ -401,10 +401,10 @@ class PlotCanvas(FigureCanvas):
         self.b = 3.3
         self.c = 1
         self.d = 5
-        self.r = 0.01
+        self.r = 0.1
         self.s = 4
         self.i = 5.6
-        self.xr = -3
+        self.xr = -5
         self.gcmp = 0
         self.delay = 0
 
@@ -506,7 +506,7 @@ class PlotCanvas(FigureCanvas):
         self.n = 0
         self.delay
         self.iext = np.zeros(self.steps)
-        for j in range(int(500/self.dt), int(2000/self.dt)):
+        for j in range(int(500/self.dt), int(1000/self.dt)):
             self.iext[j] = i
                   
         for i in range(0, self.steps-1):

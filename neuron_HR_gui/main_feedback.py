@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from neuron import Neuron_HR as Neuron
+import seaborn as sns
 
 
 class CentralWidget(QWidget):
@@ -359,97 +360,97 @@ class CentralWidget(QWidget):
 
     # slot
     def text1_changed(self):
-        if self.textbox1.text() is "":
+        if self.textbox1.text() is "" or self.textbox1.text() is "-":
             pass
         else:
             self.glaph.replot_a(float(self.textbox1.text()))
 
     def text2_changed(self):
-        if self.textbox2.text() is "":
+        if self.textbox2.text() is "" or self.textbox1.text() is "-":
             pass
         else:
             self.glaph.replot_b(float(self.textbox2.text()))
 
     def text3_changed(self):
-        if self.textbox3.text() is "":
+        if self.textbox3.text() is "" or self.textbox1.text() is "-":
             pass
         else:
             self.glaph.replot_c(float(self.textbox3.text()))
 
     def text4_changed(self):
-        if self.textbox4.text() is "":
+        if self.textbox4.text() is "" or self.textbox1.text() is "-":
             pass
         else:
             self.glaph.replot_d(float(self.textbox4.text()))
 
     def text5_changed(self):
-        if self.textbox5.text() is "":
+        if self.textbox5.text() is "" or self.textbox1.text() is "-":
             pass
         else:
             self.glaph.replot_r(float(self.textbox5.text()))
 
     def text6_changed(self):
-        if self.textbox6.text() is "":
+        if self.textbox6.text() is "" or self.textbox1.text() is "-":
             pass
         else:
             self.glaph.replot_s(float(self.textbox6.text()))
 
     def text7_changed(self):
-        if self.textbox7.text() is "":
+        if self.textbox7.text() is "" or self.textbox1.text() is "-":
             pass
         else:
             self.glaph.replot_xr(float(self.textbox7.text()))
 
     def text8_changed(self):
-        if self.textbox8.text() is "":
+        if self.textbox8.text() is "" or self.textbox1.text() is "-":
             pass
         else:
             self.glaph.replot_i(float(self.textbox8.text()))
 
     def text9_changed(self):
-        if self.textbox9.text() is "":
+        if self.textbox9.text() is "" or self.textbox1.text() is "-":
             pass
         else:
             self.glaph.replot_gcmp(float(self.textbox9.text()))
 
     def text10_changed(self):
-        if self.textbox10.text() is "":
+        if self.textbox10.text() is "" or self.textbox1.text() is "-":
             pass
         else:
             self.glaph.replot_delay(float(self.textbox10.text()))
 
     def text11_changed(self):
-        if self.textbox11.text() is "":
+        if self.textbox11.text() is "" or self.textbox1.text() is "-":
             pass
         else:
             self.glaph.replot_theta(float(self.textbox11.text()))
 
     def text12_changed(self):
-        if self.textbox12.text() is "":
+        if self.textbox12.text() is "" or self.textbox1.text() is "-":
             pass
         else:
             self.glaph.replot_mu(float(self.textbox12.text()))
 
     def text13_changed(self):
-        if self.textbox13.text() is "":
+        if self.textbox13.text() is "" or self.textbox1.text() is "-":
             pass
         else:
             self.glaph.replot_D(float(self.textbox13.text()))
 
     def text14_changed(self):
-        if self.textbox14.text() is "":
+        if self.textbox14.text() is "" or self.textbox1.text() is "-":
             pass
         else:
             self.glaph.replot_syn_tau(float(self.textbox14.text()))
 
     def text15_changed(self):
-        if self.textbox15.text() is "":
+        if self.textbox15.text() is "" or self.textbox1.text() is "-":
             pass
         else:
             self.glaph.replot_Pmax(float(self.textbox15.text()))
 
     def text16_changed(self):
-        if self.textbox16.text() is "":
+        if self.textbox16.text() is "" or self.textbox1.text() is "-":
             pass
         else:
             self.glaph.replot_syn_delay(float(self.textbox16.text()))
@@ -517,7 +518,7 @@ class CentralWidget(QWidget):
 
     def slider13_changed(self):
         self.s13palm = str((self.slider13.value()/self.slider_max) *
-                          (self.D_max-self.D_min)+self.D_min)
+                           (self.D_max-self.D_min)+self.D_min)
         self.textbox13.setText(self.s13palm)
 
     def slider14_changed(self):
@@ -569,6 +570,7 @@ class PlotCanvas(FigureCanvas):
         self.plot_init()
 
     def plot_init(self):
+        self.fsize = 32
         self.dt = 0.02
         self.t = np.arange(0, 3000, self.dt)
         self.steps = len(self.t)
@@ -588,21 +590,20 @@ class PlotCanvas(FigureCanvas):
         self.d = 5
         self.r = 0.01
         self.s = 4
-        self.i = 1
-        self.xr = -3
+        self.i = 6
+        self.xr = -2.5
         self.gcmp = 0
-        self.delay = 0
+        self.delay = 1000
         self.theta = 0.5
         self.mu = 0
-        self.D = 5
+        self.D = 0
         self.syn_tau = 1
         self.Pmax = 15
         self.syn_delay = 1
         self.fire_tmp = 200
 
         self.ax = self.figure.add_subplot(111)
-        self.ax.set_title('N0')
-        plt.title('Hindmarsh-Rose model')
+        self.figure.tight_layout()
 
         self.tmp_a = self.a
         self.tmp_b = self.b
@@ -703,7 +704,7 @@ class PlotCanvas(FigureCanvas):
     def plot(self):
         self.iext = np.zeros(self.steps)
         self.n = np.zeros(self.steps)
-        for j in range(int(500/self.dt), int(503/self.dt)):
+        for j in range(int(500/self.dt), int((500+self.delay)/self.dt)):
             self.iext[j] = self.i
 
         for i in range(0, self.steps-1):
@@ -738,9 +739,12 @@ class PlotCanvas(FigureCanvas):
             self.z[i+1] = self.z[i] + self.k1z * self.dt
 
                 
-        self.line1, = self.ax.plot(self.t, self.x, markevery=5)
-        self.line2, = self.ax.plot(self.t, self.I_syn, markevery=5)
+        self.line1, = self.ax.plot(self.t, self.I_syn, markevery=5, color="#D81B60")
+        self.line2, = self.ax.plot(self.t, self.x, markevery=5, color="#00897B")
 
+        self.ax.tick_params(labelsize=self.fsize)
+        self.ax.set_xlabel("time[a.u.]", fontsize=self.fsize)
+        self.ax.set_ylabel("membrane potential, synaptic current[a.u.]", fontsize=self.fsize)       
         self.draw()
 
 if __name__ == '__main__':
