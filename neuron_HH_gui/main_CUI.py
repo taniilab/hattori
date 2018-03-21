@@ -67,7 +67,7 @@ class Main():
         for i, j, k, l in itertools.product(range(6), range(1), range(1),
                                             range(1)):
             self.parm.append({})
-            self.parm[self.parm_counter] = {'Iext_amp': round(i*0.5, 3)}
+            self.parm[self.parm_counter] = {'Iext_amp': round(i*0.5-1, 3)}
             self.parm_counter += 1
 
 
