@@ -87,7 +87,8 @@ class Neuron_HH():
 
 
         # connection relationship
-        self.W = np.zeros((self.N, self.N))
+        self.W = np.ones((self.N, self.N))
+
 
         # synaptic current
         self.Isyn = np.zeros((self.N, self.allsteps))
@@ -101,7 +102,7 @@ class Neuron_HH():
         # external input
         self.Iext_amp = Iext_amp
         self.Iext = np.zeros((self.N, self.allsteps))
-        self.Iext[:, 20000:40000] = self.Iext_amp
+        self.Iext[0, 20000:40000] = self.Iext_amp
         #self.Iext = self.Iext_amp * np.ones((self.N, self.allsteps))
 
         """
@@ -155,8 +156,8 @@ class Neuron_HH():
 
     def calc_synaptic_input(self, i):
         # recording fire time
-        if self.Vi[i] > self.Vth and (self.curstep *
-                                      self.dt - self.fire_tmp[i]) > 10:
+        if self.Vi[i] > -30 and (self.curstep *
+                                      self.dt - self.fire_tmp[i]) > 20:
             self.t_ap[i, :, 1] = self.t_ap[i, :, 0]
             self.t_ap[i, :, 0] = self.curstep * self.dt
             self.fire_tmp[i] = self.curstep * self.dt
@@ -173,11 +174,17 @@ class Neuron_HH():
                                          self.t_ap[j, i, 0]) +
                      self.alpha_function(self.curstep*self.dt -
                                          self.t_ap[j, i, 1]))
+        # NMDA
+        elif self.Syncp == 5:
+            for j in range(0, self.N):
+                self.gSyn[i, j] = (self.alpha_function(self.curstep*self.dt -
+                                                       self.t_ap[j, i, 0]) /
+                                   (1 + 0.39 * np.exp(0.062 * self.Vi[i])))
 
         # summation
         for j in range(0, self.N):
             self.Isyni[i] +=\
-                      (self.W[i, j] * self.gSyn[i, j] *
+                      (self.gSyn[i, j] *
                        (self.eSyn[i, j] - self.Vi[i]))
 
     def sigmoid(self, x):

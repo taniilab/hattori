@@ -67,7 +67,8 @@ class Main():
         for i, j, k, l in itertools.product(range(6), range(1), range(1),
                                             range(1)):
             self.parm.append({})
-            self.parm[self.parm_counter] = {'Iext_amp': round(i*0.5-1, 3)}
+            self.parm[self.parm_counter] = {'Iext_amp': round(i*0.5-1, 3),
+                                            'Syncp': 5, 'tau_Syn': 200}
             self.parm_counter += 1
 
 
@@ -105,8 +106,9 @@ def main():
                         str(d.minute) + '_' + str(d.second) + '_' +
                         cb[k].parm_dict + '_' + 'N' + str(j) + '_' + "HR.csv")
 
-            df = pd.DataFrame({'t': cb[k].Tsteps, 'v': cb[k].V[j]})
-            df.to_csv('C:/Users/Hattori/Box Sync/Personal/Documents/HH_results/' + filename)
+            df = pd.DataFrame({'t': cb[k].Tsteps, 'v': cb[k].V[j], 'syn': cb[k].Isyn[j]})
+            #df.to_csv('C:/Users/Hattori/Box Sync/Personal/Documents/HH_results/' + filename)
+            df.to_csv('C:/HH_results/' + filename)
 
         pool.close()
         pool.join()
@@ -139,7 +141,7 @@ def main():
         ax[cb[i].N].plot(tm, cb[i].Isyn[0], color="coral",
                               markevery=[0, -1])
         ax2 = ax[cb[i].N].twinx()
-        ax2.plot(tm, cb[i].V[0], color="indigo", markevery=[0, -1])
+        ax2.plot(tm, cb[i].Isyn[0], color="indigo", markevery=[0, -1])
 
         ax[cb[i].N+1].plot(tm, cb[i].V[0], color="coral",
                                 markevery=[0, -1])
