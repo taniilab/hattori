@@ -10,7 +10,7 @@ import numpy as np
 class Neuron_HH():
     # constructor
     # 0.02
-    def __init__(self, Syncp=1, N=1, dt=0.02, T=1000,Cm=1, Vth=-56.2,
+    def __init__(self, Syncp=1, N=1, dt=0.02, T=10000,Cm=1, Vth=-56.2,
                  eNa=50, gNa=56, eK=-90, gK=6, eL=-70.3, gL=0.0205, gM=0.075,
                  tau_Syn=5.26, eSyn=0, gSyn=0.025, tau_max=608, eCa=120, gT=0.4,
                  Iext_amp = 0, Pmax=0,
@@ -124,7 +124,7 @@ class Neuron_HH():
         """
         
         # firing time
-        self.t_ap = -100 * np.ones((self.N, self.N, 2))
+        self.t_ap = -10000 * np.ones((self.N, self.N, 2))
 
         # current step
         self.curstep = 0
@@ -149,19 +149,25 @@ class Neuron_HH():
         if t < 0:
             return 0
         elif ((self.Pmax * t/self.tau_Syn*0.1) *
-              np.exp(-t/self.tau_Syn*0.1)) < 0.001:
+              np.exp(-t/self.tau_Syn*0.1)) < 0.00001:
             return 0
         else:
             return (self.Pmax * t/self.tau_Syn) * np.exp(-t/self.tau_Syn)
 
+    def biexp_func(self, t):
+        if t < 0:
+            return 0
+        elif self.Pmax*(np.exp(-t/500) - np.exp(-t/2)) < 0.00001:
+            return 0
+        else:
+            return self.Pmax*(np.exp(-t/500) - np.exp(-t/2))
+
     def calc_synaptic_input(self, i):
         # recording fire time
-        if self.Vi[i] > -30 and (self.curstep *
-                                      self.dt - self.fire_tmp[i]) > 20:
+        if self.Vi[i] > -20 and (self.curstep * self.dt - self.fire_tmp[i]) > 20 and self.curstep * self.dt > 200:
             self.t_ap[i, :, 1] = self.t_ap[i, :, 0]
             self.t_ap[i, :, 0] = self.curstep * self.dt
             self.fire_tmp[i] = self.curstep * self.dt
-
         # sum of the synaptic current for each neuron
         if self.Syncp == 1:
             pass
@@ -177,12 +183,26 @@ class Neuron_HH():
         # NMDA
         elif self.Syncp == 5:
             for j in range(0, self.N):
-                self.gSyn[i, j] = (self.alpha_function(self.curstep*self.dt -
+                """
+                self.gSyn[i, j] = ((self.biexp_func(self.curstep*self.dt -
+                                                        self.t_ap[j, i, 0] - 20) +
+                                    self.biexp_func(self.curstep*self.dt -
+                                                        self.t_ap[j, i, 1] - 20)) /
+                                   (1 + 0.1*np.exp(-0.1*self.Vi)))
+                """
+                if self.curstep*self.dt > 200:
+                    self.gSyn[i, j] = (self.biexp_func(self.curstep*self.dt -
                                                        self.t_ap[j, i, 0]) /
-                                   (1 + 0.39 * np.exp(0.062 * self.Vi[i])))
-
+                                       (1 + 0.01*np.exp(-0.06*self.Vi)))
+                else:                    
+                    self.gSyn[i, j] = 0
+                
         # summation
         for j in range(0, self.N):
+            """
+            self.Isyni[i] += self.gSyn[i, j]
+            
+            """
             self.Isyni[i] +=\
                       (self.gSyn[i, j] *
                        (self.eSyn[i, j] - self.Vi[i]))
@@ -289,7 +309,10 @@ class Neuron_HH():
                     self.gT * self.s_infi**2 * self.ui * (self.eCa - self.Vi) +
                     self.Isyni +
                     self.Iext[:, self.curstep] +
-                    self.ni)
+                    3*np.random.randn())
+
+        if (self.curstep*self.dt) < 200:
+            self.k1V -= self.Isyni
         self.k1m = self.alpha_mi * (1-self.mi) - self.beta_mi * self.mi
         self.k1h = self.alpha_hi * (1-self.hi) - self.beta_hi * self.hi
         self.k1n = self.alpha_ni * (1-self.ni) - self.beta_ni * self.ni

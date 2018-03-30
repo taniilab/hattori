@@ -67,8 +67,8 @@ class Main():
         for i, j, k, l in itertools.product(range(6), range(1), range(1),
                                             range(1)):
             self.parm.append({})
-            self.parm[self.parm_counter] = {'Iext_amp': round(i*0.5-1, 3),
-                                            'Syncp': 5, 'tau_Syn': 200}
+            self.parm[self.parm_counter] = {'Iext_amp': 1,
+                                            'Syncp': 5, 'Pmax': 0.025}
             self.parm_counter += 1
 
 
@@ -107,8 +107,8 @@ def main():
                         cb[k].parm_dict + '_' + 'N' + str(j) + '_' + "HR.csv")
 
             df = pd.DataFrame({'t': cb[k].Tsteps, 'v': cb[k].V[j], 'syn': cb[k].Isyn[j]})
-            #df.to_csv('C:/Users/Hattori/Box Sync/Personal/Documents/HH_results/' + filename)
-            df.to_csv('C:/HH_results/' + filename)
+            df.to_csv('C:/Users/Hattori/Box Sync/Personal/Documents/HH_results/' + filename)
+            #df.to_csv('C:/HH_results/' + filename)
 
         pool.close()
         pool.join()
@@ -152,6 +152,9 @@ def main():
         for j in range(0, cb[i].N+2):
             ax[j].grid(which='major', color='thistle', linestyle='-')
         fig.tight_layout()
+
+    print(cb[0].Syncp)
+    print(cb[0].t_ap[0, :, 0])
 
     elapsed_time = time.time() - starttime
     print("elapsed_time:{0}".format(elapsed_time) + "[sec]")
