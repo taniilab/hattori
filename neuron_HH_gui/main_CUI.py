@@ -17,6 +17,7 @@ import time
 import datetime 
 import logging
 import itertools
+from IPython import get_ipython
 
 starttime = time.time()
 elapsed_time = 0
@@ -51,9 +52,11 @@ class Main():
 
         for i in range(0, self.nr.allsteps-1):
             self.nr.propagation()
+            
             if self.progress_co % 100000 == 0:
-                logging.warning('process id : %d : %4d steps',
-                                self.pid, self.progress_co)
+                self.log = 'process id : ' + str(self.pid) + ' : ' + \
+                            str(self.progress_co) + ' steps'
+                print(self.log)
 
             self.progress_co += 1
         return self.nr
@@ -76,6 +79,7 @@ def main():
     process = 6
     main = Main(process)
     main.form_parm()
+    
 
     for i in range(0, main.cycle_multiproc):
 
@@ -158,6 +162,9 @@ def main():
 
     elapsed_time = time.time() - starttime
     print("elapsed_time:{0}".format(elapsed_time) + "[sec]")
+    print("")
+    print("続行するには何かキーを押してください . . .")
+    input()
 
 
 if __name__ == '__main__':

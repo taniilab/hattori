@@ -10,7 +10,7 @@ import numpy as np
 class Neuron_HH():
     # constructor
     # 0.02
-    def __init__(self, Syncp=1, N=1, dt=0.02, T=10000,Cm=1, Vth=-56.2,
+    def __init__(self, Syncp=1, N=1, dt=0.02, T=2000,Cm=1, Vth=-56.2,
                  eNa=50, gNa=56, eK=-90, gK=6, eL=-70.3, gL=0.0205, gM=0.075,
                  tau_Syn=5.26, eSyn=0, gSyn=0.025, tau_max=608, eCa=120, gT=0.4,
                  Iext_amp = 0, Pmax=0,
