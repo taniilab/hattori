@@ -10,7 +10,7 @@ import numpy as np
 class Neuron_HH():
     # constructor
     # 0.02
-    def __init__(self, Syncp=1, N=1, dt=0.02, T=2000,Cm=1, Vth=-56.2,
+    def __init__(self, Syncp=1, N=1, dt=0.02, T=10000,Cm=1, Vth=-56.2,
                  eNa=50, gNa=56, eK=-90, gK=6, eL=-70.3, gL=0.0205, gM=0.075,
                  tau_Syn=5.26, eSyn=0, gSyn=0.025, tau_max=608, eCa=120, gT=0.4,
                  Iext_amp = 0, Pmax=0,
@@ -64,7 +64,7 @@ class Neuron_HH():
         self.h = 0.06 * np.ones((self.N, self.allsteps))
         self.n = 0.5 * np.ones((self.N, self.allsteps))
         self.p = 0.5 * np.ones((self.N, self.allsteps))
-        self.u = 0.5 * np.ones((self.N, self.allsteps))        
+        self.u = 0.5 * np.ones((self.N, self.allsteps))
         self.alpha_m = 0 * np.ones((self.N, self.allsteps))
         self.alpha_h = 0 * np.ones((self.N, self.allsteps))
         self.alpha_n = 0 * np.ones((self.N, self.allsteps))
@@ -85,17 +85,20 @@ class Neuron_HH():
         self.k1p = 0 * np.ones(self.N)
         self.k1u = 0 * np.ones(self.N)
 
-
         # connection relationship
         self.W = np.ones((self.N, self.N))
 
-
         # synaptic current
         self.Isyn = np.zeros((self.N, self.allsteps))
+        self.INMDA = np.zeros((self.N, self.allsteps))
+        self.IAMPA = np.zeros((self.N, self.allsteps))
         self.Isyn_hist = np.zeros((self.N, self.N, 5))
 
         # synaptic conductance
-        self.gSyn = gSyn * np.ones((self.N, self.N))
+        self.gSyn = np.zeros((self.N, self.N))
+        self.gNMDA = np.zeros((self.N, self.N))
+        self.gAMPA = np.zeros((self.N, self.N))
+
         # synaptic reversal potential
         self.eSyn = eSyn * np.ones((self.N, self.N))
         self.tau_Syn = tau_Syn
@@ -103,7 +106,7 @@ class Neuron_HH():
         self.Iext_amp = Iext_amp
         self.Iext = np.zeros((self.N, self.allsteps))
         self.Iext[0, 20000:40000] = self.Iext_amp
-        #self.Iext = self.Iext_amp * np.ones((self.N, self.allsteps))
+        # self.Iext = self.Iext_amp * np.ones((self.N, self.allsteps))
 
         """
         self.Iext_co = 0
@@ -154,13 +157,13 @@ class Neuron_HH():
         else:
             return (self.Pmax * t/self.tau_Syn) * np.exp(-t/self.tau_Syn)
 
-    def biexp_func(self, t):
+    def biexp_func(self, t, Pmax, t_rise, t_fall):
         if t < 0:
             return 0
-        elif self.Pmax*(np.exp(-t/500) - np.exp(-t/2)) < 0.00001:
+        elif Pmax*(np.exp(-t/t_fall) - np.exp(-t/t_rise)) < 0.00001:
             return 0
         else:
-            return self.Pmax*(np.exp(-t/500) - np.exp(-t/2))
+            return Pmax*(np.exp(-t/t_fall) - np.exp(-t/t_rise))
 
     def calc_synaptic_input(self, i):
         # recording fire time
@@ -171,6 +174,10 @@ class Neuron_HH():
         # sum of the synaptic current for each neuron
         if self.Syncp == 1:
             pass
+        elif self.Syncp == 2:
+            pass
+        elif self.Syncp == 3:
+            pass
 
         # alpha function
         elif self.Syncp == 4:
@@ -180,33 +187,27 @@ class Neuron_HH():
                                          self.t_ap[j, i, 0]) +
                      self.alpha_function(self.curstep*self.dt -
                                          self.t_ap[j, i, 1]))
-        # NMDA
+        # NMDA & AMPA
         elif self.Syncp == 5:
             for j in range(0, self.N):
-                """
-                self.gSyn[i, j] = ((self.biexp_func(self.curstep*self.dt -
-                                                        self.t_ap[j, i, 0] - 20) +
-                                    self.biexp_func(self.curstep*self.dt -
-                                                        self.t_ap[j, i, 1] - 20)) /
-                                   (1 + 0.1*np.exp(-0.1*self.Vi)))
-                """
-                if self.curstep*self.dt > 200:
-                    self.gSyn[i, j] = (self.biexp_func(self.curstep*self.dt -
-                                                       self.t_ap[j, i, 0]) /
-                                       (1 + 0.01*np.exp(-0.06*self.Vi)))
-                else:                    
-                    self.gSyn[i, j] = 0
-                
-        # summation
-        for j in range(0, self.N):
-            """
-            self.Isyni[i] += self.gSyn[i, j]
-            
-            """
-            self.Isyni[i] +=\
-                      (self.gSyn[i, j] *
-                       (self.eSyn[i, j] - self.Vi[i]))
 
+                if self.curstep*self.dt > 200:
+                    
+                    self.gNMDA[i, j] = self.biexp_func(self.curstep*self.dt - self.t_ap[j, i, 0], 0.5 * self.Pmax, 10, 150) / (1 + (4.5/3.57)*np.exp(-0.062*self.Vi))
+                    """
+                    self.gNMDA[i, j] = self.biexp_func(self.curstep*self.dt - self.t_ap[j, i, 0] - 5, self.Pmax*0, 1, 150)"""
+                    self.gAMPA[i, j] = self.biexp_func(self.curstep*self.dt - self.t_ap[j, i, 0], self.Pmax, 1, 2)
+                    self.gSyn[i, j] = self.gNMDA[i, j] + self.gAMPA[i, j]
+                else:                  
+                    self.gSyn[i, j] = 0
+
+        # sum
+        for j in range(0, self.N):
+            self.INMDAi[i] += self.gNMDA[i, j] * (self.eSyn[i, j] - self.Vi[i])
+            self.IAMPAi[i] += self.gAMPA[i, j] * (self.eSyn[i, j] - self.Vi[i])
+            self.Isyni[i] = self.INMDAi[i] + self.IAMPAi[i]
+
+    # countermeasures againstthe exp overflow
     def sigmoid(self, x):
         sigmoid_range = 34.538776394910684
 
@@ -238,6 +239,8 @@ class Neuron_HH():
         self.u_infi = self.u_inf[:, self.curstep]
         self.tau_ui = self.tau_u[:, self.curstep]
         self.Isyni = self.Isyn[:, self.curstep]
+        self.INMDAi = self.INMDA[:, self.curstep]
+        self.IAMPAi = self.IAMPA[:, self.curstep]
         self.ni = self.n[:, self.curstep]
         self.dni = self.dn[:, self.curstep]
 
@@ -309,7 +312,7 @@ class Neuron_HH():
                     self.gT * self.s_infi**2 * self.ui * (self.eCa - self.Vi) +
                     self.Isyni +
                     self.Iext[:, self.curstep] +
-                    3*np.random.randn())
+                    2*np.random.randn())
 
         if (self.curstep*self.dt) < 200:
             self.k1V -= self.Isyni

@@ -14,13 +14,15 @@ import seaborn as sb
 from neuron import Neuron_HH as Neuron
 import pandas as pd
 import time
-import datetime 
-import logging
+import datetime
 import itertools
-from IPython import get_ipython
+from picture import Picture
 
 starttime = time.time()
 elapsed_time = 0
+# save_path = "C:/Users/Hattori/Documents/HR_results/20171115alphafunction"
+# save_path = "C:/Users/6969p/Documents/HR_results/20171115alphafunction"
+save_path = "F:/simulation/HH"
 
 # palameter setting
 """
@@ -70,8 +72,8 @@ class Main():
         for i, j, k, l in itertools.product(range(6), range(1), range(1),
                                             range(1)):
             self.parm.append({})
-            self.parm[self.parm_counter] = {'Iext_amp': 1,
-                                            'Syncp': 5, 'Pmax': 0.025}
+            self.parm[self.parm_counter] = {'Iext_amp': 0,
+                                            'Syncp': 5, 'Pmax': 3}
             self.parm_counter += 1
 
 
@@ -108,11 +110,11 @@ def main():
             filename = (str(d.year) + '_' + str(d.month) + '_' +
                         str(d.day) + '_' + str(d.hour) + '_' +
                         str(d.minute) + '_' + str(d.second) + '_' +
-                        cb[k].parm_dict + '_' + 'N' + str(j) + '_' + "HR.csv")
+                        cb[k].parm_dict + '_' + 'N' + str(j) + '_' + "HH.csv")
 
-            df = pd.DataFrame({'t': cb[k].Tsteps, 'v': cb[k].V[j], 'syn': cb[k].Isyn[j]})
-            df.to_csv('C:/Users/Hattori/Box Sync/Personal/Documents/HH_results/' + filename)
-            #df.to_csv('C:/HH_results/' + filename)
+            df = pd.DataFrame({'t': cb[k].Tsteps, 'v': cb[k].V[j],
+                               'syn': cb[k].Isyn[j]})
+            df.to_csv(save_path + '/' + filename)
 
         pool.close()
         pool.join()
@@ -124,43 +126,43 @@ def main():
         lines = []
         tm = np.arange(0, cb[i].allsteps*cb[i].dt, cb[i].dt)
 
+        # matrix
         fig = plt.figure(figsize=(12, 12))
-        gs = grs.GridSpec(3, cb[i].N)
+        gs = grs.GridSpec(4, cb[i].N)
 
         for j in range(0, cb[i].N):
             ax.append(plt.subplot(gs[0, j]))
-        ax.append(plt.subplot(gs[1, :]))
-        ax.append(plt.subplot(gs[2, :]))
+            ax.append(plt.subplot(gs[1, j]))
+            ax.append(plt.subplot(gs[2, j]))
+            ax.append(plt.subplot(gs[3, j]))
 
         # plot
         for j in range(0, cb[i].N):
             lines.append([])
-            if cb[i].N == 1:
-                lines[j], = ax[j].plot(tm, cb[i].V[j], color="indigo",
-                                       markevery=[0, -1])
-            else:
-                lines[j], = ax[j].plot(tm, cb[i].V[j], color="indigo",
-                                       markevery=[0, -1])
+            lines[j], = ax[j].plot(tm, cb[i].V[j], color="indigo",
+                                   markevery=[0, -1])
 
-        ax[cb[i].N].plot(tm, cb[i].Isyn[0], color="coral",
-                              markevery=[0, -1])
-        ax2 = ax[cb[i].N].twinx()
-        ax2.plot(tm, cb[i].Isyn[0], color="indigo", markevery=[0, -1])
+        ax[cb[i].N].plot(tm, cb[i].Isyn[0], color="coral", markevery=[0, -1])
 
-        ax[cb[i].N+1].plot(tm, cb[i].V[0], color="coral",
-                                markevery=[0, -1])
-        ax2 = ax[cb[i].N+1].twinx()
-        ax2.plot(tm, cb[i].V[0], color="indigo", markevery=[0, -1])
+        ax[cb[i].N+1].plot(tm, cb[i].INMDA[0], color="coral",
+                           markevery=[0, -1])
 
+        ax[cb[i].N+2].plot(tm, cb[i].IAMPA[0], color="coral",
+                           markevery=[0, -1])
+        """
         # adjusting
         for j in range(0, cb[i].N+2):
             ax[j].grid(which='major', color='thistle', linestyle='-')
+        """
+
         fig.tight_layout()
 
-    print(cb[0].Syncp)
-    print(cb[0].t_ap[0, :, 0])
+    plt.show()
 
     elapsed_time = time.time() - starttime
+    pic = Picture(save_path)
+    pic.run()
+
     print("elapsed_time:{0}".format(elapsed_time) + "[sec]")
     print("")
     print("続行するには何かキーを押してください . . .")

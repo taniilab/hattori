@@ -7,7 +7,8 @@ Created on Mon Apr  9 14:48:09 2018
 
 from multiprocessing import Pool
 import os
-
+import numpy as np
+import matplotlib.pyplot as plt
 
 class Main():
     def __init__(self, numproc):
@@ -23,6 +24,11 @@ class Main():
 
 def test(process):
     print("ju")
+    x = np.arange(0, 5, 0.1)
+    y = np.sin(x)
+    plt.figure()
+    plt.plot(x, y)
+    plt.show()
     return 9
 
 
