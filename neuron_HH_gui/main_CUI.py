@@ -20,8 +20,6 @@ from picture import Picture
 
 starttime = time.time()
 elapsed_time = 0
-# save_path = "C:/Users/Hattori/Documents/HR_results/20171115alphafunction"
-# save_path = "C:/Users/6969p/Documents/HR_results/20171115alphafunction"
 save_path = "F:/simulation/HH"
 
 # palameter setting
@@ -54,7 +52,7 @@ class Main():
 
         for i in range(0, self.nr.allsteps-1):
             self.nr.propagation()
-            
+
             if self.progress_co % 100000 == 0:
                 self.log = 'process id : ' + str(self.pid) + ' : ' + \
                             str(self.progress_co) + ' steps'
@@ -81,7 +79,6 @@ def main():
     process = 6
     main = Main(process)
     main.form_parm()
-    
 
     for i in range(0, main.cycle_multiproc):
 
@@ -112,7 +109,7 @@ def main():
                         str(d.minute) + '_' + str(d.second) + '_' +
                         cb[k].parm_dict + '_' + 'N' + str(j) + '_' + "HH.csv")
 
-            df = pd.DataFrame({'t': cb[k].Tsteps, 'v': cb[k].V[j],
+            df = pd.DataFrame({'time [ms]': cb[k].Tsteps, 'voltage [mV]': cb[k].V[j],
                                'syn': cb[k].Isyn[j]})
             df.to_csv(save_path + '/' + filename)
 

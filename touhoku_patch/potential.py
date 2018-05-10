@@ -5,14 +5,14 @@ import numpy as np
 import seaborn as sns
 
 
-index = "17"
-path = "C:/Box Sync/Personal/Documents/touhoku_patch/20180501_cortex/"
+index = "15"
+path = "C:/Box Sync/Personal/Documents/touhoku_patch/20180420_cortex/"
 path_h = path + "voltage/voltage" + index + ".csv"
 path_i = path + "current/current" + index + ".csv"
 
 fsize = 24
 sample = 20000
-fig = plt.figure(figsize=(10, 7))
+fig = plt.figure(figsize=(30, 15))
 
 dfv = pd.read_csv(path_h, delimiter=',')
 dfc = pd.read_csv(path_i, delimiter=',')
