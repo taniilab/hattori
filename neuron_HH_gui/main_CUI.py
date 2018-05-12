@@ -109,8 +109,13 @@ def main():
                         str(d.minute) + '_' + str(d.second) + '_' +
                         cb[k].parm_dict + '_' + 'N' + str(j) + '_' + "HH.csv")
 
-            df = pd.DataFrame({'time [ms]': cb[k].Tsteps, 'voltage [mV]': cb[k].V[j],
-                               'syn': cb[k].Isyn[j]})
+            df = pd.DataFrame({'T [ms]': cb[k].Tsteps,
+                               'V [mV]': cb[k].V[j],
+                               'I_K [uA]': cb[k].n[j]**4 * (cb[k].eK[j]-cb[k].V[j]),
+                               'I_Na [uA]': cb[k].m[j]**3 * cb[k].h[j] * (cb[k].eNa[j]-cb[k].V[j]),
+                               'I_tCa [uA]': (cb[k].gT[j] * cb[k].s_inf[j]**2 * cb[k].u[j] *
+                                              (cb[k].eCa[j] - cb[k].V[j])),
+                               'I_Syn [uA]': cb[k].Isyn[j]})
             df.to_csv(save_path + '/' + filename)
 
         pool.close()

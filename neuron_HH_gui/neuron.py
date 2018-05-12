@@ -8,7 +8,7 @@ import numpy as np
 
 
 class Neuron_HH():
-    def __init__(self, Syncp=1, N=1, dt=0.02, T=10000,Cm=1, Vth=-56.2,
+    def __init__(self, Syncp=1, N=1, dt=0.05, T=2000,Cm=1, Vth=-56.2,
                  eNa=50, gNa=56, eK=-90, gK=6, eL=-70.3, gL=0.0205, gM=0.075,
                  tau_Syn=5.26, eSyn=0, gSyn=0.025, tau_max=608, eCa=120, gT=0.4,
                  Iext_amp = 0, Pmax=0,
@@ -122,7 +122,7 @@ class Neuron_HH():
                 self.Iext[0, self.iext_tmp1:self.iext_tmp2] = 0
                 self.Iext[0, self.iext_tmp3:self.iext_tmp4] = Iext_amp
             self.Iext_co += 1
-        """
+        """                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
         
         # firing time
         self.t_ap = -10000 * np.ones((self.N, self.N, 2))
@@ -303,6 +303,7 @@ class Neuron_HH():
         self.tau_ui = ((30.8 + (211.4 + np.exp((self.Vi+2+113.2)/5))) /
                        (3.7 * (1 + np.exp((self.Vi+2+84)/3.2))))
         """
+                
         self.k1V = (self.gK * self.ni**4 * (self.eK - self.Vi) +
                     self.gNa * self.mi**3 * self.hi * (self.eNa - self.Vi) +
                     self.gL * (self.eL - self.Vi) +
