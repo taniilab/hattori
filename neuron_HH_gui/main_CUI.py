@@ -63,15 +63,18 @@ class Main():
 
     def form_parm(self):
         self.parm = []
-        self.cycle_multiproc = int(6 / 6)
+        self.cycle_multiproc = int(720 / 6)
         self.multiproc_co = 0
         self.parm_counter = 0
 
-        for i, j, k, l in itertools.product(range(6), range(1), range(1),
+        for i, j, k, l in itertools.product(range(12), range(6), range(10),
                                             range(1)):
             self.parm.append({})
             self.parm[self.parm_counter] = {'Iext_amp': 1,
-                                            'Syncp': 5, 'Pmax': 3}
+                                            'Syncp': 5,
+                                            'Pmax': round(0.5 * i, 2),
+                                            'ratio': round(0.2 * j, 2),
+                                            'gT': round(0.4 * k, 2)}
             self.parm_counter += 1
 
 
@@ -111,8 +114,10 @@ def main():
 
             df = pd.DataFrame({'T [ms]': cb[k].Tsteps,
                                'V [mV]': cb[k].V[j],
-                               'I_K [uA]': cb[k].n[j]**4 * (cb[k].eK[j]-cb[k].V[j]),
-                               'I_Na [uA]': cb[k].m[j]**3 * cb[k].h[j] * (cb[k].eNa[j]-cb[k].V[j]),
+                               'I_K [uA]': cb[k].IK[j],
+                               'I_Na [uA]': cb[k].INa[j],
+                               'I_M [uA]': cb[k].IM[j],
+                               'I_L [uA]': cb[k].IL[j],
                                'I_tCa [uA]': cb[k].ItCa[j],
                                'I_Syn [uA]': cb[k].Isyn[j]})
             df.to_csv(save_path + '/' + filename)

@@ -8,28 +8,29 @@ import numpy as np
 
 
 class Neuron_HH():
-    def __init__(self, Syncp=1, N=1, dt=0.05, T=2000,Cm=1, Vth=-56.2,
+    def __init__(self, Syncp=1, N=1, dt=0.05, T=10000,Cm=1, Vth=-56.2,
                  eNa=50, gNa=56, eK=-90, gK=6, eL=-70.3, gL=0.0205, gM=0.075,
                  tau_Syn=5.26, eSyn=0, gSyn=0.025, tau_max=608, eCa=120, gT=0.4,
                  Iext_amp = 0, Pmax=0,
                  Iext_num=0, noise=0, ramda=-10, alpha=0.5,
-                 beta=0, D=1):
+                 beta=0, D=1, ratio=0.5):
         self.set_neuron_palm(Syncp, N, dt, T,Cm, Vth,
                  eNa, gNa, eK, gK, eL, gL, gM,
                  tau_Syn, eSyn, gSyn, tau_max, eCa, gT,
                  Iext_amp, Pmax,
                  Iext_num, noise, ramda, alpha,
-                 beta, D)
+                 beta, D, ratio)
 
     def set_neuron_palm(self, Syncp=1, N=1, dt=0.05, T=5000,Cm=1, Vth=-56.2,
                  eNa=50, gNa=56, eK=-90, gK=6, eL=-70.3, gL=0.0205, gM=0.075,
                  tau_Syn=5.26, eSyn=0, gSyn=0.025, tau_max=608, eCa=120, gT=0.4,
                  Iext_amp = 0, Pmax=0,
                  Iext_num=0, noise=0, ramda=-10, alpha=0.5,
-                 beta=0, D=1):
+                 beta=0, D=1, ratio = 0.5):
         # parameters (used by main.py)
         self.parm_dict = {}
-
+        self.ratio = ratio
+        
         # type of synaptic coupling
         self.Syncp = Syncp
         # number of neuron
@@ -75,6 +76,10 @@ class Neuron_HH():
         self.s_inf = 0 * np.ones((self.N, self.allsteps))
         self.u_inf = 0 * np.ones((self.N, self.allsteps))
         self.tau_u = 0 * np.ones((self.N, self.allsteps))
+        self.INa = 0 * np.ones((self.N, self.allsteps))
+        self.IK = 0 * np.ones((self.N, self.allsteps))
+        self.IM = 0 * np.ones((self.N, self.allsteps))
+        self.IL = 0 * np.ones((self.N, self.allsteps))
         self.ItCa = 0 * np.ones((self.N, self.allsteps))
         self.INa = 0 * np.ones((self.N, self.allsteps))
         self.IK = 0 * np.ones((self.N, self.allsteps))
@@ -106,7 +111,7 @@ class Neuron_HH():
         # external input
         self.Iext_amp = Iext_amp
         self.Iext = np.zeros((self.N, self.allsteps))
-        self.Iext[0, 10000:20000] = self.Iext_amp
+        self.Iext[0, 10000:15000] = self.Iext_amp
         # self.Iext = self.Iext_amp * np.ones((self.N, self.allsteps))
 
         """
@@ -194,7 +199,7 @@ class Neuron_HH():
 
                 if self.curstep*self.dt > 200:
                     
-                    self.gNMDA[i, j] = self.biexp_func(self.curstep*self.dt - self.t_ap[j, i, 0], 0.5 * self.Pmax, 10, 150) / (1 + (4.5/3.57)*np.exp(-0.062*self.Vi))
+                    self.gNMDA[i, j] = self.biexp_func(self.curstep*self.dt - self.t_ap[j, i, 0], self.ratio * self.Pmax, 10, 150) / (1 + (4.5/3.57)*np.exp(-0.062*self.Vi))
                     """
                     self.gNMDA[i, j] = self.biexp_func(self.curstep*self.dt - self.t_ap[j, i, 0] - 5, self.Pmax*0, 1, 150)"""
                     self.gAMPA[i, j] = self.biexp_func(self.curstep*self.dt - self.t_ap[j, i, 0], self.Pmax, 1, 2)
@@ -222,6 +227,7 @@ class Neuron_HH():
     # one step processing
     def propagation(self):
         # slice
+
         self.Vi = self.V[:, self.curstep]
         self.mi = self.m[:, self.curstep]
         self.hi = self.h[:, self.curstep]
@@ -242,6 +248,10 @@ class Neuron_HH():
         self.Isyni = self.Isyn[:, self.curstep]
         self.INMDAi = self.INMDA[:, self.curstep]
         self.IAMPAi = self.IAMPA[:, self.curstep]
+        self.INai = self.INa[:, self.curstep]
+        self.IKi = self.IK[:, self.curstep]
+        self.ILi = self.IL[:, self.curstep]
+        self.IMi = self.IM[:, self.curstep]
         self.ItCai = self.ItCa[:, self.curstep]
         self.ni = self.n[:, self.curstep]
         self.dni = self.dn[:, self.curstep]
@@ -307,11 +317,16 @@ class Neuron_HH():
         self.tau_ui = ((30.8 + (211.4 + np.exp((self.Vi+2+113.2)/5))) /
                        (3.7 * (1 + np.exp((self.Vi+2+84)/3.2))))
         """
-        self.ItCa[:, self.curstep] = self.gT * self.s_infi**2 * self.ui * (self.eCa - self.Vi)
-        self.k1V = (self.gK * self.ni**4 * (self.eK - self.Vi) +
-                    self.gNa * self.mi**3 * self.hi * (self.eNa - self.Vi) +
-                    self.gL * (self.eL - self.Vi) +
-                    self.gM * self.pi * (self.eK - self.Vi) +
+        self.INai = self.gNa * self.mi**3 * self.hi * (self.eNa - self.Vi)
+        self.IKi = self.gK * self.ni**4 * (self.eK - self.Vi)
+        self.ILi = self.gL * (self.eL - self.Vi)
+        self.IMi = self.gM * self.pi * (self.eK - self.Vi)
+        self.ItCai = self.gT * self.s_infi**2 * self.ui * (self.eCa - self.Vi)
+
+        self.k1V = (self.INai +
+                    self.IKi +
+                    self.ILi +
+                    self.IMi +
                     self.ItCai +
                     self.Isyni +
                     self.Iext[:, self.curstep] +
@@ -332,4 +347,12 @@ class Neuron_HH():
         self.n[:, self.curstep+1] = self.ni + self.k1n * self.dt
         self.p[:, self.curstep+1] = self.pi + self.k1p * self.dt
         self.u[:, self.curstep+1] = self.ui + self.k1u * self.dt
+
+        # update original array
+        self.INa[:, self.curstep] = self.INai
+        self.IK[:, self.curstep] = self.IKi
+        self.IM[:, self.curstep] = self.IMi
+        self.IL[:, self.curstep] = self.ILi
+        self.ItCa[:, self.curstep] = self.ItCai
+
         self.curstep += 1
