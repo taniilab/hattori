@@ -70,7 +70,7 @@ class Main():
         for i, j, k, l in itertools.product(range(6), range(1), range(1),
                                             range(1)):
             self.parm.append({})
-            self.parm[self.parm_counter] = {'Iext_amp': 0,
+            self.parm[self.parm_counter] = {'Iext_amp': 1,
                                             'Syncp': 5, 'Pmax': 3}
             self.parm_counter += 1
 
@@ -113,8 +113,7 @@ def main():
                                'V [mV]': cb[k].V[j],
                                'I_K [uA]': cb[k].n[j]**4 * (cb[k].eK[j]-cb[k].V[j]),
                                'I_Na [uA]': cb[k].m[j]**3 * cb[k].h[j] * (cb[k].eNa[j]-cb[k].V[j]),
-                               'I_tCa [uA]': (cb[k].gT[j] * cb[k].s_inf[j]**2 * cb[k].u[j] *
-                                              (cb[k].eCa[j] - cb[k].V[j])),
+                               'I_tCa [uA]': cb[k].ItCa[j],
                                'I_Syn [uA]': cb[k].Isyn[j]})
             df.to_csv(save_path + '/' + filename)
 
@@ -149,7 +148,7 @@ def main():
         ax[cb[i].N+1].plot(tm, cb[i].INMDA[0], color="coral",
                            markevery=[0, -1])
 
-        ax[cb[i].N+2].plot(tm, cb[i].IAMPA[0], color="coral",
+        ax[cb[i].N+2].plot(tm, cb[i].ItCa[0], color="coral",
                            markevery=[0, -1])
         """
         # adjusting

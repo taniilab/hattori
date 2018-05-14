@@ -75,6 +75,9 @@ class Neuron_HH():
         self.s_inf = 0 * np.ones((self.N, self.allsteps))
         self.u_inf = 0 * np.ones((self.N, self.allsteps))
         self.tau_u = 0 * np.ones((self.N, self.allsteps))
+        self.ItCa = 0 * np.ones((self.N, self.allsteps))
+        self.INa = 0 * np.ones((self.N, self.allsteps))
+        self.IK = 0 * np.ones((self.N, self.allsteps))
 
         self.k1V = 0 * np.ones(self.N)
         self.k1m = 0 * np.ones(self.N)
@@ -103,7 +106,7 @@ class Neuron_HH():
         # external input
         self.Iext_amp = Iext_amp
         self.Iext = np.zeros((self.N, self.allsteps))
-        self.Iext[0, 20000:40000] = self.Iext_amp
+        self.Iext[0, 10000:20000] = self.Iext_amp
         # self.Iext = self.Iext_amp * np.ones((self.N, self.allsteps))
 
         """
@@ -239,6 +242,7 @@ class Neuron_HH():
         self.Isyni = self.Isyn[:, self.curstep]
         self.INMDAi = self.INMDA[:, self.curstep]
         self.IAMPAi = self.IAMPA[:, self.curstep]
+        self.ItCai = self.ItCa[:, self.curstep]
         self.ni = self.n[:, self.curstep]
         self.dni = self.dn[:, self.curstep]
 
@@ -303,12 +307,12 @@ class Neuron_HH():
         self.tau_ui = ((30.8 + (211.4 + np.exp((self.Vi+2+113.2)/5))) /
                        (3.7 * (1 + np.exp((self.Vi+2+84)/3.2))))
         """
-                
+        self.ItCa[:, self.curstep] = self.gT * self.s_infi**2 * self.ui * (self.eCa - self.Vi)
         self.k1V = (self.gK * self.ni**4 * (self.eK - self.Vi) +
                     self.gNa * self.mi**3 * self.hi * (self.eNa - self.Vi) +
                     self.gL * (self.eL - self.Vi) +
                     self.gM * self.pi * (self.eK - self.Vi) +
-                    self.gT * self.s_infi**2 * self.ui * (self.eCa - self.Vi) +
+                    self.ItCai +
                     self.Isyni +
                     self.Iext[:, self.curstep] +
                     2*np.random.randn())
