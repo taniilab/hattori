@@ -8,7 +8,7 @@ import numpy as np
 
 
 class Neuron_HH():
-    def __init__(self, Syncp=1, N=1, dt=0.05, T=10000,Cm=1, Vth=-56.2,
+    def __init__(self, Syncp=1, N=1, dt=0.05, T=2000,Cm=1, Vth=-56.2,
                  eNa=50, gNa=56, eK=-90, gK=6, eL=-70.3, gL=0.0205, gM=0.075,
                  tau_Syn=5.26, eSyn=0, gSyn=0.025, tau_max=608, eCa=120, gT=0.4,
                  Iext_amp = 0, Pmax=0,
@@ -111,7 +111,7 @@ class Neuron_HH():
         # external input
         self.Iext_amp = Iext_amp
         self.Iext = np.zeros((self.N, self.allsteps))
-        self.Iext[0, 10000:15000] = self.Iext_amp
+        self.Iext[0, 10000:20000] = self.Iext_amp
         # self.Iext = self.Iext_amp * np.ones((self.N, self.allsteps))
 
         """
@@ -330,7 +330,7 @@ class Neuron_HH():
                     self.ItCai +
                     self.Isyni +
                     self.Iext[:, self.curstep] +
-                    2*np.random.randn())
+                    0*np.random.randn())
 
         if (self.curstep*self.dt) < 200:
             self.k1V -= self.Isyni
@@ -354,5 +354,7 @@ class Neuron_HH():
         self.IM[:, self.curstep] = self.IMi
         self.IL[:, self.curstep] = self.ILi
         self.ItCa[:, self.curstep] = self.ItCai
-
+        self.s_inf[:, self.curstep] = self.s_infi
+        self.u_inf[:, self.curstep] = self.u_infi
+        self.tau_u[:, self.curstep] = self.tau_ui
         self.curstep += 1

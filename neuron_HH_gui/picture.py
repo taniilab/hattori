@@ -48,63 +48,26 @@ class Picture():
         if not os.path.isdir(self.dirtmp2):
             os.mkdir(self.dirtmp2)
 
-
     def run(self):
-
         for file_ in self.files:
             df = pd.read_csv(file_, index_col=0)
-            matrix = df.as_matrix()
             filename = os.path.basename(file_).replace('.csv', '')
 
-            plt.title(filename)
-            linev, = plt.plot(matrix[:, 6],  matrix[:, 2], lw=1)
+            df.plot(x='T [ms]', y='V [mV]', figsize=(40, 20), title=str(filename), lw=0.5)
             plt.savefig(filename=self.nowdir + '/plots/' + filename + '.jpg',
                         dpi=350)
-            linev.remove()
-            lineIsyn, = plt.plot(matrix[:, 6],  matrix[:, 1], lw=1)
-            plt.savefig(filename=self.nowdir + '/plots/' + filename + 'Isyn' + '.jpg',
+            plt.show()
+            plt.close()
+
+            label1 = 'I_Syn'
+            df.plot(x='T [ms]', y='I_Syn [uA]', figsize=(40, 20), title=str(filename)+label1,  lw=0.5)
+            plt.savefig(filename=self.nowdir + '/plots/' + filename + label1 + '.jpg',
                         dpi=350)
-
-            lineIsyn.remove()
-
-            """
-            lineiext, = plt.plot(matrix[:, 6], matrix[:, 1], lw=1)
-            plt.savefig(filename=self.nowdir + '/plots/' + filename +
-                        'iext.jpg', dpi=350)
-            lineiext.remove()
-            """
-
-            if self.gcounter == 0:
-                self.tmp0 = matrix[:, 6]
-                self.tmp1 = matrix[:, 2]
-                self.gcounter += 1
-            elif self.gcounter == 1:
-                self.tmp2 = matrix[:, 2]
-                self.gcounter += 1
-            elif self.gcounter == 2:
-                self.tmp3 = matrix[:, 2]
-                self.gcounter += 1
-            elif self.gcounter == 3:
-                self.tmp4 = matrix[:, 2]
-                self.gcounter += 1
-            elif self.gcounter == 4:
-                self.tmp5 = matrix[:, 2]
-                linetmp1, = plt.plot(self.tmp0, self.tmp1, lw=1)
-                linetmp2, = plt.plot(self.tmp0, self.tmp2, lw=1)
-                linetmp3, = plt.plot(self.tmp0, self.tmp3, lw=1)
-                linetmp4, = plt.plot(self.tmp0, self.tmp4, lw=1)
-                linetmp5, = plt.plot(self.tmp0, self.tmp5, lw=1)
-                plt.ylim(-2, 3)
-                plt.savefig(filename=self.nowdir + '/plots/' + filename +
-                            'prop.jpg', dpi=350)
-                self.gcounter = 0
-            else:
-                pass
-
-            plt.clf()
-
+            plt.show()
+            plt.close()
+            
             print(str(self.counter) + '個目のファイルを処理します')
             self.counter += 1
 
-            # move csv file            
+            # move csv file
             shutil.move(file_, self.dirtmp2)

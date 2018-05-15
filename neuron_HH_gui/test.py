@@ -6,15 +6,10 @@ Created on Mon May 14 16:34:25 2018
 """
 
 import numpy as np
+from picture import Picture
+import pandas as pd
 
 
-
-x = np.arange(0, 10, 1)
-
-print(x)
-
-xx = x[3:5]
- 
-xx[:] = [0, 0]
-
-print(x)
+save_path = "F:/simulation/HH"
+pic = Picture(save_path)
+pic.run()

@@ -63,18 +63,24 @@ class Main():
 
     def form_parm(self):
         self.parm = []
-        self.cycle_multiproc = int(720 / 6)
+        self.cycle_multiproc = int(6 / 6)
         self.multiproc_co = 0
         self.parm_counter = 0
 
-        for i, j, k, l in itertools.product(range(12), range(6), range(10),
+        for i, j, k, l in itertools.product(range(6), range(1), range(1),
                                             range(1)):
             self.parm.append({})
+            """
             self.parm[self.parm_counter] = {'Iext_amp': 1,
                                             'Syncp': 5,
                                             'Pmax': round(0.5 * i, 2),
                                             'ratio': round(0.2 * j, 2),
                                             'gT': round(0.4 * k, 2)}
+            """
+            self.parm[self.parm_counter] = {'Iext_amp': -0.5,
+                                            'Syncp': 5,
+                                            'Pmax': 0,
+                                            'ratio': round(0.2 * j, 2)}
             self.parm_counter += 1
 
 
@@ -148,12 +154,12 @@ def main():
             lines[j], = ax[j].plot(tm, cb[i].V[j], color="indigo",
                                    markevery=[0, -1])
 
-        ax[cb[i].N].plot(tm, cb[i].Isyn[0], color="coral", markevery=[0, -1])
+        ax[cb[i].N].plot(tm, cb[i].s_inf[0], color="coral", markevery=[0, -1])
 
-        ax[cb[i].N+1].plot(tm, cb[i].INMDA[0], color="coral",
+        ax[cb[i].N+1].plot(tm, cb[i].u_inf[0], color="coral",
                            markevery=[0, -1])
 
-        ax[cb[i].N+2].plot(tm, cb[i].ItCa[0], color="coral",
+        ax[cb[i].N+2].plot(tm, cb[i].tau_u[0], color="coral",
                            markevery=[0, -1])
         """
         # adjusting
