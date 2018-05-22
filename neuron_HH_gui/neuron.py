@@ -8,7 +8,7 @@ import numpy as np
 
 
 class Neuron_HH():
-    def __init__(self, syncp=1, N=1, dt=0.05, T=20000,Cm=1, Vth=-56.2,
+    def __init__(self, syncp=1, N=1, dt=0.02, T=20000,Cm=1, Vth=-56.2,
                  eNa=50, gNa=56, eK=-90, gK=6, eL=-70.3, gL=0.0205, gM=0.075,
                  tau_syn=5.26, esyn=0, gsyn=0.025, tau_max=608, eCa=120, gT=0.4,
                  Iext_amp = 0, Pmax=0,
@@ -140,7 +140,7 @@ class Neuron_HH():
 
         # noise palameter
         self.noise = noise
-        self.n = np.zeros((self.N, self.allsteps))
+        self.Inoise = np.zeros((self.N, self.allsteps))
 
         self.dn = np.zeros((self.N, self.allsteps))
         self.ramda = ramda
@@ -253,7 +253,7 @@ class Neuron_HH():
         self.Ileaki = self.Ileak[:, self.curstep]
         self.Imi = self.Im[:, self.curstep]
         self.ItCai = self.ItCa[:, self.curstep]
-        self.ni = self.n[:, self.curstep]
+        self.Inoisei = self.Inoise[:, self.curstep]
         self.dni = self.dn[:, self.curstep]
 
         # calculate synaptic input
@@ -265,17 +265,17 @@ class Neuron_HH():
         # 2 : Ornstein-Uhlenbeck process
         # 3 : sin wave
         if self.noise == 1:
-            self.n[:, self.curstep+1] = self.D * self.g[:, self.curstep]
+            self.Inoise[:, self.curstep+1] = self.D * self.g[:, self.curstep]
 
         elif self.noise == 2:
-            self.n[:, self.curstep+1] = (self.ni +
-                                         (-self.alpha * (self.ni - self.beta) +
+            self.Inoise[:, self.curstep+1] = (self.Inoisei +
+                                         (-self.alpha * (self.Inoisei - self.beta) +
                                           self.D * self.g[:, self.curstep]) *
                                          self.dt)
         elif self.noise == 3:
-            self.n[:, self.curstep+1] = (self.alpha *
-                                         np.sin(np.pi *
-                                                self.curstep/(1000/self.dt)))
+            self.Inoise[:, self.curstep+1] = (self.alpha *
+                                              np.sin(np.pi *
+                                                     self.curstep/(1000/self.dt)))
 
         else:
             pass
@@ -347,6 +347,8 @@ class Neuron_HH():
         self.n[:, self.curstep+1] = self.ni + self.k1n * self.dt
         self.p[:, self.curstep+1] = self.pi + self.k1p * self.dt
         self.u[:, self.curstep+1] = self.ui + self.k1u * self.dt
+        self.V[:, self.curstep+1] = self.Vi + self.k1V * self.dt
+
 
         # update original array
         self.INa[:, self.curstep] = self.INai
@@ -357,4 +359,5 @@ class Neuron_HH():
         self.s_inf[:, self.curstep] = self.s_infi
         self.u_inf[:, self.curstep] = self.u_infi
         self.tau_u[:, self.curstep] = self.tau_ui
+        self.Inoise[:, self.curstep] = self.Inoisei
         self.curstep += 1

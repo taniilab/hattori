@@ -63,11 +63,11 @@ class Main():
 
     def form_parm(self):
         self.parm = []
-        self.cycle_multiproc = int(360 / 6)
+        self.cycle_multiproc = int(72 / 6)
         self.multiproc_co = 0
         self.parm_counter = 0
 
-        for i, j, k, l in itertools.product(range(6), range(2), range(1),
+        for i, j, k, l in itertools.product(range(6), range(3), range(4),
                                             range(1)):
             self.parm.append({})
             """
@@ -77,12 +77,14 @@ class Main():
                                             'ratio': round(0.2 * j, 2),
                                             'gT': round(0.4 * k, 2)}
             """
-            self.parm[self.parm_counter] = {'Iext_amp': 0.5,
+            self.parm[self.parm_counter] = {'Iext_amp': -0.2,
                                             'syncp': 5,
                                             'Pmax': 1,
                                             'gT': 0.4,
                                             'ratio': 0.5,
-                                            '':}
+                                            'alpha': round(k*0.2, 2),
+                                            'beta': round(i*0.1+0.1, 2),
+                                            'D': round(j+1, 2)}
             self.parm_counter += 1
 
 
@@ -127,7 +129,8 @@ def main():
                                'I_m [uA]': cb[k].Im[j],
                                'I_leak [uA]': cb[k].Ileak[j],
                                'I_tCa [uA]': cb[k].ItCa[j],
-                               'I_syn [uA]': cb[k].Isyn[j]})
+                               'I_syn [uA]': cb[k].Isyn[j],
+                               'I_noise [uA]': cb[k].Inoise[j]})
             df.to_csv(save_path + '/' + filename)
 
         pool.close()
