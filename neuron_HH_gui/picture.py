@@ -53,17 +53,17 @@ class Picture():
             df = pd.read_csv(file_, index_col=0)
             filename = os.path.basename(file_).replace('.csv', '')
 
-            df.plot(x='T [ms]', y='V [mV]', figsize=(40, 20), title=str(filename), lw=0.5)
+            df.plot(x='T [ms]', y='V [mV]', figsize=(60, 20), title=str(filename), lw=0.5)
             plt.savefig(filename=self.nowdir + '/plots/' + filename + '.jpg',
                         dpi=350)
-            plt.show()
+            # plt.show()
             plt.close()
 
-            label1 = 'I_Syn'
-            df.plot(x='T [ms]', y='I_Syn [uA]', figsize=(40, 20), title=str(filename)+label1,  lw=0.5)
+            label1 = 'I_syn'
+            df.plot(x='T [ms]', y='I_syn [uA]', figsize=(40, 20), title=str(filename)+label1,  lw=0.5)
             plt.savefig(filename=self.nowdir + '/plots/' + filename + label1 + '.jpg',
                         dpi=350)
-            plt.show()
+            # plt.show()
             plt.close()
             
             print(str(self.counter) + '個目のファイルを処理します')
