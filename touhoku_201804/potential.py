@@ -28,7 +28,7 @@ discription of index
 18:cell6 1pulse
 """
 
-index = "4"
+index = "16"
 path_h = "Z:/Box Sync/Personal/Documents/20180420_touhoku_patch/voltage/voltage" + index + ".csv"
 path_i = "Z:/Box Sync/Personal/Documents/20180420_touhoku_patch/current/current" + index + ".csv"
 
