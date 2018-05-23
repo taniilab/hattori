@@ -5,42 +5,28 @@ import numpy as np
 from scipy.fftpack import fft, ifft
 import seaborn as sns
 
-# spontaneous
-# 22
-index = "22"
-path = "C:/Box Sync/Personal/Documents/touhoku_patch/20180420_cortex/"
-path_h = path + "voltage/voltage" + index + ".csv"
-path_i = path + "current/current" + index + ".csv"
+
+path = "F:/simulation/HH/tmp/2018_5_18_10_32_49__Iext_amp_ 0.5_ Syncp_ 5_ Pmax_ 2.0_ gT_ 0.0_ ratio_ 0.4__N0_HH.csv"
 
 fsize = 24
 sample = 20000
 fig = plt.figure(figsize=(30, 15))
 
-dfv = pd.read_csv(path_h, delimiter=',')
-dfc = pd.read_csv(path_i, delimiter=',')
+df = pd.read_csv(path, delimiter=',')
 
 ax2 = fig.add_subplot(2, 1, 1)
-ax2.plot(dfc['index']/sample, dfc['current(pA)'], markevery=[0, -1], color="purple")
+ax2.plot(df['T [ms]']/sample, df['V [mV]'], markevery=[0, -1], color="purple")
 ax2.tick_params(labelsize=fsize)
 ax2.set_xlabel("time[s]", fontsize=fsize)
-ax2.set_ylabel("clamp current[pA]", fontsize=fsize)
-
-ax1 = ax2.twinx()
-ax1.plot(dfv['index']/sample, dfv['voltage(mV)'], markevery=[0, -1])
-ax1.tick_params(labelsize=fsize)
-ax1.set_xlabel("time[s]", fontsize=fsize)
-ax1.set_ylabel("membrane potential[mV]", fontsize=fsize)
-
+ax2.set_ylabel("membrane potential[mV]", fontsize=fsize)
 
 ax3 = fig.add_subplot(2, 1, 2)
-
 plt.grid(which="both")
-# noise = np.array(dfc['current(pA)'])
-noise = np.array(dfv['voltage(mV)'])
+noise = np.array(df['V [mV]'])
 noise[np.isnan(noise)] = 0
 
 N = len(noise)  # サンプル数
-dt = 1/20000  # サンプリング間隔
+dt = 1/200  # サンプリング間隔
 t = np.arange(0, N * dt, dt)  # 時間軸
 freq = np.linspace(0, 1.0 / dt, N)  # 周波数軸
 
@@ -51,8 +37,7 @@ print(noise)
 # 高速フーリエ変換
 F = np.fft.fft(sig)
 amp = np.abs(F)
-#ax3.plot(sig)
-plt.xscale("symlog")
+#plt.xscale("symlog")
 ax3.plot(freq, amp)
 
 fig.tight_layout()
