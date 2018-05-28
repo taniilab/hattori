@@ -8,22 +8,22 @@ import numpy as np
 
 
 class Neuron_HH():
-    def __init__(self, syncp=1, N=1, dt=0.02, T=20000,Cm=1, Vth=-56.2,
+    def __init__(self, syncp=1, N=1, dt=0.05, T=2000,Cm=1, Vth=-56.2,
                  eNa=50, gNa=56, eK=-90, gK=6, eL=-70.3, gL=0.0205, gM=0.075,
-                 tau_syn=5.26, esyn=0, gsyn=0.025, tau_max=608, eCa=120, gT=0.4,
+                 tau_syn=5.26, esyn=0, gsyn=0.025, tau_max=608, eCa=120, gtCa=0.4,
                  Iext_amp = 0, Pmax=0,
                  Iext_num=0, noise=0, ramda=-10, alpha=0.5,
                  beta=0, D=1, ratio=0.5):
         self.set_neuron_palm(syncp, N, dt, T,Cm, Vth,
                  eNa, gNa, eK, gK, eL, gL, gM,
-                 tau_syn, esyn, gsyn, tau_max, eCa, gT,
+                 tau_syn, esyn, gsyn, tau_max, eCa, gtCa,
                  Iext_amp, Pmax,
                  Iext_num, noise, ramda, alpha,
                  beta, D, ratio)
 
     def set_neuron_palm(self, syncp=1, N=1, dt=0.05, T=5000,Cm=1, Vth=-56.2,
                  eNa=50, gNa=56, eK=-90, gK=6, eL=-70.3, gL=0.0205, gM=0.075,
-                 tau_syn=5.26, esyn=0, gsyn=0.025, tau_max=608, eCa=120, gT=0.4,
+                 tau_syn=5.26, esyn=0, gsyn=0.025, tau_max=608, eCa=120, gtCa=0.4,
                  Iext_amp = 0, Pmax=0,
                  Iext_num=0, noise=0, ramda=-10, alpha=0.5,
                  beta=0, D=1, ratio = 0.5):
@@ -56,7 +56,7 @@ class Neuron_HH():
         self.gL = gL * np.ones(self.N)
         self.gM = gM * np.ones(self.N)
         self.eCa = eCa * np.ones(self.N)
-        self.gT = gT * np.ones(self.N)
+        self.gtCa = gtCa * np.ones(self.N)
 
         self.V = -65 * np.ones((self.N, self.allsteps))
         self.m = 0.5 * np.ones((self.N, self.allsteps))
@@ -321,7 +321,7 @@ class Neuron_HH():
         self.IKi = self.gK * self.ni**4 * (self.eK - self.Vi)
         self.Ileaki = self.gL * (self.eL - self.Vi)
         self.Imi = self.gM * self.pi * (self.eK - self.Vi)
-        self.ItCai = self.gT * self.s_infi**2 * self.ui * (self.eCa - self.Vi)
+        self.ItCai = self.gtCa * self.s_infi**2 * self.ui * (self.eCa - self.Vi)
 
         self.k1V = (self.INai +
                     self.IKi +

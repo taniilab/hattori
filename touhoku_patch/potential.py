@@ -5,8 +5,8 @@ import numpy as np
 import seaborn as sns
 
 
-index = "22"
-path = "C:/Box Sync/Personal/Documents/touhoku_patch/20180420_cortex/"
+index = "1"
+path = "C:/Box Sync/Personal/Documents/touhoku_patch/20180522_cortex/"
 path_h = path + "voltage/voltage" + index + ".csv"
 path_i = path + "current/current" + index + ".csv"
 
@@ -16,6 +16,8 @@ fig = plt.figure(figsize=(30, 15))
 
 dfv = pd.read_csv(path_h, delimiter=',')
 dfc = pd.read_csv(path_i, delimiter=',')
+dfv.fillna(0)
+dfc.fillna(0)
 
 ax2 = fig.add_subplot(1, 1, 1)
 ax2.plot(dfc['index']/sample, dfc['current(pA)'], markevery=[0, -1], color="purple")
