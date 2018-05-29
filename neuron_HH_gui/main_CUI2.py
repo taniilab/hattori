@@ -20,7 +20,7 @@ from picture import Picture
 
 starttime = time.time()
 elapsed_time = 0
-save_path = "F:/simulation/HH"
+save_path = "E:/simulation/HH"
 
 # number of processors
 process = 6
@@ -51,14 +51,15 @@ class Main():
                                             'ratio': round(0.2 * j, 2),
                                             'gtCa': round(0.4 * k, 2)}
             """
-            self.parm[self.parm_counter] = {'Iext_amp': 1,
+            self.parm[self.parm_counter] = {'Iext_amp': 0.5,
                                             'syncp': 5,
+                                            'noise': 2,
                                             'Pmax': 1,
                                             'gtCa': 0.4,
                                             'ratio': 0.5,
-                                            'alpha': 0.5,
-                                            'beta': 0.5,
-                                            'D': round(i+1, 2)}
+                                            'alpha': round(i*0.1+0.2, 2),
+                                            'beta': 0.02,
+                                            'D': 0.05}
             self.parm_counter += 1
 
     def simulate(self, process):
