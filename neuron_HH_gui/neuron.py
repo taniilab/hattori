@@ -8,7 +8,7 @@ import numpy as np
 
 
 class Neuron_HH():
-    def __init__(self, syncp=1, N=1, dt=0.05, T=2000,Cm=1, Vth=-56.2,
+    def __init__(self, syncp=1, N=1, dt=0.02, T=20000,Cm=1, Vth=-56.2,
                  eNa=50, gNa=56, eK=-90, gK=6, eL=-70.3, gL=0.0205, gM=0.075,
                  tau_syn=5.26, esyn=0, gsyn=0.025, tau_max=608, eCa=120, gtCa=0.4,
                  Iext_amp = 0, Pmax=0,
@@ -111,7 +111,9 @@ class Neuron_HH():
         # external input
         self.Iext_amp = Iext_amp
         self.Iext = np.zeros((self.N, self.allsteps))
-        self.Iext[0, 10000:20000] = self.Iext_amp
+        self.Iext[0, 10000:20000] = -self.Iext_amp
+        self.Iext[0, 30000:40000] = self.Iext_amp
+
         # self.Iext = self.Iext_amp * np.ones((self.N, self.allsteps))
 
         """
@@ -269,9 +271,8 @@ class Neuron_HH():
 
         elif self.noise == 2:
             self.Inoise[:, self.curstep+1] = (self.Inoisei +
-                                         (-self.alpha * (self.Inoisei - self.beta) +
-                                          self.D * self.g[:, self.curstep]) *
-                                         self.dt)
+                                              (-self.alpha * (self.Inoisei - self.beta) * self.dt
+                                               +self.D * self.g[:, self.curstep]))
         elif self.noise == 3:
             self.Inoise[:, self.curstep+1] = (self.alpha *
                                               np.sin(np.pi *

@@ -51,14 +51,14 @@ class Main():
                                             'ratio': round(0.2 * j, 2),
                                             'gtCa': round(0.4 * k, 2)}
             """
-            self.parm[self.parm_counter] = {'Iext_amp': -0.2,
+            self.parm[self.parm_counter] = {'Iext_amp': 1,
                                             'syncp': 5,
                                             'Pmax': 1,
-                                            'gtCa': l,
+                                            'gtCa': 0.4,
                                             'ratio': 0.5,
-                                            'alpha': round(k*0.2, 2),
-                                            'beta': round(i*0.1+0.1, 2),
-                                            'D': round(j+1, 2)}
+                                            'alpha': 0.5,
+                                            'beta': 0.5,
+                                            'D': round(i+1, 2)}
             self.parm_counter += 1
 
     def simulate(self, process):
