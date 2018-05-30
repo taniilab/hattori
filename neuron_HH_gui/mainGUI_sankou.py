@@ -7,7 +7,7 @@ from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
-from neuron import Neuron_HR as Neuron
+from neuronHR import Neuron_HR as Neuron
 
 
 class CentralWidget(QWidget):
