@@ -57,9 +57,9 @@ class Main():
                                             'Pmax': 0,
                                             'gtCa': 0.4,
                                             'ratio': 0.5,
-                                            'alpha': round(0.2+i*0.1.1+0.2, 2),
+                                            'alpha': round(0.2+i*0.1, 2),
                                             'beta': round(j*0.1, 2),
-                                            'D': round(0.4+k*0.1, 2)}
+                                            'D': round(0.7+k*0.1, 2)}
             self.parm_counter += 1
 
     def simulate(self, process):
@@ -169,8 +169,8 @@ def main():
     plt.show()
 
     elapsed_time = time.time() - starttime
-    pic = Picture(save_path)
-    pic.run()
+    #pic = Picture(save_path)
+    #pic.run()
 
     print("elapsed_time:{0}".format(elapsed_time) + "[sec]")
     print("")
