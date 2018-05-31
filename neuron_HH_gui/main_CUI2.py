@@ -31,8 +31,8 @@ class Main():
 
         #combination
         self.i = 6
-        self.j = 1
-        self.k = 1
+        self.j = 6
+        self.k = 3
         self.l = 1
 
         self.cycle_multiproc = int(self.i * self.j*self.k*self.l/process)
@@ -54,12 +54,12 @@ class Main():
             self.parm[self.parm_counter] = {'Iext_amp': 0.5,
                                             'syncp': 5,
                                             'noise': 2,
-                                            'Pmax': 1,
+                                            'Pmax': 0,
                                             'gtCa': 0.4,
                                             'ratio': 0.5,
-                                            'alpha': round(i*0.1+0.2, 2),
-                                            'beta': 0.02,
-                                            'D': 0.05}
+                                            'alpha': round(0.2+i*0.1.1+0.2, 2),
+                                            'beta': round(j*0.1, 2),
+                                            'D': round(0.4+k*0.1, 2)}
             self.parm_counter += 1
 
     def simulate(self, process):

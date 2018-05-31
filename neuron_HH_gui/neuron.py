@@ -8,7 +8,7 @@ import numpy as np
 
 
 class Neuron_HH():
-    def __init__(self, syncp=1, N=1, dt=0.05, T=10000,Cm=1, Vth=-56.2,
+    def __init__(self, syncp=1, N=1, dt=0.05, T=100000,Cm=1, Vth=-56.2,
                  eNa=50, gNa=56, eK=-90, gK=6, eL=-70.3, gL=0.0205, gM=0.075,
                  tau_syn=5.26, esyn=0, gsyn=0.025, tau_max=608, eCa=120, gtCa=0.4,
                  Iext_amp = 0, Pmax=0,
