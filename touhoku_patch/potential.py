@@ -5,7 +5,7 @@ import numpy as np
 import seaborn as sns
 
 
-index = "1"
+index = "3"
 path = "C:/Box Sync/Personal/Documents/touhoku_patch/20180522_cortex/"
 path_h = path + "voltage/voltage" + index + ".csv"
 path_i = path + "current/current" + index + ".csv"
