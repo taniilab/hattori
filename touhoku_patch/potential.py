@@ -1,10 +1,12 @@
 #%matplotlib notebook
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 import numpy as np
 import seaborn as sns
 
-
+# for overflow error
+mpl.rcParams['agg.path.chunksize'] = 1000000
 index = "3"
 path = "C:/Box Sync/Personal/Documents/touhoku_patch/20180522_cortex/"
 path_h = path + "voltage/voltage" + index + ".csv"
