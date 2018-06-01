@@ -12,6 +12,8 @@ import pandas as pd
 import numpy as np
 from PIL import Image
 import datetime
+import matplotlib as mpl
+mpl.rcParams['agg.path.chunksize'] = 1000000
 
 class Picture():
     def __init__(self,
