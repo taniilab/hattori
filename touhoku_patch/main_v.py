@@ -11,8 +11,8 @@ import time
 
 path = "C:/Box Sync/Personal/Documents/touhoku_patch/20180521_cortex/"
 
-mode = "current"
-#mode = "voltage"
+#mode = "current"
+mode = "voltage"
 
 if mode == "voltage":
     unit = "(mV)"
@@ -20,7 +20,7 @@ elif mode == "current":
     unit = "(pA)"
 else:
     pass
-        
+
 num_sim = 100
 counter = 0
 starttime = time.time()
@@ -33,7 +33,7 @@ v_set = []
 counter = 0
 for i in range(0, num_sim):
     v_set.append([])
-    
+
 print('start')
 df = pd.read_csv(path + mode + ".atf", delimiter='\t', skiprows=[0, 1])
 #df = pd.read_csv(path + "voltage.csv", delimiter=',', skiprows=[0, 1])
@@ -41,7 +41,7 @@ df = pd.read_csv(path + mode + ".atf", delimiter='\t', skiprows=[0, 1])
 df = df.replace(0, np.nan)
 
 
-index = ['5', '21', '26', '32', '48', '53', '58', '73']
+index = ['5', '21', '26', '32', '48', '53', '58', '74', '78']
 
 # Initialize
 top =  1
