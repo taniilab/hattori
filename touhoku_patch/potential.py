@@ -6,10 +6,10 @@ import numpy as np
 import seaborn as sns
 
 # for overflow error
-mpl.rcParams['agg.path.chunksize'] = 1000000
+mpl.rcParams['agg.path.chunksize'] = 100000
 
-index = ""
-path = "C:/Box Sync/Personal/Documents/touhoku_patch/20180427_cortex/"
+index = "0"
+path = "C:/Box Sync/Personal/Documents/touhoku_patch/20170712_cortex/"
 path_h = path + "voltage/voltage" + index + ".csv"
 path_i = path + "current/current" + index + ".csv"
 

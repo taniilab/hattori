@@ -9,10 +9,10 @@ import numpy as np
 import sys
 import time
 
-path = "C:/Box Sync/Personal/Documents/touhoku_patch/20180521_cortex/"
+path = "C:/Box Sync/Personal/Documents/touhoku_patch/20170712_cortex/"
 
-#mode = "current"
-mode = "voltage"
+mode = "current"
+# mode = "voltage"
 
 if mode == "voltage":
     unit = "(mV)"
@@ -36,27 +36,26 @@ for i in range(0, num_sim):
 
 print('start')
 df = pd.read_csv(path + mode + ".atf", delimiter='\t', skiprows=[0, 1])
-# df = pd.read_csv(path + "voltage.csv", delimiter=',', skiprows=[0, 1])
-# df = df.replace('0', np.nan)
 df = df.replace(0, np.nan)
 
-index = ['5', '21', '26', '32', '48', '53', '58', '73']
+
+index = ['19', '40', '91', '112', '131', '151', '171', '191', '195',
+         '215', '235', '255', '275', '305', '314', '334', '349', '369',
+         '374', '388', '408', '429', '449', '468', '488', '508', '528',
+         '551', '561']
 
 # Initialize
 top = 1
 
 # Create columns for each experiment content
 for counter, last in enumerate(index):
-    v_set[counter] = df.ix[:df["Section[" + str(top) + "] " + str(unit)].count(),
-                     "Section[" + str(top) + "] " + str(unit)]
+    v_set[counter] = df.ix[:df["Section[" + str(top) + "] " + str(unit)].count(), "Section[" + str(top) + "] " + str(unit)]
     print(v_set[int(counter)])
-    for j in range(top + 1, int(last)):
-        v_set[int(counter)] = pd.concat([v_set[int(counter)], df.ix[:df["Section[" + str(j) + "] " + str(unit)].count(),
-                                                              "Section[" + str(j) + "] " + str(unit)]],
-                                        ignore_index=True)
+    for j in range(top+1, int(last)):
+        v_set[int(counter)] = pd.concat([v_set[int(counter)], df.ix[:df["Section[" + str(j) + "] " + str(unit)].count(), "Section[" + str(j) + "] " + str(unit)]], ignore_index=True)
     top = int(last)
 
-for i in range(0, counter + 1):
+for i in range(0, counter+1):
     t = np.arange(0, len(v_set[i]), 1)
     df = pd.DataFrame({"index": t, mode + unit: v_set[i]})
     df.to_csv(path + mode + "/" + mode + str(i) + '.csv')

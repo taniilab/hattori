@@ -9,7 +9,7 @@ import numpy as np
 import sys
 import time
 
-path = "C:/Box Sync/Personal/Documents/touhoku_patch/20180521_cortex/"
+path = "C:/Box Sync/Personal/Documents/touhoku_patch/20170712_cortex/"
 
 #mode = "current"
 mode = "voltage"
@@ -36,15 +36,16 @@ for i in range(0, num_sim):
 
 print('start')
 df = pd.read_csv(path + mode + ".atf", delimiter='\t', skiprows=[0, 1])
-#df = pd.read_csv(path + "voltage.csv", delimiter=',', skiprows=[0, 1])
-#df = df.replace('0', np.nan)
 df = df.replace(0, np.nan)
 
 
-index = ['5', '21', '26', '32', '48', '53', '58', '74', '78']
+index = ['19', '40', '91', '112', '131', '151', '171', '191', '195',
+         '215', '235', '255', '275', '305', '314', '334', '349', '369',
+         '374', '388', '408', '429', '449', '468', '488', '508', '528',
+         '551', '561']
 
 # Initialize
-top =  1
+top = 1
 
 # Create columns for each experiment content
 for counter, last in enumerate(index):
