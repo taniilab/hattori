@@ -8,8 +8,8 @@ import seaborn as sns
 # for overflow error
 mpl.rcParams['agg.path.chunksize'] = 100000
 
-index = "0"
-path = "C:/Box Sync/Personal/Documents/touhoku_patch/20170712_cortex/"
+index = "7"
+path = "Z:/Box Sync/Personal/Documents/touhoku_patch/20180522_cortex/"
 path_h = path + "voltage/voltage" + index + ".csv"
 path_i = path + "current/current" + index + ".csv"
 
