@@ -13,20 +13,20 @@ class Neuron_HH():
                  tau_syn=5.26, esyn=0, gsyn=0.025, tau_max=608, eCa=120, gtCa=0.4,
                  Iext_amp = 0, Pmax=0,
                  Iext_num=0, noise=0, ramda=-10, alpha=0.5,
-                 beta=0, D=1, ratio=0.5):
+                 beta=0, D=1, ratio=0.5, Mg_conc=4):
         self.set_neuron_palm(syncp, N, dt, T,Cm, Vth,
                  eNa, gNa, eK, gK, eL, gL, gM,
                  tau_syn, esyn, gsyn, tau_max, eCa, gtCa,
                  Iext_amp, Pmax,
                  Iext_num, noise, ramda, alpha,
-                 beta, D, ratio)
+                 beta, D, ratio, Mg_conc)
 
     def set_neuron_palm(self, syncp=1, N=1, dt=0.05, T=5000,Cm=1, Vth=-56.2,
                  eNa=50, gNa=56, eK=-90, gK=6, eL=-70.3, gL=0.0205, gM=0.075,
                  tau_syn=5.26, esyn=0, gsyn=0.025, tau_max=608, eCa=120, gtCa=0.4,
                  Iext_amp = 0, Pmax=0,
                  Iext_num=0, noise=0, ramda=-10, alpha=0.5,
-                 beta=0, D=1, ratio = 0.5):
+                 beta=0, D=1, ratio = 0.5, Mg_conc=4):
         # parameters (used by main.py)
         self.parm_dict = {}
         self.ratio = ratio
@@ -108,6 +108,8 @@ class Neuron_HH():
         # synaptic reversal potential
         self.esyn = esyn * np.ones((self.N, self.N))
         self.tau_syn = tau_syn
+        self.Mg_conc = Mg_conc
+
         # external input
         self.Iext_amp = Iext_amp
         self.Iext = np.zeros((self.N, self.allsteps))
@@ -203,9 +205,10 @@ class Neuron_HH():
 
                 if self.curstep*self.dt > 200:
                     
-                    self.gNMDA[i, j] = self.biexp_func(self.curstep*self.dt - self.t_ap[j, i, 0], self.ratio * self.Pmax, 10, 150) / (1 + (4.5/3.57)*np.exp(-0.062*self.Vi))
+                    self.gNMDA[i, j] = self.biexp_func(self.curstep*self.dt - self.t_ap[j, i, 0], self.ratio * self.Pmax, 10, 150) / (1 + (self.Mg_conc/3.57)*np.exp(-0.062*self.Vi))
                     """
-                    self.gNMDA[i, j] = self.biexp_func(self.curstep*self.dt - self.t_ap[j, i, 0] - 5, self.Pmax*0, 1, 150)"""
+                    self.gNMDA[i, j] = self.biexp_func(self.curstep*self.dt - self.t_ap[j, i, 0] - 5, self.Pmax*0, 1, 150)
+                    """
                     self.gAMPA[i, j] = self.biexp_func(self.curstep*self.dt - self.t_ap[j, i, 0], self.Pmax, 1, 2)
                     self.gsyn[i, j] = self.gNMDA[i, j] + self.gAMPA[i, j]
                 else:                  

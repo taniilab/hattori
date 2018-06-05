@@ -17,6 +17,9 @@ import time
 import datetime
 import itertools
 from picture import Picture
+import matplotlib as mpl
+# for overflow error
+mpl.rcParams['agg.path.chunksize'] = 100000
 
 starttime = time.time()
 elapsed_time = 0
@@ -30,8 +33,8 @@ class Main():
         self.parm = []
 
         #combination
-        self.i = 9
-        self.j = 4
+        self.i = 4
+        self.j = 6
         self.k = 1
         self.l = 1
 
@@ -51,15 +54,18 @@ class Main():
                                             'ratio': round(0.2 * j, 2),
                                             'gtCa': round(0.4 * k, 2)}
             """
-            self.parm[self.parm_counter] = {'Iext_amp': 0.5,
+            self.parm[self.parm_counter] = {'T': 100000,
+                                            'dt': 0.03,
+                                            'Iext_amp': 0.5,
                                             'syncp': 5,
                                             'noise': 2,
-                                            'Pmax': 0,
+                                            'Pmax': round(0.1+j*0.2, 2),
                                             'gtCa': 0.4,
+                                            'Mg_conc': round(1+i*2, 2),
                                             'ratio': 0.5,
                                             'alpha': 0.5,
-                                            'beta': round(j*0.1, 2),
-                                            'D': round(0.01+i*0.01, 2)}
+                                            'beta': 0.1,
+                                            'D': 0.05}
             self.parm_counter += 1
 
     def simulate(self, process):
