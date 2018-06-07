@@ -10,7 +10,6 @@ import os
 import shutil
 import pandas as pd
 import numpy as np
-from PIL import Image
 import datetime
 import matplotlib as mpl
 # for overflow error
@@ -74,7 +73,3 @@ class Picture():
 
             # move csv file
             shutil.move(file_, self.dirtmp2)
-
-
-pic = Picture("E:/simulation/HH")
-pic.run()
