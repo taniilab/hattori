@@ -33,7 +33,7 @@ class Main():
         self.parm = []
 
         #combination
-        self.i = 30
+        self.i = 6
         self.j = 1
         self.k = 1
         self.l = 1
@@ -54,15 +54,16 @@ class Main():
                                             'ratio': round(0.2 * j, 2),
                                             'gtCa': round(0.4 * k, 2)}
             """
-            self.parm[self.parm_counter] = {'T': 100000,
-                                            'dt': 0.04,
+            self.parm[self.parm_counter] = {'T': 5000,
+                                            'dt': 0.05,
                                             'Iext_amp': 0.5,
                                             'syncp': 5,
                                             'noise': 2,
-                                            'Pmax': round(j*0.05, 2),
+                                            'Pmax_AMPA': 0.0,
+                                            'Pmax_NMDA': 0.0,
                                             'gtCa': 0.4,
+                                            'glCa': round(0.0001 + 0.0001*self.i, 6),
                                             'Mg_conc': 1,
-                                            'ratio': 0.5,
                                             'alpha': 0.5,
                                             'beta': 0.1,
                                             'D': 0.05}
@@ -134,6 +135,7 @@ def main():
         pool.close()
         pool.join()
 
+    """
     # sample plotting
     for i in range(0, process):
         # initialize
@@ -164,16 +166,10 @@ def main():
 
         ax[res[i].N+2].plot(tm, res[i].tau_u[0], color="coral",
                            markevery=[0, -1])
-        """
-        # adjusting
-        for j in range(0, res[i].N+2):
-            ax[j].grid(which='major', color='thistle', linestyle='-')
-        """
-
         fig.tight_layout()
 
     plt.show()
-
+    """
     elapsed_time = time.time() - starttime
     pic = Picture(save_path)
     pic.run()

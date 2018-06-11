@@ -8,23 +8,23 @@ import numpy as np
 
 
 class Neuron_HH():
-    def __init__(self, syncp=1, N=1, dt=0.05, T=100000,Cm=1, Vth=-56.2,
+    def __init__(self, syncp=1, N=1, dt=0.05, T=1000,Cm=1, Vth=-56.2,
                  eNa=50, gNa=56, eK=-90, gK=6, eL=-70.3, gL=0.0205, gM=0.075,
-                 tau_syn=5.26, esyn=0, gsyn=0.025, tau_max=608, eCa=120, gtCa=0.4,
-                 Iext_amp = 0, Pmax=0,
+                 tau_syn=5.26, esyn=0, gsyn=0.025, tau_max=608, eCa=120, gtCa=0.4, glCa=0.0001,
+                 Iext_amp = 0, Pmax_AMPA=0, Pmax_NMDA=0,
                  Iext_num=0, noise=0, ramda=-10, alpha=0.5,
                  beta=0, D=1, ratio=0.5, Mg_conc=4):
         self.set_neuron_palm(syncp, N, dt, T,Cm, Vth,
                  eNa, gNa, eK, gK, eL, gL, gM,
-                 tau_syn, esyn, gsyn, tau_max, eCa, gtCa,
-                 Iext_amp, Pmax,
+                 tau_syn, esyn, gsyn, tau_max, eCa, gtCa, glCa,
+                 Iext_amp, Pmax_AMPA, Pmax_NMDA,
                  Iext_num, noise, ramda, alpha,
                  beta, D, ratio, Mg_conc)
 
     def set_neuron_palm(self, syncp=1, N=1, dt=0.05, T=5000,Cm=1, Vth=-56.2,
                  eNa=50, gNa=56, eK=-90, gK=6, eL=-70.3, gL=0.0205, gM=0.075,
-                 tau_syn=5.26, esyn=0, gsyn=0.025, tau_max=608, eCa=120, gtCa=0.4,
-                 Iext_amp = 0, Pmax=0,
+                 tau_syn=5.26, esyn=0, gsyn=0.025, tau_max=608, eCa=120, gtCa=0.4, glCa=0.0001,
+                 Iext_amp = 0, Pmax_AMPA=0, Pmax_NMDA=0,
                  Iext_num=0, noise=0, ramda=-10, alpha=0.5,
                  beta=0, D=1, ratio = 0.5, Mg_conc=4):
         # parameters (used by main.py)
@@ -57,6 +57,7 @@ class Neuron_HH():
         self.gM = gM * np.ones(self.N)
         self.eCa = eCa * np.ones(self.N)
         self.gtCa = gtCa * np.ones(self.N)
+        self.glCa = glCa * np.ones(self.N)
 
         self.V = -65 * np.ones((self.N, self.allsteps))
         self.m = 0.5 * np.ones((self.N, self.allsteps))
@@ -64,12 +65,18 @@ class Neuron_HH():
         self.n = 0.5 * np.ones((self.N, self.allsteps))
         self.p = 0.5 * np.ones((self.N, self.allsteps))
         self.u = 0.5 * np.ones((self.N, self.allsteps))
+        self.q = 0.5 * np.ones((self.N, self.allsteps))
+        self.r = 0.5 * np.ones((self.N, self.allsteps))
         self.alpha_m = 0 * np.ones((self.N, self.allsteps))
         self.alpha_h = 0 * np.ones((self.N, self.allsteps))
         self.alpha_n = 0 * np.ones((self.N, self.allsteps))
+        self.alpha_q = 0 * np.ones((self.N, self.allsteps))
+        self.alpha_r = 0 * np.ones((self.N, self.allsteps))
         self.beta_m = 0 * np.ones((self.N, self.allsteps))
         self.beta_h = 0 * np.ones((self.N, self.allsteps))
         self.beta_n = 0 * np.ones((self.N, self.allsteps))
+        self.beta_q = 0 * np.ones((self.N, self.allsteps))
+        self.beta_r = 0 * np.ones((self.N, self.allsteps))
         self.p_inf = 0 * np.ones((self.N, self.allsteps))
         self.tau_p = 0 * np.ones((self.N, self.allsteps))
         self.tau_max = tau_max
@@ -81,6 +88,7 @@ class Neuron_HH():
         self.Im = 0 * np.ones((self.N, self.allsteps))
         self.Ileak = 0 * np.ones((self.N, self.allsteps))
         self.ItCa = 0 * np.ones((self.N, self.allsteps))
+        self.IlCa = 0 * np.ones((self.N, self.allsteps))
         self.INa = 0 * np.ones((self.N, self.allsteps))
         self.IK = 0 * np.ones((self.N, self.allsteps))
 
@@ -90,6 +98,8 @@ class Neuron_HH():
         self.k1n = 0 * np.ones(self.N)
         self.k1p = 0 * np.ones(self.N)
         self.k1u = 0 * np.ones(self.N)
+        self.k1q = 0 * np.ones(self.N)
+        self.k1r = 0 * np.ones(self.N)
 
         # connection relationship
         self.W = np.ones((self.N, self.N))
@@ -156,7 +166,8 @@ class Neuron_HH():
         self.g = np.random.randn(self.N, self.allsteps)
 
         # chemical synapse and alpha function
-        self.Pmax = Pmax
+        self.Pmax_AMPA = Pmax_AMPA
+        self.Pmax_NMDA = Pmax_NMDA
 
         self.fire_tmp = np.zeros(self.N)
 
@@ -204,12 +215,9 @@ class Neuron_HH():
             for j in range(0, self.N):
 
                 if self.curstep*self.dt > 200:
-                    
-                    self.gNMDA[i, j] = self.biexp_func(self.curstep*self.dt - self.t_ap[j, i, 0], self.ratio * self.Pmax, 10, 150) / (1 + (self.Mg_conc/3.57)*np.exp(-0.062*self.Vi))
-                    """
-                    self.gNMDA[i, j] = self.biexp_func(self.curstep*self.dt - self.t_ap[j, i, 0] - 5, self.Pmax*0, 1, 150)
-                    """
-                    self.gAMPA[i, j] = self.biexp_func(self.curstep*self.dt - self.t_ap[j, i, 0], self.Pmax, 1, 2)
+                    # cite from "neuronal noise"
+                    self.gNMDA[i, j] = self.biexp_func(self.curstep*self.dt - self.t_ap[j, i, 0], self.Pmax_NMDA, 20, 125) / (1 + (self.Mg_conc/3.57)*np.exp(-0.062*self.Vi))
+                    self.gAMPA[i, j] = self.biexp_func(self.curstep*self.dt - self.t_ap[j, i, 0], self.Pmax_AMPA, 0.8, 5)
                     self.gsyn[i, j] = self.gNMDA[i, j] + self.gAMPA[i, j]
                 else:                  
                     self.gsyn[i, j] = 0
@@ -241,12 +249,18 @@ class Neuron_HH():
         self.ni = self.n[:, self.curstep]
         self.pi = self.p[:, self.curstep]
         self.ui = self.u[:, self.curstep]
+        self.qi = self.u[:, self.curstep]
+        self.ri = self.u[:, self.curstep]
         self.alpha_mi = self.alpha_m[:, self.curstep]
         self.beta_mi = self.beta_m[:, self.curstep]
         self.alpha_hi = self.alpha_h[:, self.curstep]
         self.beta_hi = self.beta_h[:, self.curstep]
         self.alpha_ni = self.alpha_n[:, self.curstep]
         self.beta_ni = self.beta_n[:, self.curstep]
+        self.alpha_qi = self.alpha_n[:, self.curstep]
+        self.beta_qi = self.beta_n[:, self.curstep]
+        self.alpha_ri = self.alpha_n[:, self.curstep]
+        self.beta_ri = self.beta_n[:, self.curstep]
         self.p_infi = self.p_inf[:, self.curstep]
         self.tau_pi = self.tau_p[:, self.curstep]
         self.s_infi = self.s_inf[:, self.curstep]
@@ -260,8 +274,8 @@ class Neuron_HH():
         self.Ileaki = self.Ileak[:, self.curstep]
         self.Imi = self.Im[:, self.curstep]
         self.ItCai = self.ItCa[:, self.curstep]
+        self.IlCai = self.IlCa[:, self.curstep]
         self.Inoisei = self.Inoise[:, self.curstep]
-        self.dni = self.dn[:, self.curstep]
 
         # calculate synaptic input
         for i in range(0, self.N):
@@ -287,15 +301,18 @@ class Neuron_HH():
             pass
 
         # solve a defferential equation
+        # sodium
         self.alpha_mi = ((-0.32) * (self.Vi - self.Vth - 13) /
                          (np.exp(-np.clip((self.Vi-self.Vth-13)/4, -709, 10000))-1))
         self.beta_mi = (0.28 * (self.Vi - self.Vth - 40) /
                         (np.exp(np.clip((self.Vi-self.Vth-40) / 5, -709, 10000)) - 1))
         self.alpha_hi = 0.128 * np.exp(-np.clip((self.Vi-self.Vth-17)/18, -709, 10000))
         self.beta_hi = 4 * self.sigmoid((self.Vi-self.Vth-40) / 5)
+        #potassium
         self.alpha_ni = (-0.032 * (self.Vi-self.Vth-15) /
                          (np.exp(-(self.Vi-self.Vth-15) / 5) - 1))
         self.beta_ni = 0.5 * np.exp(-(self.Vi-self.Vth-10) / 40)
+        #T type calcium
         self.p_infi = 1 / (1 + np.exp(-(self.Vi+35) / 10))
         self.tau_pi = (self.tau_max /
                        (3.3 * np.exp((self.Vi+35) / 20) +
@@ -304,36 +321,26 @@ class Neuron_HH():
         self.u_infi = self.sigmoid(-(self.Vi+2+81) / 4)
         self.tau_ui = (30.8 + (211.4 + np.exp(np.clip((self.Vi+2+113.2)/5, -709, 10000))) /
                        (3.7 * (1 + np.exp(np.clip((self.Vi+2+84)/3.2, -709, 10000)))))
-        """
-        self.alpha_mi = ((-0.32) * (self.Vi - self.Vth - 13) /
-                         (np.exp(-(self.Vi-self.Vth-13)/4)-1))
-        self.beta_mi = (0.28 * (self.Vi - self.Vth - 40) /
-                        (np.exp((self.Vi-self.Vth-40) / 5) - 1))
-        self.alpha_hi = 0.128 * np.exp(-(self.Vi-self.Vth-17) / 18)
-        self.beta_hi = 4 / (1 + np.exp(-(self.Vi-self.Vth-40) / 5))
-        self.alpha_ni = (-0.032 * (self.Vi-self.Vth-15) /
-                         (np.exp(-(self.Vi-self.Vth-15) / 5) - 1))
-        self.beta_ni = 0.5 * np.exp(-(self.Vi-self.Vth-10) / 40)
-        self.p_infi = 1 / (1 + np.exp(-(self.Vi+35) / 10))
-        self.tau_pi = (self.tau_max /
-                       (3.3 * np.exp((self.Vi+35) / 20) +
-                        np.exp(-(self.Vi+35) / 20)))
-        self.s_infi = 1 / (1 + np.exp(-(self.Vi+2+57) / 6.2))
-        self.u_infi = 1 / (1 + np.exp((self.Vi+2+81) / 4))
-        self.tau_ui = ((30.8 + (211.4 + np.exp((self.Vi+2+113.2)/5))) /
-                       (3.7 * (1 + np.exp((self.Vi+2+84)/3.2))))
-        """
+        # L type calcium
+        self.alpha_qi = (0.055 * (- 27 - self.Vi) /
+                         (np.exp(-np.clip((-27 - self.Vi), -709, 10000)) - 1))
+        self.beta_qi = 0.94 * np.exp((-75 - self.Vi) / 17)
+        self.alpha_ri = 0.000457 * np.exp((-13 - self.Vi) / 50)
+        self.beta_ri = 0.0065 / (np.exp(-np.clip((-15 - self.Vi)/28, -709, 10000)) + 1)
+
         self.INai = self.gNa * self.mi**3 * self.hi * (self.eNa - self.Vi)
         self.IKi = self.gK * self.ni**4 * (self.eK - self.Vi)
         self.Ileaki = self.gL * (self.eL - self.Vi)
         self.Imi = self.gM * self.pi * (self.eK - self.Vi)
         self.ItCai = self.gtCa * self.s_infi**2 * self.ui * (self.eCa - self.Vi)
+        self.IlCai = self.glCa * self.qi**2 * self.ri * (self.eCa - self.Vi)
 
         self.k1V = (self.INai +
                     self.IKi +
                     self.Ileaki +
                     self.Imi +
                     self.ItCai +
+                    self.IlCai +
                     self.Isyni +
                     self.Iext[:, self.curstep] +
                     self.Inoisei)
@@ -345,6 +352,8 @@ class Neuron_HH():
         self.k1n = self.alpha_ni * (1-self.ni) - self.beta_ni * self.ni
         self.k1p = (self.p_infi - self.pi) / self.tau_pi
         self.k1u = (self.u_infi - self.ui) / self.tau_ui
+        self.k1q = self.alpha_qi * (1-self.qi) - self.beta_qi * self.qi
+        self.k1r = self.alpha_ri * (1-self.ri) - self.beta_ri * self.ri
 
         # first order Euler method
         self.V[:, self.curstep+1] = self.Vi + self.k1V * self.dt
@@ -353,6 +362,8 @@ class Neuron_HH():
         self.n[:, self.curstep+1] = self.ni + self.k1n * self.dt
         self.p[:, self.curstep+1] = self.pi + self.k1p * self.dt
         self.u[:, self.curstep+1] = self.ui + self.k1u * self.dt
+        self.q[:, self.curstep+1] = self.qi + self.k1q * self.dt
+        self.r[:, self.curstep+1] = self.ri + self.k1r * self.dt
         self.V[:, self.curstep+1] = self.Vi + self.k1V * self.dt
 
 
@@ -365,5 +376,6 @@ class Neuron_HH():
         self.s_inf[:, self.curstep] = self.s_infi
         self.u_inf[:, self.curstep] = self.u_infi
         self.tau_u[:, self.curstep] = self.tau_ui
+        self.IlCa[:, self.curstep] =  self.IlCai
         self.Inoise[:, self.curstep] = self.Inoisei
         self.curstep += 1

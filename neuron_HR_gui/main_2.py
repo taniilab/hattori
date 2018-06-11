@@ -403,8 +403,8 @@ class PlotCanvas(FigureCanvas):
         self.d = 5
         self.r = 0.1
         self.s = 4
-        self.i = 5.6
-        self.xr = -5
+        self.i = 3
+        self.xr = -1.6
         self.gcmp = 0
         self.delay = 0
 
@@ -508,7 +508,9 @@ class PlotCanvas(FigureCanvas):
         self.iext = np.zeros(self.steps)
         for j in range(int(500/self.dt), int(1000/self.dt)):
             self.iext[j] = i
-                  
+
+
+
         for i in range(0, self.steps-1):
             """
             if self.x[i] > self.delay:

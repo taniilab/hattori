@@ -73,3 +73,5 @@ class Picture():
 
             # move csv file
             shutil.move(file_, self.dirtmp2)
+
+
