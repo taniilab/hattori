@@ -10,8 +10,8 @@ from pyqtgraph.Qt import QtGui, QtCore
 # for overflow error
 mpl.rcParams['agg.path.chunksize'] = 100000
 
-index = "3"
-path = "C:/Box Sync/Personal/Documents/touhoku_patch/20180522_cortex/"
+index = "15"
+path = "C:/Box Sync/Personal/Documents/touhoku_patch/20180618_cortex/"
 path_h = path + "voltage/voltage" + index + ".csv"
 path_i = path + "current/current" + index + ".csv"
 
