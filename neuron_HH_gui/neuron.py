@@ -220,16 +220,18 @@ class Neuron_HH():
             self.IAMPAi[i] += self.gAMPA[i, j] * (self.esyn[i, j] - self.Vi[i])
             self.Isyni[i] = self.INMDAi[i] + self.IAMPAi[i]
 
-    # countermeasures againstthe exp overflow
-    def sigmoid(self, x):
-        sigmoid_range = 34.538776394910684
+    # activation functions
+    # a / (1 + exp(b(v-c)))
+    def activation_func_sigmoid(self, a, b, c, v):
+        return a / (1.0 + np.exp(np.clip(b*(v-c), -500, 500)))
 
-        if x <= -sigmoid_range:
-            return 1e-15
-        if x >= sigmoid_range:
-            return 1.0 - 1e-15
+    # a * exp(b(v-c))
+    def activation_func_exp(self, a, b, c, v):
+        return a * np.exp(np.clip(b*(v-c), -500, 500))
 
-        return 1.0 / (1.0 + np.exp(-x))
+    # a(v-b)/(exp(c(v-d))-1)
+    def activation_func_ReLUlike(self, a, b, c, d, v):
+        return a * (v-b)/(np.exp(np.clip(c*(v-d), -500, 500))-1)
 
     # one step processing
     def propagation(self):
@@ -292,7 +294,6 @@ class Neuron_HH():
         # 3 : sin wave
         if self.noise == 1:
             self.Inoise[:, self.curstep+1] = self.D * self.g[:, self.curstep]
-
         elif self.noise == 2:
             self.Inoise[:, self.curstep+1] = (self.Inoisei +
                                               (-self.alpha * (self.Inoisei - self.beta) * self.dt
@@ -301,53 +302,47 @@ class Neuron_HH():
             self.Inoise[:, self.curstep+1] = (self.alpha *
                                               np.sin(np.pi *
                                                      self.curstep/(1000/self.dt)))
-
         else:
             pass
 
         # solve a defferential equation
         # sodium
-        self.alpha_mi = ((-0.32) * (self.Vi - self.Vth - 13) /
-                         (np.exp(-np.clip((self.Vi-self.Vth-13)/4, -709, 10000))-1))
-        self.beta_mi = (0.28 * (self.Vi - self.Vth - 40) /
-                        (np.exp(np.clip((self.Vi-self.Vth-40) / 5, -709, 10000)) - 1))
-        self.alpha_hi = 0.128 * np.exp(-np.clip((self.Vi-self.Vth-17)/18, -709, 10000))
-        self.beta_hi = 4 * self.sigmoid((self.Vi-self.Vth-40) / 5)
+        self.alpha_mi = self.activation_func_ReLUlike(-0.32, self.Vth+13, -1/4, self.Vth+13, self.Vi)
+        self.beta_mi = self.activation_func_ReLUlike(0.28, self.Vth+40, 1/5, self.Vth+40, self.Vi)
+        self.alpha_hi = self.activation_func_exp(0.128, -1/18, self.Vth+17, self.Vi)
+        self.beta_hi = self.activation_func_sigmoid(4, -1/5, self.Vth+40, self.Vi)
         self.INai = self.gNa * self.mi**3 * self.hi * (self.eNa - self.Vi)
         # persistent sodium
-        self.alpha_pnai = (0.0353 * (self.Vi + 27) /
-                           (1 - np.exp(-np.clip((-self.Vi - 27) / 10.2, -709, 10000))))
-        self.beta_pnai = (0.000883 * (-self.Vi - 34) /
-                          (1 - np.exp(np.clip((self.Vi + 34) / 10, -709, 10000))))
+        self.alpha_pnai = self.activation_func_ReLUlike(-0.0353, -27, -1/10.2, -27, self.Vi)
+        self.beta_pnai = self.activation_func_ReLUlike(0.000883, -34, 1/10, -34, self.Vi)
         self.IpNai = self.gpNa * self.pnai**3 * (self.eNa - self.Vi)
         #potassium
-        self.alpha_ni = (-0.032 * (self.Vi-self.Vth-15) /
-                         (np.exp(-(self.Vi-self.Vth-15) / 5) - 1))
-        self.beta_ni = 0.5 * np.exp(-(self.Vi-self.Vth-10) / 40)
+        self.alpha_ni = self.activation_func_ReLUlike(-0.032, self.Vth+15, -1/5, self.Vth+15, self.Vi)
+        self.beta_ni = self.activation_func_exp(0.5, -1/40, self.Vth+10, self.Vi)
         self.IKi = self.gK * self.ni**4 * (self.eK - self.Vi)
         # slow voltage dependent potassium
         self.Imi = self.gM * self.pi * (self.eK - self.Vi)
         # leak
         self.Ileaki = self.gL * (self.eL - self.Vi)
         #T type calcium
-        self.p_infi = 1 / (1 + np.exp(-(self.Vi+35) / 10))
+        self.p_infi = self.activation_func_sigmoid(1, -1/10, -35, self.Vi)
         self.tau_pi = (self.tau_max /
                        (3.3 * np.exp((self.Vi+35) / 20) +
                         np.exp(-(self.Vi+35) / 20)))
-        self.s_infi = self.sigmoid((self.Vi+2+57) / 6.2)
-        self.u_infi = self.sigmoid(-(self.Vi+2+81) / 4)
+        self.s_infi = self.activation_func_sigmoid(1, -1/6.2, -2-57, self.Vi)
+        self.u_infi = self.activation_func_sigmoid(1, 1/4, -2-81, self.Vi)
         self.tau_ui = (30.8 + (211.4 + np.exp(np.clip((self.Vi+2+113.2)/5, -709, 10000))) /
                        (3.7 * (1 + np.exp(np.clip((self.Vi+2+84)/3.2, -709, 10000)))))
         self.ItCai = self.gtCa * self.s_infi**2 * self.ui * (self.eCa - self.Vi)
         # L type calcium
-        self.alpha_qi = (0.055 * (- 27 - self.Vi) /
-                         (np.exp(-np.clip((-27 - self.Vi), -709, 10000)) - 1))
-        self.beta_qi = 0.94 * np.exp((-75 - self.Vi) / 17)
-        self.alpha_ri = 0.000457 * np.exp((-13 - self.Vi) / 50)
-        self.beta_ri = 0.0065 / (np.exp(-np.clip((-15 - self.Vi)/28, -709, 10000)) + 1)
+        self.alpha_qi = self.activation_func_ReLUlike(-0.055, -27, -1/3.8, -27, self.Vi)
+        self.beta_qi = self.activation_func_exp(0.94, -1/17, -75, self.Vi)
+        self.alpha_ri = self.activation_func_exp(0.000457, -1/50, -13, self.Vi)
+        self.beta_ri = self.activation_func_sigmoid(0.0065, 1/28, -15, self.Vi)
         self.IlCai = self.glCa * self.qi**2 * self.ri * (self.eCa - self.Vi)
 
         self.k1V = (self.INai +
+                    self.IpNai +
                     self.IKi +
                     self.Ileaki +
                     self.Imi +
@@ -361,7 +356,7 @@ class Neuron_HH():
             self.k1V -= self.Isyni
         self.k1m = self.alpha_mi * (1-self.mi) - self.beta_mi * self.mi
         self.k1h = self.alpha_hi * (1-self.hi) - self.beta_hi * self.hi
-        #self.k1pna = self.alpha_pnai * (1 - self.pnai) - self.beta_pnai * self.pnai
+        self.k1pna = self.alpha_pnai * (1 - self.pnai) - self.beta_pnai * self.pnai
         self.k1n = self.alpha_ni * (1-self.ni) - self.beta_ni * self.ni
         self.k1p = (self.p_infi - self.pi) / self.tau_pi
         self.k1u = (self.u_infi - self.ui) / self.tau_ui
@@ -372,7 +367,7 @@ class Neuron_HH():
         self.V[:, self.curstep+1] = self.Vi + self.k1V * self.dt
         self.m[:, self.curstep+1] = self.mi + self.k1m * self.dt
         self.h[:, self.curstep+1] = self.hi + self.k1h * self.dt
-        #self.pna[:, self.curstep+1] = self.pnai + self.k1pna * self.dt
+        self.pna[:, self.curstep+1] = self.pnai + self.k1pna * self.dt
         self.n[:, self.curstep+1] = self.ni + self.k1n * self.dt
         self.p[:, self.curstep+1] = self.pi + self.k1p * self.dt
         self.u[:, self.curstep+1] = self.ui + self.k1u * self.dt
@@ -380,10 +375,9 @@ class Neuron_HH():
         self.r[:, self.curstep+1] = self.ri + self.k1r * self.dt
         self.V[:, self.curstep+1] = self.Vi + self.k1V * self.dt
 
-
         # update original array
         self.INa[:, self.curstep] = self.INai
-        #self.IpNa[:, self.curstep] = self.IpNai
+        self.IpNa[:, self.curstep] = self.IpNai
         self.IK[:, self.curstep] = self.IKi
         self.Im[:, self.curstep] = self.Imi
         self.Ileak[:, self.curstep] = self.Ileaki

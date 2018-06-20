@@ -54,7 +54,7 @@ class Main():
                                             'ratio': round(0.2 * j, 2),
                                             'gtCa': round(0.4 * k, 2)}
             """
-            self.parm[self.parm_counter] = {'T': 3000,
+            self.parm[self.parm_counter] = {'T': 5000,
                                             'dt': 0.05,
                                             'Iext_amp': 0.5,
                                             'syncp': 5,
@@ -62,7 +62,7 @@ class Main():
                                             'gpNa': round(i*0.005+0.005, 2),
                                             'Pmax_AMPA': 0,
                                             'Pmax_NMDA': 0,
-                                            'gtCa': 0,
+                                            'gtCa': 0.4,
                                             'Mg_conc': 1,
                                             'alpha': 1,
                                             'beta': 0,
