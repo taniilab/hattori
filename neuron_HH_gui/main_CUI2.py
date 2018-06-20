@@ -54,19 +54,19 @@ class Main():
                                             'ratio': round(0.2 * j, 2),
                                             'gtCa': round(0.4 * k, 2)}
             """
-            self.parm[self.parm_counter] = {'T': 5000,
+            self.parm[self.parm_counter] = {'T': 3000,
                                             'dt': 0.05,
                                             'Iext_amp': 0.5,
                                             'syncp': 5,
                                             'noise': 2,
                                             'gpNa': round(i*0.005+0.005, 2),
-                                            'Pmax_AMPA': 0.6,
-                                            'Pmax_NMDA': 0.3,
-                                            'gtCa': 0.1,
+                                            'Pmax_AMPA': 0,
+                                            'Pmax_NMDA': 0,
+                                            'gtCa': 0,
                                             'Mg_conc': 1,
-                                            'alpha': 0.5,
-                                            'beta': 0.1,
-                                            'D': 0.05}
+                                            'alpha': 1,
+                                            'beta': 0,
+                                            'D': 0}
             self.parm_counter += 1
 
     def simulate(self, process):
@@ -135,7 +135,6 @@ def main():
         pool.close()
         pool.join()
 
-    """
     # sample plotting
     for i in range(0, process):
         # initialize
@@ -169,7 +168,7 @@ def main():
         fig.tight_layout()
 
     plt.show()
-    """
+
     elapsed_time = time.time() - starttime
     pic = Picture(save_path)
     pic.run()

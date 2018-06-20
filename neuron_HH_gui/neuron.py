@@ -30,6 +30,7 @@ class Neuron_HH():
                  Iext_amp = 0, Pmax_AMPA=0, Pmax_NMDA=0,
                  Iext_num=0, noise=0, ramda=-10, alpha=0.5,
                  beta=0, D=1, ratio = 0.5, Mg_conc=4):
+
         # parameters (used by main.py)
         self.parm_dict = {}
         self.ratio = ratio
@@ -50,62 +51,65 @@ class Neuron_HH():
         # HH model
         self.Cm = Cm
         self.Vth = Vth
+        self.V = -65 * np.ones((self.N, self.allsteps))
+        self.k1V = 0 * np.ones(self.N)
 
+        # sodium
+        self.INa = 0 * np.ones((self.N, self.allsteps))
         self.eNa = eNa * np.ones(self.N)
         self.gNa = gNa * np.ones(self.N)
-        self.gpNa = gpNa * np.ones(self.N)
-        self.eK = eK * np.ones(self.N)
-        self.gK = gK * np.ones(self.N)
-        self.eL = eL * np.ones(self.N)
-        self.gL = gL * np.ones(self.N)
-        self.gM = gM * np.ones(self.N)
-        self.eCa = eCa * np.ones(self.N)
-        self.gtCa = gtCa * np.ones(self.N)
-        self.glCa = glCa * np.ones(self.N)
-
-        self.V = -65 * np.ones((self.N, self.allsteps))
         self.m = 0.5 * np.ones((self.N, self.allsteps))
         self.h = 0.06 * np.ones((self.N, self.allsteps))
-        self.nap = 0.06 * np.ones((self.N, self.allsteps))
-        self.n = 0.5 * np.ones((self.N, self.allsteps))
-        self.p = 0.5 * np.ones((self.N, self.allsteps))
-        self.u = 0.5 * np.ones((self.N, self.allsteps))
-        self.q = 0.5 * np.ones((self.N, self.allsteps))
-        self.r = 0.5 * np.ones((self.N, self.allsteps))
         self.alpha_m = 0 * np.ones((self.N, self.allsteps))
         self.alpha_h = 0 * np.ones((self.N, self.allsteps))
-        self.alpha_nap = 0 * np.ones((self.N, self.allsteps))
-        self.alpha_n = 0 * np.ones((self.N, self.allsteps))
-        self.alpha_q = 0 * np.ones((self.N, self.allsteps))
-        self.alpha_r = 0 * np.ones((self.N, self.allsteps))
         self.beta_m = 0 * np.ones((self.N, self.allsteps))
         self.beta_h = 0 * np.ones((self.N, self.allsteps))
-        self.beta_nap = 0 * np.ones((self.N, self.allsteps))
+        self.k1m = 0 * np.ones(self.N)
+        self.k1h = 0 * np.ones(self.N)
+        # persistent sodium
+        self.IpNa = 0 * np.ones((self.N, self.allsteps))
+        self.gpNa = gpNa * np.ones(self.N)
+        self.pna = 0.06 * np.ones((self.N, self.allsteps))
+        self.alpha_pna = 0 * np.ones((self.N, self.allsteps))
+        self.beta_pna = 0 * np.ones((self.N, self.allsteps))
+        # potassium
+        self.IK = 0 * np.ones((self.N, self.allsteps))
+        self.eK = eK * np.ones(self.N)
+        self.gK = gK * np.ones(self.N)
+        self.n = 0.5 * np.ones((self.N, self.allsteps))
+        self.alpha_n = 0 * np.ones((self.N, self.allsteps))
         self.beta_n = 0 * np.ones((self.N, self.allsteps))
-        self.beta_q = 0 * np.ones((self.N, self.allsteps))
-        self.beta_r = 0 * np.ones((self.N, self.allsteps))
+        self.k1n = 0 * np.ones(self.N)
+        # leak
+        self.Ileak = 0 * np.ones((self.N, self.allsteps))
+        self.eL = eL * np.ones(self.N)
+        self.gL = gL * np.ones(self.N)
+        # slow voltage-dependent potassium
+        self.Im = 0 * np.ones((self.N, self.allsteps))
+        self.gM = gM * np.ones(self.N)
+        self.p = 0.5 * np.ones((self.N, self.allsteps))
         self.p_inf = 0 * np.ones((self.N, self.allsteps))
         self.tau_p = 0 * np.ones((self.N, self.allsteps))
         self.tau_max = tau_max
+        self.k1p = 0 * np.ones(self.N)
+        # T type calcium
+        self.ItCa = 0 * np.ones((self.N, self.allsteps))
+        self.eCa = eCa * np.ones(self.N)
+        self.gtCa = gtCa * np.ones(self.N)
+        self.u = 0.5 * np.ones((self.N, self.allsteps))
         self.s_inf = 0 * np.ones((self.N, self.allsteps))
         self.u_inf = 0 * np.ones((self.N, self.allsteps))
         self.tau_u = 0 * np.ones((self.N, self.allsteps))
-        self.INa = 0 * np.ones((self.N, self.allsteps))
-        self.IpNa = 0 * np.ones((self.N, self.allsteps))
-        self.IK = 0 * np.ones((self.N, self.allsteps))
-        self.Im = 0 * np.ones((self.N, self.allsteps))
-        self.Ileak = 0 * np.ones((self.N, self.allsteps))
-        self.ItCa = 0 * np.ones((self.N, self.allsteps))
-        self.IlCa = 0 * np.ones((self.N, self.allsteps))
-        self.INa = 0 * np.ones((self.N, self.allsteps))
-        self.IK = 0 * np.ones((self.N, self.allsteps))
-
-        self.k1V = 0 * np.ones(self.N)
-        self.k1m = 0 * np.ones(self.N)
-        self.k1h = 0 * np.ones(self.N)
-        self.k1n = 0 * np.ones(self.N)
-        self.k1p = 0 * np.ones(self.N)
         self.k1u = 0 * np.ones(self.N)
+        # L type calcium
+        self.IlCa = 0 * np.ones((self.N, self.allsteps))
+        self.glCa = glCa * np.ones(self.N)
+        self.q = 0.5 * np.ones((self.N, self.allsteps))
+        self.r = 0.5 * np.ones((self.N, self.allsteps))
+        self.alpha_q = 0 * np.ones((self.N, self.allsteps))
+        self.alpha_r = 0 * np.ones((self.N, self.allsteps))
+        self.beta_q = 0 * np.ones((self.N, self.allsteps))
+        self.beta_r = 0 * np.ones((self.N, self.allsteps))
         self.k1q = 0 * np.ones(self.N)
         self.k1r = 0 * np.ones(self.N)
 
@@ -128,6 +132,10 @@ class Neuron_HH():
         self.tau_syn = tau_syn
         self.Mg_conc = Mg_conc
 
+        # maximal synaptic conductance
+        self.Pmax_AMPA = Pmax_AMPA
+        self.Pmax_NMDA = Pmax_NMDA
+
         # external input
         self.Iext_amp = Iext_amp
         self.Iext = np.zeros((self.N, self.allsteps))
@@ -135,27 +143,6 @@ class Neuron_HH():
         self.Iext[0, 30000:40000] = self.Iext_amp
         self.Iext[0, 50000:60000] = 2 * self.Iext_amp
 
-
-        # self.Iext = self.Iext_amp * np.ones((self.N, self.allsteps))
-
-        """
-        self.Iext_co = 0
-        self.Iext_amp = Iext_amp
-        self.Iext_width = Iext_width
-        self.Iext_duty = Iext_duty
-        whIleake self.Iext_co < Iext_num:
-            if self.Iext_duty == 0:
-                self.Iext[0, (1000/self.dt):(1500/self.dt)] = Iext_amp
-            else:
-                self.iext_tmp1 = 0 + int(self.Iext_co*Iext_width*(1+Iext_duty)/self.dt)
-                self.iext_tmp2 = int(Iext_width*Iext_duty / self.dt + self.iext_tmp1)
-                self.iext_tmp3 = int(1 + self.iext_tmp2)
-                self.iext_tmp4 = int(Iext_width / self.dt + self.iext_tmp3)
-                self.Iext[0, self.iext_tmp1:self.iext_tmp2] = 0
-                self.Iext[0, self.iext_tmp3:self.iext_tmp4] = Iext_amp
-            self.Iext_co += 1
-        """                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
-        
         # firing time
         self.t_ap = -10000 * np.ones((self.N, self.N, 2))
 
@@ -173,9 +160,6 @@ class Neuron_HH():
         self.D = D
         self.g = np.random.randn(self.N, self.allsteps)
 
-        # chemical synapse and alpha function
-        self.Pmax_AMPA = Pmax_AMPA
-        self.Pmax_NMDA = Pmax_NMDA
 
         self.fire_tmp = np.zeros(self.N)
 
@@ -252,41 +236,50 @@ class Neuron_HH():
         # slice
 
         self.Vi = self.V[:, self.curstep]
+        # sodium
+        self.INai = self.INa[:, self.curstep]
         self.mi = self.m[:, self.curstep]
         self.hi = self.h[:, self.curstep]
-        self.napi = self.nap[:, self.curstep]
-        self.ni = self.n[:, self.curstep]
-        self.pi = self.p[:, self.curstep]
-        self.ui = self.u[:, self.curstep]
-        self.qi = self.u[:, self.curstep]
-        self.ri = self.u[:, self.curstep]
         self.alpha_mi = self.alpha_m[:, self.curstep]
         self.beta_mi = self.beta_m[:, self.curstep]
         self.alpha_hi = self.alpha_h[:, self.curstep]
         self.beta_hi = self.beta_h[:, self.curstep]
-        self.alpha_napi = self.alpha_nap[:, self.curstep]
-        self.beta_napi = self.beta_nap[:, self.curstep]
+        # persistent sodium
+        self.IpNai = self.IpNa[:, self.curstep]
+        self.pnai = self.pna[:, self.curstep]
+        self.alpha_pnai = self.alpha_pna[:, self.curstep]
+        self.beta_pnai = self.beta_pna[:, self.curstep]
+        # potassium
+        self.IKi = self.IK[:, self.curstep]
+        self.ni = self.n[:, self.curstep]
         self.alpha_ni = self.alpha_n[:, self.curstep]
         self.beta_ni = self.beta_n[:, self.curstep]
+        # slow voltage dependent potassium
+        self.Imi = self.Im[:, self.curstep]
+        self.pi = self.p[:, self.curstep]
+        self.p_infi = self.p_inf[:, self.curstep]
+        self.tau_pi = self.tau_p[:, self.curstep]
+        # leak
+        self.Ileaki = self.Ileak[:, self.curstep]
+        # T type calcium
+        self.ItCai = self.ItCa[:, self.curstep]
+        self.ui = self.u[:, self.curstep]
+        self.s_infi = self.s_inf[:, self.curstep]
+        self.u_infi = self.u_inf[:, self.curstep]
+        self.tau_ui = self.tau_u[:, self.curstep]
+        # L type calcium
+        self.IlCai = self.IlCa[:, self.curstep]
+        self.qi = self.u[:, self.curstep]
+        self.ri = self.u[:, self.curstep]
         self.alpha_qi = self.alpha_n[:, self.curstep]
         self.beta_qi = self.beta_n[:, self.curstep]
         self.alpha_ri = self.alpha_n[:, self.curstep]
         self.beta_ri = self.beta_n[:, self.curstep]
-        self.p_infi = self.p_inf[:, self.curstep]
-        self.tau_pi = self.tau_p[:, self.curstep]
-        self.s_infi = self.s_inf[:, self.curstep]
-        self.u_infi = self.u_inf[:, self.curstep]
-        self.tau_ui = self.tau_u[:, self.curstep]
+        # synapse
         self.Isyni = self.Isyn[:, self.curstep]
         self.INMDAi = self.INMDA[:, self.curstep]
         self.IAMPAi = self.IAMPA[:, self.curstep]
-        self.INai = self.INa[:, self.curstep]
-        self.IpNai = self.IpNa[:, self.curstep]
-        self.IKi = self.IK[:, self.curstep]
-        self.Ileaki = self.Ileak[:, self.curstep]
-        self.Imi = self.Im[:, self.curstep]
-        self.ItCai = self.ItCa[:, self.curstep]
-        self.IlCai = self.IlCa[:, self.curstep]
+        # synaptic noise
         self.Inoisei = self.Inoise[:, self.curstep]
 
         # calculate synaptic input
@@ -320,15 +313,22 @@ class Neuron_HH():
                         (np.exp(np.clip((self.Vi-self.Vth-40) / 5, -709, 10000)) - 1))
         self.alpha_hi = 0.128 * np.exp(-np.clip((self.Vi-self.Vth-17)/18, -709, 10000))
         self.beta_hi = 4 * self.sigmoid((self.Vi-self.Vth-40) / 5)
+        self.INai = self.gNa * self.mi**3 * self.hi * (self.eNa - self.Vi)
         # persistent sodium
-        self.alpha_napi = (0.0353 * (self.Vi + 27) /
+        self.alpha_pnai = (0.0353 * (self.Vi + 27) /
                            (1 - np.exp(-np.clip((-self.Vi - 27) / 10.2, -709, 10000))))
-        self.beta_napi = (0.000883 * (-self.Vi - 34) /
+        self.beta_pnai = (0.000883 * (-self.Vi - 34) /
                           (1 - np.exp(np.clip((self.Vi + 34) / 10, -709, 10000))))
+        self.IpNai = self.gpNa * self.pnai**3 * (self.eNa - self.Vi)
         #potassium
         self.alpha_ni = (-0.032 * (self.Vi-self.Vth-15) /
                          (np.exp(-(self.Vi-self.Vth-15) / 5) - 1))
         self.beta_ni = 0.5 * np.exp(-(self.Vi-self.Vth-10) / 40)
+        self.IKi = self.gK * self.ni**4 * (self.eK - self.Vi)
+        # slow voltage dependent potassium
+        self.Imi = self.gM * self.pi * (self.eK - self.Vi)
+        # leak
+        self.Ileaki = self.gL * (self.eL - self.Vi)
         #T type calcium
         self.p_infi = 1 / (1 + np.exp(-(self.Vi+35) / 10))
         self.tau_pi = (self.tau_max /
@@ -338,23 +338,16 @@ class Neuron_HH():
         self.u_infi = self.sigmoid(-(self.Vi+2+81) / 4)
         self.tau_ui = (30.8 + (211.4 + np.exp(np.clip((self.Vi+2+113.2)/5, -709, 10000))) /
                        (3.7 * (1 + np.exp(np.clip((self.Vi+2+84)/3.2, -709, 10000)))))
+        self.ItCai = self.gtCa * self.s_infi**2 * self.ui * (self.eCa - self.Vi)
         # L type calcium
         self.alpha_qi = (0.055 * (- 27 - self.Vi) /
                          (np.exp(-np.clip((-27 - self.Vi), -709, 10000)) - 1))
         self.beta_qi = 0.94 * np.exp((-75 - self.Vi) / 17)
         self.alpha_ri = 0.000457 * np.exp((-13 - self.Vi) / 50)
         self.beta_ri = 0.0065 / (np.exp(-np.clip((-15 - self.Vi)/28, -709, 10000)) + 1)
-
-        self.INai = self.gNa * self.mi**3 * self.hi * (self.eNa - self.Vi)
-        self.IpNai = self.gpNa * self.napi**3 * (self.eNa - self.Vi)
-        self.IKi = self.gK * self.ni**4 * (self.eK - self.Vi)
-        self.Ileaki = self.gL * (self.eL - self.Vi)
-        self.Imi = self.gM * self.pi * (self.eK - self.Vi)
-        self.ItCai = self.gtCa * self.s_infi**2 * self.ui * (self.eCa - self.Vi)
         self.IlCai = self.glCa * self.qi**2 * self.ri * (self.eCa - self.Vi)
 
         self.k1V = (self.INai +
-                    self.IpNai +
                     self.IKi +
                     self.Ileaki +
                     self.Imi +
@@ -368,7 +361,7 @@ class Neuron_HH():
             self.k1V -= self.Isyni
         self.k1m = self.alpha_mi * (1-self.mi) - self.beta_mi * self.mi
         self.k1h = self.alpha_hi * (1-self.hi) - self.beta_hi * self.hi
-        self.k1nap = self.alpha_napi * (1 - self.napi) - self.beta_napi * self.napi
+        #self.k1pna = self.alpha_pnai * (1 - self.pnai) - self.beta_pnai * self.pnai
         self.k1n = self.alpha_ni * (1-self.ni) - self.beta_ni * self.ni
         self.k1p = (self.p_infi - self.pi) / self.tau_pi
         self.k1u = (self.u_infi - self.ui) / self.tau_ui
@@ -379,7 +372,7 @@ class Neuron_HH():
         self.V[:, self.curstep+1] = self.Vi + self.k1V * self.dt
         self.m[:, self.curstep+1] = self.mi + self.k1m * self.dt
         self.h[:, self.curstep+1] = self.hi + self.k1h * self.dt
-        self.nap[:, self.curstep+1] = self.napi + self.k1nap * self.dt
+        #self.pna[:, self.curstep+1] = self.pnai + self.k1pna * self.dt
         self.n[:, self.curstep+1] = self.ni + self.k1n * self.dt
         self.p[:, self.curstep+1] = self.pi + self.k1p * self.dt
         self.u[:, self.curstep+1] = self.ui + self.k1u * self.dt
@@ -390,7 +383,7 @@ class Neuron_HH():
 
         # update original array
         self.INa[:, self.curstep] = self.INai
-        self.IpNa[:, self.curstep] = self.IpNai
+        #self.IpNa[:, self.curstep] = self.IpNai
         self.IK[:, self.curstep] = self.IKi
         self.Im[:, self.curstep] = self.Imi
         self.Ileak[:, self.curstep] = self.Ileaki
