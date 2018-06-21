@@ -55,13 +55,13 @@ class Main():
                                             'gtCa': round(0.4 * k, 2)}
             """
             self.parm[self.parm_counter] = {'T': 5000,
-                                            'dt': 0.02,
+                                            'dt': 0.05,
                                             'Iext_amp': 0.5,
+                                            'eK': round(-90+5*i, 2),
                                             'syncp': 5,
                                             'noise': 2,
-                                            'gNa': 80,
-                                            'gK': round(i*0.3+1, 2),
-                                            'gpNa': 0.005,
+                                            'gK': 5.6,
+                                            'gpNa': 0,
                                             'Pmax_AMPA': 0,
                                             'Pmax_NMDA': 0,
                                             'gtCa': 0,
@@ -160,12 +160,12 @@ def main():
             lines[j], = ax[j].plot(tm, res[i].V[j], color="indigo",
                                    markevery=[0, -1])
 
-        ax[res[i].N].plot(tm, res[i].s_inf[0], color="coral", markevery=[0, -1])
+        ax[res[i].N].plot(tm, res[i].INa[0], color="coral", markevery=[0, -1])
 
-        ax[res[i].N+1].plot(tm, res[i].u_inf[0], color="coral",
+        ax[res[i].N+1].plot(tm, res[i].IpNa[0], color="coral",
                            markevery=[0, -1])
 
-        ax[res[i].N+2].plot(tm, res[i].tau_u[0], color="coral",
+        ax[res[i].N+2].plot(tm, res[i].IK[0], color="coral",
                            markevery=[0, -1])
         fig.tight_layout()
 

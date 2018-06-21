@@ -9,7 +9,7 @@ import numpy as np
 import sys
 import time
 
-path = "C:/Box Sync/Personal/Documents/touhoku_patch/20180618_cortex/"
+path = "C:/Box Sync/Personal/Documents/touhoku_patch/20180620_cortex/"
 
 #mode = "current"
 mode = "voltage"
@@ -40,8 +40,7 @@ df = df.replace(0, np.nan)
 
 
 index = ['5', '13', '21', '26', '32', '40', '48', '53', '58',
-         '66', '74', '78', '83', '91', '99', '104', '109', '117',
-         '125', '130']
+         '66', '74', '78']
 
 # Initialize
 top = 1

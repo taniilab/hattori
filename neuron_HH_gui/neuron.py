@@ -9,7 +9,7 @@ import numpy as np
 
 class Neuron_HH():
     def __init__(self, syncp=1, N=1, dt=0.05, T=1000,Cm=1, Vth=-56.2,
-                 eNa=50, gNa=56, eK=-90, gK=6, eL=-70.3, gL=0.0205, gM=0.075,
+                 eNa=50, gNa=56, eK=-90, gK=5, eL=-70.3, gL=0.0205, gM=0.075,
                  tau_syn=5.26, esyn=0, gsyn=0.025, tau_max=608, eCa=120, gtCa=0.4, glCa=0.0001,
                  gpNa=0,
                  Iext_amp = 0, Pmax_AMPA=0, Pmax_NMDA=0,
@@ -24,7 +24,7 @@ class Neuron_HH():
                  beta, D, ratio, Mg_conc)
 
     def set_neuron_palm(self, syncp=1, N=1, dt=0.05, T=5000,Cm=1, Vth=-56.2,
-                 eNa=50, gNa=56, eK=-90, gK=6, eL=-70.3, gL=0.0205, gM=0.075,
+                 eNa=50, gNa=56, eK=-90, gK=5, eL=-70.3, gL=0.0205, gM=0.075,
                  tau_syn=5.26, esyn=0, gsyn=0.025, tau_max=608, eCa=120, gtCa=0.4, glCa=0.0001,
                  gpNa=0.1,
                  Iext_amp = 0, Pmax_AMPA=0, Pmax_NMDA=0,
@@ -139,9 +139,10 @@ class Neuron_HH():
         # external input
         self.Iext_amp = Iext_amp
         self.Iext = np.zeros((self.N, self.allsteps))
-        self.Iext[0, 10000:20000] = -self.Iext_amp
-        self.Iext[0, 30000:40000] = self.Iext_amp
-        self.Iext[0, 50000:60000] = 2 * self.Iext_amp
+        self.Iext[0, 10000:15000] = -self.Iext_amp
+        self.Iext[0, 15000:25000] = self.Iext_amp
+        self.Iext[0, 35000:45000] = 2 * self.Iext_amp
+        self.Iext[0, 55000:65000] = 3 * self.Iext_amp
 
         # firing time
         self.t_ap = -10000 * np.ones((self.N, self.N, 2))
