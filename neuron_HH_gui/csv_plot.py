@@ -9,10 +9,8 @@ from pyqtgraph.Qt import QtGui, QtCore
 # for overflow error
 mpl.rcParams['agg.path.chunksize'] = 100000
 
-path = "E:/simulation/HH/tmp/2018_6_11_8_19_34/" + \
-       "2018_6_9_18_54_50__T_ 100000_ dt_ 0.04_ Iext_amp_ 0.5_ syncp_ 5_ noise_ 2_ Pmax_AMPA_ 0.4_ Pmax_NMDA_ 0.2_ gtCa_ 0.4_ Mg_conc_ 1.0_ alpha_ 0.5_ beta_ 0.1_ D_ 0.05__N0_HH"\
-       + ".csv"
-
+path = "E:/simulation/HH/tmp/2018_6_24_21_57_17/" + \
+       "2018_6_24_21_29_8__T_ 60000_ dt_ 0.05_ Iext_amp_ 0_ eK_ -90_ syncp_ 5_ noise_ 2_ gK_ 3_ gpNa_ 0_ Pmax_AMPA_ 0.3_ Pmax_NMDA_ 0.5_ gtCa_ 0.4_ Mg_conc_ 1_ alpha_ 0.5_ beta_ 0.1_ D_ 0.05_ delay_ 10__N0_HH.csv"
 fsize = 24
 sample = 20000
 fig = plt.figure(figsize=(30, 15))

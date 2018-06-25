@@ -34,8 +34,8 @@ class Main():
 
         #combination
         self.i = 6
-        self.j = 1
-        self.k = 1
+        self.j = 6
+        self.k = 4
         self.l = 1
 
         self.cycle_multiproc = int(self.i * self.j*self.k*self.l/process)
@@ -54,21 +54,22 @@ class Main():
                                             'ratio': round(0.2 * j, 2),
                                             'gtCa': round(0.4 * k, 2)}
             """
-            self.parm[self.parm_counter] = {'T': 5000,
-                                            'dt': 0.05,
-                                            'Iext_amp': 0.5,
-                                            'eK': round(-90+5*i, 2),
+            self.parm[self.parm_counter] = {'T': 100000,
+                                            'dt': 0.04,
+                                            'Iext_amp': 0,
+                                            'eK': -90,
                                             'syncp': 5,
                                             'noise': 2,
-                                            'gK': 5.6,
+                                            'gK': 3,
                                             'gpNa': 0,
-                                            'Pmax_AMPA': 0,
-                                            'Pmax_NMDA': 0,
-                                            'gtCa': 0,
+                                            'Pmax_AMPA': round(0.1*i, 3),
+                                            'Pmax_NMDA': round(0.1*j, 3),
+                                            'gtCa': 0.4,
                                             'Mg_conc': 1,
-                                            'alpha': 1,
-                                            'beta': 0,
-                                            'D': 0}
+                                            'alpha': 0.5,
+                                            'beta': 0.1,
+                                            'D': 0.05,
+                                            'delay': 10}
             self.parm_counter += 1
 
     def simulate(self, process):
@@ -162,10 +163,10 @@ def main():
 
         ax[res[i].N].plot(tm, res[i].INa[0], color="coral", markevery=[0, -1])
 
-        ax[res[i].N+1].plot(tm, res[i].IpNa[0], color="coral",
+        ax[res[i].N+1].plot(tm, res[i].INMDA[0], color="coral",
                            markevery=[0, -1])
 
-        ax[res[i].N+2].plot(tm, res[i].IK[0], color="coral",
+        ax[res[i].N+2].plot(tm, res[i].IAMPA[0], color="coral",
                            markevery=[0, -1])
         fig.tight_layout()
 
