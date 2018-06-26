@@ -42,5 +42,3 @@ ax1.set_ylabel("membrane potential[mV]", fontsize=fsize)
 
 fig.tight_layout()
 plt.show()
-
-
