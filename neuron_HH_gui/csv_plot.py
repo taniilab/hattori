@@ -24,9 +24,10 @@ curve1 = p1.plot(df['T [ms]'], df['V [mV]'])
 """
 ax1 = fig.add_subplot(1, 1, 1)
 ax1.plot(df['T [ms]'], df['V [mV]'], color="black", markevery=[0, -1])
-ax1.tick_params(labelsize=fsize, labelbottom='off')
-#ax1.set_xlabel("time[ms]", fontsize=fsize)
-ax1.set_ylabel("membrane potential[mV]", fontsize=fsize)
+ax1.tick_params(labelsize=fsize)
+ax1.tick_params(axis="x", colors="white")
+#ax1.set_xlabel("time[ms]", fontsize=fsize, color="gray")
+#ax1.set_ylabel("membrane potential[mV]", fontsize=fsize)
 
 ax1.spines["right"].set_color("none")
 ax1.spines["top"].set_color("none")
