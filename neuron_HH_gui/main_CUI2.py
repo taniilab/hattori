@@ -17,9 +17,9 @@ import time
 import datetime
 import itertools
 from picture import Picture
-import matplotlib as mpl
+#import matplotlib as mpl
 # for overflow error
-mpl.rcParams['agg.path.chunksize'] = 100000
+#mpl.rcParams['agg.path.chunksize'] = 100000
 
 starttime = time.time()
 elapsed_time = 0
@@ -34,8 +34,8 @@ class Main():
 
         #combination
         self.i = 6
-        self.j = 6
-        self.k = 4
+        self.j = 1
+        self.k = 1
         self.l = 1
 
         self.cycle_multiproc = int(self.i * self.j*self.k*self.l/process)
@@ -54,17 +54,21 @@ class Main():
                                             'ratio': round(0.2 * j, 2),
                                             'gtCa': round(0.4 * k, 2)}
             """
-            self.parm[self.parm_counter] = {'T': 100000,
+            self.parm[self.parm_counter] = {'T': 5000,
                                             'dt': 0.04,
-                                            'Iext_amp': 0,
-                                            'eK': -90,
+                                            'Iext_amp': 1,
+                                            'gNa': 52,
+                                            'gK': 3.7,
+                                            'Vth': -55.43,
+                                            'gL': 0.0194,
+                                            'gM': 0.15,
+                                            'tau_max': 653.5,
                                             'syncp': 5,
                                             'noise': 2,
-                                            'gK': 3,
                                             'gpNa': 0,
-                                            'Pmax_AMPA': round(0.1*i, 3),
-                                            'Pmax_NMDA': round(0.1*j, 3),
-                                            'gtCa': 0.4,
+                                            'Pmax_AMPA': round(0.0*i, 3),
+                                            'Pmax_NMDA': round(0.0*j, 3),
+                                            'gtCa': 0,
                                             'Mg_conc': 1,
                                             'alpha': 0.5,
                                             'beta': 0.1,
@@ -117,10 +121,16 @@ def main():
             res[k].parm_dict = res[k].parm_dict.replace('}', '_')
             res[k].parm_dict = res[k].parm_dict.replace('\'', '')
             res[k].parm_dict = res[k].parm_dict.replace(',', '_')
+            """
             filename = (str(d.year) + '_' + str(d.month) + '_' +
                         str(d.day) + '_' + str(d.hour) + '_' +
                         str(d.minute) + '_' + str(d.second) + '_' +
                         res[k].parm_dict + '_' + 'N' + str(j) + '_' + "HH.csv")
+            """
+            filename = (str(d.year) + '_' + str(d.month) + '_' +
+                        str(d.day) + '_' + str(d.hour) + '_' +
+                        str(d.minute) + '_' + str(d.second) + '_' +
+                        'N' + str(j) + '_' + "HH.csv")
 
             df = pd.DataFrame({'T [ms]': res[k].Tsteps,
                                'V [mV]': res[k].V[j],
@@ -183,4 +193,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+     main()

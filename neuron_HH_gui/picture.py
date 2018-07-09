@@ -56,14 +56,14 @@ class Picture():
             filename = os.path.basename(file_).replace('.csv', '')
 
             df.plot(x='T [ms]', y='V [mV]', figsize=(60, 20), title=str(filename), lw=0.5)
-            plt.savefig(filename=self.nowdir + '/plots/' + filename + '.jpg',
+            plt.savefig(fname=self.nowdir + '/plots/' + filename + '.jpg',
                         dpi=350)
             # plt.show()
             plt.close()
 
             label1 = 'I_syn'
             df.plot(x='T [ms]', y='I_syn [uA]', figsize=(60, 20), title=str(filename)+label1,  lw=0.5)
-            plt.savefig(filename=self.nowdir + '/plots/' + filename + label1 + '.jpg',
+            plt.savefig(fname=self.nowdir + '/plots/' + filename + label1 + '.jpg',
                         dpi=350)
             # plt.show()
             plt.close()
