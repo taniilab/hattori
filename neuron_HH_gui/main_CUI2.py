@@ -34,7 +34,7 @@ class Main():
 
         #combination
         self.i = 6
-        self.j = 1
+        self.j = 6
         self.k = 1
         self.l = 1
 
@@ -54,9 +54,9 @@ class Main():
                                             'ratio': round(0.2 * j, 2),
                                             'gtCa': round(0.4 * k, 2)}
             """
-            self.parm[self.parm_counter] = {'T': 5000,
+            self.parm[self.parm_counter] = {'T': 100000,
                                             'dt': 0.04,
-                                            'Iext_amp': 1,
+                                            'Iext_amp': 0.3,
                                             'gNa': 52,
                                             'gK': 3.7,
                                             'Vth': -55.43,
@@ -66,13 +66,13 @@ class Main():
                                             'syncp': 5,
                                             'noise': 2,
                                             'gpNa': 0,
-                                            'Pmax_AMPA': round(0.0*i, 3),
-                                            'Pmax_NMDA': round(0.0*j, 3),
+                                            'Pmax_AMPA': round(0.1+0.1*i, 3),
+                                            'Pmax_NMDA': round(0.1+0.1*j, 3),
                                             'gtCa': 0,
                                             'Mg_conc': 1,
                                             'alpha': 0.5,
                                             'beta': 0.1,
-                                            'D': 0.05,
+                                            'D': 0.01,
                                             'delay': 10}
             self.parm_counter += 1
 
