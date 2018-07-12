@@ -33,8 +33,8 @@ class Main():
         self.parm = []
 
         #combination
-        self.i = 6
-        self.j = 6
+        self.i = 3
+        self.j = 10
         self.k = 1
         self.l = 1
 
@@ -55,24 +55,18 @@ class Main():
                                             'gtCa': round(0.4 * k, 2)}
             """
             self.parm[self.parm_counter] = {'T': 100000,
-                                            'dt': 0.04,
-                                            'Iext_amp': 0.3,
-                                            'gNa': 52,
-                                            'gK': 3.7,
-                                            'Vth': -55.43,
-                                            'gL': 0.0194,
-                                            'gM': 0.15,
-                                            'tau_max': 653.5,
+                                            'dt': 0.02,
+                                            'Iext_amp': 0.5,
                                             'syncp': 5,
                                             'noise': 2,
                                             'gpNa': 0,
-                                            'Pmax_AMPA': round(0.1+0.1*i, 3),
-                                            'Pmax_NMDA': round(0.1+0.1*j, 3),
+                                            'Pmax_AMPA': 0,
+                                            'Pmax_NMDA': 0,
                                             'gtCa': 0,
                                             'Mg_conc': 1,
                                             'alpha': 0.5,
                                             'beta': 0.1,
-                                            'D': 0.01,
+                                            'D': round(0.06 + 0.01*i, 3),
                                             'delay': 10}
             self.parm_counter += 1
 

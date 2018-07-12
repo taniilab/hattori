@@ -58,7 +58,7 @@ class Neuron_HH():
         self.INa = 0 * np.ones((self.N, self.allsteps))
         self.eNa = eNa * np.ones(self.N)
         self.gNa = gNa * np.ones(self.N)
-        self.m = 0.5 * np.ones((self.N, self.allsteps))
+        self.m = 0.5 *  np.ones((self.N, self.allsteps))
         self.h = 0.06 * np.ones((self.N, self.allsteps))
         self.alpha_m = 0 * np.ones((self.N, self.allsteps))
         self.alpha_h = 0 * np.ones((self.N, self.allsteps))
@@ -139,10 +139,9 @@ class Neuron_HH():
         # external input
         self.Iext_amp = Iext_amp
         self.Iext = np.zeros((self.N, self.allsteps))
-        self.Iext[0, 10000:15000] = -self.Iext_amp
-        self.Iext[0, 15000:25000] = self.Iext_amp
-        self.Iext[0, 35000:45000] = 2 * self.Iext_amp
-        self.Iext[0, 55000:65000] = 3 * self.Iext_amp
+        self.Iext[0, 10000:20000] = -self.Iext_amp
+        self.Iext[0, 25000:35000] = self.Iext_amp
+        self.Iext[0, 40000:50000] = 2 * self.Iext_amp
 
         # firing time
         self.t_ap = -10000 * np.ones((self.N, self.N, 2))
@@ -347,8 +346,6 @@ class Neuron_HH():
                     self.IKi +
                     self.Ileaki +
                     self.Imi +
-                    self.ItCai +
-                    self.IlCai +
                     self.Isyni +
                     self.Iext[:, self.curstep] +
                     self.Inoisei)
