@@ -23,19 +23,19 @@ from picture import Picture
 
 starttime = time.time()
 elapsed_time = 0
-save_path = "E:/simulation/HH"
+save_path = "G:/simulation/HH"
 
 # number of processors
-process = 6
+process = 5
 
 class Main():
     def __init__(self):
         self.parm = []
 
         #combination
-        self.i = 3
-        self.j = 10
-        self.k = 1
+        self.i = 21
+        self.j = 21
+        self.k = 5
         self.l = 1
 
         self.cycle_multiproc = int(self.i * self.j*self.k*self.l/process)
@@ -54,19 +54,19 @@ class Main():
                                             'ratio': round(0.2 * j, 2),
                                             'gtCa': round(0.4 * k, 2)}
             """
-            self.parm[self.parm_counter] = {'T': 100000,
-                                            'dt': 0.02,
-                                            'Iext_amp': 0.5,
+            self.parm[self.parm_counter] = {'T': 60000,
+                                            'dt': 0.04,
+                                            'Iext_amp': 0,
                                             'syncp': 5,
                                             'noise': 2,
                                             'gpNa': 0,
-                                            'Pmax_AMPA': 0,
-                                            'Pmax_NMDA': 0,
+                                            'Pmax_AMPA': round(i*0.05, 3),
+                                            'Pmax_NMDA': round(j*0.05, 3),
                                             'gtCa': 0,
-                                            'Mg_conc': 1,
+                                            'Mg_conc': round(k*0.1, 3),
                                             'alpha': 0.5,
                                             'beta': 0.1,
-                                            'D': round(0.06 + 0.01*i, 3),
+                                            'D': 0.08,
                                             'delay': 10}
             self.parm_counter += 1
 
