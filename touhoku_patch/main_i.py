@@ -9,7 +9,7 @@ import numpy as np
 import sys
 import time
 
-path = "C:/Box Sync/Personal/Documents/touhoku_patch/20180620_cortex/"
+path = "C:/Box Sync/Personal/Documents/touhoku_patch/20180713_cortex/"
 
 mode = "current"
 # mode = "voltage"
@@ -39,8 +39,8 @@ df = pd.read_csv(path + mode + ".atf", delimiter='\t', skiprows=[0, 1])
 df = df.replace(0, np.nan)
 
 
-index = ['5', '13', '21', '26', '32', '40', '48', '53', '58',
-         '66', '74', '78']
+index = ['5', '13', '21', '26', '34', '42', '47', '55', '63', '68',
+         '76', '84', '89', '97', '105', '110', '118', '126']
 
 # Initialize
 top = 1

@@ -10,8 +10,8 @@ from pyqtgraph.Qt import QtGui, QtCore
 # for overflow error
 mpl.rcParams['agg.path.chunksize'] = 100000
 
-index = "8"
-path = "C:/Box Sync/Personal/Documents/touhoku_patch/20180620_cortex/"
+index = "15"
+path = "C:/Box Sync/Personal/Documents/touhoku_patch/20180713_cortex/"
 path_h = path + "voltage/voltage" + index + ".csv"
 path_i = path + "current/current" + index + ".csv"
 
@@ -29,10 +29,12 @@ p1 = glaph_tab.addPlot(title="Vx1")
 curve1 = p1.plot(dfv['index']/sample, dfv['voltage(mV)'])
 
 ax2 = fig.add_subplot(1, 1, 1)
+
 ax2.plot(dfc['index']/sample, dfc['current(pA)'], markevery=[0, -1], color="purple")
 ax2.tick_params(labelsize=fsize)
 ax2.set_xlabel("time[s]", fontsize=fsize)
 ax2.set_ylabel("clamp current[pA]", fontsize=fsize)
+
 
 ax1 = ax2.twinx()
 ax1.plot(dfv['index']/sample, dfv['voltage(mV)'], markevery=[0, -1])

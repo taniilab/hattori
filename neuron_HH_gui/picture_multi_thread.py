@@ -12,20 +12,22 @@ import pandas as pd
 import numpy as np
 import datetime
 import matplotlib as mpl
+from multiprocessing import Pool
+
 # for overflow error
 mpl.rcParams['agg.path.chunksize'] = 100000
 
 
 class Picture():
     def __init__(self,
-                 path='C:/Users/Hattori/Documents/HR_results'):
+                 path='C:'):
 
         self.nowdir = path
         self.csvs = path + '/' + '*.csv'
         self.files = {}
         self.counter = 0
         self.files = glob.glob(self.csvs)
-        print(self.csvs)
+        #print(self.files)
         self.tmp0 = []
         self.tmp1 = []
         self.tmp2 = []
@@ -36,12 +38,12 @@ class Picture():
         self.gcounter = 0
 
         self.d = datetime.datetime.today()
-        self.dirtmp1 =(self.nowdir + '/tmp')
+        self.dirtmp1 = (self.nowdir + '/tmp')
         self.dirtmp2 = (self.nowdir + '/tmp/' +
-                       str(self.d.year) + '_' + str(self.d.month) +
-                       '_' + str(self.d.day) + '_' +
-                       str(self.d.hour) + '_' + str(self.d.minute) +
-                       '_' + str(self.d.second))
+                        str(self.d.year) + '_' + str(self.d.month) +
+                        '_' + str(self.d.day) + '_' +
+                        str(self.d.hour) + '_' + str(self.d.minute) +
+                        '_' + str(self.d.second))
 
         if not os.path.isdir(self.nowdir + '/plots'):
             os.mkdir(self.nowdir + '/plots')
@@ -50,9 +52,10 @@ class Picture():
         if not os.path.isdir(self.dirtmp2):
             os.mkdir(self.dirtmp2)
 
-    def run(self):
-        for file_ in self.files:
-            df_title = pd.read_csv(file_,nrows=1)
+    def run2(self, value):
+        self.value = value
+        for file_ in self.csv_tmp_list[self.value]:
+            df_title = pd.read_csv(file_, nrows=1)
             df = pd.read_csv(file_, index_col=0, skiprows=1)
             filename = os.path.basename(file_).replace('.csv', '')
 
@@ -63,20 +66,43 @@ class Picture():
             plt.close()
 
             label1 = 'I_syn'
-            df.plot(x='T [ms]', y='I_syn [uA]', figsize=(60, 20), title=str(filename)+label1,  lw=0.5)
+            df.plot(x='T [ms]', y='I_syn [uA]', figsize=(60, 20), title=str(filename) + label1, lw=0.5)
             plt.title(str(df_title));
-            print(str(df_title))
             plt.savefig(fname=self.nowdir + '/plots/' + filename + label1 + '.jpg',
                         dpi=350)
             # plt.show()
             plt.close()
-            
+
             print(str(self.counter) + '個目のファイルを処理します')
             self.counter += 1
 
             # move csv file
             shutil.move(file_, self.dirtmp2)
 
-save_path = "G:/simulation/HH"
-pic = Picture(save_path)
-pic.run()
+        return 0
+
+
+    def run(self):
+        self. process = 6
+        self.unit_files = int(len(self.files)/self.process)
+        self.csv_tmp_list = list(zip(*[iter(self.files)] * int(self.unit_files)))
+        print(self.csv_tmp_list)
+        print(self.csv_tmp_list[0])
+        print(self.csv_tmp_list[1])
+        print(self.csv_tmp_list[2])
+        print(self.csv_tmp_list[3])
+        print(self.csv_tmp_list[4])
+        print(self.csv_tmp_list[5])
+
+        pool = Pool(self.process)
+        res = pool.map(self.run2, range(self.process))
+
+
+def main():
+    save_path = "G:/simulation/test"
+    pic = Picture(save_path)
+    pic.run()
+
+
+if __name__ == '__main__':
+     main()
