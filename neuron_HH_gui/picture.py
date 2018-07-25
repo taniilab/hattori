@@ -76,7 +76,8 @@ class Picture():
 
             # move csv file
             shutil.move(file_, self.dirtmp2)
-
+"""
 save_path = "G:/simulation/HH"
 pic = Picture(save_path)
 pic.run()
+"""

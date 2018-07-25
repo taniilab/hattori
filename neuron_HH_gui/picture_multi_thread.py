@@ -86,20 +86,13 @@ class Picture():
         self. process = 6
         self.unit_files = int(len(self.files)/self.process)
         self.csv_tmp_list = list(zip(*[iter(self.files)] * int(self.unit_files)))
-        print(self.csv_tmp_list)
-        print(self.csv_tmp_list[0])
-        print(self.csv_tmp_list[1])
-        print(self.csv_tmp_list[2])
-        print(self.csv_tmp_list[3])
-        print(self.csv_tmp_list[4])
-        print(self.csv_tmp_list[5])
 
         pool = Pool(self.process)
         res = pool.map(self.run2, range(self.process))
 
 
 def main():
-    save_path = "G:/simulation/test"
+    save_path = "G:/simulation/HH"
     pic = Picture(save_path)
     pic.run()
 

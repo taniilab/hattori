@@ -16,7 +16,7 @@ import pandas as pd
 import time
 import datetime
 import itertools
-from picture import Picture
+from picture_multi_thread import Picture
 #import matplotlib as mpl
 # for overflow error
 #mpl.rcParams['agg.path.chunksize'] = 100000
@@ -56,17 +56,17 @@ class Main():
             """
             self.parm[self.parm_counter] = {'T': 60000,
                                             'dt': 0.04,
-                                            'Iext_amp': 0,
+                                            'Iext_amp': 0.5,
                                             'syncp': 5,
                                             'noise': 2,
                                             'gpNa': 0,
-                                            'Pmax_AMPA': round(i*0.05, 3),
+                                            'Pmax_AMPA': round( i*0.05, 3),
                                             'Pmax_NMDA': round(j*0.05, 3),
                                             'gtCa': 0,
                                             'Mg_conc': round(k*0.1, 3),
                                             'alpha': 0.5,
-                                            'beta': 0.1,
-                                            'D': 0.08,
+                                            'beta': 0.2,
+                                            'D': 0.4,
                                             'delay': 10}
             self.parm_counter += 1
 
@@ -124,7 +124,9 @@ def main():
             filename = (str(d.year) + '_' + str(d.month) + '_' +
                         str(d.day) + '_' + str(d.hour) + '_' +
                         str(d.minute) + '_' + str(d.second) + '_' +
-                        'N' + str(j) + '_' + "HH.csv")
+                        'N' + str(j) +
+                        "P_AMPA" + str(res[k].Pmax_AMPA) + "_P_NMDA" + str(res[k].Pmax_NMDA) +
+                        "_Mg_conc" + str(str(res[k].Mg_conc)) +'_' + "HH.csv")
 
             df = pd.DataFrame({'T [ms]': res[k].Tsteps,
                                'V [mV]': res[k].V[j],
