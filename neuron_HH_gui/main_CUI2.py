@@ -23,7 +23,8 @@ from picture_multi_thread import Picture
 
 starttime = time.time()
 elapsed_time = 0
-save_path = "G:/simulation/HH"
+save_path = "//192.168.13.10/Public/hattori/simulation/HH"
+#save_path = "G:/simulation/HH"
 
 # number of processors
 process = 5
@@ -54,6 +55,7 @@ class Main():
                                             'ratio': round(0.2 * j, 2),
                                             'gtCa': round(0.4 * k, 2)}
             """
+
             self.parm[self.parm_counter] = {'T': 60000,
                                             'dt': 0.04,
                                             'Iext_amp': 0.5,
@@ -69,6 +71,7 @@ class Main():
                                             'D': 0.4,
                                             'delay': 10}
             self.parm_counter += 1
+
 
     def simulate(self, process):
         # parallel processing on each setting value
