@@ -27,16 +27,16 @@ save_path = "//192.168.13.10/Public/hattori/simulation/HH"
 #save_path = "G:/simulation/HH"
 
 # number of processors
-process = 5
+process = 6
 
 class Main():
     def __init__(self):
         self.parm = []
 
         #combination
-        self.i = 21
-        self.j = 21
-        self.k = 5
+        self.i = 6
+        self.j = 1
+        self.k = 1
         self.l = 1
 
         self.cycle_multiproc = int(self.i * self.j*self.k*self.l/process)
@@ -48,24 +48,16 @@ class Main():
                                             range(self.k),
                                             range(self.l)):
             self.parm.append({})
-            """
-            self.parm[self.parm_counter] = {'Iext_amp': 1,
-                                            'syncp': 5,
-                                            'Pmax': round(0.5 * i, 2),
-                                            'ratio': round(0.2 * j, 2),
-                                            'gtCa': round(0.4 * k, 2)}
-            """
-
-            self.parm[self.parm_counter] = {'T': 60000,
+            self.parm[self.parm_counter] = {'T': 5000,
                                             'dt': 0.04,
                                             'Iext_amp': 0.5,
-                                            'syncp': 5,
+                                            'syncp': 6,
                                             'noise': 2,
                                             'gpNa': 0,
                                             'Pmax_AMPA': round( i*0.05, 3),
-                                            'Pmax_NMDA': round(j*0.05, 3),
+                                            'Pmax_NMDA': round(j*0.05+0.1, 3),
                                             'gtCa': 0,
-                                            'Mg_conc': round(k*0.1, 3),
+                                            'Mg_conc': round(k*0.1+1, 3),
                                             'alpha': 0.5,
                                             'beta': 0.2,
                                             'D': 0.4,
