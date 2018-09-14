@@ -11,7 +11,7 @@ from pyqtgraph.Qt import QtGui, QtCore
 mpl.rcParams['agg.path.chunksize'] = 100000
 
 index = "15"
-path = "C:/Box Sync/Personal/Documents/touhoku_patch/20180713_cortex/"
+path = "//192.168.13.10/Public/hattori/touhoku_patch/20180910_cortex/"
 path_h = path + "voltage/voltage" + index + ".csv"
 path_i = path + "current/current" + index + ".csv"
 
