@@ -27,7 +27,7 @@ class Picture():
         self.files = {}
         self.counter = 0
         self.files = glob.glob(self.csvs)
-        #print(self.files)
+        print(self.files)
         self.tmp0 = []
         self.tmp1 = []
         self.tmp2 = []
@@ -73,7 +73,7 @@ class Picture():
             # plt.show()
             plt.close()
 
-            print(str(self.counter) + '�ڂ̃t�@�C�����������܂�')
+            print(str(self.counter) + '個目のファイルを処理します')
             self.counter += 1
 
             # move csv file
@@ -90,12 +90,13 @@ class Picture():
         pool = Pool(self.process)
         res = pool.map(self.run2, range(self.process))
 
-
+"""
 def main():
-    save_path = "G:/simulation/HH"
+    save_path = 'Z:/simulation/HH'
     pic = Picture(save_path)
     pic.run()
 
 
 if __name__ == '__main__':
      main()
+"""
