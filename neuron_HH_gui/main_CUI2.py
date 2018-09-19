@@ -23,7 +23,8 @@ from picture_multi_thread import Picture
 
 starttime = time.time()
 elapsed_time = 0
-save_path = "//192.168.13.10/Public/hattori/simulation/HH"
+#save_path = "//192.168.13.10/Public/hattori/simulation/HH"
+save_path = "Z:/simulation/HH"
 #save_path = "G:/simulation/HH"
 
 # number of processors
@@ -138,6 +139,8 @@ def main():
                                'I_leak [uA]': res[k].Ileak[j],
                                'I_tCa [uA]': res[k].ItCa[j],
                                'I_syn [uA]': res[k].Isyn[j],
+                               'I_AMPA [uA]': res[k].IAMPA[j],
+                               'I_NMDA [uA]': res[k].INMDA[j],
                                'I_noise [uA]': res[k].Inoise[j]})
             config = pd.DataFrame(columns=[filename])
             config.to_csv(save_path + '/' + filename)
