@@ -34,9 +34,9 @@ class Main():
         self.parm = []
 
         #combination
-        self.i = 6
-        self.j = 1
-        self.k = 1
+        self.i = 18
+        self.j = 16
+        self.k = 4
         self.l = 1
 
         self.cycle_multiproc = int(self.i * self.j*self.k*self.l/process)
@@ -48,20 +48,27 @@ class Main():
                                             range(self.k),
                                             range(self.l)):
             self.parm.append({})
-            self.parm[self.parm_counter] = {'T': 5000,
+            self.parm[self.parm_counter] = {'T': 10000,
                                             'dt': 0.04,
-                                            'Iext_amp': 0.5,
+                                            'Iext_amp': 5,
                                             'syncp': 6,
                                             'noise': 2,
                                             'gpNa': 0,
-                                            'Pmax_AMPA': round( i*0.05, 3),
-                                            'Pmax_NMDA': round(j*0.05+0.1, 3),
+                                            'Pmax_AMPA': round(i*0.1, 2),
+                                            'Pmax_NMDA': round(j*0.1, 2),
                                             'gtCa': 0,
-                                            'Mg_conc': round(k*0.1+1, 3),
+                                            'Mg_conc': round(0.1+k*0.3, 2),
                                             'alpha': 0.5,
-                                            'beta': 0.2,
-                                            'D': 0.4,
-                                            'delay': 10}
+                                            'beta': 0.1,
+                                            'D': 0.5,
+                                            'U_SE_AMPA':0.7,
+                                            'U_SE_NMDA':0.03,
+                                            'tau_rise_AMPA':1.1,
+                                            'tau_rise_NMDA':145,
+                                            'tau_rec_AMPA':200,
+                                            'tau_rec_NMDA':200,
+                                            'tau_inact_AMPA':5,
+                                            'tau_inact_NMDA':55}
             self.parm_counter += 1
 
 
