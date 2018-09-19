@@ -1,4 +1,4 @@
--# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 Created on Thu Jun 22 14:54:07 2017
 
@@ -73,7 +73,7 @@ class Picture():
             # plt.show()
             plt.close()
 
-            print(str(self.counter) + 'ŒÂ–Ú‚Ìƒtƒ@ƒCƒ‹‚ğˆ—‚µ‚Ü‚·')
+            print(str(self.counter) + 'ï¿½Â–Ú‚Ìƒtï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½')
             self.counter += 1
 
             # move csv file

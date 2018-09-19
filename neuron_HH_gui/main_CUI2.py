@@ -23,8 +23,8 @@ from picture_multi_thread import Picture
 
 starttime = time.time()
 elapsed_time = 0
-#save_path = "//192.168.13.10/Public/hattori/simulation/HH"
-save_path = "Z:/simulation/HH"
+save_path = "//192.168.13.10/Public/hattori/simulation/HH"
+#save_path = "Z:/simulation/HH"
 #save_path = "G:/simulation/HH"
 
 # number of processors
