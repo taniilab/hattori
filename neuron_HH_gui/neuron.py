@@ -252,13 +252,13 @@ class Neuron_HH():
         elif self.syncp == 6:
             for j in range(0, self.N):
                 self.dR_AMPA = (self.dt * ((self.I_AMPA[i, j, self.curstep] / self.tau_rec_AMPA)
-                                           - self.R_AMPA[i, j, self.curstep] * self.U_SE_AMPA * self.exp_decay(self.curstep * self.dt - self.t_ap[j, i, 0], self.tau_rise_AMPA)))
+                                           - self.R_AMPA[i, j, self.curstep] * self.U_SE_AMPA * self.exp_decay(self.curstep * self.dt - self.t_ap[j, i, 0] - self.delay, self.tau_rise_AMPA)))
                 self.dR_NMDA = (self.dt * ((self.I_AMPA[i, j, self.curstep] / self.tau_rec_NMDA)
-                                           - self.R_NMDA[i, j, self.curstep] * self.U_SE_NMDA * self.exp_decay(self.curstep * self.dt - self.t_ap[j, i, 0], self.tau_rise_NMDA)))
+                                           - self.R_NMDA[i, j, self.curstep] * self.U_SE_NMDA * self.exp_decay(self.curstep * self.dt - self.t_ap[j, i, 0] - self.delay, self.tau_rise_NMDA)))
                 self.dE_AMPA = (self.dt * ((- self.E_AMPA[i, j, self.curstep] / self.tau_inact_AMPA)
-                                           + self.U_SE_AMPA * self.R_AMPA[i, j, self.curstep] * self.exp_decay(self.curstep * self.dt - self.t_ap[j, i, 0], self.tau_rise_AMPA)))
+                                           + self.U_SE_AMPA * self.R_AMPA[i, j, self.curstep] * self.exp_decay(self.curstep * self.dt - self.t_ap[j, i, 0] - self.delay, self.tau_rise_AMPA)))
                 self.dE_NMDA = (self.dt * ((- self.E_NMDA[i, j, self.curstep] / self.tau_inact_NMDA)
-                                           + self.U_SE_NMDA * self.R_NMDA[i, j, self.curstep] * self.exp_decay(self.curstep * self.dt - self.t_ap[j, i, 0], self.tau_rise_NMDA)))
+                                           + self.U_SE_NMDA * self.R_NMDA[i, j, self.curstep] * self.exp_decay(self.curstep * self.dt - self.t_ap[j, i, 0] - self.delay, self.tau_rise_NMDA)))
 
                 self.R_AMPA[i, j, self.curstep + 1] = self.R_AMPA[i, j, self.curstep] + self.dR_AMPA
                 self.R_NMDA[i, j, self.curstep + 1] = self.R_NMDA[i, j, self.curstep] + self.dR_NMDA

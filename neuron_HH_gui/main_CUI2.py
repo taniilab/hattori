@@ -23,8 +23,8 @@ from picture_multi_thread import Picture
 
 starttime = time.time()
 elapsed_time = 0
-save_path = "//192.168.13.10/Public/hattori/simulation/HH"
-#save_path = "Z:/simulation/HH"
+#save_path = "//192.168.13.10/Public/hattori/simulation/HH"
+save_path = "Z:/simulation/HH"
 #save_path = "G:/simulation/HH"
 
 # number of processors
@@ -35,9 +35,9 @@ class Main():
         self.parm = []
 
         #combination
-        self.i = 18
-        self.j = 16
-        self.k = 4
+        self.i = 60
+        self.j = 1
+        self.k = 1
         self.l = 1
 
         self.cycle_multiproc = int(self.i * self.j*self.k*self.l/process)
@@ -55,10 +55,10 @@ class Main():
                                             'syncp': 6,
                                             'noise': 2,
                                             'gpNa': 0,
-                                            'Pmax_AMPA': round(i*0.1, 2),
-                                            'Pmax_NMDA': round(j*0.1, 2),
+                                            'Pmax_AMPA': 0.4,
+                                            'Pmax_NMDA': 0.5,
                                             'gtCa': 0,
-                                            'Mg_conc': round(0.1+k*0.3, 2),
+                                            'Mg_conc': 1.0,
                                             'alpha': 0.5,
                                             'beta': 0.1,
                                             'D': 0.5,
@@ -69,7 +69,8 @@ class Main():
                                             'tau_rec_AMPA':200,
                                             'tau_rec_NMDA':200,
                                             'tau_inact_AMPA':5,
-                                            'tau_inact_NMDA':55}
+                                            'tau_inact_NMDA':55,
+                                            'delay': round(i*0.2, 2)}
             self.parm_counter += 1
 
 
@@ -128,8 +129,8 @@ def main():
                         str(d.day) + '_' + str(d.hour) + '_' +
                         str(d.minute) + '_' + str(d.second) + '_' +
                         'N' + str(j) +
-                        "P_AMPA" + str(res[k].Pmax_AMPA) + "_P_NMDA" + str(res[k].Pmax_NMDA) +
-                        "_Mg_conc" + str(str(res[k].Mg_conc)) +'_' + "HH.csv")
+                        "_P_AMPA" + str(res[k].Pmax_AMPA) + "_P_NMDA" + str(res[k].Pmax_NMDA) +
+                        "_Mg_conc" + str(res[k].Mg_conc) + '_' + 'delay' + str(res[k].delay) + "HH.csv")
 
             df = pd.DataFrame({'T [ms]': res[k].Tsteps,
                                'V [mV]': res[k].V[j],
