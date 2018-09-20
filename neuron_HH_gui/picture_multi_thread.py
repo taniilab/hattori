@@ -27,7 +27,6 @@ class Picture():
         self.files = {}
         self.counter = 0
         self.files = glob.glob(self.csvs)
-        #print(self.files)
         self.tmp0 = []
         self.tmp1 = []
         self.tmp2 = []
@@ -47,6 +46,10 @@ class Picture():
 
         if not os.path.isdir(self.nowdir + '/plots'):
             os.mkdir(self.nowdir + '/plots')
+        if not os.path.isdir(self.nowdir + '/plots/voltage'):
+            os.mkdir(self.nowdir + '/plots/voltage')
+        if not os.path.isdir(self.nowdir + '/plots/syn'):
+            os.mkdir(self.nowdir + '/plots/syn')
         if not os.path.isdir(self.dirtmp1):
             os.mkdir(self.dirtmp1)
         if not os.path.isdir(self.dirtmp2):
@@ -60,7 +63,7 @@ class Picture():
             filename = os.path.basename(file_).replace('.csv', '')
 
             df.plot(x='T [ms]', y='V [mV]', figsize=(60, 20), title=str(filename), lw=0.5)
-            plt.savefig(fname=self.nowdir + '/plots/' + filename + '.jpg',
+            plt.savefig(fname=self.nowdir + '/plots/voltage/' + filename + '.jpg',
                         dpi=350)
             # plt.show()
             plt.close()
@@ -68,12 +71,12 @@ class Picture():
             label1 = 'I_syn'
             df.plot(x='T [ms]', y='I_syn [uA]', figsize=(60, 20), title=str(filename) + label1, lw=0.5)
             plt.title(str(df_title));
-            plt.savefig(fname=self.nowdir + '/plots/' + filename + label1 + '.jpg',
+            plt.savefig(fname=self.nowdir + '/plots/syn/' + filename + label1 + '.jpg',
                         dpi=350)
             # plt.show()
             plt.close()
 
-            print(str(self.counter) + '�ڂ̃t�@�C�����������܂�')
+            print(str(self.counter) + '個目のファイルを処理します')
             self.counter += 1
 
             # move csv file
@@ -86,13 +89,12 @@ class Picture():
         self. process = 6
         self.unit_files = int(len(self.files)/self.process)
         self.csv_tmp_list = list(zip(*[iter(self.files)] * int(self.unit_files)))
-
         pool = Pool(self.process)
         res = pool.map(self.run2, range(self.process))
 
 
 def main():
-    save_path = "G:/simulation/HH"
+    save_path = "//192.168.13.10/Public/hattori/simulation/HH"
     pic = Picture(save_path)
     pic.run()
 
