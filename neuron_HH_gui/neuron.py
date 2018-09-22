@@ -146,7 +146,7 @@ class Neuron_HH():
         self.Iext_amp = Iext_amp
         self.Iext = np.zeros((self.N, self.allsteps))
         #self.Iext[0, 10000:20000] = -self.Iext_amp
-        self.Iext[0, int(500/self.dt):int(505/self.dt)] = self.Iext_amp
+        self.Iext[0, int(60000/self.dt):int(60005/self.dt)] = self.Iext_amp
         #self.Iext[0, 40000:50000] = 2 * self.Iext_amp
 
         # firing time

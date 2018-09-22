@@ -23,8 +23,8 @@ from picture_multi_thread import Picture
 
 starttime = time.time()
 elapsed_time = 0
-#save_path = "//192.168.13.10/Public/hattori/simulation/HH"
-save_path = "Z:/simulation/HH"
+save_path = "//192.168.13.10/Public/hattori/simulation/HH"
+#save_path = "Z:/simulation/HH"
 #save_path = "G:/simulation/HH"
 
 # number of processors
@@ -35,9 +35,9 @@ class Main():
         self.parm = []
 
         #combination
-        self.i = 60
-        self.j = 1
-        self.k = 1
+        self.i = 18
+        self.j = 16
+        self.k = 4
         self.l = 1
 
         self.cycle_multiproc = int(self.i * self.j*self.k*self.l/process)
@@ -49,16 +49,16 @@ class Main():
                                             range(self.k),
                                             range(self.l)):
             self.parm.append({})
-            self.parm[self.parm_counter] = {'T': 10000,
+            self.parm[self.parm_counter] = {'T': 70000,
                                             'dt': 0.04,
-                                            'Iext_amp': 5,
+                                            'Iext_amp': 10,
                                             'syncp': 6,
                                             'noise': 2,
                                             'gpNa': 0,
-                                            'Pmax_AMPA': 0.4,
-                                            'Pmax_NMDA': 0.5,
+                                            'Pmax_AMPA': round(i*0.1, 2),
+                                            'Pmax_NMDA': round(j*0.1, 2),
                                             'gtCa': 0,
-                                            'Mg_conc': 1.0,
+                                            'Mg_conc': round(0.1+k*0.1, 2),
                                             'alpha': 0.5,
                                             'beta': 0.1,
                                             'D': 0.5,
@@ -70,7 +70,7 @@ class Main():
                                             'tau_rec_NMDA':200,
                                             'tau_inact_AMPA':5,
                                             'tau_inact_NMDA':55,
-                                            'delay': round(i*0.2, 2)}
+                                            'delay': 0}
             self.parm_counter += 1
 
 
@@ -138,7 +138,6 @@ def main():
                                'I_Na [uA]': res[k].INa[j],
                                'I_m [uA]': res[k].Im[j],
                                'I_leak [uA]': res[k].Ileak[j],
-                               'I_tCa [uA]': res[k].ItCa[j],
                                'I_syn [uA]': res[k].Isyn[j],
                                'I_AMPA [uA]': res[k].IAMPA[j],
                                'I_NMDA [uA]': res[k].INMDA[j],
