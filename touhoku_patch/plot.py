@@ -24,9 +24,13 @@ dfc = pd.read_csv(path_i, delimiter=',')
 dfv.fillna(0)
 dfc.fillna(0)
 
-glaph_tab = pg.GraphicsWindow(title="four terminal voltage")
+pg.setConfigOption('background', (255,255,255))
+pg.setConfigOption('foreground', (0,0,0))
+glaph_tab = pg.GraphicsWindow(title="single autaptic neuron")
 p1 = glaph_tab.addPlot(title="Vx1")
-curve1 = p1.plot(dfv['index']/sample, dfv['voltage(mV)'])
+p1.showGrid(True, True, 0.2)
+curve1 = p1.plot(dfv['index']/sample, dfv['voltage(mV)'], pen=(0,0,0))
+
 
 ax1 = fig.add_subplot(1, 1, 1)
 ax1.plot(dfv['index']/sample, dfv['voltage(mV)'], color="black", markevery=[0, -1], zorder=1)
