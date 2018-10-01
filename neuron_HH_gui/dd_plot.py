@@ -12,7 +12,6 @@ class DropWidget(QWidget):
     def __init__(self, parent=None):
         super(DropWidget, self).__init__(parent)
         self.setAcceptDrops(True)
-        self.setFixedSize(250,120)
 
     def dragEnterEvent(self, event):
         event.accept()
@@ -80,7 +79,7 @@ class SubWindow(QMainWindow):
 def main():
     app = QApplication(sys.argv)
     w = DropWidget()
-    w.resize(800, 600)
+    w.resize(250, 200)
     w.show()
     w.raise_()
     app.exec_()
