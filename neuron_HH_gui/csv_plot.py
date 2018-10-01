@@ -11,13 +11,23 @@ def main():
        # for overflow error
        mpl.rcParams['agg.path.chunksize'] = 100000
 
-
+       """
        path = "Z:/simulation/HH/2018_9_19_14_23_37_N0_P_AMPA0.4_P_NMDA0.5_Mg_conc1.0_delay4.6HH.csv"
        """
-
+       """
        path = "//192.168.13.10/Public/ishida/simulation/dynamic_synapse_exp4/check/tmp/2018_9_13_10_35_17/" + \
               "2018_9_13_10_35_17__T_ 1000_ Iext_amp_ 5_ dt_ 0.04_ noise_ 3_ syncp_ 2_ U_SE_AMPA_ 0.5_ tau_rise_AMPA_ 1.0_ A_SE_AMPA_ 1_ A_SE_NMDA_ 0.49__N0_HH.csv"
        """
+
+
+       path = "//192.168.13.10/Public/hattori/simulation/HH/tmp/" + \
+              "2018_9_22_9_50_8/2018_9_20_21_36_25_N0_P_AMPA0.2_P_NMDA0.2_Mg_conc0.4_delay0HH.csv"
+
+       """
+       path = "//192.168.13.10/Public/nakanishi/simulation/2018_9_21 depression synapse Mg_0.5~1.0/tmp/2018_9_23_12_25_20/" + \
+              "2018_9_21_12_20_48__P_AMPA_0.3_P_NMDA_1.2_Mg_conc_1.0_delay_0_N0_HH.csv"
+       """
+
        fsize = 72
        sample = 20000
        fig = plt.figure(figsize=(21, 14))
