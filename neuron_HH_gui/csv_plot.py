@@ -14,19 +14,21 @@ def main():
        """
        path = "Z:/simulation/HH/2018_9_19_14_23_37_N0_P_AMPA0.4_P_NMDA0.5_Mg_conc1.0_delay4.6HH.csv"
        """
-       """
-       path = "//192.168.13.10/Public/ishida/simulation/dynamic_synapse_exp4/check/tmp/2018_9_13_10_35_17/" + \
-              "2018_9_13_10_35_17__T_ 1000_ Iext_amp_ 5_ dt_ 0.04_ noise_ 3_ syncp_ 2_ U_SE_AMPA_ 0.5_ tau_rise_AMPA_ 1.0_ A_SE_AMPA_ 1_ A_SE_NMDA_ 0.49__N0_HH.csv"
-       """
-
-
-       path = "//192.168.13.10/Public/hattori/simulation/HH/tmp/" + \
-              "2018_9_22_9_50_8/2018_9_20_21_36_25_N0_P_AMPA0.2_P_NMDA0.2_Mg_conc0.4_delay0HH.csv"
 
        """
+       path = "//192.168.13.10/Public/ishida/simulation/dynamic_synapse_exp13__Mg=2~10/tmp/2018_9_22_1_8_21/" + \
+              "2018_9_21_0_2_41__T_ 70000_ Iext_amp_ 10_ Mg_ 4_ noise_ 2_ syncp_ 2_ U_SE_AMPA_ 0.7_ A_SE_AMPA_ 0.1_ A_SE_NMDA_ 1.3__N0_HH.csv"
+       """
+
+       """
+       path = "//192.168.13.10/Public/hattori/simulation/HH/raw_data/2018_9_22_9_50_8/" + \
+              "2018_9_21_0_28_21_N0_P_AMPA0.4_P_NMDA0.2_Mg_conc0.4_delay0HH.csv"
+       """
+
        path = "//192.168.13.10/Public/nakanishi/simulation/2018_9_21 depression synapse Mg_0.5~1.0/tmp/2018_9_23_12_25_20/" + \
-              "2018_9_21_12_20_48__P_AMPA_0.3_P_NMDA_1.2_Mg_conc_1.0_delay_0_N0_HH.csv"
-       """
+              "2018_9_21_23_2_51__P_AMPA_0.6_P_NMDA_0.7_Mg_conc_0.5_delay_0_N0_HH.csv"
+
+
 
        fsize = 72
        sample = 20000
@@ -39,6 +41,23 @@ def main():
        p1 = glaph_tab.addPlot(title="Vx1")
        curve1 = p1.plot(df['T [ms]'], df['V [mV]'])
        """
+
+
+       #pyqtgraph
+       pg.setConfigOption('background', (255,255,255))
+       pg.setConfigOption('foreground', (0,0,0))
+       glaph_tab = pg.GraphicsWindow(title="single autaptic neuron")
+       p1 = glaph_tab.addPlot(title="Vx1")
+       p1.showGrid(True, True, 0.2)
+       curve1 = p1.plot(df['T [ms]'], df['V [mV]'], pen=(0,0,0))
+
+       glaph_tab.nextRow()
+       p2 = glaph_tab.addPlot(title="Vx1")
+       p2.showGrid(True, True, 0.2)
+       curve1 = p2.plot(df['T [ms]'], df['I_AMPA [uA]'], pen=(200,0,0))
+       curve1 = p2.plot(df['T [ms]'], df['I_NMDA [uA]'], pen=(0,100,100))
+
+       #matplotlib
        ax1 = fig.add_subplot(3, 1, 1)
        ax1.plot(df['T [ms]'], df['V [mV]'], color="black", markevery=[0, -1])
        ax1.tick_params(labelsize=fsize)
@@ -96,6 +115,9 @@ def main():
        ax2.tick_params(labelsize=fsize)
        ax2.tick_params(axis="x", colors="white")
        """
+
+
+
 
 
 if __name__ == '__main__':

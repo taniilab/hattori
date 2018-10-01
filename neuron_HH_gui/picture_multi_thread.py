@@ -37,8 +37,8 @@ class Picture():
         self.gcounter = 0
 
         self.d = datetime.datetime.today()
-        self.dirtmp1 = (self.nowdir + '/tmp')
-        self.dirtmp2 = (self.nowdir + '/tmp/' +
+        self.dirtmp1 = (self.nowdir + '/raw_data')
+        self.dirtmp2 = (self.nowdir + '/raw_data/' +
                         str(self.d.year) + '_' + str(self.d.month) +
                         '_' + str(self.d.day) + '_' +
                         str(self.d.hour) + '_' + str(self.d.minute) +
