@@ -15,19 +15,17 @@ def main():
        path = "Z:/simulation/HH/2018_9_19_14_23_37_N0_P_AMPA0.4_P_NMDA0.5_Mg_conc1.0_delay4.6HH.csv"
        """
 
-       """
        path = "//192.168.13.10/Public/ishida/simulation/dynamic_synapse_exp13__Mg=2~10/tmp/2018_9_22_1_8_21/" + \
-              "2018_9_21_0_2_41__T_ 70000_ Iext_amp_ 10_ Mg_ 4_ noise_ 2_ syncp_ 2_ U_SE_AMPA_ 0.7_ A_SE_AMPA_ 0.1_ A_SE_NMDA_ 1.3__N0_HH.csv"
-       """
+              "2018_9_20_20_47_5__T_ 70000_ Iext_amp_ 10_ Mg_ 2_ noise_ 2_ syncp_ 2_ U_SE_AMPA_ 0.7_ A_SE_AMPA_ 0.9_ A_SE_NMDA_ 0.9__N0_HH.csv"
 
        """
        path = "//192.168.13.10/Public/hattori/simulation/HH/raw_data/2018_9_22_9_50_8/" + \
               "2018_9_21_0_28_21_N0_P_AMPA0.4_P_NMDA0.2_Mg_conc0.4_delay0HH.csv"
        """
-
+       """
        path = "//192.168.13.10/Public/nakanishi/simulation/2018_9_21 depression synapse Mg_0.5~1.0/tmp/2018_9_23_12_25_20/" + \
               "2018_9_21_23_2_51__P_AMPA_0.6_P_NMDA_0.7_Mg_conc_0.5_delay_0_N0_HH.csv"
-
+       """
 
 
        fsize = 72

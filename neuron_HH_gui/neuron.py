@@ -208,7 +208,7 @@ class Neuron_HH():
 
 
     def exp_decay(self, x, tau_rise):
-        if -(x / tau_rise) > 100:
+        if (x / tau_rise) > 100:
             return 0
         else:
             return np.exp(- x / tau_rise)
