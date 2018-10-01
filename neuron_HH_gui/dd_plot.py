@@ -12,6 +12,7 @@ class DropWidget(QWidget):
     def __init__(self, parent=None):
         super(DropWidget, self).__init__(parent)
         self.setAcceptDrops(True)
+        self.setFixedSize(500,250)
 
     def dragEnterEvent(self, event):
         event.accept()
@@ -45,21 +46,6 @@ class DropWidget(QWidget):
         df = pd.read_csv(path, delimiter=',', skiprows=1)
         df.fillna(0)
 
-        """
-        app2 = QApplication(sys.argv)
-        mw = QMainWindow()
-        mw.setWindowTitle('pyqtgraph example: PlotWidget')
-        mw.resize(1200, 1200)
-        cw = QWidget()
-        mw.setCentralWidget(cw)
-        l = QVBoxLayout()
-        cw.setLayout(l)
-
-        pw = pg.PlotWidget(name='Plot1')  ## giving the plots names allows us to link their axes together
-        l.addWidget(pw)
-        pw.plot(df['T [ms]'], df['V [mV]'], pen=(0, 0, 0))
-        pw.showGrid(True, True, 0.2)
-        """
         pg.setConfigOption('background', (255, 255, 255))
         pg.setConfigOption('foreground', (0, 0, 0))
 
