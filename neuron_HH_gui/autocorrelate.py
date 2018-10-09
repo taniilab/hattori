@@ -1,4 +1,3 @@
-@ -1,36 +0,0 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib as mpl
@@ -10,8 +9,9 @@ import pyqtgraph as pg
 # for overflow error
 mpl.rcParams['agg.path.chunksize'] = 100000
 
-path = "E:/simulation/" + \
-       "2018_6_25_17_1_12__T_ 100000_ dt_ 0.04_ Iext_amp_ 0_ eK_ -90_ syncp_ 5_ noise_ 2_ gK_ 3_ gpNa_ 0_ Pmax_AMPA_ 0.4_ Pmax_NMDA_ 0.5_ gtCa_ 0.4_ Mg_conc_ 1_ alpha_ 0.5_ beta_ 0.1_ D_ 0.05_ delay_ 10__N0_HH.csv"
+path = "//192.168.13.10/Public/hattori/simulation/HH/rawdata/2018_9_22_9_50_8/" + \
+       "2018_9_20_22_59_16_N0_P_AMPA0.3_P_NMDA0.2_Mg_conc0.4_delay0HH.csv"
+
 fsize = 72
 sample = 20000
 fig = plt.figure(figsize=(21, 14))
@@ -24,7 +24,14 @@ p1 = glaph_tab.addPlot(title="Vx1")
 curve1 = p1.plot(df['T [ms]'], df['V [mV]'])
 """
 
-ac = np.correlate(df['V [mV]']+70, df['V [mV]']+70)
+t = np.arange(0, 100, 0.01)
+y = np.sin(t)
+
+ac = np.correlate(y, y)
+#ac = np.correlate(df['V [mV]']+70, df['V [mV]']+70)
+
+print(y)
+print(ac)
 
 ax1 = fig.add_subplot(1, 1, 1)
 ax1.plot(ac)

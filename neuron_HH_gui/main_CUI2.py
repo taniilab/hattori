@@ -49,7 +49,7 @@ class Main():
                                             range(self.k),
                                             range(self.l)):
             self.parm.append({})
-            self.parm[self.parm_counter] = {'T': 70000,
+            self.parm[self.parm_counter] = {'T': 5000,
                                             'dt': 0.04,
                                             'Iext_amp': 10,
                                             'syncp': 6,
