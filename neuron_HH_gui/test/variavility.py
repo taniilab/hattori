@@ -1,8 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import statsmodels.api as sm
+import pandas as pd
 
-dt = 0.01
+dt = 0.1
 t = np.arange(0, 1500, dt)
 x = np.zeros(len(t))
 y = np.zeros(len(t))
@@ -22,6 +23,10 @@ k1z = 0
 
 t_ap = []
 
+path = "//192.168.13.10/Public/hattori/simulation/HH/" + \
+       "2018_10_9_20_13_6_N0_P_AMPA0.1_P_NMDA0.1_Mg_conc0.1_delay0HH.csv"
+df = pd.read_csv(path, delimiter=',', skiprows=1)
+df.fillna(0)
 
 for i in range(0, len(t)-1):
     if x[i] > 0 and i > 200/dt:
@@ -43,3 +48,15 @@ ax2.plot(t, x)
 print(t_ap[0])
 print(t_ap[-1])
 plt.show()
+
+t_ap2 = []
+voltage = df['V [mV]']
+time = df['T [ms]']
+dt2 = 0.04
+
+for i in range(0, len(df['T [ms]'])):
+    if voltage[i] > 10:
+        t_ap2.append(time[i])
+
+print(t_ap2[0])
+print(t_ap2[-1])

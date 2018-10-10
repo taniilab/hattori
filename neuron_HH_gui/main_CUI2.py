@@ -37,7 +37,7 @@ class Main():
         #combination
         self.i = 18
         self.j = 16
-        self.k = 4
+        self.k = 8
         self.l = 1
 
         self.cycle_multiproc = int(self.i * self.j*self.k*self.l/process)
@@ -58,7 +58,7 @@ class Main():
                                             'Pmax_AMPA': round(i*0.1, 2),
                                             'Pmax_NMDA': round(j*0.1, 2),
                                             'gtCa': 0,
-                                            'Mg_conc': round(0.1+k*0.1, 2),
+                                            'Mg_conc': round(0.1+k*0.3, 2),
                                             'alpha': 0.5,
                                             'beta': 0.1,
                                             'D': 0.5,
