@@ -1,4 +1,3 @@
-@@ -1,28 +0,0 @@
 from multiprocessing import Pool
 
 class Main():

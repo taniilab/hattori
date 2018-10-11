@@ -27,6 +27,7 @@ class Picture():
         self.files = {}
         self.counter = 0
         self.files = glob.glob(self.csvs)
+        print(self.files)
         self.tmp0 = []
         self.tmp1 = []
         self.tmp2 = []
@@ -94,7 +95,8 @@ class Picture():
 
 
 def main():
-    save_path = "//192.168.13.10/Public/hattori/simulation/HH"
+    save_path = "Z:/Box Sync/Personal/tmp_data/"
+    #save_path = "//192.168.13.10/Public/hattori/simulation/HH"
     pic = Picture(save_path)
     pic.run()
 
