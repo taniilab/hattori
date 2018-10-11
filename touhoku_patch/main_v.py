@@ -10,7 +10,7 @@ import sys
 import time
 
 #path = "C:/Box Sync/Personal/Documents/touhoku_patch/20180713_cortex/"
-path = "//192.168.13.10/Public/experimental data/touhoku_patch/20180914_cortex/"
+path = "//192.168.13.10/Public/experimental data/touhoku_patch/RCN_random_EPSC/"
 
 #mode = "current"
 mode = "voltage"
@@ -40,8 +40,7 @@ df = pd.read_csv(path + mode + ".atf", delimiter='\t', skiprows=[0, 1])
 df = df.replace(0, np.nan)
 
 
-index = ['5', '8', '11', '15', '25', '27', '32', '34', '38', '48',
-         '51', '55', '57', '67', '72', '76', '86', '96', '100', '102']
+index = ['1', '2', '4', '9']
 
 # Initialize
 top = 1
