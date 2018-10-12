@@ -26,7 +26,8 @@ ax = fig.add_subplot(1,1,1)
 sns.heatmap(dummy_data, cmap="BuPu_r", ax=ax)
 plt.show()
 """
-read_path = "//192.168.13.10/Public/hattori/simulation/HH/raw_data/2018_10_10_9_46_37/Mg_1.0/"
+#read_path = "//192.168.13.10/Public/hattori/simulation/HH/raw_data/2018_10_11_14_0_47/Mg_conc0.1"
+read_path = "//192.168.13.10/Public/ishida/simulation/HH_hattori/raw_data/2018_10_11_14_0_47/Mg_conc1.3/"
 
 nowdir = read_path
 i, j = index_initialize()
@@ -38,19 +39,23 @@ for i, j in itertools.product(range(i), range(j)):
     tmp = read_path + "*_P_AMPA" + str(round(i*0.1, 1)) + "_P_NMDA" + str(round(j*0.1, 1)) + "*.csv"
     csv = glob.glob(tmp)
     print(csv)
+    print(len(csv))
 
-    df = pd.read_csv(csv[0], index_col=0, skiprows=1)
-    t_ap = []
-    voltage = df['V [mV]']
-    time = df['T [ms]']
-    dt2 = 0.04
+    for k in range(len(csv)):
+        df = pd.read_csv(csv[k], index_col=0, skiprows=1)
+        t_ap = []
+        voltage = df['V [mV]']
+        time = df['T [ms]']
+        dt2 = 0.04
 
-    for k in range(0, len(df['T [ms]'])):
-           if voltage[k] > 10:
-                  t_ap.append(time[k])
+        for l in range(0, len(df['T [ms]'])):
+            if voltage[l] > 10:
+                t_ap.append(time[l])
 
-    # duration time of spontaneouos activity
-    list_duration_time[i,j] = t_ap[-1]-t_ap[0]
+        # duration time of spontaneouos activity
+        list_duration_time[i,j] += t_ap[-1]-t_ap[0]
+
+    list_duration_time[i, j] /= len(csv)
 
 
 i, j = index_initialize()
