@@ -26,7 +26,7 @@ ax = fig.add_subplot(1,1,1)
 sns.heatmap(dummy_data, cmap="BuPu_r", ax=ax)
 plt.show()
 """
-read_path = "//192.168.13.10/Public/hattori/simulation/HH/raw_data/2018_10_10_9_46_37/Mg_0.1/"
+read_path = "//192.168.13.10/Public/hattori/simulation/HH/raw_data/2018_10_10_9_46_37/Mg_2.2/"
 
 nowdir = read_path
 i, j = index_initialize()
