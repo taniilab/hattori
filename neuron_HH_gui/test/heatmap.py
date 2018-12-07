@@ -42,6 +42,7 @@ for i, j in itertools.product(range(i), range(j)):
     print(csv)
     print(len(csv))
 
+    # averaging
     for k in range(len(csv)):
         df = pd.read_csv(csv[k], index_col=0, skiprows=1)
         t_ap = []

@@ -1,103 +1,75 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Jun 22 14:54:07 2017
-
-@author: Hattori
-"""
-import matplotlib.pyplot as plt
-import glob
-import os
-import shutil
+import seaborn as sns
 import pandas as pd
 import numpy as np
-import datetime
 import matplotlib as mpl
-from multiprocessing import Pool
-
-# for overflow error
-mpl.rcParams['agg.path.chunksize'] = 100000
-
-
-class Picture():
-    def __init__(self,
-                 path='C:'):
-
-        self.nowdir = path
-        self.csvs = path + '/' + '*.csv'
-        self.files = {}
-        self.counter = 0
-        self.files = glob.glob(self.csvs)
-        self.tmp0 = []
-        self.tmp1 = []
-        self.tmp2 = []
-        self.tmp3 = []
-        self.tmp4 = []
-        self.tmp5 = []
-
-        self.gcounter = 0
-
-        self.d = datetime.datetime.today()
-        self.dirtmp1 = (self.nowdir + '/raw_data')
-        self.dirtmp2 = (self.nowdir + '/raw_data/' +
-                        str(self.d.year) + '_' + str(self.d.month) +
-                        '_' + str(self.d.day) + '_' +
-                        str(self.d.hour) + '_' + str(self.d.minute) +
-                        '_' + str(self.d.second))
-
-        if not os.path.isdir(self.nowdir + '/plots'):
-            os.mkdir(self.nowdir + '/plots')
-        if not os.path.isdir(self.nowdir + '/plots/voltage'):
-            os.mkdir(self.nowdir + '/plots/voltage')
-        if not os.path.isdir(self.nowdir + '/plots/syn'):
-            os.mkdir(self.nowdir + '/plots/syn')
-        if not os.path.isdir(self.dirtmp1):
-            os.mkdir(self.dirtmp1)
-        if not os.path.isdir(self.dirtmp2):
-            os.mkdir(self.dirtmp2)
-
-    def run2(self, value):
-        self.value = value
-        for file_ in self.csv_tmp_list[self.value]:
-            df_title = pd.read_csv(file_, nrows=1)
-            df = pd.read_csv(file_, index_col=0, skiprows=1)
-            filename = os.path.basename(file_).replace('.csv', '')
-
-            df.plot(x='T [ms]', y='V [mV]', figsize=(60, 20), title=str(filename), lw=0.5)
-            plt.savefig(fname=self.nowdir + '/plots/voltage/' + filename + '.jpg',
-                        dpi=350)
-            # plt.show()
-            plt.close()
-
-            label1 = 'I_syn'
-            df.plot(x='T [ms]', y='I_syn [uA]', figsize=(60, 20), title=str(filename) + label1, lw=0.5)
-            plt.title(str(df_title));
-            plt.savefig(fname=self.nowdir + '/plots/syn/' + filename + label1 + '.jpg',
-                        dpi=350)
-            # plt.show()
-            plt.close()
-
-            print(str(self.counter) + '個目のファイルを処理します')
-            self.counter += 1
-
-            # move csv file
-            shutil.move(file_, self.dirtmp2)
-
-        return 0
+import matplotlib.pyplot as plt
+import os
+import glob
+import itertools
 
 
-    def run(self):
-        self. process = 6
-        self.unit_files = int(len(self.files)/self.process)
-        self.csv_tmp_list = list(zip(*[iter(self.files)] * int(self.unit_files)))
-        pool = Pool(self.process)
-        res = pool.map(self.run2, range(self.process))
+def index_initialize():
+    i = 18
+    j = 16
+
+    return i, j
+
+png_path = "//192.168.13.10/Public/hattori/" + \
+       "seaborn_heatmap_list2.png"
+
+#read_path = "Z:/Box Sync/Personal/tmp_data/"
+
+"""
+fig = plt.figure(figsize= (20,15))
+ax = fig.add_subplot(1,1,1)
+#sns.heatmap(list_duration_time, vmax=6, vmin=0, cmap="BuPu_r", ax=ax)
+sns.heatmap(dummy_data, cmap="BuPu_r", ax=ax)
+plt.show()
+"""
+#read_path = "//192.168.13.10/Public/hattori/simulation/HH/raw_data/2018_10_11_14_0_47/Mg_conc0.1"
+read_path = "//192.168.13.10/Public/nakanishi/simulation/HH/raw_data/2018_10_12_10_56_59/Mg=0.1/"
+
+nowdir = read_path
+i, j = index_initialize()
+list_duration_time = np.zeros((i,j))
+list_columns = []
+list_rows = []
+#2018_10_10_15_50_24_N0_P_AMPA0.0_P_NMDA0.0_Mg_conc0.1_delay0HH
+for i, j in itertools.product(range(i), range(j)):
+    tmp = read_path + "*_P_AMPA" + str(round(i*0.1, 1)) + "_P_NMDA" + str(round(j*0.1, 1)) + "*.csv"
+    csv = glob.glob(tmp)
+    print(tmp)
+    print(csv)
+    print(len(csv))
+
+    # averaging
+    for k in range(len(csv)):
+        df = pd.read_csv(csv[k], index_col=0, skiprows=1)
+        t_ap = []
+        voltage = df['V [mV]']
+        time = df['T [ms]']
+        dt2 = 0.04
+
+        for l in range(0, len(df['T [ms]'])):
+            if voltage[l] > 10:
+                t_ap.append(time[l])
+
+        # duration time of spontaneouos activity
+        list_duration_time[i,j] += t_ap[-1]-t_ap[0]
+
+    list_duration_time[i, j] /= len(csv)
 
 
-def main():
-    save_path = "//192.168.13.10/Public/hattori/simulation/HH"
-    pic = Picture(save_path)
-    pic.run()
-
-
-if __name__ == '__main__':
-     main()
+i, j = index_initialize()
+for i in range(i):
+    list_rows.append("AMPA: "+str(round(i*0.1, 1)))
+for j in range(j):
+    list_columns.append("NMDA: "+str(round(j*0.1, 1)))
+print(list_rows)
+print(list_columns)
+df = pd.DataFrame(list_duration_time, columns=list_columns, index=list_rows)
+df.to_csv(read_path+"heatmap.csv")
+fig = plt.figure(figsize=(20, 15))
+ax = fig.add_subplot(1, 1, 1)
+sns.heatmap(list_duration_time, cmap="BuPu_r", ax=ax)
+plt.show()

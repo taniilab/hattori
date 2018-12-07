@@ -28,16 +28,16 @@ save_path = "//192.168.13.10/Public/hattori/simulation/HH"
 #save_path = "G:/simulation/HH"
 
 # number of processors
-process = 6
+process = 14
 
 class Main():
     def __init__(self):
         self.parm = []
 
         #combination
-        self.i = 18
-        self.j = 16
-        self.k = 8
+        self.i = 1
+        self.j = 1
+        self.k = 14
         self.l = 1
 
         self.cycle_multiproc = int(self.i * self.j*self.k*self.l/process)
@@ -49,14 +49,14 @@ class Main():
                                             range(self.k),
                                             range(self.l)):
             self.parm.append({})
-            self.parm[self.parm_counter] = {'T': 5000,
+            self.parm[self.parm_counter] = {'T': 1000,
                                             'dt': 0.04,
                                             'Iext_amp': 10,
                                             'syncp': 6,
                                             'noise': 2,
                                             'gpNa': 0,
-                                            'Pmax_AMPA': round(i*0.1, 2),
-                                            'Pmax_NMDA': round(j*0.1, 2),
+                                            'Pmax_AMPA': 0,
+                                            'Pmax_NMDA': 0,
                                             'gtCa': 0,
                                             'Mg_conc': round(0.1+k*0.3, 2),
                                             'alpha': 0.5,
@@ -141,6 +141,9 @@ def main():
                                'I_syn [uA]': res[k].Isyn[j],
                                'I_AMPA [uA]': res[k].IAMPA[j],
                                'I_NMDA [uA]': res[k].INMDA[j],
+                               'E_AMPA [uA]': res[k].E_AMPA[0, j],
+                               'E_NMDA [uA]': res[k].E_NMDA[0, j],
+                               'Iext [uA]': res[k].Iext[j],
                                'I_noise [uA]': res[k].Inoise[j]})
             config = pd.DataFrame(columns=[filename])
             config.to_csv(save_path + '/' + filename)

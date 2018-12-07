@@ -7,58 +7,58 @@ import os
 import glob
 import itertools
 
+#nest
+read_path = "//192.168.13.10/Public/hattori/simulation/HH/raw_data/2018_10_10_9_46_37(maindata)/Mg_1.0/raw_data/2018_12_7_14_13_43/" + \
+            "2018_10_9_21_18_47_N0_P_AMPA0.6_P_NMDA0.4_Mg_conc1.0_delay0HH.csv"
 
-def index_initialize():
-    i = 18
-    j = 16
+read_path = "//192.168.13.10/Public/hattori/simulation/HH/raw_data/2018_10_10_9_46_37(maindata)/Mg_1.0/raw_data/2018_12_7_14_13_43/" + \
+            "2018_10_9_21_15_46_N0_P_AMPA0.6_P_NMDA0.0_Mg_conc1.0_delay0HH.csv"
+df = pd.read_csv(read_path, index_col=0, skiprows=1)
 
-    return i, j
+voltage = df['V [mV]']
+time = df['T [ms]']
+tmp = 0 * voltage
+dt = 0.04
+buf = 0
+t_ap = []
+period = []
+freq = []
+line_w = 1
 
-png_path = "//192.168.13.10/Public/hattori/" + \
-       "seaborn_heatmap_list2.png"
+for l in range(0, len(df['T [ms]'])):
+    if voltage[l] > 0 and buf == 0:
+        t_ap.append(time[l])
+        tmp[l] = 1
+        buf = int(2/dt)
+    if buf > 0:
+        buf -= 1
 
-read_path = "//192.168.13.10/Public/nakanishi/simulation/HH/raw_data/2018_10_12_10_56_59/Mg=0.1/"
+for i in range(0, len(t_ap)-1):
+    period.append(t_ap[i+1]-t_ap[i])
+    freq.append(1000/(t_ap[i+1]-t_ap[i]))
 
-nowdir = read_path
-i, j = index_initialize()
-list_duration_time = np.zeros((i,j))
-list_columns = []
-list_rows = []
-
-for i, j in itertools.product(range(i), range(j)):
-    tmp = read_path + "*_P_AMPA" + str(round(i*0.1, 1)) + "_P_NMDA" + str(round(j*0.1, 1)) + "*.csv"
-    csv = glob.glob(tmp)
-    print(tmp)
-    print(csv)
-    print(len(csv))
-
-    for k in range(len(csv)):
-        df = pd.read_csv(csv[k], index_col=0, skiprows=1)
-        t_ap = []
-        voltage = df['V [mV]']
-        time = df['T [ms]']
-        dt2 = 0.04
-
-        for l in range(0, len(df['T [ms]'])):
-            if voltage[l] > 10:
-                t_ap.append(time[l])
-
-        # duration time of spontaneouos activity
-        list_duration_time[i,j] += t_ap[-1]-t_ap[0]
-
-    list_duration_time[i, j] /= len(csv)
+print(t_ap)
+print(period)
+print(freq)
 
 
-i, j = index_initialize()
-for i in range(i):
-    list_rows.append("AMPA: "+str(round(i*0.1, 1)))
-for j in range(j):
-    list_columns.append("NMDA: "+str(round(j*0.1, 1)))
-print(list_rows)
-print(list_columns)
-df = pd.DataFrame(list_duration_time, columns=list_columns, index=list_rows)
-df.to_csv(read_path+"heatmap.csv")
-fig = plt.figure(figsize=(20, 15))
-ax = fig.add_subplot(1, 1, 1)
-sns.heatmap(list_duration_time, cmap="BuPu_r", ax=ax)
+
+fig = plt.figure(figsize=(10,10))
+ax0 = fig.add_subplot(2, 2, 1)
+ax0.plot(df['T [ms]'], df['V [mV]'],
+         color="black",
+         linewidth=line_w, markevery=[0, -1])
+ax1 = fig.add_subplot(2, 2, 2)
+ax1.plot(df['T [ms]'], tmp,
+         color="black",
+         linewidth=line_w, markevery=[0, -1])
+ax2 = fig.add_subplot(2, 2, 3)
+ax2.plot(period,
+         color="black",
+         linewidth=line_w, markevery=[0, -1])
+ax3 = fig.add_subplot(2, 2, 4)
+ax3.plot(freq,
+         color="black",
+         linewidth=line_w, markevery=[0, -1])
+
 plt.show()

@@ -145,9 +145,13 @@ class Neuron_HH():
         # external input
         self.Iext_amp = Iext_amp
         self.Iext = np.zeros((self.N, self.allsteps))
-        #self.Iext[0, 10000:20000] = -self.Iext_amp
-        self.Iext[0, int(1000/self.dt):int(1005/self.dt)] = self.Iext_amp
-        #self.Iext[0, 40000:50000] = 2 * self.Iext_amp
+        self.Iext[0, int(200/self.dt):int(205/self.dt)] = self.Iext_amp
+        self.Iext[0, int(220/self.dt):int(225/self.dt)] = self.Iext_amp
+        self.Iext[0, int(240/self.dt):int(245/self.dt)] = self.Iext_amp
+        self.Iext[0, int(260/self.dt):int(265/self.dt)] = self.Iext_amp
+        self.Iext[0, int(280/self.dt):int(285/self.dt)] = self.Iext_amp
+        self.Iext[0, int(300/self.dt):int(305/self.dt)] = self.Iext_amp
+        self.Iext[0, int(320/self.dt):int(325/self.dt)] = self.Iext_amp
 
         # firing time
         self.t_ap = -10000 * np.ones((self.N, self.N, 2))

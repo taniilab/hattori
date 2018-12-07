@@ -38,7 +38,7 @@ def main():
        ratio = target_dpi/config_dpi
        """inch"""
        graph_width = 6.6929
-       graph_hight = 5
+       graph_hight = 1
 
        line_w = 1.0
        fsize = 8
@@ -72,11 +72,9 @@ def main():
 
        #matplotlib
        ax0 = fig.add_subplot(2, 1, 1)
-       ax0.plot(df['T [ms]'], df['E_NMDA [uA]_s']/0.46499,
+       ax0.plot(df['T [ms]'], df['Iext [uA]']/0.46499,
                 color="black",
                 linewidth=line_w, markevery=[0, -1])
-       ax0.plot(df['T [ms]'], df['E_AMPA [uA]_s'] /0.531177723,
-                linestyle="dashed", color="black", linewidth=line_w, markevery=[0, -1])
        ax0.tick_params(labelsize=fsize)
        ax0.tick_params(axis="x", colors="white")
        #ax1.set_xlabel("time[ms]", fontsize=fsize, color="gray")
@@ -89,11 +87,9 @@ def main():
 
 
        ax1 = fig.add_subplot(2, 1, 2)
-       ax1.plot(df['T [ms]'], df['E_NMDA [uA]']/0.46499,
+       ax1.plot(df['T [ms]'], df['Iext [uA]_s']/0.46499,
                 color="black",
                 linewidth=line_w, markevery=[0, -1])
-       ax1.plot(df['T [ms]'], df['E_AMPA [uA]'] /0.531177723,
-                linestyle="dashed", color="black", linewidth=line_w, markevery=[0, -1])
        ax1.tick_params(labelsize=fsize)
        ax1.tick_params(axis="x")
 
@@ -102,7 +98,7 @@ def main():
        ax1.spines["left"].set_linewidth(line_w)
        ax1.spines["bottom"].set_linewidth(line_w)
 
-       plt.savefig("C:/Users/Tanii_Lab/fig1.png")
+       plt.savefig("C:/Users/Tanii_Lab/fig1_3.png")
 
        """
        scalebar = ScaleBar(dx=1.0)
