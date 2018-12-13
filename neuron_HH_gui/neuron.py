@@ -220,7 +220,7 @@ class Neuron_HH():
 
     def calc_synaptic_input(self, i):
         # recording fire time
-        if self.Vi[i] > -20 and self.curstep * self.dt > 200:
+        if self.V[i, self.curstep-1] > 0 and self.V[i, self.curstep] <= 0 and self.curstep * self.dt > 200:
             self.t_ap[i, :, 1] = self.t_ap[i, :, 0]
             self.t_ap[i, :, 0] = self.curstep * self.dt
             self.fire_tmp[i] = self.curstep * self.dt
@@ -262,7 +262,7 @@ class Neuron_HH():
                 self.dE_AMPA = (self.dt * ((- self.E_AMPA[i, j, self.curstep] / self.tau_inact_AMPA)
                                            + self.U_SE_AMPA * self.R_AMPA[i, j, self.curstep] * self.exp_decay(self.curstep * self.dt - self.t_ap[j, i, 0] - self.delay, self.tau_rise_AMPA)))
                 self.dE_NMDA = (self.dt * ((- self.E_NMDA[i, j, self.curstep] / self.tau_inact_NMDA)
-                                           + self.U_SE_NMDA * self.R_NMDA[i, j, self.curstep] * self.exp_decay(self.curstep * self.dt - self.t_ap[j, i, 0] - self.delay, self.tau_rise_NMDA)))
+                                            + self.U_SE_NMDA * self.R_NMDA[i, j, self.curstep] * self.exp_decay(self.curstep * self.dt - self.t_ap[j, i, 0] - self.delay, self.tau_rise_NMDA)))
 
                 self.R_AMPA[i, j, self.curstep + 1] = self.R_AMPA[i, j, self.curstep] + self.dR_AMPA
                 self.R_NMDA[i, j, self.curstep + 1] = self.R_NMDA[i, j, self.curstep] + self.dR_NMDA

@@ -35,9 +35,9 @@ class Main():
         self.parm = []
 
         #combination
-        self.i = 1
-        self.j = 1
-        self.k = 14
+        self.i = 14
+        self.j = 21
+        self.k = 8
         self.l = 1
 
         self.cycle_multiproc = int(self.i * self.j*self.k*self.l/process)
@@ -49,16 +49,16 @@ class Main():
                                             range(self.k),
                                             range(self.l)):
             self.parm.append({})
-            self.parm[self.parm_counter] = {'T': 1000,
-                                            'dt': 0.04,
+            self.parm[self.parm_counter] = {'T': 5000,
+                                            'dt': 0.02,
                                             'Iext_amp': 10,
                                             'syncp': 6,
                                             'noise': 2,
                                             'gpNa': 0,
-                                            'Pmax_AMPA': 0,
-                                            'Pmax_NMDA': 0,
+                                            'Pmax_AMPA': round(0.7+0.1*i,2),
+                                            'Pmax_NMDA': round(0.1*j,2),
                                             'gtCa': 0,
-                                            'Mg_conc': round(0.1+k*0.3, 2),
+                                            'Mg_conc': round(0.1+k*0.3,2),
                                             'alpha': 0.5,
                                             'beta': 0.1,
                                             'D': 0.5,
