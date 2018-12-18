@@ -35,7 +35,7 @@ class Main():
         self.parm = []
 
         #combination
-        self.i = 14
+        self.i = 21
         self.j = 21
         self.k = 8
         self.l = 1
@@ -55,7 +55,7 @@ class Main():
                                             'syncp': 6,
                                             'noise': 2,
                                             'gpNa': 0,
-                                            'Pmax_AMPA': round(0.7+0.1*i,2),
+                                            'Pmax_AMPA': round(0.1*i,2),
                                             'Pmax_NMDA': round(0.1*j,2),
                                             'gtCa': 0,
                                             'Mg_conc': round(0.1+k*0.3,2),

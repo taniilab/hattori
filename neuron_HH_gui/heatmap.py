@@ -17,8 +17,6 @@ def index_initialize():
 png_path = "//192.168.13.10/Public/hattori/" + \
        "seaborn_heatmap_list2.png"
 
-#read_path = "Z:/Box Sync/Personal/tmp_data/"
-
 """
 fig = plt.figure(figsize= (20,15))
 ax = fig.add_subplot(1,1,1)
@@ -27,14 +25,14 @@ sns.heatmap(dummy_data, cmap="BuPu_r", ax=ax)
 plt.show()
 """
 #read_path = "//192.168.13.10/Public/hattori/simulation/HH/raw_data/2018_10_11_14_0_47/Mg_conc0.1"
-read_path = "//192.168.13.10/Public/nakanishi/simulation/HH/raw_data/2018_10_12_10_56_59/Mg=0.1/"
+read_path = "//192.168.13.10/Public/nakanishi/simulation/HH/raw_data/2018_12_13_15_41_42/Mg_1.0/"
 
 nowdir = read_path
 i, j = index_initialize()
 list_duration_time = np.zeros((i,j))
 list_columns = []
 list_rows = []
-#2018_10_10_15_50_24_N0_P_AMPA0.0_P_NMDA0.0_Mg_conc0.1_delay0HH
+
 for i, j in itertools.product(range(i), range(j)):
     tmp = read_path + "*_P_AMPA" + str(round(i*0.1, 1)) + "_P_NMDA" + str(round(j*0.1, 1)) + "*.csv"
     csv = glob.glob(tmp)
