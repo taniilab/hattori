@@ -187,8 +187,8 @@ def main():
     plt.show()
 
     elapsed_time = time.time() - starttime
-    pic = Picture(save_path)
-    pic.run()
+    #pic = Picture(save_path)
+    #pic.run()
 
     print("elapsed_time:{0}".format(elapsed_time) + "[sec]")
     print("")

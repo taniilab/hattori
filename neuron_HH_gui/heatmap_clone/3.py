@@ -25,7 +25,7 @@ sns.heatmap(dummy_data, cmap="BuPu_r", ax=ax)
 plt.show()
 """
 #read_path = "//192.168.13.10/Public/hattori/simulation/HH/raw_data/2018_10_11_14_0_47/Mg_conc0.1"
-read_path = "//192.168.13.10/Public/hattori/simulation/HH/raw_data/2018_12_15_11_54_17(maindata)/Mg_0.1/"
+read_path = "//192.168.13.10/Public/hattori/simulation/HH/raw_data/2018_12_15_11_54_17(maindata)/Mg_1.0/"
 
 nowdir = read_path
 i, j = index_initialize()
