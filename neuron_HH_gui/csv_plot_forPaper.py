@@ -19,8 +19,9 @@ def main():
        path = "//192.168.13.10/Public/experimental data/touhoku_patch/20181018_cortex/voltage/voltage6.csv"
 
        path = "C:/Users/Tanii_Lab/Box Sync/Personal/Paper/first/Data/gAMPA_vs_gNMDA/"
-       csv_name = "2018_12_18_19_51_31_N0_P_AMPA0.5_P_NMDA0.7_Mg_conc1.6_delay0HH.csv"
-       fig_name = "a05n07epscallw.png"
+       path = "//192.168.13.10/Public/experimental data/touhoku_patch/20180618_cortex/voltage/"
+       csv_name = "voltage3.csv"
+       fig_name = "exp_burstpickw.png"
 
        # parameters
        sample = 20000
@@ -29,8 +30,8 @@ def main():
        ratio = target_dpi/config_dpi
        """inch"""
        graph_width = 15
-       graph_hight = 4
-       skip_rows = 1
+       graph_hight = 12
+       skip_rows = 0
        plot_line_w = 1
        ax_line_w = 3
        fsize = 8
@@ -44,17 +45,24 @@ def main():
        # matplotlib
        ax0 = fig.add_subplot(1, 1, 1)
        #ax0.set_ylim(-2, 8)
-       init = int(0)
-       last = int(-1)
+       #19-21.5 2.5s
+       init = int(22.3*200000)
+       last = int(23*200000)
+
+       #simulation
+       """
        index = df['T [ms]']
        voltage = df['V [mV]']
        nmda = df['I_NMDA [uA]']
        ampa = df['I_AMPA [uA]']
+       """
 
-       ax0.plot(index[init:last], nmda[init:last],
-                color="red", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
-       ax0.plot(index[init:last], ampa[init:last],
-                color="navy", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
+       #experiment
+       index = df['index']
+       voltage = df['voltage(mV)']
+
+       ax0.plot(index[init:last]/200000, voltage[init:last],
+                color="black", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
 
 
        ax0.tick_params(labelsize=fsize, axis="x", colors=label_color)
@@ -70,7 +78,7 @@ def main():
        plt.savefig(path + fig_name)
 
        fig.tight_layout()
-       #plt.show()
+       plt.show()
 
 if __name__ == '__main__':
      main()
