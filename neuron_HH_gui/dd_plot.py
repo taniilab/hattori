@@ -39,13 +39,9 @@ class DropWidget(QWidget):
         print(filename)
         print(ext)
 
-        path = "//192.168.13.10/Public/ishida/simulation/dynamic_synapse_exp17__Mg=0.5~1.0/tmp/2018_10_3_5_26_41/" + \
+        path = "//192.168.13.10/Public/hattori/simulation/HH/raw_data/2018_12_15_11_54_17(maindata)/Mg_1.6/" + \
                filename + ".csv"
 
-        """
-        path = "//192.168.13.10/Public/hattori/simulation/HH/rawdata/2018_9_22_9_50_8/" + \
-               filename + ".csv"
-        """
         print(path)
         df = pd.read_csv(path, delimiter=',', skiprows=1)
         df.fillna(0)

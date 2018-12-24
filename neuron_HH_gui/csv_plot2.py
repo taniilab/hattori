@@ -11,9 +11,10 @@ def main():
        # for overflow error
        mpl.rcParams['agg.path.chunksize'] = 100000
 
-       path  = "//192.168.13.10/Public/hattori/simulation/HH/raw_data/2018_10_10_9_46_37(maindata)/Mg_1.0/raw_data/2018_12_7_14_13_43/"
-       csv_name = "2018_10_9_21_18_47_N0_P_AMPA0.6_P_NMDA0.4_Mg_conc1.0_delay0HH.csv"
-
+       #path  = "//192.168.13.10/Public/hattori/simulation/HH/raw_data/2018_10_10_9_46_37(maindata)/Mg_1.0/raw_data/2018_12_7_14_13_43/"
+       path = "C:/Users/Tanii_Lab/Box Sync/Personal/Paper/first/Data/gAMPA_vs_gNMDA/"
+       csv_name = "2018_12_18_19_51_31_N0_P_AMPA0.5_P_NMDA0.7_Mg_conc1.6_delay0HH.csv"
+       fig_name = "xxxx.png"
 
        sample = 20000
        target_dpi = 600
@@ -106,7 +107,7 @@ def main():
        ax2.tick_params(axis="x", colors="white")
        """
 
-       plt.savefig(path + "fig1_3.png")
+       plt.savefig(path + fig_name)
        fig.tight_layout()
        plt.show()
 
