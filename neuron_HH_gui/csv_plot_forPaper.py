@@ -19,9 +19,9 @@ def main():
        path = "//192.168.13.10/Public/experimental data/touhoku_patch/20181018_cortex/voltage/voltage6.csv"
 
        path = "C:/Users/Tanii_Lab/Box Sync/Personal/Paper/first/Data/gAMPA_vs_gNMDA/"
-       path = "//192.168.13.10/Public/experimental data/touhoku_patch/20180618_cortex/voltage/"
-       csv_name = "voltage3.csv"
-       fig_name = "exp_burstpickw.png"
+       path = "//192.168.13.10/Public/experimental data/touhoku_patch/20181018_cortex/voltage/"
+       csv_name = "voltage5.csv"
+       fig_name = "exp_ap5afb.png"
 
        # parameters
        sample = 20000
@@ -30,12 +30,12 @@ def main():
        ratio = target_dpi/config_dpi
        """inch"""
        graph_width = 15
-       graph_hight = 12
+       graph_hight = 3
        skip_rows = 0
        plot_line_w = 1
        ax_line_w = 3
        fsize = 8
-       label_color = "white"
+       label_color = "black"
 
        fig = plt.figure(figsize=(graph_width*ratio, graph_hight*ratio), dpi=config_dpi)
 
@@ -46,8 +46,8 @@ def main():
        ax0 = fig.add_subplot(1, 1, 1)
        #ax0.set_ylim(-2, 8)
        #19-21.5 2.5s
-       init = int(22.3*200000)
-       last = int(23*200000)
+       init = int(1)
+       last = int(-1)
 
        #simulation
        """
