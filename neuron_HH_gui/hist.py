@@ -12,11 +12,11 @@ def main():
        mpl.rcParams['agg.path.chunksize'] = 100000
 
        path = "C:/Users/Tanii_Lab/Box Sync/Personal/Paper/first/Data/gAMPA_vs_gNMDA/"
-       path = "//192.168.13.10/Public/experimental data/touhoku_patch/20181018_cortex/voltage/"
+       path = "//192.168.13.10/Public/experimental data/tohoku_univ/tohoku_patch/20181018_cortex/voltage/"
        csv_name_cont = "voltage2.csv"
        csv_name_ap5 = "voltage5.csv"
 
-       fig_name = "histw.png"
+       fig_name = "histw_zikuari.png"
 
        # parameters
        sample = 20000
@@ -31,8 +31,8 @@ def main():
        edges = range(-70, 0, 2)
 
        fig = plt.figure(figsize=(graph_width*ratio, graph_hight*ratio), dpi=config_dpi)
-       plt.xticks(color="None")
-       plt.yticks(color="None")
+       plt.xticks(color="black")
+       plt.yticks(color="black")
 
        df = pd.read_csv(path+csv_name_cont, delimiter=',', skiprows=skip_rows)
        df.fillna(0)
@@ -41,13 +41,24 @@ def main():
 
        voltage = df['voltage(mV)']
        voltage2 = df2['voltage(mV)']
-       plt.hist([voltage.dropna(), voltage2.dropna()],
+       kanopero = plt.hist([voltage.dropna(), voltage2.dropna()],
                 color=["gray", "black"],
                 bins=edges, normed=True)
        plt.savefig(path + fig_name)
 
+
+       print(kanopero[0][0])
+       print("\n")
+       print(kanopero[0][1])
+       print("\n")
+       print(kanopero[1])
+       print("\n")
+       plt.figure()
+       pot = np.arange(len(kanopero[0][0]))
+       plt.plot(pot, kanopero[0][1])
+
        fig.tight_layout()
-       #plt.show()
+       plt.show()
 
 if __name__ == '__main__':
      main()

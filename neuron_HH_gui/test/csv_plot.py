@@ -1,4 +1,3 @@
-@@ -1,92 +0,0 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib as mpl
