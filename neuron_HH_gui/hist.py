@@ -5,7 +5,11 @@ from matplotlib_scalebar.scalebar import ScaleBar
 import numpy as np
 import pyqtgraph as pg
 from pyqtgraph.Qt import QtGui, QtCore
+from scipy.optimize import curve_fit
 
+def bimodal(x, mean1, sigma1, mean2, sigma2):
+    return np.exp(-(x-mean1)**2/(2*sigma1))/np.sqrt(2*np.pi*sigma1) + \
+           np.exp(-(x-mean2)**2/(2*sigma2))/np.sqrt(2*np.pi*sigma2)
 def main():
 
        # for overflow error
@@ -44,6 +48,10 @@ def main():
        kanopero = plt.hist([voltage.dropna(), voltage2.dropna()],
                 color=["gray", "black"],
                 bins=edges, normed=True)
+       x_axis = kanopero[1]
+       x_axis = np.delete(x_axis, -1, 0)
+       data1 = kanopero[0][0]
+       data2 = kanopero[0][1]
        plt.savefig(path + fig_name)
 
 
@@ -53,9 +61,12 @@ def main():
        print("\n")
        print(kanopero[1])
        print("\n")
-       plt.figure()
-       pot = np.arange(len(kanopero[0][0]))
-       plt.plot(pot, kanopero[0][1])
+       fig = plt.figure()
+       ax = fig.add_subplot(1,1,1)
+
+       param, cov = curve_fit(bimodal, x_axis, data1)
+       ax.plot(x_axis, data1)
+       ax.plot(x_axis, bimodal(x_axis, param[0], param[1], param[2], param[3]))
 
        fig.tight_layout()
        plt.show()
