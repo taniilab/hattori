@@ -21,6 +21,7 @@ def main():
        csv_name_ap5 = "voltage5.csv"
 
        fig_name = "histw_zikuari.png"
+       csv_name = "ap5.csv"
 
        # parameters
        sample = 20000
@@ -67,6 +68,10 @@ def main():
        param, cov = curve_fit(bimodal, x_axis, data1)
        ax.plot(x_axis, data1)
        ax.plot(x_axis, bimodal(x_axis, param[0], param[1], param[2], param[3]))
+
+       d = {"V [mV]":kanopero[1], "before":kanopero[0][0], "after":kanopero[0][1]}
+       df = pd.DataFrame.from_dict(d, orient='index').T
+       df.to_csv(path+csv_name)
 
        fig.tight_layout()
        plt.show()
