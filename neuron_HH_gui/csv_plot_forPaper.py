@@ -22,7 +22,7 @@ def main():
        path = "//192.168.13.10/Public/experimental data/touhoku_patch/20181018_cortex/voltage/"
        path = "C:/Users/Tanii_Lab/Box Sync/Personal/Paper/first/Data/gAMPA_vs_gNMDA/"
        csv_name = "2018_12_18_19_51_31_N0_P_AMPA0.5_P_NMDA0.7_Mg_conc1.6_delay0HH.csv"
-       fig_name = "a05n07zoom.png"
+       fig_name = "a05n07zoomb.png"
 
        # parameters
        sample = 20000
@@ -36,7 +36,7 @@ def main():
        plot_line_w = 2
        ax_line_w = 6
        fsize = 8
-       label_color = "white"
+       label_color = "black"
 
        fig = plt.figure(figsize=(graph_width*ratio, graph_hight*ratio), dpi=config_dpi)
 

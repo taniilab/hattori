@@ -70,7 +70,7 @@ def main():
        ax.plot(x_axis, bimodal(x_axis, param[0], param[1], param[2], param[3]))
 
        d = {"V [mV]":kanopero[1], "before":kanopero[0][0], "after":kanopero[0][1]}
-       df = pd.DataFrame.from_dict(d, orient='index').T
+       df = pd.DataFrame.from_dict(d).T
        df.to_csv(path+csv_name)
 
        fig.tight_layout()
