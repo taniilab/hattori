@@ -33,19 +33,21 @@ def main():
 
            df.append(pd.read_csv(tmp[i], index_col=0, skiprows=skip_rows))
            df[i].fillna(0)
-       print(df[0]["Area1"])
 
        # matplotlib
+       res =pd.concat([df[1], df[6]], ignore_index=True)
        fig = plt.figure(figsize=(graph_width*ratio, graph_hight*ratio), dpi=config_dpi)
        ax0 = fig.add_subplot(2, 1, 1)
        ax1 = fig.add_subplot(2, 1, 2)
+       print(res)
 
-       ax0.plot(df[0]["Mean1"]-230,
+       ax0.plot(res["Mean1"],
                 color="darkviolet", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
-       ax0.plot(df[0]["Mean2"]-230,
+       ax0.plot(res["Mean2"],
+                color="blue", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
+
+       ax0.plot(res["Mean3"],
                 color="black", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
-       ax0.plot((df[0]["Mean2"]-230)*20,
-                color="gray", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
 
        ax0.tick_params(labelsize=fsize, axis="x", colors=label_color)
        ax0.tick_params(labelsize=fsize, axis="y", colors=label_color)
