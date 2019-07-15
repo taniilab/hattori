@@ -16,7 +16,7 @@ def main():
        config_dpi = 300
        ratio = target_dpi/config_dpi
        """inch"""
-       graph_width = 8
+       graph_width = 10
        graph_hight = 4.5
        skip_rows = 0
        plot_line_w = 0.5
@@ -24,7 +24,7 @@ def main():
        fsize = 8
        label_color = "black"
 
-       path = "C:/Users/Tanii_Lab/Desktop/tmp/"
+       path = "C:/Users/Tanii_Lab/Box Sync/Personal/20190710excitationlight/"
        csv_name = "Results*.csv"
        tmp = glob.glob(path+csv_name)
        df = []
@@ -35,19 +35,28 @@ def main():
            df[i].fillna(0)
 
        # matplotlib
-       res =pd.concat([df[1], df[6]], ignore_index=True)
+       time = np.arange(len(df[5]))/40
+       res =pd.concat([df[1], df[2]], ignore_index=True)
+       res = df[5]
        fig = plt.figure(figsize=(graph_width*ratio, graph_hight*ratio), dpi=config_dpi)
        ax0 = fig.add_subplot(2, 1, 1)
        ax1 = fig.add_subplot(2, 1, 2)
-       print(res)
 
-       ax0.plot(res["Mean1"],
+       ax0.plot(time, res["Mean1"],
                 color="darkviolet", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
-       ax0.plot(res["Mean2"],
-                color="blue", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
 
-       ax0.plot(res["Mean3"],
+       ax0.plot(time, res["Mean2"],
+                color="green", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
+
+       ax0.plot(time, res["Mean3"],
                 color="black", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
+
+       ax1.plot(time, res["Mean3"],
+                color="black", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
+       ax0.set_xlabel("time [s]")
+       ax0.set_ylabel("Fluorescence intensity")
+       ax1.set_xlabel("time [s]")
+       ax1.set_ylabel("Fluorescence intensity")
 
        ax0.tick_params(labelsize=fsize, axis="x", colors=label_color)
        ax0.tick_params(labelsize=fsize, axis="y", colors=label_color)
