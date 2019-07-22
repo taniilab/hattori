@@ -1,0 +1,150 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'untitled.ui'
+#
+# Created by: PyQt5 UI code generator 5.6
+#
+# WARNING! All changes made in this file will be lost!
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import QTimer
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5 import NavigationToolbar2QT as NavigationToolbar
+import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
+import numpy as np
+import serial as sr
+import threading
+from time import sleep
+import math
+from pyqtgraph.Qt import QtGui, QtCore
+import pandas as pd
+import datetime
+import pyautogui as pag
+
+
+save_path = "C:/simulation/"
+
+
+class Ui_MainWindow(object):
+    timer: QTimer
+
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(1800, 900)
+        self.centralWidget = QtWidgets.QWidget(MainWindow)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.centralWidget.sizePolicy().hasHeightForWidth())
+        self.centralWidget.setSizePolicy(sizePolicy)
+        self.centralWidget.setObjectName("centralWidget")
+        self.splitter = QtWidgets.QSplitter(self.centralWidget)
+        self.splitter.setGeometry(QtCore.QRect(0, 0, 1481, 941))
+        self.splitter.setOrientation(QtCore.Qt.Horizontal)
+        self.splitter.setObjectName("splitter")
+        self.treeWidget = QtWidgets.QTreeWidget(self.splitter)
+        self.treeWidget.setAutoScrollMargin(22)
+        self.treeWidget.setObjectName("treeWidget")
+        self.item_0 = QtWidgets.QTreeWidgetItem(self.treeWidget)
+        self.tabWidget = QtWidgets.QTabWidget(self.splitter)
+        self.tabWidget.setObjectName("tabWidget")
+        self.tab = QtWidgets.QWidget()
+        self.tab.setObjectName("tab")
+        self.tabWidget.addTab(self.tab, "")
+        MainWindow.setCentralWidget(self.centralWidget)
+        self.mainToolBar = QtWidgets.QToolBar(MainWindow)
+        self.mainToolBar.setObjectName("mainToolBar")
+        MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.mainToolBar)
+        self.statusBar = QtWidgets.QStatusBar(MainWindow)
+        self.statusBar.setObjectName("statusBar")
+        MainWindow.setStatusBar(self.statusBar)
+        self.menuBar = QtWidgets.QMenuBar(MainWindow)
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 1493, 26))
+        self.menuBar.setObjectName("menuBar")
+        self.menukanopero = QtWidgets.QMenu(self.menuBar)
+        self.menukanopero.setObjectName("menukanopero")
+        MainWindow.setMenuBar(self.menuBar)
+        self.menuBar.addAction(self.menukanopero.menuAction())
+
+        #　追記
+        layout_main = QtWidgets.QHBoxLayout()
+        layout_main.addWidget(self.splitter)
+        self.centralWidget.setLayout(layout_main)
+
+        self.fig = Figure()
+        self.fc = FigureCanvas(self.fig)
+        self.ax1 = self.fig.add_subplot(2, 1, 1)
+        self.ax2 = self.fig.add_subplot(2, 1, 2)
+        self.bg = self.fc.copy_from_bbox(self.ax1.bbox)
+        rand = np.random.randn()  # 100個の乱数を生成
+        self.line1 = self.ax1.plot(rand)  # グラフを生成
+        self.flu_data = np.zeros(100)
+        self.fc.draw()
+        self.fig.tight_layout()
+
+
+        layout_glaph_tab = QtWidgets.QVBoxLayout()
+        layout_glaph_tab.addWidget(self.fc)
+        self.tab.setLayout(layout_glaph_tab)
+
+
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.fluorescence_measurment)
+        self.timer.start()
+        self.counter = 0
+
+        self.retranslateUi(MainWindow)
+        self.tabWidget.setCurrentIndex(1)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+
+    def fluorescence_measurment(self):
+
+        #重いけどこれでCCDカメラの性能的にこれで十分
+        self.x, self.y = pag.position()
+        self.rgb = pag.pixel(self.x, self.y)
+        self.flu = (77*self.rgb[0]+150*self.rgb[1]+29*self.rgb[2])/256
+        self.flu_data = np.delete(self.flu_data, 0)
+        self.flu_data = np.append(self.flu_data, [self.flu])
+        #self.flu_data[99] = self.flu
+        print(self.rgb)
+        print(self.flu)
+        print(self.flu_data)
+        self.ax1.clear()
+        self.ax1.plot(self.flu_data)
+        self.fc.draw()
+
+        print("kanopero")
+        """
+        df = pd.DataFrame(columns =
+                          [self.vx1[self.counter],
+                           self.vx2[self.counter],
+                           self.vy1[self.counter],
+                           self.vy2[self.counter],
+                           self.x,
+                           self.y])
+        df.to_csv(save_path + self.filename, mode="a")
+        """
+
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "Fluorescence plot"))
+        self.treeWidget.headerItem().setText(0, _translate("MainWindow", "VX1"))
+        self.treeWidget.headerItem().setText(1, _translate("MainWindow", "VX2"))
+        self.treeWidget.headerItem().setText(2, _translate("MainWindow", "VY1"))
+        self.treeWidget.headerItem().setText(3, _translate("MainWindow", "VY2"))
+        self.treeWidget.headerItem().setText(4, _translate("MainWindow", "X"))
+        self.treeWidget.headerItem().setText(5, _translate("MainWindow", "Y"))
+        __sortingEnabled = self.treeWidget.isSortingEnabled()
+        self.treeWidget.setSortingEnabled(False)
+        self.treeWidget.topLevelItem(0).setText(0, _translate("MainWindow", "0"))
+        self.treeWidget.topLevelItem(0).setText(1, _translate("MainWindow", "0"))
+        self.treeWidget.topLevelItem(0).setText(2, _translate("MainWindow", "0"))
+        self.treeWidget.topLevelItem(0).setText(3, _translate("MainWindow", "0"))
+        self.treeWidget.topLevelItem(0).setText(4, _translate("MainWindow", "0"))
+        self.treeWidget.topLevelItem(0).setText(5, _translate("MainWindow", "0"))
+        self.treeWidget.setSortingEnabled(__sortingEnabled)
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "fluorescence glaph"))
+        #self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Relative story displacement"))
+        self.menukanopero.setTitle(_translate("MainWindow", "kanopero"))
