@@ -20,8 +20,7 @@ import serial as sr
 import threading
 from time import sleep
 import math
-from pyqtgraph.Qt import QtGui, QtCore
-import pandas as pd
+import pandas as pdF
 import datetime
 import pyautogui as pag
 import keyboard as kb
@@ -43,48 +42,61 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.centralWidget.sizePolicy().hasHeightForWidth())
         self.centralWidget.setSizePolicy(sizePolicy)
         self.centralWidget.setObjectName("centralWidget")
+
         self.splitter = QtWidgets.QSplitter(self.centralWidget)
         self.splitter.setGeometry(QtCore.QRect(0, 0, 1481, 941))
         self.splitter.setOrientation(QtCore.Qt.Horizontal)
         self.splitter.setObjectName("splitter")
-        self.treeWidget = QtWidgets.QTreeWidget(self.splitter)
+
+        # values and button
+        self.splitter_left = QtWidgets.QSplitter(QtCore.Qt.Vertical)
+        self.treeWidget = QtWidgets.QTreeWidget(self.splitter_left)
         self.treeWidget.setAutoScrollMargin(22)
         self.treeWidget.setObjectName("treeWidget")
         self.item_0 = QtWidgets.QTreeWidgetItem(self.treeWidget)
+
+        self.button = QtWidgets.QPushButton('Stimulate')
+        self.bfont = self.button.font()
+        self.bfont.setPointSizeF(20)
+        self.button.setFont(self.bfont)
+        self.click_flg = False
+        self.button.setStyleSheet("background-color: rgb(230,230,230)")
+        self.button.clicked.connect(self.on_click)
+
+        self.splitter_left.addWidget(self.button)
+        self.splitter.addWidget(self.splitter_left)
+
+        # plotter
         self.tabWidget = QtWidgets.QTabWidget(self.splitter)
         self.tabWidget.setObjectName("tabWidget")
         self.tab = QtWidgets.QWidget()
         self.tab.setObjectName("tab")
         self.tabWidget.addTab(self.tab, "")
+
+        # othors
         MainWindow.setCentralWidget(self.centralWidget)
         self.mainToolBar = QtWidgets.QToolBar(MainWindow)
         self.mainToolBar.setObjectName("mainToolBar")
         MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.mainToolBar)
-        self.statusBar = QtWidgets.QStatusBar(MainWindow)
-        self.statusBar.setObjectName("statusBar")
-        MainWindow.setStatusBar(self.statusBar)
         self.menuBar = QtWidgets.QMenuBar(MainWindow)
         self.menuBar.setGeometry(QtCore.QRect(0, 0, 1493, 26))
         self.menuBar.setObjectName("menuBar")
-        self.menukanopero = QtWidgets.QMenu(self.menuBar)
-        self.menukanopero.setObjectName("menukanopero")
+        self.menu = QtWidgets.QMenu(self.menuBar)
+        self.menu.setObjectName("menu")
         MainWindow.setMenuBar(self.menuBar)
-        self.menuBar.addAction(self.menukanopero.menuAction())
+        self.menuBar.addAction(self.menu.menuAction())
 
         layout_main = QtWidgets.QHBoxLayout()
         layout_main.addWidget(self.splitter)
         self.centralWidget.setLayout(layout_main)
 
         # glaph setting
+        self.x, self.y = 0, 0  # plot position
+        self.flu_data = np.zeros(100)
         self.fig = Figure()
         self.fc = FigureCanvas(self.fig)
         self.ax1 = self.fig.add_subplot(2, 1, 1)
         self.ax2 = self.fig.add_subplot(2, 1, 2)
-        #self.bg = self.fc.copy_from_bbox(self.ax1.bbox)
-        #rand = np.random.randn()  # initialization
-        #self.line1 = self.ax1.plot(rand)  # グラフを生成
-        self.x, self.y = 0, 0 # plot position
-        self.flu_data = np.zeros(100)
         self.fc.draw()
         self.fig.tight_layout()
 
@@ -111,19 +123,23 @@ class Ui_MainWindow(object):
         self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
+    def on_click(self):
+        if self.click_flg == False:
+            self.click_flg = True
+            self.button.setStyleSheet("background-color: rgb(100,230,180)")
+            # Serial communication with function generator
+
+
+        else:
+            self.click_flg = False
+            self.button.setStyleSheet("background-color: rgb(230, 230, 230)")
+        print("kanopero")
 
     def fluorescence_measurment(self):
-
-        #重いけどこれでCCDカメラの性能的にこれで十分
-        #self.x, self.y = pag.position()
         self.rgb = pag.pixel(self.x, self.y)
-        self.flu = (77*self.rgb[0]+150*self.rgb[1]+29*self.rgb[2])/256
+        self.gray = (77*self.rgb[0]+150*self.rgb[1]+29*self.rgb[2])/256
         self.flu_data = np.delete(self.flu_data, 0)
-        self.flu_data = np.append(self.flu_data, [self.flu])
-        #self.flu_data[99] = self.flu
-        print(self.rgb)
-        print(self.flu)
-        print(self.flu_data)
+        self.flu_data = np.append(self.flu_data, [self.gray])
         self.ax1.clear()
         self.ax1.plot(self.flu_data)
         self.fc.draw()
@@ -134,8 +150,6 @@ class Ui_MainWindow(object):
         self.treeWidget.topLevelItem(self.view_data_len-1).setText(1, str(self.rgb[1]))
         self.treeWidget.topLevelItem(self.view_data_len-1).setText(2, str(self.rgb[2]))
 
-
-        print("kanopero")
         """
         df = pd.DataFrame(columns =
                           [self.vx1[self.counter],
@@ -163,5 +177,4 @@ class Ui_MainWindow(object):
         self.treeWidget.topLevelItem(0).setText(2, _translate("MainWindow", "0"))
         self.treeWidget.setSortingEnabled(__sortingEnabled)
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "fluorescence glaph"))
-        #self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Relative story displacement"))
-        self.menukanopero.setTitle(_translate("MainWindow", "kanopero"))
+        self.menu.setTitle(_translate("MainWindow", "kanopero"))
