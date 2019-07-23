@@ -13,21 +13,14 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTimer
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT as NavigationToolbar
-import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 import numpy as np
 import serial as sr
-import threading
 from time import sleep
-import math
 import pandas as pdF
 import datetime
 import pyautogui as pag
 import keyboard as kb
-
-
-save_path = "C:/simulation/"
-
 
 class Ui_MainWindow(object):
     timer: QTimer
@@ -60,6 +53,7 @@ class Ui_MainWindow(object):
         self.bfont.setPointSizeF(20)
         self.button.setFont(self.bfont)
         self.click_flg = False
+        self.stim_flg = False
         self.button.setStyleSheet("background-color: rgb(230,230,230)")
         self.button.clicked.connect(self.on_click)
 
@@ -92,11 +86,13 @@ class Ui_MainWindow(object):
 
         # glaph setting
         self.x, self.y = 0, 0  # plot position
-        self.flu_data = np.zeros(100)
+        self.index = np.arange(0, 100)
+        self.stim_data = np.zeros(len(self.index))
+        self.flu_data = np.zeros(len(self.index))
         self.fig = Figure()
         self.fc = FigureCanvas(self.fig)
-        self.ax1 = self.fig.add_subplot(2, 1, 1)
-        self.ax2 = self.fig.add_subplot(2, 1, 2)
+        self.ax1 = self.fig.add_subplot(1, 1, 1)
+        self.ax2 = self.ax1.twinx()
         self.fc.draw()
         self.fig.tight_layout()
 
@@ -128,20 +124,33 @@ class Ui_MainWindow(object):
             self.click_flg = True
             self.button.setStyleSheet("background-color: rgb(100,230,180)")
             # Serial communication with function generator
-
+            self.stim_flg = True
 
         else:
             self.click_flg = False
             self.button.setStyleSheet("background-color: rgb(230, 230, 230)")
+            self.stim_flg = False
         print("kanopero")
 
     def fluorescence_measurment(self):
         self.rgb = pag.pixel(self.x, self.y)
         self.gray = (77*self.rgb[0]+150*self.rgb[1]+29*self.rgb[2])/256
+        self.index = np.delete(self.index, 0)
+        self.index = np.append(self.index, self.index[-1]+1)
+
+        self.stim_data = np.delete(self.stim_data, 0)
+        if self.stim_flg == True:
+            self.stim_data = np.append(self.stim_data, 5)
+        else:
+            self.stim_data = np.append(self.stim_data, 0)
+
         self.flu_data = np.delete(self.flu_data, 0)
         self.flu_data = np.append(self.flu_data, [self.gray])
         self.ax1.clear()
-        self.ax1.plot(self.flu_data)
+        self.ax2.clear()
+        self.ax1.plot(self.index, self.flu_data, color="seagreen")
+        self.ax2.plot(self.index, self.stim_data, color="tomato")
+
         self.fc.draw()
 
         self.treeWidget.takeTopLevelItem(0)
@@ -166,7 +175,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Fluorescence plot"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Fluorescence Plotter"))
         self.treeWidget.headerItem().setText(0, _translate("MainWindow", "R"))
         self.treeWidget.headerItem().setText(1, _translate("MainWindow", "G"))
         self.treeWidget.headerItem().setText(2, _translate("MainWindow", "B"))
@@ -176,5 +185,5 @@ class Ui_MainWindow(object):
         self.treeWidget.topLevelItem(0).setText(1, _translate("MainWindow", "0"))
         self.treeWidget.topLevelItem(0).setText(2, _translate("MainWindow", "0"))
         self.treeWidget.setSortingEnabled(__sortingEnabled)
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "fluorescence glaph"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "glaph"))
         self.menu.setTitle(_translate("MainWindow", "kanopero"))
