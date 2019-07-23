@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
+# Fluorescence Plotter for HCImage Live
+# programmed by Kouhei Hattori of Waseda University
 
-# Form implementation generated from reading ui file 'untitled.ui'
-#
-# Created by: PyQt5 UI code generator 5.6
-#
-# WARNING! All changes made in this file will be lost!
+"""
+After running the software, please enter "shift + F". Converts pixel values
+on mouse cursor coordinates at the time of input to grayscale and plots them.
+Currently, it is programmed for single cell and is not compatible with
+multicellular plotting.
+"""
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTimer
@@ -21,6 +24,7 @@ from pyqtgraph.Qt import QtGui, QtCore
 import pandas as pd
 import datetime
 import pyautogui as pag
+import keyboard as kb
 
 
 save_path = "C:/simulation/"
@@ -67,32 +71,41 @@ class Ui_MainWindow(object):
         MainWindow.setMenuBar(self.menuBar)
         self.menuBar.addAction(self.menukanopero.menuAction())
 
-        #　追記
         layout_main = QtWidgets.QHBoxLayout()
         layout_main.addWidget(self.splitter)
         self.centralWidget.setLayout(layout_main)
 
+        # glaph setting
         self.fig = Figure()
         self.fc = FigureCanvas(self.fig)
         self.ax1 = self.fig.add_subplot(2, 1, 1)
         self.ax2 = self.fig.add_subplot(2, 1, 2)
-        self.bg = self.fc.copy_from_bbox(self.ax1.bbox)
-        rand = np.random.randn()  # 100個の乱数を生成
-        self.line1 = self.ax1.plot(rand)  # グラフを生成
+        #self.bg = self.fc.copy_from_bbox(self.ax1.bbox)
+        #rand = np.random.randn()  # initialization
+        #self.line1 = self.ax1.plot(rand)  # グラフを生成
+        self.x, self.y = 0, 0 # plot position
         self.flu_data = np.zeros(100)
         self.fc.draw()
         self.fig.tight_layout()
-
 
         layout_glaph_tab = QtWidgets.QVBoxLayout()
         layout_glaph_tab.addWidget(self.fc)
         self.tab.setLayout(layout_glaph_tab)
 
+        # value display initialization
+        self.view_data_len = 30
+        for i in range(0, self.view_data_len-1):
+            self.item_0 = QtWidgets.QTreeWidgetItem(self.treeWidget)
 
+        # plot interval setting
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.fluorescence_measurment)
         self.timer.start()
         self.counter = 0
+
+        # keyboard input setting
+        # When the shortcut key set here is input, the plot is made with pixels on cursor coordinates when input.
+        kb.add_hotkey('shift+F', lambda: self.plot_position())
 
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(1)
@@ -102,7 +115,7 @@ class Ui_MainWindow(object):
     def fluorescence_measurment(self):
 
         #重いけどこれでCCDカメラの性能的にこれで十分
-        self.x, self.y = pag.position()
+        #self.x, self.y = pag.position()
         self.rgb = pag.pixel(self.x, self.y)
         self.flu = (77*self.rgb[0]+150*self.rgb[1]+29*self.rgb[2])/256
         self.flu_data = np.delete(self.flu_data, 0)
@@ -114,6 +127,13 @@ class Ui_MainWindow(object):
         self.ax1.clear()
         self.ax1.plot(self.flu_data)
         self.fc.draw()
+
+        self.treeWidget.takeTopLevelItem(0)
+        self.item_0 = QtWidgets.QTreeWidgetItem(self.treeWidget)
+        self.treeWidget.topLevelItem(self.view_data_len-1).setText(0, str(self.rgb[0]))
+        self.treeWidget.topLevelItem(self.view_data_len-1).setText(1, str(self.rgb[1]))
+        self.treeWidget.topLevelItem(self.view_data_len-1).setText(2, str(self.rgb[2]))
+
 
         print("kanopero")
         """
@@ -127,23 +147,20 @@ class Ui_MainWindow(object):
         df.to_csv(save_path + self.filename, mode="a")
         """
 
+    def plot_position(self):
+        self.x, self.y = pag.position()
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Fluorescence plot"))
-        self.treeWidget.headerItem().setText(0, _translate("MainWindow", "VX1"))
-        self.treeWidget.headerItem().setText(1, _translate("MainWindow", "VX2"))
-        self.treeWidget.headerItem().setText(2, _translate("MainWindow", "VY1"))
-        self.treeWidget.headerItem().setText(3, _translate("MainWindow", "VY2"))
-        self.treeWidget.headerItem().setText(4, _translate("MainWindow", "X"))
-        self.treeWidget.headerItem().setText(5, _translate("MainWindow", "Y"))
+        self.treeWidget.headerItem().setText(0, _translate("MainWindow", "R"))
+        self.treeWidget.headerItem().setText(1, _translate("MainWindow", "G"))
+        self.treeWidget.headerItem().setText(2, _translate("MainWindow", "B"))
         __sortingEnabled = self.treeWidget.isSortingEnabled()
         self.treeWidget.setSortingEnabled(False)
         self.treeWidget.topLevelItem(0).setText(0, _translate("MainWindow", "0"))
         self.treeWidget.topLevelItem(0).setText(1, _translate("MainWindow", "0"))
         self.treeWidget.topLevelItem(0).setText(2, _translate("MainWindow", "0"))
-        self.treeWidget.topLevelItem(0).setText(3, _translate("MainWindow", "0"))
-        self.treeWidget.topLevelItem(0).setText(4, _translate("MainWindow", "0"))
-        self.treeWidget.topLevelItem(0).setText(5, _translate("MainWindow", "0"))
         self.treeWidget.setSortingEnabled(__sortingEnabled)
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "fluorescence glaph"))
         #self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Relative story displacement"))
