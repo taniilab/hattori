@@ -15,9 +15,9 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 import numpy as np
-import serial as sr
+import serial
 from time import sleep
-import pandas as pdF
+import pandas as pd
 import datetime
 import pyautogui as pag
 import keyboard as kb
@@ -48,7 +48,7 @@ class Ui_MainWindow(object):
         self.treeWidget.setObjectName("treeWidget")
         self.item_0 = QtWidgets.QTreeWidgetItem(self.treeWidget)
 
-        self.button = QtWidgets.QPushButton('Stimulate')
+        self.button = QtWidgets.QPushButton('Stimulation start')
         self.bfont = self.button.font()
         self.bfont.setPointSizeF(20)
         self.button.setFont(self.bfont)
@@ -79,14 +79,14 @@ class Ui_MainWindow(object):
         self.menu.setObjectName("menu")
         MainWindow.setMenuBar(self.menuBar)
         self.menuBar.addAction(self.menu.menuAction())
-
         layout_main = QtWidgets.QHBoxLayout()
         layout_main.addWidget(self.splitter)
         self.centralWidget.setLayout(layout_main)
 
         # glaph setting
+        self.pixel_pitch = 10
         self.x, self.y = 0, 0  # plot position
-        self.index = np.arange(0, 100)
+        self.index = np.arange(0, 1000)
         self.stim_data = np.zeros(len(self.index))
         self.flu_data = np.zeros(len(self.index))
         self.fig = Figure()
@@ -108,39 +108,104 @@ class Ui_MainWindow(object):
         # plot interval setting
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.fluorescence_measurment)
-        self.timer.start()
+        self.timer.start(33)
+
+        # stimulation interval setting
+        self.timer_stim = QtCore.QTimer()
+        self.timer_stim.timeout.connect(self.stimulate)
+        self.amplitude = 0
+        self.stim_time = [0]
         self.counter = 0
 
         # keyboard input setting
         # When the shortcut key set here is input, the plot is made with pixels on cursor coordinates when input.
         kb.add_hotkey('shift+F', lambda: self.plot_position())
 
+        # serial communication setting
+        # 11520 kbps
+        self.port_number = "COM11"
+        self.ser = serial.Serial(self.port_number, 115200, timeout=1)
+        print(str(self.port_number) + " Opened!!")
+        self.tmp_counter = 0
+        # FG initialization
+        command = ("WMW34" + "\n")
+        self.ser.write(command.encode())
+        print(command)
+        command = ("WMA0" + "\n")
+        self.ser.write(command.encode())
+        print(command)
+        command = ("WMF200000" + "\n")#200mhz
+        self.ser.write(command.encode())
+        print(command)
+        command = ("WMN1" + "\n")
+        self.ser.write(command.encode())
+        print(command)
+
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
+
     def on_click(self):
         if self.click_flg == False:
             self.click_flg = True
+            self.timer_stim.start(5000)  # 5s
             self.button.setStyleSheet("background-color: rgb(100,230,180)")
+            self.button.setText("Stimulating ...")
             # Serial communication with function generator
             self.stim_flg = True
-
         else:
+
             self.click_flg = False
             self.button.setStyleSheet("background-color: rgb(230, 230, 230)")
+            self.button.setText("Stimulation start")
             self.stim_flg = False
-        print("kanopero")
+
+
+    def stimulate(self):
+        if self.amplitude == 10:
+            self.amplitude = 0
+            self.timer_stim.stop()
+        else:
+            self.amplitude+=1
+            command = ("WMA" + str(self.amplitude) + "\n")
+            self.ser.write(command.encode())
+            self.stim_time = np.append(self.stim_time, self.index[-1])
+            print(command)
+
 
     def fluorescence_measurment(self):
+        """
+        # 2x2 pixels
+        # use red value as grayscale value
+        self.rgb1 = pag.pixel(self.x, self.y)
+        self.rgb2 = pag.pixel(self.x+self.pixel_pitch, self.y)
+        self.rgb3 = pag.pixel(self.x, self.y+self.pixel_pitch)
+        self.rgb4 = pag.pixel(self.x+self.pixel_pitch, self.y+self.pixel_pitch)
+        self.gray1 = self.rgb1[0]
+        self.gray2 = self.rgb2[0]
+        self.gray3 = self.rgb3[0]
+        self.gray4 = self.rgb4[0]
+        self.gray = (self.gray1+self.gray2+self.gray3+self.gray4)/4
+        """
+        """
+        # accurately
+        self.gray1 = (77*self.rgb1[0]+150*self.rgb1[1]+29*self.rgb1[2])/256
+        self.gray2 = (77*self.rgb2[0]+150*self.rgb2[1]+29*self.rgb2[2])/256
+        self.gray3 = (77*self.rgb3[0]+150*self.rgb3[1]+29*self.rgb3[2])/256
+        self.gray4 = (77*self.rgb4[0]+150*self.rgb4[1]+29*self.rgb4[2])/256
+        self.gray = (self.gray1+self.gray2+self.gray3+self.gray4)/4
+        """
+        # simple
         self.rgb = pag.pixel(self.x, self.y)
-        self.gray = (77*self.rgb[0]+150*self.rgb[1]+29*self.rgb[2])/256
+        self.gray = self.rgb[0]
         self.index = np.delete(self.index, 0)
         self.index = np.append(self.index, self.index[-1]+1)
 
         self.stim_data = np.delete(self.stim_data, 0)
         if self.stim_flg == True:
             self.stim_data = np.append(self.stim_data, 5)
+            self.stim_flg = False
         else:
             self.stim_data = np.append(self.stim_data, 0)
 
@@ -149,8 +214,8 @@ class Ui_MainWindow(object):
         self.ax1.clear()
         self.ax2.clear()
         self.ax1.plot(self.index, self.flu_data, color="seagreen")
-        self.ax2.plot(self.index, self.stim_data, color="tomato")
-
+        self.ax2.plot([self.stim_time[-1], self.stim_time[-1]], [0, 5], "red", linestyle='dashed')
+        self.ax1.set_ylim([0, 255])
         self.fc.draw()
 
         self.treeWidget.takeTopLevelItem(0)
@@ -186,4 +251,4 @@ class Ui_MainWindow(object):
         self.treeWidget.topLevelItem(0).setText(2, _translate("MainWindow", "0"))
         self.treeWidget.setSortingEnabled(__sortingEnabled)
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "glaph"))
-        self.menu.setTitle(_translate("MainWindow", "kanopero"))
+        self.menu.setTitle(_translate("MainWindow", "tanii lab"))

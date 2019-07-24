@@ -8,7 +8,7 @@ ser = serial.Serial(port_number, 115200, timeout=1)
 text = "COM" + str(11) + " Opened!!"
 print(text)
 
-"""
+"""accurately
 for i in range(10):
     command = ("WMW0" + str(i)+ "\n")
     ser.write(command.encode())
