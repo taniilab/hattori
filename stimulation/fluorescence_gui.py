@@ -25,6 +25,7 @@ import pyqtgraph as pg
 from pyqtgraph.Qt import QtGui, QtCore
 
 
+
 class Ui_MainWindow(object):
     timer: QTimer
 
@@ -51,7 +52,7 @@ class Ui_MainWindow(object):
         self.treeWidget.setObjectName("treeWidget")
         self.item_0 = QtWidgets.QTreeWidgetItem(self.treeWidget)
 
-        self.button = QtWidgets.QPushButton('Stimulation start')
+        self.button = QtWidgets.QPushButton('Stimulate')
         self.bfont = self.button.font()
         self.bfont.setPointSizeF(20)
         self.button.setFont(self.bfont)
@@ -88,25 +89,11 @@ class Ui_MainWindow(object):
 
         # glaph setting
         self.pixel_pitch = 10
-        self.x, self.y = 0, 0  # plot position
-        self.index = np.arange(0, 5000)
+        self.x, self.y = 1000, 1000  # plot position
+        self.index = np.arange(0, 1000)
         self.stim_data = np.zeros(len(self.index))
         self.flu_data = np.zeros(len(self.index))
 
-        # matplotlib slow!!!!!!
-        """
-        self.fig = Figure()
-        self.fc = FigureCanvas(self.fig)
-        self.ax1 = self.fig.add_subplot(1, 1, 1)
-        self.line1,  = self.ax1.plot(self.index, self.flu_data)
-        self.ax2 = self.ax1.twinx()
-        self.fc.draw()
-        self.bg = self.fig.canvas.copy_from_bbox(self.ax1.bbox)
-        self.fig.tight_layout()
-        layout_glaph_tab = QtWidgets.QVBoxLayout()
-        layout_glaph_tab.addWidget(self.fc)
-        self.tab.setLayout(layout_glaph_tab)
-        """
         # pyqtgraph
         self.glaph_tab = pg.GraphicsWindow(title="fluorescence")
         self.p1 = self.glaph_tab.addPlot()
@@ -131,7 +118,7 @@ class Ui_MainWindow(object):
         self.timer_stim = QtCore.QTimer()
         self.timer_stim.timeout.connect(self.stimulate)
         self.amplitude = 0
-        self.stim_time = [0]
+        self.stim_for_csv = 0
         self.counter = 0
 
         # keyboard input setting
@@ -150,6 +137,10 @@ class Ui_MainWindow(object):
         self.timer_FG_init = QtCore.QTimer()
         self.timer_FG_init.timeout.connect(self.FG_initialization)
         self.timer_FG_init.start(500)# Need a delay for each command
+
+        # save
+        self.date = datetime.datetime.today()
+        self.save_path = "C:/Users/Tanii_Lab/Desktop/test/"
 
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(1)
@@ -180,7 +171,7 @@ class Ui_MainWindow(object):
         if self.click_flg == False:
             self.click_flg = True
             self.stim_flg = True
-            self.timer_stim.start(1000)  # 5s
+            self.timer_stim.start(5000)  # 5s
             self.button.setStyleSheet("background-color: rgb(100,230,180)")
             self.button.setText("Stimulating ...")
         else:
@@ -198,11 +189,9 @@ class Ui_MainWindow(object):
             self.reset_stim_setting()
         else:
             self.amplitude+=1
+            self.stim_for_csv = 255
             self.send_command("WMA" + str(self.amplitude) + "\n")
-
             # visualize
-            #self.stim_list = np.append(self.stim_list, pg.InfiniteLine(angle=90, movable=False))
-            #self.stim_list[-1].setPos(self.index[-1])
             self.vline = pg.InfiniteLine(angle=90, movable=False)
             self.p1.addItem(self.vline, ignoreBounds=True)
             self.vline.setPos(self.index[-1])
@@ -215,25 +204,16 @@ class Ui_MainWindow(object):
         self.timer_stim.stop()
         self.send_command("WMA0" + "\n")
         self.button.setStyleSheet("background-color: rgb(230, 230, 230)")
-        self.button.setText("Stimulation start")
+        self.button.setText("Stimulate")
 
 
     def fluorescence_measurment(self):
+        # 2x2 pixels, accurate
         """
-        # 2x2 pixels
-        # use red value as grayscale value
         self.rgb1 = pag.pixel(self.x, self.y)
         self.rgb2 = pag.pixel(self.x+self.pixel_pitch, self.y)
         self.rgb3 = pag.pixel(self.x, self.y+self.pixel_pitch)
         self.rgb4 = pag.pixel(self.x+self.pixel_pitch, self.y+self.pixel_pitch)
-        self.gray1 = self.rgb1[0]
-        self.gray2 = self.rgb2[0]
-        self.gray3 = self.rgb3[0]
-        self.gray4 = self.rgb4[0]
-        self.gray = (self.gray1+self.gray2+self.gray3+self.gray4)/4
-        """
-        """
-        # accurately
         self.gray1 = (77*self.rgb1[0]+150*self.rgb1[1]+29*self.rgb1[2])/256
         self.gray2 = (77*self.rgb2[0]+150*self.rgb2[1]+29*self.rgb2[2])/256
         self.gray3 = (77*self.rgb3[0]+150*self.rgb3[1]+29*self.rgb3[2])/256
@@ -241,53 +221,36 @@ class Ui_MainWindow(object):
         self.gray = (self.gray1+self.gray2+self.gray3+self.gray4)/4
         """
         # simple
-        self.rgb = pag.pixel(self.x, self.y)
-        self.gray = self.rgb[0]
+        self.rgb1 = pag.pixel(self.x, self.y)
+        self.gray = self.rgb1[0]
         self.index = np.delete(self.index, 0)
         self.index = np.append(self.index, self.index[-1]+1)
-
-        self.stim_data = np.delete(self.stim_data, 0)
-        if self.stim_flg == True:
-            self.stim_data = np.append(self.stim_data, 5)
-            self.stim_flg = False
-        else:
-            self.stim_data = np.append(self.stim_data, 0)
-
         self.flu_data = np.delete(self.flu_data, 0)
         self.flu_data = np.append(self.flu_data, [self.gray])
 
         # plot
-        """
-        # matplotlib slow!!!!!!
-        self.ax1.clear()
-        self.ax2.clear()
-        self.ax1.plot(self.index, self.flu_data, color="seagreen")
-        self.ax2.plot([self.stim_time[-1], self.stim_time[-1]], [0, 5], "red", linestyle='dashed')
-        self.ax1.set_ylim([0, 255])
-        self.fc.draw()
-        """
         # pyqtgraph
         self.curve1.setData(self.index, self.flu_data)
 
         self.treeWidget.takeTopLevelItem(0)
         self.item_0 = QtWidgets.QTreeWidgetItem(self.treeWidget)
-        self.treeWidget.topLevelItem(self.view_data_len-1).setText(0, str(self.rgb[0]))
-        self.treeWidget.topLevelItem(self.view_data_len-1).setText(1, str(self.rgb[1]))
-        self.treeWidget.topLevelItem(self.view_data_len-1).setText(2, str(self.rgb[2]))
+        self.treeWidget.topLevelItem(self.view_data_len-1).setText(0, str(self.rgb1[0]))
+        self.treeWidget.topLevelItem(self.view_data_len-1).setText(1, str(self.rgb1[1]))
+        self.treeWidget.topLevelItem(self.view_data_len-1).setText(2, str(self.rgb1[2]))
 
-        """
-        df = pd.DataFrame(columns =
-                          [self.vx1[self.counter],
-                           self.vx2[self.counter],
-                           self.vy1[self.counter],
-                           self.vy2[self.counter],
-                           self.x,
-                           self.y])
-        df.to_csv(save_path + self.filename, mode="a")
-        """
+        # save
+        df = pd.DataFrame(columns=[self.stim_for_csv, self.gray])
+        self.filename = (str(self.date.year) + '_' + str(self.date.month) + '_' +
+                    str(self.date.day) + '_' + str(self.date.hour) + '_' +
+                    str(self.date.minute) + '_' + str(self.date.second) + '_.csv')
+        df.to_csv(self.save_path + self.filename, mode="a")
+        if self.stim_for_csv == 255:
+            self.stim_for_csv = 0
+
 
     def plot_position(self):
         self.x, self.y = pag.position()
+
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
