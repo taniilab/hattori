@@ -21,6 +21,9 @@ import pandas as pd
 import datetime
 import pyautogui as pag
 import keyboard as kb
+import pyqtgraph as pg
+from pyqtgraph.Qt import QtGui, QtCore
+
 
 class Ui_MainWindow(object):
     timer: QTimer
@@ -86,19 +89,32 @@ class Ui_MainWindow(object):
         # glaph setting
         self.pixel_pitch = 10
         self.x, self.y = 0, 0  # plot position
-        self.index = np.arange(0, 1000)
+        self.index = np.arange(0, 5000)
         self.stim_data = np.zeros(len(self.index))
         self.flu_data = np.zeros(len(self.index))
+
+        # matplotlib slow!!!!!!
+        """
         self.fig = Figure()
         self.fc = FigureCanvas(self.fig)
         self.ax1 = self.fig.add_subplot(1, 1, 1)
+        self.line1,  = self.ax1.plot(self.index, self.flu_data)
         self.ax2 = self.ax1.twinx()
         self.fc.draw()
         self.bg = self.fig.canvas.copy_from_bbox(self.ax1.bbox)
         self.fig.tight_layout()
-
         layout_glaph_tab = QtWidgets.QVBoxLayout()
         layout_glaph_tab.addWidget(self.fc)
+        self.tab.setLayout(layout_glaph_tab)
+        """
+        # pyqtgraph
+        self.glaph_tab = pg.GraphicsWindow(title="fluorescence")
+        self.p1 = self.glaph_tab.addPlot()
+        #self.p1.setXRange(0,5)
+        self.curve1 = self.p1.plot(self.index, self.flu_data)
+        self.stim_list = []
+        layout_glaph_tab = QtWidgets.QVBoxLayout()
+        layout_glaph_tab.addWidget(self.glaph_tab)
         self.tab.setLayout(layout_glaph_tab)
 
         # value display initialization
@@ -109,7 +125,7 @@ class Ui_MainWindow(object):
         # plot interval setting
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.fluorescence_measurment)
-        self.timer.start(33)
+        self.timer.start()
 
         # stimulation interval setting
         self.timer_stim = QtCore.QTimer()
@@ -128,22 +144,43 @@ class Ui_MainWindow(object):
         self.ser = serial.Serial(self.port_number, 115200, timeout=1)
         print(str(self.port_number) + " Opened!!")
         self.tmp_counter = 0
+
         # FG initialization
-        self.send_command("WMW34" + "\n")
-        self.send_command("WMA0" + "\n")
-        self.send_command("WMF200000" + "\n")#200mhz
-        self.send_command("WMN1" + "\n")
+        self.FG_init_state = 0
+        self.timer_FG_init = QtCore.QTimer()
+        self.timer_FG_init.timeout.connect(self.FG_initialization)
+        self.timer_FG_init.start(500)# Need a delay for each command
 
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
 
+    def FG_initialization(self):
+        if self.FG_init_state == 0:
+            self.send_command("WMA0" + "\n")# 0 V
+            self.FG_init_state += 1
+        elif self.FG_init_state == 1:
+            self.send_command("WMF200000" + "\n")# 200mhz
+            self.FG_init_state += 1
+        elif self.FG_init_state == 2:
+            self.send_command("WMW34" + "\n")# arbitary wave
+            self.FG_init_state += 1
+        elif self.FG_init_state == 3:
+            self.send_command("WMO0" + "\n")# offset 0 V
+            self.FG_init_state += 1
+        elif self.FG_init_state == 4:
+            self.send_command("WMN1" + "\n")# output on
+            self.FG_init_state += 1
+        elif self.FG_init_state == 5:
+            self.timer_FG_init.stop()
+
+
     def on_click(self):
         if self.click_flg == False:
             self.click_flg = True
             self.stim_flg = True
-            self.timer_stim.start(5000)  # 5s
+            self.timer_stim.start(1000)  # 5s
             self.button.setStyleSheet("background-color: rgb(100,230,180)")
             self.button.setText("Stimulating ...")
         else:
@@ -155,13 +192,20 @@ class Ui_MainWindow(object):
         print(command)
 
 
+
     def stimulate(self):
         if self.amplitude == 10:
             self.reset_stim_setting()
         else:
             self.amplitude+=1
             self.send_command("WMA" + str(self.amplitude) + "\n")
-            self.stim_time = np.append(self.stim_time, self.index[-1])
+
+            # visualize
+            #self.stim_list = np.append(self.stim_list, pg.InfiniteLine(angle=90, movable=False))
+            #self.stim_list[-1].setPos(self.index[-1])
+            self.vline = pg.InfiniteLine(angle=90, movable=False)
+            self.p1.addItem(self.vline, ignoreBounds=True)
+            self.vline.setPos(self.index[-1])
 
 
     def reset_stim_setting(self):
@@ -211,12 +255,19 @@ class Ui_MainWindow(object):
 
         self.flu_data = np.delete(self.flu_data, 0)
         self.flu_data = np.append(self.flu_data, [self.gray])
+
+        # plot
+        """
+        # matplotlib slow!!!!!!
         self.ax1.clear()
         self.ax2.clear()
         self.ax1.plot(self.index, self.flu_data, color="seagreen")
         self.ax2.plot([self.stim_time[-1], self.stim_time[-1]], [0, 5], "red", linestyle='dashed')
         self.ax1.set_ylim([0, 255])
         self.fc.draw()
+        """
+        # pyqtgraph
+        self.curve1.setData(self.index, self.flu_data)
 
         self.treeWidget.takeTopLevelItem(0)
         self.item_0 = QtWidgets.QTreeWidgetItem(self.treeWidget)
