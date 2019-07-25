@@ -94,6 +94,7 @@ class Ui_MainWindow(object):
         self.ax1 = self.fig.add_subplot(1, 1, 1)
         self.ax2 = self.ax1.twinx()
         self.fc.draw()
+        self.bg = self.fig.canvas.copy_from_bbox(self.ax1.bbox)
         self.fig.tight_layout()
 
         layout_glaph_tab = QtWidgets.QVBoxLayout()
@@ -128,18 +129,10 @@ class Ui_MainWindow(object):
         print(str(self.port_number) + " Opened!!")
         self.tmp_counter = 0
         # FG initialization
-        command = ("WMW34" + "\n")
-        self.ser.write(command.encode())
-        print(command)
-        command = ("WMA0" + "\n")
-        self.ser.write(command.encode())
-        print(command)
-        command = ("WMF200000" + "\n")#200mhz
-        self.ser.write(command.encode())
-        print(command)
-        command = ("WMN1" + "\n")
-        self.ser.write(command.encode())
-        print(command)
+        self.send_command("WMW34" + "\n")
+        self.send_command("WMA0" + "\n")
+        self.send_command("WMF200000" + "\n")#200mhz
+        self.send_command("WMN1" + "\n")
 
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(1)
@@ -149,29 +142,36 @@ class Ui_MainWindow(object):
     def on_click(self):
         if self.click_flg == False:
             self.click_flg = True
+            self.stim_flg = True
             self.timer_stim.start(5000)  # 5s
             self.button.setStyleSheet("background-color: rgb(100,230,180)")
             self.button.setText("Stimulating ...")
-            # Serial communication with function generator
-            self.stim_flg = True
         else:
+            self.reset_stim_setting()
 
-            self.click_flg = False
-            self.button.setStyleSheet("background-color: rgb(230, 230, 230)")
-            self.button.setText("Stimulation start")
-            self.stim_flg = False
+
+    def send_command(self, command):
+        self.ser.write(command.encode())
+        print(command)
 
 
     def stimulate(self):
         if self.amplitude == 10:
-            self.amplitude = 0
-            self.timer_stim.stop()
+            self.reset_stim_setting()
         else:
             self.amplitude+=1
-            command = ("WMA" + str(self.amplitude) + "\n")
-            self.ser.write(command.encode())
+            self.send_command("WMA" + str(self.amplitude) + "\n")
             self.stim_time = np.append(self.stim_time, self.index[-1])
-            print(command)
+
+
+    def reset_stim_setting(self):
+        self.amplitude = 0
+        self.click_flg = False
+        self.stim_flg = False
+        self.timer_stim.stop()
+        self.send_command("WMA0" + "\n")
+        self.button.setStyleSheet("background-color: rgb(230, 230, 230)")
+        self.button.setText("Stimulation start")
 
 
     def fluorescence_measurment(self):
