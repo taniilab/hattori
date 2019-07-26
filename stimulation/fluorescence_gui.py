@@ -61,7 +61,16 @@ class Ui_MainWindow(object):
         self.button.setStyleSheet("background-color: rgb(230,230,230)")
         self.button.clicked.connect(self.on_click)
 
+        self.com_button = QtWidgets.QPushButton('Connect')
+        self.bfont = self.com_button.font()
+        self.bfont.setPointSizeF(20)
+        self.com_button.setFont(self.bfont)
+        self.FG_connect_flg = False
+        self.com_button.setStyleSheet("background-color: rgb(230,230,230)")
+        self.com_button.clicked.connect(self.on_click_com)
+
         self.splitter_left.addWidget(self.button)
+        self.splitter_left.addWidget(self.com_button)
         self.splitter.addWidget(self.splitter_left)
 
         # plotter
@@ -125,18 +134,10 @@ class Ui_MainWindow(object):
         # When the shortcut key set here is input, the plot is made with pixels on cursor coordinates when input.
         kb.add_hotkey('shift+F', lambda: self.plot_position())
 
-        # serial communication setting
-        # 11520 kbps
-        self.port_number = "COM11"
-        self.ser = serial.Serial(self.port_number, 115200, timeout=1)
-        print(str(self.port_number) + " Opened!!")
-        self.tmp_counter = 0
-
         # FG initialization
         self.FG_init_state = 0
         self.timer_FG_init = QtCore.QTimer()
         self.timer_FG_init.timeout.connect(self.FG_initialization)
-        self.timer_FG_init.start(500)# Need a delay for each command
 
         # save
         self.date = datetime.datetime.today()
@@ -177,6 +178,21 @@ class Ui_MainWindow(object):
         else:
             self.reset_stim_setting()
 
+    def on_click_com(self):
+        if self.FG_connect_flg == False:
+            self.FG_connect_flg = True
+            # serial communication setting
+            # 11520 kbps
+            self.port_number = "COM11"
+            self.ser = serial.Serial(self.port_number, 115200, timeout=1)
+            print(str(self.port_number) + " Opened!!")
+            self.tmp_counter = 0
+
+            self.timer_FG_init.start(500)  # Need a delay for each command
+            self.com_button.setStyleSheet("background-color: rgb(100,230,180)")
+            self.com_button.setText("Connected")
+        else:
+            pass
 
     def send_command(self, command):
         self.ser.write(command.encode())
