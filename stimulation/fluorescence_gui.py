@@ -25,11 +25,13 @@ import pyqtgraph as pg
 from pyqtgraph.Qt import QtGui, QtCore
 
 
-
 class Ui_MainWindow(object):
     timer: QTimer
 
     def setupUi(self, MainWindow):
+        # number of plot
+        self.nump = 5
+
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1800, 900)
         self.centralWidget = QtWidgets.QWidget(MainWindow)
@@ -89,16 +91,28 @@ class Ui_MainWindow(object):
 
         # glaph setting
         self.pixel_pitch = 10
-        self.x, self.y = 1000, 1000  # plot position
+        self.x_init = 1000
+        self.y_init = 1000
         self.index = np.arange(0, 1000)
         self.stim_data = np.zeros(len(self.index))
         self.flu_data = np.zeros(len(self.index))
-
-        # pyqtgraph
+        self.rgb_init = []
+        self.gray_init = 0
+        self.x = [self.x_init]
+        self.y = [self.y_init]
+        self.rgb = [self.rgb_init]
+        self.gray = [self.gray_init]
         self.glaph_tab = pg.GraphicsWindow(title="fluorescence")
-        self.p1 = self.glaph_tab.addPlot()
-        #self.p1.setXRange(0,5)
-        self.curve1 = self.p1.plot(self.index, self.flu_data)
+        self.p = []
+        self.curve = []
+        for i in range(self.nump):
+            self.glaph_tab.nextRow()
+            self.p.append(self.glaph_tab.addPlot())
+            self.curve.append(self.p[i].plot(self.index, self.flu_data))
+            self.x.append(self.x_init)
+            self.y.append(self.y_init)
+            self.rgb.append(self.rgb_init)
+            self.gray.append(self.gray_init)
         self.stim_list = []
         layout_glaph_tab = QtWidgets.QVBoxLayout()
         layout_glaph_tab.addWidget(self.glaph_tab)
@@ -123,7 +137,12 @@ class Ui_MainWindow(object):
 
         # keyboard input setting
         # When the shortcut key set here is input, the plot is made with pixels on cursor coordinates when input.
-        kb.add_hotkey('shift+F', lambda: self.plot_position())
+        kb.add_hotkey("shift+0", lambda: self.plot_position0())# No.0 neuron
+        kb.add_hotkey("shift+1", lambda: self.plot_position1())  # No.0 neuron
+        kb.add_hotkey("shift+2", lambda: self.plot_position2())  # No.0 neuron
+        kb.add_hotkey("shift+3", lambda: self.plot_position3())  # No.0 neuron
+        kb.add_hotkey("shift+4", lambda: self.plot_position4())  # No.0 neuron
+
 
         # serial communication setting
         # 11520 kbps
@@ -174,14 +193,28 @@ class Ui_MainWindow(object):
             self.timer_stim.start(5000)  # 5s
             self.button.setStyleSheet("background-color: rgb(100,230,180)")
             self.button.setText("Stimulating ...")
+
         else:
             self.reset_stim_setting()
+
+    def plot_position0(self):
+        self.x[0], self.y[0] = pag.position()
+        print("0")
+    def plot_position1(self):
+        self.x[1], self.y[1] = pag.position()
+        print("1")
+    def plot_position2(self):
+        self.x[2], self.y[2] = pag.position()
+    def plot_position3(self):
+        self.x[3], self.y[3] = pag.position()
+    def plot_position4(self):
+        self.x[4], self.y[4] = pag.position()
+
 
 
     def send_command(self, command):
         self.ser.write(command.encode())
         print(command)
-
 
 
     def stimulate(self):
@@ -193,7 +226,7 @@ class Ui_MainWindow(object):
             self.send_command("WMA" + str(self.amplitude) + "\n")
             # visualize
             self.vline = pg.InfiniteLine(angle=90, movable=False)
-            self.p1.addItem(self.vline, ignoreBounds=True)
+            self.p[0].addItem(self.vline, ignoreBounds=True)
             self.vline.setPos(self.index[-1])
 
 
@@ -208,35 +241,21 @@ class Ui_MainWindow(object):
 
 
     def fluorescence_measurment(self):
-        # 2x2 pixels, accurate
-        """
-        self.rgb1 = pag.pixel(self.x, self.y)
-        self.rgb2 = pag.pixel(self.x+self.pixel_pitch, self.y)
-        self.rgb3 = pag.pixel(self.x, self.y+self.pixel_pitch)
-        self.rgb4 = pag.pixel(self.x+self.pixel_pitch, self.y+self.pixel_pitch)
-        self.gray1 = (77*self.rgb1[0]+150*self.rgb1[1]+29*self.rgb1[2])/256
-        self.gray2 = (77*self.rgb2[0]+150*self.rgb2[1]+29*self.rgb2[2])/256
-        self.gray3 = (77*self.rgb3[0]+150*self.rgb3[1]+29*self.rgb3[2])/256
-        self.gray4 = (77*self.rgb4[0]+150*self.rgb4[1]+29*self.rgb4[2])/256
-        self.gray = (self.gray1+self.gray2+self.gray3+self.gray4)/4
-        """
-        # simple
-        self.rgb1 = pag.pixel(self.x, self.y)
-        self.gray = self.rgb1[0]
         self.index = np.delete(self.index, 0)
-        self.index = np.append(self.index, self.index[-1]+1)
+        self.index = np.append(self.index, self.index[-1] + 1)
         self.flu_data = np.delete(self.flu_data, 0)
-        self.flu_data = np.append(self.flu_data, [self.gray])
+        self.flu_data = np.append(self.flu_data, [self.gray[0]])
 
-        # plot
-        # pyqtgraph
-        self.curve1.setData(self.index, self.flu_data)
+        for i in range(len(self.p)):
+            self.rgb[i] = pag.pixel(self.x[i], self.y[i])
+            self.gray[i] = self.rgb[i][0]
+            self.curve[i].setData(self.index, self.flu_data)
 
         self.treeWidget.takeTopLevelItem(0)
         self.item_0 = QtWidgets.QTreeWidgetItem(self.treeWidget)
-        self.treeWidget.topLevelItem(self.view_data_len-1).setText(0, str(self.rgb1[0]))
-        self.treeWidget.topLevelItem(self.view_data_len-1).setText(1, str(self.rgb1[1]))
-        self.treeWidget.topLevelItem(self.view_data_len-1).setText(2, str(self.rgb1[2]))
+        self.treeWidget.topLevelItem(self.view_data_len-1).setText(0, str(self.rgb[0][0]))
+        self.treeWidget.topLevelItem(self.view_data_len-1).setText(1, str(self.rgb[0][1]))
+        self.treeWidget.topLevelItem(self.view_data_len-1).setText(2, str(self.rgb[0][2]))
 
         # save
         df = pd.DataFrame(columns=[self.stim_for_csv, self.gray])
@@ -247,9 +266,6 @@ class Ui_MainWindow(object):
         if self.stim_for_csv == 255:
             self.stim_for_csv = 0
 
-
-    def plot_position(self):
-        self.x, self.y = pag.position()
 
 
     def retranslateUi(self, MainWindow):
