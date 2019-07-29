@@ -55,6 +55,7 @@ def main():
 
        # fitting : befor ap5
        param_b, cov_b = curve_fit(Bimodal_gaussian, voltage, before , p0=[0.5, 1, -65, 1, -20])
+       print("before:\n"+str(param_b))
        # interpolation
        start = -70
        end = 0
@@ -77,6 +78,7 @@ def main():
 
        # fitting : after ap5
        param_a, cov_a = curve_fit(Bimodal_gaussian, voltage, after , p0=[0.5, 1, -65, 1, -20])
+       print("after:\n"+str(param_a))
        # bimodal
        sp = scipy.interpolate.InterpolatedUnivariateSpline(voltage, Bimodal_gaussian(voltage, param_a[0], param_a[1], param_a[2], param_a[3], param_a[4]))
        sx = np.linspace(start, end, 1000)

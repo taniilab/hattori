@@ -52,14 +52,14 @@ class Ui_MainWindow(object):
         self.treeWidget.setObjectName("treeWidget")
         self.item_0 = QtWidgets.QTreeWidgetItem(self.treeWidget)
 
-        self.button = QtWidgets.QPushButton('Stimulate')
-        self.bfont = self.button.font()
+        self.stim_button = QtWidgets.QPushButton('Stimulate')
+        self.bfont = self.stim_button.font()
         self.bfont.setPointSizeF(20)
-        self.button.setFont(self.bfont)
+        self.stim_button.setFont(self.bfont)
         self.click_flg = False
         self.stim_flg = False
-        self.button.setStyleSheet("background-color: rgb(230,230,230)")
-        self.button.clicked.connect(self.on_click)
+        self.stim_button.setStyleSheet("background-color: rgb(230,230,230)")
+        self.stim_button.clicked.connect(self.on_click_stimlate)
 
         self.com_button = QtWidgets.QPushButton('Connect')
         self.bfont = self.com_button.font()
@@ -69,7 +69,7 @@ class Ui_MainWindow(object):
         self.com_button.setStyleSheet("background-color: rgb(230,230,230)")
         self.com_button.clicked.connect(self.on_click_com)
 
-        self.splitter_left.addWidget(self.button)
+        self.splitter_left.addWidget(self.stim_button)
         self.splitter_left.addWidget(self.com_button)
         self.splitter.addWidget(self.splitter_left)
 
@@ -168,13 +168,13 @@ class Ui_MainWindow(object):
             self.timer_FG_init.stop()
 
 
-    def on_click(self):
+    def on_click_stimlate(self):
         if self.click_flg == False:
             self.click_flg = True
             self.stim_flg = True
             self.timer_stim.start(5000)  # 5s
-            self.button.setStyleSheet("background-color: rgb(100,230,180)")
-            self.button.setText("Stimulating ...")
+            self.stim_button.setStyleSheet("background-color: rgb(100,230,180)")
+            self.stim_button.setText("Stimulating ...")
         else:
             self.reset_stim_setting()
 
@@ -219,8 +219,8 @@ class Ui_MainWindow(object):
         self.stim_flg = False
         self.timer_stim.stop()
         self.send_command("WMA0" + "\n")
-        self.button.setStyleSheet("background-color: rgb(230, 230, 230)")
-        self.button.setText("Stimulate")
+        self.stim_button.setStyleSheet("background-color: rgb(230, 230, 230)")
+        self.stim_button.setText("Stimulate")
 
 
     def fluorescence_measurment(self):
