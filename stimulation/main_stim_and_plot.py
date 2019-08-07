@@ -4,14 +4,14 @@ from PyQt5.QtWidgets import *
 from fluorescence_gui import Ui_MainWindow
 
 
-class Test(QMainWindow):
+class Main(QMainWindow):
     def __init__(self, parent=None):
-        super(Test, self).__init__(parent)
+        super(Main, self).__init__(parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    window = Test()
+    window = Main()
     window.show()
     sys.exit(app.exec_())
