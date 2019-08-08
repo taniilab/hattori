@@ -29,7 +29,6 @@ def main():
     predict_result = model.predict(num_predict_step)
 
     ## plot
-
     """
     plt.plot(np.arange(0, T, dt), data, label="inputs")
     plt.plot(np.arange(0, int(T * RATIO_TRAIN), dt), trained_data, label="trained")

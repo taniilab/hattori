@@ -20,13 +20,14 @@ def main():
 
     rc.learning()
 
-    fig = plt.figure(figsize=(20, 13))
+    fig = plt.figure(figsize=(25, 20))
     ax = []
     for i in range(0, rc.N):
         ax.append(fig.add_subplot(2,2,i+1))
         ax[i].plot(rc.time, rc.V[i], color="blue")
         ax2 = ax[i].twinx()
         ax2.plot(rc.time, rc.Isyn[i], color="gray")
+        ax2.plot(rc.time, rc.Iext[i], color="red")
     fig.tight_layout()
     plt.show()
 
