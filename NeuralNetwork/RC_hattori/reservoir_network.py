@@ -71,7 +71,12 @@ class ReservoirNetWork:
     def learning(self):
         # Ridge Regression
         self.learning_steps = 1000
-        self.targets = 10*np.sin(0.5*self.time[:self.learning_steps])
+        #self.targets = 10*np.sin(0.5*self.time[:self.learning_steps])
+        #方形波
+        self.targets = -np.ones(self.learning_steps)
+        print(self.targets)
+        self.targets[300:600] = 1
+        print(self.targets)
         self.lambda0 = 0.1
         self.output_nodes = self.V[:, 0:len(self.targets)].T # 多分qiitaの記事とは逆なので
         numneu = 4
@@ -87,7 +92,6 @@ class ReservoirNetWork:
         print(np.shape(inv_v @ self.output_nodes.T))
         """
         self.weights_output = (inv_v @ self.output_nodes.T) @ self.targets
-        print(self.weights_output)
         pass
 
     def predict(self, steps):
@@ -97,4 +101,3 @@ class ReservoirNetWork:
         """
         self.predict_time = self.time[self.learning_steps:]
         self.predicted_results = self.weights_output @ self.V[:, self.learning_steps:]
-        print(np.shape(self.predicted_results))
