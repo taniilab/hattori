@@ -20,13 +20,13 @@ class ReservoirNetWork:
             self.W[i,i] = 0
         #self.W = np.ones((self.N, self.N))
         self.Iext = np.zeros((self.N, self.allsteps))
-        self.input = 5*np.sin(0.5*self.time)
+        self.input = 30*np.sin(0.5*self.time)
         self.Iext[0, :] = self.input
         #self.Iext[0, int(0.5*self.allsteps):] = 0
         self.tau = 1
         self.Isyn = np.zeros((self.N, self.allsteps))
         self.tau_syn = 5
-        self.Pmax = 10
+        self.Pmax = 30
         self.curstep = 0
 
 
@@ -70,27 +70,31 @@ class ReservoirNetWork:
 
     def learning(self):
         # Ridge Regression
-        self.targets = 10*np.sin(0.5*self.time[:2000])
+        self.learning_steps = 1000
+        self.targets = 10*np.sin(0.5*self.time[:self.learning_steps])
         self.lambda0 = 0.1
         self.output_nodes = self.V[:, 0:len(self.targets)].T # 多分qiitaの記事とは逆なので
         numneu = 4
         E_lambda0 = np.identity(numneu) * self.lambda0  # regularization
+        inv_v = np.linalg.inv(self.output_nodes.T @ self.output_nodes + E_lambda0)
+        """
         print(np.shape(E_lambda0))
         print(np.shape(self.output_nodes))
         print(np.shape(self.output_nodes.T))
         print(np.shape(self.output_nodes.T @ self.output_nodes))
         print(np.shape(self.targets))
-
-        inv_v = np.linalg.inv(self.output_nodes.T @ self.output_nodes + E_lambda0)
         print(np.shape(inv_v))
         print(np.shape(inv_v @ self.output_nodes.T))
-
+        """
         self.weights_output = (inv_v @ self.output_nodes.T) @ self.targets
         print(self.weights_output)
         pass
 
-    def predict(self):
-        print(np.shape(self.V))
-        print(np.shape(self.weights_output))
-        self.predicted_results = self.weights_output @ self.V
+    def predict(self, steps):
+        """
+        for i in range(0, steps):
+            self.time = np.append(self.time, self.time[-1]+self.dt)
+        """
+        self.predict_time = self.time[self.learning_steps:]
+        self.predicted_results = self.weights_output @ self.V[:, self.learning_steps:]
         print(np.shape(self.predicted_results))

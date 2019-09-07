@@ -19,7 +19,7 @@ def main():
         rc.propagation()
 
     rc.learning()
-    rc.predict()
+    rc.predict(3000)
 
     fig = plt.figure(figsize=(15, 10))
     ax = []
@@ -29,7 +29,7 @@ def main():
         ax2 = ax[i].twinx()
         line2, = ax2.plot(rc.time, rc.Isyn[i], color="gray")
         line3, = ax2.plot(rc.time, rc.Iext[i], color="red")
-        line4, = ax2.plot(rc.time, rc.predicted_results,  color="green")
+        line4, = ax2.plot(rc.predict_time, rc.predicted_results,  color="green")
         ax[i].legend([line1, line2, line3, line4], ["V", "Isyn", "Iext", "res"])
     fig.tight_layout()
     plt.show()
