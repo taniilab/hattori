@@ -29,12 +29,6 @@ def main():
     predict_result = model.predict(num_predict_step)
 
     ## plot
-    """
-    plt.plot(np.arange(0, T, dt), data, label="inputs")
-    plt.plot(np.arange(0, int(T * RATIO_TRAIN), dt), trained_data, label="trained")
-    plt.plot(np.arange(int(T * RATIO_TRAIN), T, dt), predict_result, label="predicted")
-    plt.axvline(x=int(T * RATIO_TRAIN), label="end of train", color="green") # 予測と訓練のライン 
-    """
     plt.plot(np.arange(0, T, dt), data, label="inputs")
     plt.plot(np.arange(0, int(T * RATIO_TRAIN), dt), trained_data, label="trained")
     plt.plot(np.arange(int(T * RATIO_TRAIN), T, dt), predict_result, label="predicted")
