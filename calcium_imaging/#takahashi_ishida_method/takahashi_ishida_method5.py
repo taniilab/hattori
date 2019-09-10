@@ -720,9 +720,9 @@ class Ca_analyze:
 
 def main():
     start_time = time.time()
-    cxd_data_path = 'C:/Users/admin/Desktop/2019.7.2_100/2019.7.2_100/Data396'
-    csv_save_path = 'C:/Users/admin/Desktop/2019.7.2_100_analyze'
-    fig_save_path = 'C:/Users/admin/Desktop/2019.7.2_100_analyze/set_ylim/figure'
+    cxd_data_path = 'C:/Users/6969p/Downloads/experimental_data/20190610/Data282.cxd'
+    csv_save_path = 'C:/Users/6969p/Downloads/experimental_data/20190610'
+    fig_save_path = 'C:/Users/6969p/Downloads/experimental_data/20190610'
 
     dt = 0.025  # [sec]
 
