@@ -79,7 +79,7 @@ def main():
        ax0.plot(Time, Mean8,
                 color="black", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
        """
-       ax0.set_ylim([0, 0.5])
+       ax0.set_ylim([0, 0.2])
 
        ax0.tick_params(labelsize=fsize, axis="x", colors=label_color)
        ax0.tick_params(labelsize=fsize, axis="y", colors=label_color)
