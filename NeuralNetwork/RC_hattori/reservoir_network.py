@@ -22,10 +22,11 @@ class ReservoirNetWork:
         self.Iext = np.zeros((self.N, self.allsteps))
         self.input = 30*np.sin(0.5*self.time)
         self.Iext[0, :] = self.input
+        #self.Iext[0, int(0.5*self.allsteps):] = 0
         self.tau = 1
         self.Isyn = np.zeros((self.N, self.allsteps))
         self.tau_syn = 5
-        self.Pmax = 10
+        self.Pmax = 30
         self.curstep = 0
 
 
@@ -69,17 +70,34 @@ class ReservoirNetWork:
 
     def learning(self):
         # Ridge Regression
-        self.targets = 10*np.sin(2*self.time)
+        self.learning_steps = 1000
+        #self.targets = 10*np.sin(0.5*self.time[:self.learning_steps])
+        #方形波
+        self.targets = -np.ones(self.learning_steps)
+        print(self.targets)
+        self.targets[300:600] = 1
+        print(self.targets)
         self.lambda0 = 0.1
-        E_lambda0 = np.identity(len(self.V)) * self.lambda0  # lambda0
-        inv_v = np.linalg.inv(self.V.T @ self.V + E_lambda0)
-        self.weights_output = (inv_v @ self.V.T) @ self.inputs
+        self.output_nodes = self.V[:, 0:len(self.targets)].T # 多分qiitaの記事とは逆なので
+        numneu = 4
+        E_lambda0 = np.identity(numneu) * self.lambda0  # regularization
+        inv_v = np.linalg.inv(self.output_nodes.T @ self.output_nodes + E_lambda0)
         """
-        def _update_weights_output(self, lambda0):
-            # Ridge Regression
-            E_lambda0 = np.identity(self.num_reservoir_nodes) * lambda0  # lambda0
-            inv_x = np.linalg.inv(self.log_reservoir_nodes.T @ self.log_reservoir_nodes + E_lambda0)
-            # update weights of output layer
-            self.weights_output = (inv_x @ self.log_reservoir_nodes.T) @ self.inputs
+        print(np.shape(E_lambda0))
+        print(np.shape(self.output_nodes))
+        print(np.shape(self.output_nodes.T))
+        print(np.shape(self.output_nodes.T @ self.output_nodes))
+        print(np.shape(self.targets))
+        print(np.shape(inv_v))
+        print(np.shape(inv_v @ self.output_nodes.T))
         """
+        self.weights_output = (inv_v @ self.output_nodes.T) @ self.targets
         pass
+
+    def predict(self, steps):
+        """
+        for i in range(0, steps):
+            self.time = np.append(self.time, self.time[-1]+self.dt)
+        """
+        self.predict_time = self.time[self.learning_steps:]
+        self.predicted_results = self.weights_output @ self.V[:, self.learning_steps:]
