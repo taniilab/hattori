@@ -19,18 +19,20 @@ def main():
         rc.propagation()
 
     rc.learning()
+    rc.predict(3000)
 
-    fig = plt.figure(figsize=(25, 20))
+    fig = plt.figure(figsize=(15, 10))
     ax = []
     for i in range(0, rc.N):
         ax.append(fig.add_subplot(2,2,i+1))
-        ax[i].plot(rc.time, rc.V[i], color="blue")
+        line1, = ax[i].plot(rc.time, rc.V[i], color="blue")
         ax2 = ax[i].twinx()
-        ax2.plot(rc.time, rc.Isyn[i], color="gray")
-        ax2.plot(rc.time, rc.Iext[i], color="red")
+        line2, = ax2.plot(rc.time, rc.Isyn[i], color="gray")
+        line3, = ax2.plot(rc.time, rc.Iext[i], color="red")
+        line4, = ax2.plot(rc.predict_time, rc.predicted_results,  color="green")
+        ax[i].legend([line1, line2, line3, line4], ["V", "Isyn", "Iext", "res"])
     fig.tight_layout()
     plt.show()
-
 
 if __name__=="__main__":
     main()

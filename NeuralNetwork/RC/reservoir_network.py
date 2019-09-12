@@ -34,6 +34,14 @@ class ReservoirNetWork:
         inv_x = np.linalg.inv(self.log_reservoir_nodes.T @ self.log_reservoir_nodes + E_lambda0)
         # update weights of output layer
         self.weights_output = (inv_x @ self.log_reservoir_nodes.T) @ self.inputs
+        print(np.shape(E_lambda0))
+        print(np.shape(self.log_reservoir_nodes))
+        print(np.shape(self.log_reservoir_nodes.T))
+        print(np.shape(self.log_reservoir_nodes.T @ self.log_reservoir_nodes))
+        print(np.shape(self.inputs))
+        print(np.shape(inv_x))
+        print(np.shape(inv_x @ self.log_reservoir_nodes.T))
+
 
     # 学習する
     def train(self, lambda0=0.1):
@@ -64,7 +72,8 @@ class ReservoirNetWork:
 
     # get output of current state
     def get_output(self, reservoir_nodes):
-        return self.activator(reservoir_nodes @ self.weights_output)
+        # return self.activator(reservoir_nodes @ self.weights_output) 修正前
+        return reservoir_nodes @ self.weights_output # 修正後
 
     #############################
     ##### private method ########
