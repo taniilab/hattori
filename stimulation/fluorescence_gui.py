@@ -54,7 +54,7 @@ class Ui_MainWindow(object):
         self.treeWidget.setObjectName("treeWidget")
         self.item_0 = QtWidgets.QTreeWidgetItem(self.treeWidget)
 
-        self.def_path = "C:/data/"
+        self.def_path = "G:/Stim_G/csvdata/"
         self.save_path_line = QtWidgets.QLineEdit(self.def_path)
 
         self.stim_button = QtWidgets.QPushButton('Stimulate')
@@ -221,7 +221,7 @@ class Ui_MainWindow(object):
 
 
     def stimulate(self):
-        if self.amplitude == 10:
+        if self.amplitude >= 5:
             self.reset_stim_setting()
         else:
             self.amplitude+=1
