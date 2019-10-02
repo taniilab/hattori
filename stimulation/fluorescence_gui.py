@@ -219,7 +219,7 @@ class Ui_MainWindow(object):
         self.ser.write(command.encode())
         print(command)
 
-
+    """
     def stimulate(self):
         if self.amplitude >= 5:
             self.reset_stim_setting()
@@ -231,7 +231,16 @@ class Ui_MainWindow(object):
             self.vline = pg.InfiniteLine(angle=90, movable=False)
             self.p1.addItem(self.vline, ignoreBounds=True)
             self.vline.setPos(self.index[-1])
-
+    """
+    def stimulate(self):
+        self.amplitude = 3
+        self.stim_for_csv = 255
+        self.send_command("WMA" + str(self.amplitude) + "\n")
+        # visualize
+        self.vline = pg.InfiniteLine(angle=90, movable=False)
+        self.p1.addItem(self.vline, ignoreBounds=True)
+        self.vline.setPos(self.index[-1])
+        self.reset_stim_setting()
 
     def reset_stim_setting(self):
         self.amplitude = 0
@@ -275,11 +284,14 @@ class Ui_MainWindow(object):
         self.treeWidget.topLevelItem(self.view_data_len-1).setText(2, str(self.rgb1[2]))
 
         # save
-        df = pd.DataFrame(columns=[self.stim_for_csv, self.gray])
+        self.date_tmp = datetime.datetime.today()
+        self.tm = str(self.date_tmp.hour) + ', ' + str(self.date_tmp.minute) + ', ' + str(self.date_tmp.second) + ', ' + str(self.date_tmp.microsecond)
         self.filename = ("fluorescence" + str(self.date.year) + '_' + str(self.date.month) + '_' +
-                    str(self.date.day) + '_' + str(self.date.hour) + '_' +
-                    str(self.date.minute) + '_' + str(self.date.second) + '_.csv')
+                    str(self.date.day)  + '_' + str(self.date.hour) + '_' + str(self.date.minute) + '_' + str(self.date.second) + '_.csv')
+        #df = pd.DataFrame({"time": self.tm, "Intensity": self.gray})
+        df = pd.DataFrame(columns=[self.tm, self.stim_for_csv, self.gray])
         print(self.save_path + self.filename)
+
         df.to_csv(self.save_path + self.filename, mode="a")
         if self.stim_for_csv == 255:
             self.stim_for_csv = 0
