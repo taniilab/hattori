@@ -54,7 +54,7 @@ class Ui_MainWindow(object):
         self.treeWidget.setObjectName("treeWidget")
         self.item_0 = QtWidgets.QTreeWidgetItem(self.treeWidget)
 
-        self.stim_amp_label = QtWidgets.QLabel("Muximal amplitude (peak to peak) [V] (仮)")
+        self.stim_amp_label = QtWidgets.QLabel("Muximal amplitude (peak to peak) [V]")
         self.def_stim_amp = "5"
         self.stim_amp_line = QtWidgets.QLineEdit(self.def_stim_amp)
         self.layout_stim_amp = QtWidgets.QHBoxLayout()
@@ -208,6 +208,8 @@ class Ui_MainWindow(object):
         if self.click_flg == False:
             self.click_flg = True
             self.stim_flg = True
+            self.stim_amp = self.stim_amp_line.text()
+            print(self.stim_amp)
             self.timer_stim.start(5000)  # 5s
             self.stim_button.setStyleSheet("background-color: rgb(100,230,180)")
             self.stim_button.setText("Stimulating ...")
@@ -248,9 +250,10 @@ class Ui_MainWindow(object):
 
     # multiple
     def stimulate(self):
-        if self.amplitude >= 5:
+        if self.amplitude >= int(self.stim_amp):
             self.reset_stim_setting()
         else:
+
             self.amplitude+=1
             self.stim_for_csv = 255
             self.send_command("WMA" + str(self.amplitude) + "\n")
@@ -319,7 +322,7 @@ class Ui_MainWindow(object):
                     str(self.date.day)  + '_' + str(self.date.hour) + '_' + str(self.date.minute) + '_' + str(self.date.second) + '_.csv')
         #df = pd.DataFrame({"time": self.tm, "Intensity": self.gray})
         df = pd.DataFrame(columns=[self.tm, self.stim_for_csv, self.gray])
-        print(self.save_path + self.filename)
+        #print(self.save_path + self.filename)
 
         df.to_csv(self.save_path + self.filename, mode="a")
         if self.stim_for_csv == 255:
