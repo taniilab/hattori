@@ -54,8 +54,32 @@ class Ui_MainWindow(object):
         self.treeWidget.setObjectName("treeWidget")
         self.item_0 = QtWidgets.QTreeWidgetItem(self.treeWidget)
 
+        self.stim_amp_label = QtWidgets.QLabel("Muximal amplitude (peak to peak) [V] (仮)")
+        self.def_stim_amp = "5"
+        self.stim_amp_line = QtWidgets.QLineEdit(self.def_stim_amp)
+        self.layout_stim_amp = QtWidgets.QHBoxLayout()
+        self.layout_stim_amp.addWidget(self.stim_amp_label)
+        self.layout_stim_amp.addWidget(self.stim_amp_line)
+        self.stim_amp_w = QtWidgets.QWidget()
+        self.stim_amp_w.setLayout(self.layout_stim_amp)
+
+        self.stim_count_label = QtWidgets.QLabel("Number of stimuli (仮)")
+        self.def_stim_count = "5"
+        self.stim_count_line = QtWidgets.QLineEdit(self.def_stim_count)
+        self.layout_stim_count = QtWidgets.QHBoxLayout()
+        self.layout_stim_count.addWidget(self.stim_count_label)
+        self.layout_stim_count.addWidget(self.stim_count_line)
+        self.stim_count_w = QtWidgets.QWidget()
+        self.stim_count_w.setLayout(self.layout_stim_count)
+
+        self.save_path_label = QtWidgets.QLabel("Save path")
         self.def_path = "G:/Stim_G/csvdata/"
         self.save_path_line = QtWidgets.QLineEdit(self.def_path)
+        self.layout_save_path = QtWidgets.QHBoxLayout()
+        self.layout_save_path.addWidget(self.save_path_label)
+        self.layout_save_path.addWidget(self.save_path_line)
+        self.save_path_w = QtWidgets.QWidget()
+        self.save_path_w.setLayout(self.layout_save_path)
 
         self.stim_button = QtWidgets.QPushButton('Stimulate')
         self.bfont = self.stim_button.font()
@@ -81,7 +105,9 @@ class Ui_MainWindow(object):
         self.start_button.setStyleSheet("background-color: rgb(230,230,230)")
         self.start_button.clicked.connect(self.on_click_start)
 
-        self.splitter_left.addWidget(self.save_path_line)
+        self.splitter_left.addWidget(self.stim_amp_w)
+        self.splitter_left.addWidget(self.stim_count_w)
+        self.splitter_left.addWidget(self.save_path_w)
         self.splitter_left.addWidget(self.stim_button)
         self.splitter_left.addWidget(self.com_button)
         self.splitter_left.addWidget(self.start_button)
@@ -219,7 +245,8 @@ class Ui_MainWindow(object):
         self.ser.write(command.encode())
         print(command)
 
-    """
+
+    # multiple
     def stimulate(self):
         if self.amplitude >= 5:
             self.reset_stim_setting()
@@ -232,8 +259,9 @@ class Ui_MainWindow(object):
             self.p1.addItem(self.vline, ignoreBounds=True)
             self.vline.setPos(self.index[-1])
     """
+    # single
     def stimulate(self):
-        self.amplitude = 3
+        self.amplitude = 4
         self.stim_for_csv = 255
         self.send_command("WMA" + str(self.amplitude) + "\n")
         # visualize
@@ -241,6 +269,7 @@ class Ui_MainWindow(object):
         self.p1.addItem(self.vline, ignoreBounds=True)
         self.vline.setPos(self.index[-1])
         self.reset_stim_setting()
+    """
 
     def reset_stim_setting(self):
         self.amplitude = 0
