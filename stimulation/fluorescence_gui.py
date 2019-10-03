@@ -23,6 +23,7 @@ import pyautogui as pag
 import keyboard as kb
 import pyqtgraph as pg
 from pyqtgraph.Qt import QtGui, QtCore
+import os
 
 
 
@@ -45,12 +46,40 @@ class Ui_MainWindow(object):
         self.splitter.setOrientation(QtCore.Qt.Horizontal)
         self.splitter.setObjectName("splitter")
 
-        # values and button
+        # value, path_box, and button
+
         self.splitter_left = QtWidgets.QSplitter(QtCore.Qt.Vertical)
         self.treeWidget = QtWidgets.QTreeWidget(self.splitter_left)
         self.treeWidget.setAutoScrollMargin(22)
         self.treeWidget.setObjectName("treeWidget")
         self.item_0 = QtWidgets.QTreeWidgetItem(self.treeWidget)
+
+        self.stim_amp_label = QtWidgets.QLabel("Muximal amplitude (peak to peak) [V]")
+        self.def_stim_amp = "5"
+        self.stim_amp_line = QtWidgets.QLineEdit(self.def_stim_amp)
+        self.layout_stim_amp = QtWidgets.QHBoxLayout()
+        self.layout_stim_amp.addWidget(self.stim_amp_label)
+        self.layout_stim_amp.addWidget(self.stim_amp_line)
+        self.stim_amp_w = QtWidgets.QWidget()
+        self.stim_amp_w.setLayout(self.layout_stim_amp)
+
+        self.stim_count_label = QtWidgets.QLabel("Number of stimuli (仮)")
+        self.def_stim_count = "5"
+        self.stim_count_line = QtWidgets.QLineEdit(self.def_stim_count)
+        self.layout_stim_count = QtWidgets.QHBoxLayout()
+        self.layout_stim_count.addWidget(self.stim_count_label)
+        self.layout_stim_count.addWidget(self.stim_count_line)
+        self.stim_count_w = QtWidgets.QWidget()
+        self.stim_count_w.setLayout(self.layout_stim_count)
+
+        self.save_path_label = QtWidgets.QLabel("Save path")
+        self.def_path = "G:/Stim_G/csvdata/"
+        self.save_path_line = QtWidgets.QLineEdit(self.def_path)
+        self.layout_save_path = QtWidgets.QHBoxLayout()
+        self.layout_save_path.addWidget(self.save_path_label)
+        self.layout_save_path.addWidget(self.save_path_line)
+        self.save_path_w = QtWidgets.QWidget()
+        self.save_path_w.setLayout(self.layout_save_path)
 
         self.stim_button = QtWidgets.QPushButton('Stimulate')
         self.bfont = self.stim_button.font()
@@ -69,8 +98,19 @@ class Ui_MainWindow(object):
         self.com_button.setStyleSheet("background-color: rgb(230,230,230)")
         self.com_button.clicked.connect(self.on_click_com)
 
+        self.start_button = QtWidgets.QPushButton('Start')
+        self.bfont = self.stim_button.font()
+        self.bfont.setPointSizeF(20)
+        self.start_button.setFont(self.bfont)
+        self.start_button.setStyleSheet("background-color: rgb(230,230,230)")
+        self.start_button.clicked.connect(self.on_click_start)
+
+        self.splitter_left.addWidget(self.stim_amp_w)
+        self.splitter_left.addWidget(self.stim_count_w)
+        self.splitter_left.addWidget(self.save_path_w)
         self.splitter_left.addWidget(self.stim_button)
         self.splitter_left.addWidget(self.com_button)
+        self.splitter_left.addWidget(self.start_button)
         self.splitter.addWidget(self.splitter_left)
 
         # plotter
@@ -121,7 +161,7 @@ class Ui_MainWindow(object):
         # plot interval setting
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.fluorescence_measurment)
-        self.timer.start()
+        #self.timer.start()
 
         # stimulation interval setting
         self.timer_stim = QtCore.QTimer()
@@ -138,10 +178,6 @@ class Ui_MainWindow(object):
         self.FG_init_state = 0
         self.timer_FG_init = QtCore.QTimer()
         self.timer_FG_init.timeout.connect(self.FG_initialization)
-
-        # save
-        self.date = datetime.datetime.today()
-        self.save_path = "C:/Users/Tanii_Lab/Desktop/test/"
 
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(1)
@@ -172,18 +208,21 @@ class Ui_MainWindow(object):
         if self.click_flg == False:
             self.click_flg = True
             self.stim_flg = True
+            self.stim_amp = self.stim_amp_line.text()
+            print(self.stim_amp)
             self.timer_stim.start(5000)  # 5s
             self.stim_button.setStyleSheet("background-color: rgb(100,230,180)")
             self.stim_button.setText("Stimulating ...")
         else:
             self.reset_stim_setting()
 
+
     def on_click_com(self):
         if self.FG_connect_flg == False:
             self.FG_connect_flg = True
             # serial communication setting
             # 11520 kbps
-            self.port_number = "COM11"
+            self.port_number = "COM9"
             self.ser = serial.Serial(self.port_number, 115200, timeout=1)
             print(str(self.port_number) + " Opened!!")
             self.tmp_counter = 0
@@ -194,16 +233,27 @@ class Ui_MainWindow(object):
         else:
             pass
 
+
+    def on_click_start(self):
+        # save
+        self.date = datetime.datetime.today()
+        self.save_path = self.save_path_line.text()
+        if os.path.exists(self.save_path) != True:
+            os.makedirs(self.save_path)
+        self.timer.start()
+
+
     def send_command(self, command):
         self.ser.write(command.encode())
         print(command)
 
 
-
+    # multiple
     def stimulate(self):
-        if self.amplitude == 10:
+        if self.amplitude >= int(self.stim_amp):
             self.reset_stim_setting()
         else:
+
             self.amplitude+=1
             self.stim_for_csv = 255
             self.send_command("WMA" + str(self.amplitude) + "\n")
@@ -211,7 +261,18 @@ class Ui_MainWindow(object):
             self.vline = pg.InfiniteLine(angle=90, movable=False)
             self.p1.addItem(self.vline, ignoreBounds=True)
             self.vline.setPos(self.index[-1])
-
+    """
+    # single
+    def stimulate(self):
+        self.amplitude = 4
+        self.stim_for_csv = 255
+        self.send_command("WMA" + str(self.amplitude) + "\n")
+        # visualize
+        self.vline = pg.InfiniteLine(angle=90, movable=False)
+        self.p1.addItem(self.vline, ignoreBounds=True)
+        self.vline.setPos(self.index[-1])
+        self.reset_stim_setting()
+    """
 
     def reset_stim_setting(self):
         self.amplitude = 0
@@ -255,10 +316,14 @@ class Ui_MainWindow(object):
         self.treeWidget.topLevelItem(self.view_data_len-1).setText(2, str(self.rgb1[2]))
 
         # save
-        df = pd.DataFrame(columns=[self.stim_for_csv, self.gray])
-        self.filename = (str(self.date.year) + '_' + str(self.date.month) + '_' +
-                    str(self.date.day) + '_' + str(self.date.hour) + '_' +
-                    str(self.date.minute) + '_' + str(self.date.second) + '_.csv')
+        self.date_tmp = datetime.datetime.today()
+        self.tm = str(self.date_tmp.hour) + ', ' + str(self.date_tmp.minute) + ', ' + str(self.date_tmp.second) + ', ' + str(self.date_tmp.microsecond)
+        self.filename = ("fluorescence" + str(self.date.year) + '_' + str(self.date.month) + '_' +
+                    str(self.date.day)  + '_' + str(self.date.hour) + '_' + str(self.date.minute) + '_' + str(self.date.second) + '_.csv')
+        #df = pd.DataFrame({"time": self.tm, "Intensity": self.gray})
+        df = pd.DataFrame(columns=[self.tm, self.stim_for_csv, self.gray])
+        #print(self.save_path + self.filename)
+
         df.to_csv(self.save_path + self.filename, mode="a")
         if self.stim_for_csv == 255:
             self.stim_for_csv = 0
