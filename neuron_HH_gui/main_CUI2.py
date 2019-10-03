@@ -23,21 +23,21 @@ from picture_multi_thread import Picture
 
 starttime = time.time()
 elapsed_time = 0
-save_path = "//192.168.13.10/Public/hattori/simulation/HH"
-#save_path = "Z:/simulation/HH"
+#ave_path = "//192.168.13.10/Public/hattori/simulation/HH"
+save_path = "Z:/simulation/HH"
 #save_path = "G:/simulation/HH"
 
 # number of processors
-process = 14
+process = 6
 
 class Main():
     def __init__(self):
         self.parm = []
 
         #combination
-        self.i = 21
-        self.j = 21
-        self.k = 8
+        self.i = 6
+        self.j = 3
+        self.k = 1
         self.l = 1
 
         self.cycle_multiproc = int(self.i * self.j*self.k*self.l/process)
@@ -50,6 +50,30 @@ class Main():
                                             range(self.l)):
             self.parm.append({})
             self.parm[self.parm_counter] = {'T': 5000,
+                                            'dt': 0.02,
+                                            'Iext_amp': 10,
+                                            'syncp': 6,
+                                            'noise': 2,
+                                            'gpNa': 0,
+                                            'gkCa': round(0.00005*i, 6),
+                                            'Pmax_AMPA': 0,
+                                            'Pmax_NMDA': 0.8,
+                                            'gtCa': 0,
+                                            'Mg_conc': 1.3,
+                                            'alpha': 0.5,
+                                            'beta': 0.1,
+                                            'D': 0.5,
+                                            'U_SE_AMPA':0.7,
+                                            'U_SE_NMDA':0.03,
+                                            'tau_rise_AMPA':1.1,
+                                            'tau_rise_NMDA':145,
+                                            'tau_rec_AMPA':200,
+                                            'tau_rec_NMDA':200,
+                                            'tau_inact_AMPA':5,
+                                            'tau_inact_NMDA':55,
+                                            'delay': 0}
+            """
+            self.parm[self.parm_counter] = {'T': 1000,
                                             'dt': 0.02,
                                             'Iext_amp': 10,
                                             'syncp': 6,
@@ -71,6 +95,7 @@ class Main():
                                             'tau_inact_AMPA':5,
                                             'tau_inact_NMDA':55,
                                             'delay': 0}
+            """
             self.parm_counter += 1
 
 
@@ -130,12 +155,14 @@ def main():
                         str(d.minute) + '_' + str(d.second) + '_' +
                         'N' + str(j) +
                         "_P_AMPA" + str(res[k].Pmax_AMPA) + "_P_NMDA" + str(res[k].Pmax_NMDA) +
-                        "_Mg_conc" + str(res[k].Mg_conc) + '_' + 'delay' + str(res[k].delay) + "HH.csv")
+                        "_Mg_conc" + str(res[k].Mg_conc) + '_' + 'gkCa' + str(res[k].gkCa) + "HH.csv")
 
             df = pd.DataFrame({'T [ms]': res[k].Tsteps,
                                'V [mV]': res[k].V[j],
                                'I_K [uA]': res[k].IK[j],
                                'I_Na [uA]': res[k].INa[j],
+                               'Ca_conc [nm?]': res[k].ca_influx[j],
+                               'I_kCa [uA]': res[k].IlCa[j],
                                'I_m [uA]': res[k].Im[j],
                                'I_leak [uA]': res[k].Ileak[j],
                                'I_syn [uA]': res[k].Isyn[j],
@@ -148,7 +175,6 @@ def main():
             config = pd.DataFrame(columns=[filename])
             config.to_csv(save_path + '/' + filename)
             df.to_csv(save_path + '/' + filename, mode='a')
-
         pool.close()
         pool.join()
 
@@ -180,7 +206,7 @@ def main():
         ax[res[i].N+1].plot(tm, res[i].INMDA[0], color="coral",
                            markevery=[0, -1])
 
-        ax[res[i].N+2].plot(tm, res[i].IAMPA[0], color="coral",
+        ax[res[i].N+2].plot(tm, res[i].ca_influx[0], color="coral",
                            markevery=[0, -1])
         fig.tight_layout()
 
