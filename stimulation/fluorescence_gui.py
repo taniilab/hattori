@@ -98,7 +98,7 @@ class Ui_MainWindow(object):
         self.com_button.setStyleSheet("background-color: rgb(230,230,230)")
         self.com_button.clicked.connect(self.on_click_com)
 
-        self.start_button = QtWidgets.QPushButton('Start')
+        self.start_button = QtWidgets.QPushButton('Measure')
         self.bfont = self.stim_button.font()
         self.bfont.setPointSizeF(20)
         self.start_button.setFont(self.bfont)
@@ -240,6 +240,8 @@ class Ui_MainWindow(object):
         self.save_path = self.save_path_line.text()
         if os.path.exists(self.save_path) != True:
             os.makedirs(self.save_path)
+        self.start_button.setStyleSheet("background-color: rgb(100,230,180)")
+        self.start_button.setText("Now measuring...")
         self.timer.start()
 
 
