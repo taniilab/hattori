@@ -63,7 +63,7 @@ class Ui_MainWindow(object):
         self.stim_amp_w = QtWidgets.QWidget()
         self.stim_amp_w.setLayout(self.layout_stim_amp)
 
-        self.stim_count_label = QtWidgets.QLabel("Number of stimuli (仮)")
+        self.stim_count_label = QtWidgets.QLabel(" Number of stimuli(仮)")
         self.def_stim_count = "5"
         self.stim_count_line = QtWidgets.QLineEdit(self.def_stim_count)
         self.layout_stim_count = QtWidgets.QHBoxLayout()
@@ -71,6 +71,24 @@ class Ui_MainWindow(object):
         self.layout_stim_count.addWidget(self.stim_count_line)
         self.stim_count_w = QtWidgets.QWidget()
         self.stim_count_w.setLayout(self.layout_stim_count)
+
+        self.stim_deltaV_label = QtWidgets.QLabel(" Delta amplitude(仮)")
+        self.def_stim_deltaV = "5"
+        self.stim_deltaV_line = QtWidgets.QLineEdit(self.def_stim_deltaV)
+        self.layout_stim_deltaV = QtWidgets.QHBoxLayout()
+        self.layout_stim_deltaV.addWidget(self.stim_deltaV_label)
+        self.layout_stim_deltaV.addWidget(self.stim_deltaV_line)
+        self.stim_deltaV_w = QtWidgets.QWidget()
+        self.stim_deltaV_w.setLayout(self.layout_stim_deltaV)
+
+        self.stim_interval_label = QtWidgets.QLabel("Interval of stimuli (仮)")
+        self.def_stim_interval = "5"
+        self.stim_interval_line = QtWidgets.QLineEdit(self.def_stim_interval)
+        self.layout_stim_interval = QtWidgets.QHBoxLayout()
+        self.layout_stim_interval.addWidget(self.stim_interval_label)
+        self.layout_stim_interval.addWidget(self.stim_interval_line)
+        self.stim_interval_w = QtWidgets.QWidget()
+        self.stim_interval_w.setLayout(self.layout_stim_interval)
 
         self.save_path_label = QtWidgets.QLabel("Save path")
         self.def_path = "G:/Stim_G/csvdata/"
@@ -107,6 +125,8 @@ class Ui_MainWindow(object):
 
         self.splitter_left.addWidget(self.stim_amp_w)
         self.splitter_left.addWidget(self.stim_count_w)
+        self.splitter_left.addWidget(self.stim_deltaV_w)
+        self.splitter_left.addWidget(self.stim_interval_w)
         self.splitter_left.addWidget(self.save_path_w)
         self.splitter_left.addWidget(self.stim_button)
         self.splitter_left.addWidget(self.com_button)
