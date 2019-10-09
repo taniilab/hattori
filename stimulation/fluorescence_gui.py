@@ -181,6 +181,7 @@ class Ui_MainWindow(object):
         # plot interval setting
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.fluorescence_measurment)
+        self.ms_start_flag = False
         #self.timer.start()
 
         # stimulation interval setting
@@ -260,8 +261,7 @@ class Ui_MainWindow(object):
         self.save_path = self.save_path_line.text()
         if os.path.exists(self.save_path) != True:
             os.makedirs(self.save_path)
-        self.start_button.setStyleSheet("background-color: rgb(100,230,180)")
-        self.start_button.setText("Now measuring...")
+
         self.timer.start()
 
 
@@ -307,6 +307,13 @@ class Ui_MainWindow(object):
 
 
     def fluorescence_measurment(self):
+        if self.ms_start_flag == False:
+            self.start_button.setStyleSheet("background-color: rgb(255,234,13)")
+            self.start_button.setText("Start measuring on HCimage!!!")
+        elif self.ms_start_flag == True:
+            self.start_button.setStyleSheet("background-color: rgb(100,230,180)")
+            self.start_button.setText("Now measuring...")
+
         # 2x2 pixels, accurate
         """
         self.rgb1 = pag.pixel(self.x, self.y)
@@ -336,6 +343,8 @@ class Ui_MainWindow(object):
         self.treeWidget.topLevelItem(self.view_data_len-1).setText(0, str(self.rgb1[0]))
         self.treeWidget.topLevelItem(self.view_data_len-1).setText(1, str(self.rgb1[1]))
         self.treeWidget.topLevelItem(self.view_data_len-1).setText(2, str(self.rgb1[2]))
+
+
 
         # save
         self.date_tmp = datetime.datetime.today()
