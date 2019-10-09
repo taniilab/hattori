@@ -54,8 +54,8 @@ class Ui_MainWindow(object):
         self.treeWidget.setObjectName("treeWidget")
         self.item_0 = QtWidgets.QTreeWidgetItem(self.treeWidget)
 
-        self.stim_amp_label = QtWidgets.QLabel("Muximal amplitude (peak to peak) [V]")
-        self.def_stim_amp = "5"
+        self.stim_amp_label = QtWidgets.QLabel("Standard amplitude (peak to peak) [V]")
+        self.def_stim_amp = "1"
         self.stim_amp_line = QtWidgets.QLineEdit(self.def_stim_amp)
         self.layout_stim_amp = QtWidgets.QHBoxLayout()
         self.layout_stim_amp.addWidget(self.stim_amp_label)
@@ -63,7 +63,7 @@ class Ui_MainWindow(object):
         self.stim_amp_w = QtWidgets.QWidget()
         self.stim_amp_w.setLayout(self.layout_stim_amp)
 
-        self.stim_count_label = QtWidgets.QLabel(" Number of stimuli(仮)")
+        self.stim_count_label = QtWidgets.QLabel("Number of stimuli (仮)")
         self.def_stim_count = "5"
         self.stim_count_line = QtWidgets.QLineEdit(self.def_stim_count)
         self.layout_stim_count = QtWidgets.QHBoxLayout()
@@ -72,8 +72,8 @@ class Ui_MainWindow(object):
         self.stim_count_w = QtWidgets.QWidget()
         self.stim_count_w.setLayout(self.layout_stim_count)
 
-        self.stim_deltaV_label = QtWidgets.QLabel(" Delta amplitude(仮)")
-        self.def_stim_deltaV = "5"
+        self.stim_deltaV_label = QtWidgets.QLabel("Amplification rate (仮 V)")
+        self.def_stim_deltaV = "1"
         self.stim_deltaV_line = QtWidgets.QLineEdit(self.def_stim_deltaV)
         self.layout_stim_deltaV = QtWidgets.QHBoxLayout()
         self.layout_stim_deltaV.addWidget(self.stim_deltaV_label)
@@ -81,8 +81,8 @@ class Ui_MainWindow(object):
         self.stim_deltaV_w = QtWidgets.QWidget()
         self.stim_deltaV_w.setLayout(self.layout_stim_deltaV)
 
-        self.stim_interval_label = QtWidgets.QLabel("Interval of stimuli (仮)")
-        self.def_stim_interval = "5"
+        self.stim_interval_label = QtWidgets.QLabel("Interval of stimuli (仮 ms)")
+        self.def_stim_interval = "5000"
         self.stim_interval_line = QtWidgets.QLineEdit(self.def_stim_interval)
         self.layout_stim_interval = QtWidgets.QHBoxLayout()
         self.layout_stim_interval.addWidget(self.stim_interval_label)
@@ -189,6 +189,7 @@ class Ui_MainWindow(object):
         self.amplitude = 0
         self.stim_for_csv = 0
         self.counter = 0
+        self.tmr_stim_counter = 0
 
         # keyboard input setting
         # When the shortcut key set here is input, the plot is made with pixels on cursor coordinates when input.
@@ -228,7 +229,11 @@ class Ui_MainWindow(object):
         if self.click_flg == False:
             self.click_flg = True
             self.stim_flg = True
-            self.stim_amp = self.stim_amp_line.text()
+            self.stim_amp = int(self.stim_amp_line.text())
+            self.stim_deltaV = int(self.stim_deltaV_line.text())
+            self.stim_interval = int(self.stim_interval_line.text())
+            self.stim_count = int(self.stim_count_line.text())
+
             print(self.stim_amp)
             self.timer_stim.start(5000)  # 5s
             self.stim_button.setStyleSheet("background-color: rgb(100,230,180)")
@@ -272,17 +277,20 @@ class Ui_MainWindow(object):
 
     # multiple
     def stimulate(self):
-        if self.amplitude >= int(self.stim_amp):
+        if self.tmr_stim_counter >= self.stim_count:
             self.reset_stim_setting()
+        if self.amplitude == 0:
+            self.amplitude = self.stim_amp
         else:
+            self.amplitude+=self.stim_deltaV
 
-            self.amplitude+=1
-            self.stim_for_csv = 255
-            self.send_command("WMA" + str(self.amplitude) + "\n")
-            # visualize
-            self.vline = pg.InfiniteLine(angle=90, movable=False)
-            self.p1.addItem(self.vline, ignoreBounds=True)
-            self.vline.setPos(self.index[-1])
+        self.stim_for_csv = 255
+        self.tmr_stim_counter += 1
+        self.send_command("WMA" + str(self.amplitude) + "\n")
+        # visualize
+        self.vline = pg.InfiniteLine(angle=90, movable=False)
+        self.p1.addItem(self.vline, ignoreBounds=True)
+        self.vline.setPos(self.index[-1])
     """
     # single
     def stimulate(self):
@@ -298,6 +306,7 @@ class Ui_MainWindow(object):
 
     def reset_stim_setting(self):
         self.amplitude = 0
+        self.tmr_stim_counter = 0
         self.click_flg = False
         self.stim_flg = False
         self.timer_stim.stop()

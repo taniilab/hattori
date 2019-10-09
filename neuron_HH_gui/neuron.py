@@ -11,7 +11,7 @@ class Neuron_HH():
     def __init__(self, delay=20, syncp=1, N=1, dt=0.05, T=1000,Cm=1, Vth=-56.2,
                  eNa=50, gNa=56, eK=-90, gK=5, eL=-70.3, gL=0.0205, gM=0.075,
                  tau_syn=5.26, esyn=0, gsyn=0.025, tau_max=608, eCa=120, gtCa=0.4, glCa=0.0001,
-                 gpNa=0,
+                 gpNa=0, gkCa=0,
                  Iext_amp = 0, Pmax_AMPA=0, Pmax_NMDA=0,
                  Iext_num=0, noise=0, ramda=-10, alpha=0.5,
                  beta=0, D=1, ratio=0.5, Mg_conc=4,
@@ -20,7 +20,7 @@ class Neuron_HH():
         self.set_neuron_palm(delay, syncp, N, dt, T,Cm, Vth,
                  eNa, gNa, eK, gK, eL, gL, gM,
                  tau_syn, esyn, gsyn, tau_max, eCa, gtCa, glCa,
-                 gpNa,
+                 gpNa, gkCa,
                  Iext_amp, Pmax_AMPA, Pmax_NMDA,
                  Iext_num, noise, ramda, alpha,
                  beta, D, ratio, Mg_conc,
@@ -29,7 +29,7 @@ class Neuron_HH():
     def set_neuron_palm(self, delay=20, syncp=1, N=1, dt=0.05, T=5000,Cm=1, Vth=-56.2,
                  eNa=50, gNa=56, eK=-90, gK=5, eL=-70.3, gL=0.0205, gM=0.075,
                  tau_syn=5.26, esyn=0, gsyn=0.025, tau_max=608, eCa=120, gtCa=0.4, glCa=0.0001,
-                 gpNa=0.1,
+                 gpNa=0,  gkCa=0,
                  Iext_amp = 0, Pmax_AMPA=0, Pmax_NMDA=0,
                  Iext_num=0, noise=0, ramda=-10, alpha=0.5,
                  beta=0, D=1, ratio = 0.5, Mg_conc=4,
@@ -118,6 +118,12 @@ class Neuron_HH():
         self.beta_r = 0 * np.ones((self.N, self.allsteps))
         self.k1q = 0 * np.ones(self.N)
         self.k1r = 0 * np.ones(self.N)
+        # Ca activated K
+        self.IkCa = 0 * np.ones((self.N, self.allsteps))
+        self.gkCa = gkCa * np.ones(self.N)
+        self.ca_influx = 0 * np.ones((self.N, self.allsteps))
+        self.tau_ca_influx = 2700
+        self.ca_influx_step = 100
 
         # connection relationship
         self.W = np.ones((self.N, self.N))
@@ -300,7 +306,6 @@ class Neuron_HH():
     # one step processing
     def propagation(self):
         # slice
-
         self.Vi = self.V[:, self.curstep]
         # sodium
         self.INai = self.INa[:, self.curstep]
@@ -347,6 +352,9 @@ class Neuron_HH():
         self.alpha_ri = self.alpha_n[:, self.curstep]
         self.beta_ri = self.beta_n[:, self.curstep]
         """
+        # Ka activated calcium
+        self.IkCai = self.IkCa[:, self.curstep]
+        self.ca_influxi = self.ca_influx[:, self.curstep]
         # synapse
         self.Isyni = self.Isyn[:, self.curstep]
         self.INMDAi = self.INMDA[:, self.curstep]
@@ -418,12 +426,15 @@ class Neuron_HH():
         self.beta_ri = self.activation_func_sigmoid(0.0065, 1/28, -15, self.Vi)
         self.IlCai = self.glCa * self.qi**2 * self.ri * (self.eCa - self.Vi)
         """
+        # K activated calcium
+        self.IkCai = self.gkCa * self.ca_influxi * (self.eK - self.Vi)
 
         self.k1V = (self.INai +
                     self.IKi +
                     self.Ileaki +
                     self.Imi +
                     self.Isyni +
+                    self.IkCai +
                     self.Iext[:, self.curstep] +
                     self.Inoisei)
 
@@ -448,6 +459,10 @@ class Neuron_HH():
         #self.pna[:, self.curstep+1] = self.pnai + self.k1pna * self.dt
         self.n[:, self.curstep+1] = self.ni + self.k1n * self.dt
         self.p[:, self.curstep+1] = self.pi + self.k1p * self.dt
+        if self.V[i, self.curstep-1] > 0 and self.V[i, self.curstep] <= 0 and self.curstep * self.dt > 200:
+            self.ca_influx[:, self.curstep+1] = self.ca_influxi - (self.ca_influxi / self.tau_ca_influx)+self.dt + self.ca_influx_step
+        else:
+            self.ca_influx[:, self.curstep+1] = self.ca_influxi - (self.ca_influxi / self.tau_ca_influx) + self.dt
         """
         self.u[:, self.curstep+1] = self.ui + self.k1u * self.dt
         self.q[:, self.curstep+1] = self.qi + self.k1q * self.dt
@@ -461,6 +476,9 @@ class Neuron_HH():
         self.IK[:, self.curstep] = self.IKi
         self.Im[:, self.curstep] = self.Imi
         self.Ileak[:, self.curstep] = self.Ileaki
+        self.IkCa[:, self.curstep] = self.IkCai
+        self.ca_influx[:, self.curstep] = self.ca_influxi
+
         """
         self.ItCa[:, self.curstep] = self.ItCai
         self.s_inf[:, self.curstep] = self.s_infi
