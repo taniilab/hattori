@@ -22,8 +22,9 @@ def main():
        path = "//192.168.13.10/Public/experimental data/touhoku_patch/20181018_cortex/voltage/"
        path = "C:/Users/Tanii_Lab/Box Sync/Personal/Paper/first/Data/gAMPA_vs_gNMDA/"
        path = "Z:/Box Sync/Personal/Paper/first/Data/gAMPA_vs_gNMDA/"
-       csv_name = "2018_12_18_19_51_31_N0_P_AMPA0.5_P_NMDA0.7_Mg_conc1.6_delay0HH.csv"
-       fig_name = "fig3_a05n07_isyn.png"
+       path = "Z:/simulation/HH/"
+       csv_name = "2019_9_26_17_4_9_N0_P_AMPA0_P_NMDA0.8_Mg_conc1.3_gkCa[0.0002]HH.csv"
+       fig_name = "fig_gkca00002_w.png"
 
        # parameters
        sample = 20000
@@ -32,7 +33,7 @@ def main():
        ratio = target_dpi/config_dpi
        """inch"""
        graph_width = 15
-       graph_hight = 5
+       graph_hight = 4
        skip_rows = 1
        plot_line_w = 2
        ax_line_w = 6
@@ -52,16 +53,17 @@ def main():
        last = int(-1)
 
        #simulation
-
        index = df['T [ms]']
        voltage = df['V [mV]']
        nmda = df['I_NMDA [uA]']
        ampa = df['I_AMPA [uA]']
-       ax0.plot(index[int(2000/0.02):int(2500/0.02)], ampa[int(2000/0.02):int(2500/0.02)],
-                color="red", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
+       ax0.plot(index, voltage,
+                color="black", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
+       """"
        ax0.plot(index[int(2000 / 0.02):int(2500 / 0.02)], nmda[int(2000 / 0.02):int(2500 / 0.02)],
                 color="blue", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
-       ax0.set_ylim(-2, 8)
+       """
+       #ax0.set_ylim(-2, 8)
        """
 
        #experiment
