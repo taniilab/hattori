@@ -13,8 +13,8 @@ def main():
 
 
 
-       path = "C:/Users/6969p/Downloads/experimental_data/20190715/"
-       csv_name = "444.csv"
+       path = "C:/Users/Tanii_Lab/Box Sync/Personal/experimental_data/20190905/"
+       csv_name = "570.csv"
        fig_name = "output.png"
 
        # parameters
@@ -38,6 +38,8 @@ def main():
 
        # matplotlib
        ax0 = fig.add_subplot(1, 1, 1)
+
+
        init = int(1)
        last = int(-1)
 
@@ -45,11 +47,11 @@ def main():
        Time = 3 * (np.arange(0, len(df['Area1']))) / len(df['Area1'])
        Fmax = 4095
        Mean1 = df['Mean1']/Fmax
-       """
        Mean2 = df['Mean2']/Fmax
+
        Mean3 = df['Mean3']/Fmax
-       
        Mean4 = df['Mean4']/Fmax
+       """
        Mean5 = df['Mean5']/Fmax
        Mean6 = df['Mean6']/Fmax
        Mean7 = df['Mean7']/Fmax
@@ -57,29 +59,35 @@ def main():
        """
        # drift removal
        Mean1 = signal.detrend(Mean1) - np.min(signal.detrend(Mean1))
-       """
        Mean2 = signal.detrend(Mean2) - np.min(signal.detrend(Mean2))
        Mean3 = signal.detrend(Mean3) - np.min(signal.detrend(Mean3))
-       
        Mean4 = signal.detrend(Mean4) - np.min(signal.detrend(Mean4))
+       """
        Mean5 = signal.detrend(Mean5) - np.min(signal.detrend(Mean5))
        Mean6 = signal.detrend(Mean6) - np.min(signal.detrend(Mean6))
        Mean7 = signal.detrend(Mean7) - np.min(signal.detrend(Mean7))
        Mean8 = signal.detrend(Mean8) - np.min(signal.detrend(Mean8))
        """
        ax0.plot(Time, Mean1,
-                color="black", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
-
-       """
+                color="deepskyblue", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
        ax0.plot(Time, Mean2,
                 color="maroon", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
        ax0.plot(Time, Mean3,
+                color="seagreen", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
+       ax0.plot(Time, Mean4,
+                color="purple", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
+       """
+       ax1.plot(Time, Mean5,
+                color="maroon", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
+       ax2.plot(Time, Mean3,
                 color="dodgerblue", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
        
-       ax0.plot(Time, Mean8,
+       ax3.plot(Time, Mean7,
                 color="black", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
+       ax4.plot(Time, Mean8,
+                color="dodgerblue", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
        """
-       ax0.set_ylim([0, 0.2])
+       #ax0.set_ylim([0, 0.2])
 
        ax0.tick_params(labelsize=fsize, axis="x", colors=label_color)
        ax0.tick_params(labelsize=fsize, axis="y", colors=label_color)
@@ -92,7 +100,6 @@ def main():
        ax0.spines["bottom"].set_linewidth(ax_line_w)
 
        plt.savefig(path + fig_name)
-
        fig.tight_layout()
        #plt.show()
 
