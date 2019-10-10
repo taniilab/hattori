@@ -1,61 +1,25 @@
-import sys
-from PyQt5.QtWidgets import (QMainWindow, QTextEdit,
-    QAction, QFileDialog, QApplication)
-from PyQt5.QtGui import QIcon
-import os
-
-# テキストフォーム中心の画面のためQMainWindowを継承する
-class Example(QMainWindow):
-
-    def __init__(self):
-        super().__init__()
-
-        self.initUI()
+import numpy as np
 
 
-    def initUI(self):
+A = np.arange(0, 5)
 
-        self.textEdit = QTextEdit()
-        self.setCentralWidget(self.textEdit)
-        self.statusBar()
+print(A)
 
-        # メニューバーのアイコン設定
-        openFile = QAction(QIcon('imoyokan.jpg'), 'Open', self)
-        # ショートカット設定
-        openFile.setShortcut('Ctrl+O')
-        # ステータスバー設定
-        openFile.setStatusTip('Open new File')
-        openFile.triggered.connect(self.showDialog)
+A=np.roll(A, -1)
+A[-1] = 5
 
-        # メニューバー作成
-        menubar = self.menuBar()
-        fileMenu = menubar.addMenu('&File')
-        fileMenu.addAction(openFile)
-
-        self.setGeometry(300, 300, 350, 300)
-        self.setWindowTitle('File dialog')
-        self.show()
+print(A)
 
 
-    def showDialog(self):
+B = np.ones(10)
+B[-1] = 5
 
-        # 第二引数はダイアログのタイトル、第三引数は表示するパス
-        #fname = QFileDialog.getOpenFileName(self, 'かのぺろ', '/home')
-        fname = QFileDialog.getExistingDirectory(self, 'Open Directory', os.path.expanduser('~'))
-        print(fname)
+print(B)
+B_dummy = B[B != B[0]]
+if B_dummy == B[-1]:
+    print("kanopero")
 
-        # fname[0]は選択したファイルのパス（ファイル名を含む）
-        if fname[0]:
-            # ファイル読み込み
-            f = open(fname[0], 'r')
+print(B[B != B[0]])
+print(len(B[B != B[0]]))
 
-            # テキストエディタにファイル内容書き込み
-            with f:
-                data = f.read()
-                self.textEdit.setText(data)
-
-if __name__ == '__main__':
-
-    app = QApplication(sys.argv)
-    ex = Example()
-    sys.exit(app.exec_())
+print(B[0:len(B)-1])

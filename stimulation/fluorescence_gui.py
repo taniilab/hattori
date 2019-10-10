@@ -182,6 +182,7 @@ class Ui_MainWindow(object):
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.fluorescence_measurment)
         self.ms_start_flag = False
+        self.dummy_for_start_flag = np.ones(50)
         #self.timer.start()
 
         # stimulation interval setting
@@ -335,33 +336,48 @@ class Ui_MainWindow(object):
         self.flu_data = np.append(self.flu_data, [self.gray])
 
         # plot
-        # pyqtgraph
         self.curve1.setData(self.index, self.flu_data)
 
+        # value
         self.treeWidget.takeTopLevelItem(0)
         self.item_0 = QtWidgets.QTreeWidgetItem(self.treeWidget)
         self.treeWidget.topLevelItem(self.view_data_len-1).setText(0, str(self.rgb1[0]))
         self.treeWidget.topLevelItem(self.view_data_len-1).setText(1, str(self.rgb1[1]))
         self.treeWidget.topLevelItem(self.view_data_len-1).setText(2, str(self.rgb1[2]))
 
-
-
         # save
         self.date_tmp = datetime.datetime.today()
         self.tm = str(self.date_tmp.hour) + ', ' + str(self.date_tmp.minute) + ', ' + str(self.date_tmp.second) + ', ' + str(self.date_tmp.microsecond)
         self.filename = ("fluorescence" + str(self.date.year) + '_' + str(self.date.month) + '_' +
                     str(self.date.day)  + '_' + str(self.date.hour) + '_' + str(self.date.minute) + '_' + str(self.date.second) + '_.csv')
-        #df = pd.DataFrame({"time": self.tm, "Intensity": self.gray})
         df = pd.DataFrame(columns=[self.tm, self.stim_for_csv, self.gray])
-        #print(self.save_path + self.filename)
 
-        df.to_csv(self.save_path + self.filename, mode="a")
+        # FIFO
+        self.dummy_for_start_flag = np.roll(self.dummy_for_start_flag, -1)
+        self.dummy_for_start_flag[-1] = self.gray
+
+        # メモ　データ冒頭部の邪魔な部分を無視するために追記
+        # 過去１００プロット分の蛍光データを保存しておくリストを用意
+        # リストの末項以外の値が全て同じ値の時に計測開始フラグ（self.ms_start_flag）が立つようにしてある
+        # self.dummy_for_start_flag[self.dummy_for_start_flag != self.dummy_for_start_flag[0]]　→　リスト先頭の値と異なる要素を全て抽出
+        # 誤検出回避のため、self.dummy_for_start_flagの値は計測場所の輝度値で全て初期化してある（def plot_position(self)）
+        if self.ms_start_flag == False:
+            self.dummy2 = self.dummy_for_start_flag[self.dummy_for_start_flag != self.dummy_for_start_flag[0]]
+            if self.dummy2 == self.dummy_for_start_flag[-1]:
+                #print(self.dummy_for_start_flag)
+                self.ms_start_flag = True
+        else:
+            df.to_csv(self.save_path + self.filename, mode="a")
+
         if self.stim_for_csv == 255:
             self.stim_for_csv = 0
 
 
     def plot_position(self):
         self.x, self.y = pag.position()
+        self.kanon = pag.pixel(self.x, self.y)
+        self.dummy_for_start_flag = self.kanon[0] * np.ones(len(self.dummy_for_start_flag))
+        print(self.dummy_for_start_flag[0])
 
 
     def retranslateUi(self, MainWindow):
