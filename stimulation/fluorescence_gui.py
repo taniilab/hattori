@@ -280,8 +280,8 @@ class Ui_MainWindow(object):
             os.makedirs(self.save_path)
         self.start_time = time.time()
         self.timer.start()
-        self.stim_timterval = int(self.def_stim_interval)
-        self.stim_firststimulation = int(self.stim_firststimulation_line.text())
+        self.stim_interval = int(self.stim_interval_line.text())
+        self.stim_firststimulation = int(self.stim_firststimulation_line.text())-self.stim_interval
 
 
     def send_command(self, command):
@@ -370,17 +370,20 @@ class Ui_MainWindow(object):
                     str(self.date.day)  + '_' + str(self.date.hour) + '_' + str(self.date.minute) + '_' + str(self.date.second) + '_.csv')
         df = pd.DataFrame(columns=[self.tm, self.stim_for_csv, self.gray])
 
-        # Auto Stimulation
+        # Auto Stimulation System
 
-        if (self.ms_start_flag==True and self.first_stim_flag==False and time.time()-self.start_time>float(self.stim_firststimulation_line.text())-5):
-            print("Auto Stimulation!")
+        if (self.ms_start_flag==True and self.first_stim_flag==False and time.time()-self.start_time>self.stim_firststimulation):
+            print("Auto Stimulation System starts...")
+            print("Interval of Stimulation:" + str(self.stim_interval) + "seconds")
+            print("Start time of Stimulation:" + str(self.stim_firststimulation) + "seconds")
             self.click_flg = True
             self.stim_flg = True
+            self.first_stim_flag = True
             self.stim_amp = self.stim_amp_line.text()
-            print(self.stim_amp)
-            self.timer_stim.start(5000)  # 5s
+            self.timer_stim.start(self.stim_interval*1000)  # 5s
             self.stim_button.setStyleSheet("background-color: rgb(100,230,180)")
             self.stim_button.setText("Stimulating ...")
+
 
         # FIFO
         self.dummy_for_start_flag = np.roll(self.dummy_for_start_flag, -1)
