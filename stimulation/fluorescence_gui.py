@@ -24,6 +24,7 @@ import keyboard as kb
 import pyqtgraph as pg
 from pyqtgraph.Qt import QtGui, QtCore
 import os
+import time
 
 
 
@@ -81,7 +82,7 @@ class Ui_MainWindow(object):
         self.stim_deltaV_w = QtWidgets.QWidget()
         self.stim_deltaV_w.setLayout(self.layout_stim_deltaV)
 
-        self.stim_interval_label = QtWidgets.QLabel("Interval of stimuli (仮)")
+        self.stim_interval_label = QtWidgets.QLabel("Interval of stimuli")
         self.def_stim_interval = "5"
         self.stim_interval_line = QtWidgets.QLineEdit(self.def_stim_interval)
         self.layout_stim_interval = QtWidgets.QHBoxLayout()
@@ -90,8 +91,20 @@ class Ui_MainWindow(object):
         self.stim_interval_w = QtWidgets.QWidget()
         self.stim_interval_w.setLayout(self.layout_stim_interval)
 
+
+        self.stim_firststimulation_label = QtWidgets.QLabel("First Stimulation (仮)")
+        self.def_stim_firststimulation = "60"
+        self.stim_firststimulation_line = QtWidgets.QLineEdit(self.def_stim_firststimulation)
+        self.layout_stim_firststimulation = QtWidgets.QHBoxLayout()
+        self.layout_stim_firststimulation.addWidget(self.stim_firststimulation_label)
+        self.layout_stim_firststimulation.addWidget(self.stim_firststimulation_line)
+        self.stim_firststimulation_w = QtWidgets.QWidget()
+        self.stim_firststimulation_w.setLayout(self.layout_stim_firststimulation)
+        self.first_stim_flag = False
+
+
         self.save_path_label = QtWidgets.QLabel("Save path")
-        self.def_path = "G:/Stim_G/csvdata/"
+        self.def_path = "D:/temp"
         self.save_path_line = QtWidgets.QLineEdit(self.def_path)
         self.layout_save_path = QtWidgets.QHBoxLayout()
         self.layout_save_path.addWidget(self.save_path_label)
@@ -127,6 +140,7 @@ class Ui_MainWindow(object):
         self.splitter_left.addWidget(self.stim_count_w)
         self.splitter_left.addWidget(self.stim_deltaV_w)
         self.splitter_left.addWidget(self.stim_interval_w)
+        self.splitter_left.addWidget(self.stim_firststimulation_w)
         self.splitter_left.addWidget(self.save_path_w)
         self.splitter_left.addWidget(self.stim_button)
         self.splitter_left.addWidget(self.com_button)
@@ -182,7 +196,9 @@ class Ui_MainWindow(object):
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.fluorescence_measurment)
         self.ms_start_flag = False
-        self.dummy_for_start_flag = np.ones(50)
+        self.rec_time = 0
+        self.start_time = time.time()
+        self.dummy_for_start_flag = np.ones(100)
         #self.timer.start()
 
         # stimulation interval setting
@@ -262,8 +278,10 @@ class Ui_MainWindow(object):
         self.save_path = self.save_path_line.text()
         if os.path.exists(self.save_path) != True:
             os.makedirs(self.save_path)
-
+        self.start_time = time.time()
         self.timer.start()
+        self.stim_timterval = int(self.def_stim_interval)
+        self.stim_firststimulation = int(self.stim_firststimulation_line.text())
 
 
     def send_command(self, command):
@@ -352,6 +370,18 @@ class Ui_MainWindow(object):
                     str(self.date.day)  + '_' + str(self.date.hour) + '_' + str(self.date.minute) + '_' + str(self.date.second) + '_.csv')
         df = pd.DataFrame(columns=[self.tm, self.stim_for_csv, self.gray])
 
+        # Auto Stimulation
+
+        if (self.ms_start_flag==True and self.first_stim_flag==False and time.time()-self.start_time>float(self.stim_firststimulation_line.text())-5):
+            print("Auto Stimulation!")
+            self.click_flg = True
+            self.stim_flg = True
+            self.stim_amp = self.stim_amp_line.text()
+            print(self.stim_amp)
+            self.timer_stim.start(5000)  # 5s
+            self.stim_button.setStyleSheet("background-color: rgb(100,230,180)")
+            self.stim_button.setText("Stimulating ...")
+
         # FIFO
         self.dummy_for_start_flag = np.roll(self.dummy_for_start_flag, -1)
         self.dummy_for_start_flag[-1] = self.gray
@@ -361,11 +391,14 @@ class Ui_MainWindow(object):
         # リストの末項以外の値が全て同じ値の時に計測開始フラグ（self.ms_start_flag）が立つようにしてある
         # self.dummy_for_start_flag[self.dummy_for_start_flag != self.dummy_for_start_flag[0]]　→　リスト先頭の値と異なる要素を全て抽出
         # 誤検出回避のため、self.dummy_for_start_flagの値は計測場所の輝度値で全て初期化してある（def plot_position(self)）
-        if self.ms_start_flag == False:
+
+        if (self.ms_start_flag == False):
             self.dummy2 = self.dummy_for_start_flag[self.dummy_for_start_flag != self.dummy_for_start_flag[0]]
             if self.dummy2 == self.dummy_for_start_flag[-1]:
                 #print(self.dummy_for_start_flag)
                 self.ms_start_flag = True
+                self.start_time = time.time()
+                print(self.start_time)
         else:
             df.to_csv(self.save_path + self.filename, mode="a")
 
