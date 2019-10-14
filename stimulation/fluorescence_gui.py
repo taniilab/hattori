@@ -115,7 +115,7 @@ class Ui_MainWindow(object):
 
 
         self.save_path_label = QtWidgets.QLabel("Save path")
-        self.def_path = "D:/temp/"
+        self.def_path = "G:/Stim_G/csvdata/"
         self.save_path_line = QtWidgets.QLineEdit(self.def_path)
         self.layout_save_path = QtWidgets.QHBoxLayout()
         self.layout_save_path.addWidget(self.save_path_label)
