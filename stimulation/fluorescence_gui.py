@@ -85,6 +85,7 @@ class Ui_MainWindow(object):
         self.stim_interval_label = QtWidgets.QLabel("Interval of stimuli")
         self.def_stim_interval = "5"
         self.stim_interval_line = QtWidgets.QLineEdit(self.def_stim_interval)
+        self.stim_interval_line.setValidator(QtGui.QIntValidator())
         self.layout_stim_interval = QtWidgets.QHBoxLayout()
         self.layout_stim_interval.addWidget(self.stim_interval_label)
         self.layout_stim_interval.addWidget(self.stim_interval_line)
@@ -92,7 +93,7 @@ class Ui_MainWindow(object):
         self.stim_interval_w.setLayout(self.layout_stim_interval)
 
 
-        self.stim_firststimulation_label = QtWidgets.QLabel("First Stimulation (仮)")
+        self.stim_firststimulation_label = QtWidgets.QLabel("First Stimulation(-1=disabled)")
         self.def_stim_firststimulation = "60"
         self.stim_firststimulation_line = QtWidgets.QLineEdit(self.def_stim_firststimulation)
         self.layout_stim_firststimulation = QtWidgets.QHBoxLayout()
@@ -102,9 +103,19 @@ class Ui_MainWindow(object):
         self.stim_firststimulation_w.setLayout(self.layout_stim_firststimulation)
         self.first_stim_flag = False
 
+        self.stim_secondstimulation_label = QtWidgets.QLabel("Second Stimulation(-1=disabled)")
+        self.def_stim_secondstimulation = "-1"
+        self.stim_secondstimulation_line = QtWidgets.QLineEdit(self.def_stim_secondstimulation)
+        self.layout_stim_secondstimulation = QtWidgets.QHBoxLayout()
+        self.layout_stim_secondstimulation.addWidget(self.stim_secondstimulation_label)
+        self.layout_stim_secondstimulation.addWidget(self.stim_secondstimulation_line)
+        self.stim_secondstimulation_w = QtWidgets.QWidget()
+        self.stim_secondstimulation_w.setLayout(self.layout_stim_secondstimulation)
+        self.second_stim_flag = False
+
 
         self.save_path_label = QtWidgets.QLabel("Save path")
-        self.def_path = "D:/temp"
+        self.def_path = "D:/temp/"
         self.save_path_line = QtWidgets.QLineEdit(self.def_path)
         self.layout_save_path = QtWidgets.QHBoxLayout()
         self.layout_save_path.addWidget(self.save_path_label)
@@ -112,7 +123,7 @@ class Ui_MainWindow(object):
         self.save_path_w = QtWidgets.QWidget()
         self.save_path_w.setLayout(self.layout_save_path)
 
-        self.stim_button = QtWidgets.QPushButton('Stimulate')
+        self.stim_button = QtWidgets.QPushButton('Manual Stimulate')
         self.bfont = self.stim_button.font()
         self.bfont.setPointSizeF(20)
         self.stim_button.setFont(self.bfont)
@@ -141,6 +152,7 @@ class Ui_MainWindow(object):
         self.splitter_left.addWidget(self.stim_deltaV_w)
         self.splitter_left.addWidget(self.stim_interval_w)
         self.splitter_left.addWidget(self.stim_firststimulation_w)
+        self.splitter_left.addWidget(self.stim_secondstimulation_w)
         self.splitter_left.addWidget(self.save_path_w)
         self.splitter_left.addWidget(self.stim_button)
         self.splitter_left.addWidget(self.com_button)
@@ -212,6 +224,11 @@ class Ui_MainWindow(object):
         # When the shortcut key set here is input, the plot is made with pixels on cursor coordinates when input.
         kb.add_hotkey('shift+F', lambda: self.plot_position())
 
+        # Auto Stimulation System
+        self.stim_interval = 5
+        self.stim_firststimulation = 60
+        self.stim_secondstimulation = -1
+
         # FG initialization
         self.FG_init_state = 0
         self.timer_FG_init = QtCore.QTimer()
@@ -241,7 +258,6 @@ class Ui_MainWindow(object):
         elif self.FG_init_state == 5:
             self.timer_FG_init.stop()
 
-
     def on_click_stimlate(self):
         if self.click_flg == False:
             self.click_flg = True
@@ -253,7 +269,6 @@ class Ui_MainWindow(object):
             self.stim_button.setText("Stimulating ...")
         else:
             self.reset_stim_setting()
-
 
     def on_click_com(self):
         if self.FG_connect_flg == False:
@@ -271,23 +286,40 @@ class Ui_MainWindow(object):
         else:
             pass
 
-
     def on_click_start(self):
         # save
+        print("Starting...")
         self.date = datetime.datetime.today()
         self.save_path = self.save_path_line.text()
         if os.path.exists(self.save_path) != True:
             os.makedirs(self.save_path)
         self.start_time = time.time()
         self.timer.start()
-        self.stim_interval = int(self.stim_interval_line.text())
-        self.stim_firststimulation = int(self.stim_firststimulation_line.text())-self.stim_interval
+        try:
+            self.stim_interval =int(self.stim_interval_line.text())
+            self.stim_firststimulation = int(self.stim_firststimulation_line.text())
+            self.stim_secondstimulation = int(self.stim_secondstimulation_line.text())
+        except:
+            print("数値への変換に失敗??")
+            self.stim_interval = 5
+            self.stim_firststimulation = 60
+            self.stim_secondstimulation = -1
 
+        if self.stim_firststimulation == -1:
+            self.first_stim_flag = True
+            print("first stimulation disabled")
+        if self.stim_secondstimulation == -1:
+            self.second_stim_flag = True
+            print("second stimulation disabled")
+
+        self.stim_firststimulation = self.stim_firststimulation - self.stim_interval
+        self.stim_secondstimulation = self.stim_secondstimulation - self.stim_interval
+
+        print("Starting End")
 
     def send_command(self, command):
         self.ser.write(command.encode())
         print(command)
-
 
     # multiple
     def stimulate(self):
@@ -322,8 +354,7 @@ class Ui_MainWindow(object):
         self.timer_stim.stop()
         self.send_command("WMA0" + "\n")
         self.stim_button.setStyleSheet("background-color: rgb(230, 230, 230)")
-        self.stim_button.setText("Stimulate")
-
+        self.stim_button.setText("Manual Stimulate")
 
     def fluorescence_measurment(self):
         if self.ms_start_flag == False:
@@ -372,8 +403,8 @@ class Ui_MainWindow(object):
 
         # Auto Stimulation System
 
-        if (self.ms_start_flag==True and self.first_stim_flag==False and time.time()-self.start_time>self.stim_firststimulation):
-            print("Auto Stimulation System starts...")
+        if (self.first_stim_flag == False and self.ms_start_flag == True and time.time() - self.start_time > self.stim_firststimulation):
+            print("Auto Stimulation System starts...[FIRST STIMULATION]")
             print("Interval of Stimulation:" + str(self.stim_interval) + "seconds")
             print("Start time of Stimulation:" + str(self.stim_firststimulation) + "seconds")
             self.click_flg = True
@@ -384,6 +415,17 @@ class Ui_MainWindow(object):
             self.stim_button.setStyleSheet("background-color: rgb(100,230,180)")
             self.stim_button.setText("Stimulating ...")
 
+        if (self.second_stim_flag == False and self.ms_start_flag == True and time.time() - self.start_time > self.stim_secondstimulation):
+            print("Auto Stimulation System starts...[SECOND STIMULATION]")
+            print("Interval of Stimulation:" + str(self.stim_interval) + "seconds")
+            print("Start time of Stimulation:" + str(self.stim_secondstimulation) + "seconds")
+            self.click_flg = True
+            self.stim_flg = True
+            self.second_stim_flag = True
+            self.stim_amp = self.stim_amp_line.text()
+            self.timer_stim.start(self.stim_interval*1000)  # 5s
+            self.stim_button.setStyleSheet("background-color: rgb(100,230,180)")
+            self.stim_button.setText("Stimulating ...")
 
         # FIFO
         self.dummy_for_start_flag = np.roll(self.dummy_for_start_flag, -1)
