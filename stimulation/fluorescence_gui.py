@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Fluorescence Plotter for HCImage Live
-# programmed by Kouhei Hattori of Waseda University
+# programmed by Kouhei Hattori, Hekiru Kurakake of Waseda University
 
 """
 After running the software, please enter "shift + F". Converts pixel values
