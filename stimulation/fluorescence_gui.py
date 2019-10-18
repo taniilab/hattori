@@ -27,7 +27,6 @@ import os
 import time
 
 
-
 class Ui_MainWindow(object):
     timer: QTimer
 
@@ -104,7 +103,7 @@ class Ui_MainWindow(object):
         self.first_stim_flag = False
 
         self.stim_secondstimulation_label = QtWidgets.QLabel("Second Stimulation(-1=disabled)")
-        self.def_stim_secondstimulation = "-1"
+        self.def_stim_secondstimulation = "180"
         self.stim_secondstimulation_line = QtWidgets.QLineEdit(self.def_stim_secondstimulation)
         self.layout_stim_secondstimulation = QtWidgets.QHBoxLayout()
         self.layout_stim_secondstimulation.addWidget(self.stim_secondstimulation_label)
@@ -220,6 +219,12 @@ class Ui_MainWindow(object):
         self.stim_for_csv = 0
         self.counter = 0
 
+        # stimulation interval fix
+        # 5秒以上の間隔を開けての刺激に対応する。
+        self.timer_stim_reset = QtCore.QTimer()
+        self.timer_stim_reset.timeout.connect(self.stimulate_interval_fix)
+
+
         # keyboard input setting
         # When the shortcut key set here is input, the plot is made with pixels on cursor coordinates when input.
         kb.add_hotkey('shift+F', lambda: self.plot_position())
@@ -334,6 +339,7 @@ class Ui_MainWindow(object):
             self.vline = pg.InfiniteLine(angle=90, movable=False)
             self.p1.addItem(self.vline, ignoreBounds=True)
             self.vline.setPos(self.index[-1])
+            self.timer_stim_reset.start(500)
     """
     # single
     def stimulate(self):
@@ -346,6 +352,12 @@ class Ui_MainWindow(object):
         self.vline.setPos(self.index[-1])
         self.reset_stim_setting()
     """
+
+    def stimulate_interval_fix(self):
+        # 5秒以上の刺激に対応する.
+        # 刺激導入後0.5秒後に呼び出され、amplitudeをリセットする
+        self.send_command("WMA0\n")
+        self.timer_stim_reset.stop()
 
     def reset_stim_setting(self):
         self.amplitude = 0
