@@ -63,6 +63,15 @@ class Ui_MainWindow(object):
         self.stim_com_w = QtWidgets.QWidget()
         self.stim_com_w.setLayout(self.layout_stim_com)
 
+        self.stim_waveform_label = QtWidgets.QLabel("Waveform number(34~: arbitary)")
+        self.def_stim_waveform = "34"
+        self.stim_waveform_line = QtWidgets.QLineEdit(self.def_stim_waveform)
+        self.layout_stim_waveform = QtWidgets.QHBoxLayout()
+        self.layout_stim_waveform.addWidget(self.stim_waveform_label)
+        self.layout_stim_waveform.addWidget(self.stim_waveform_line)
+        self.stim_waveform_w = QtWidgets.QWidget()
+        self.stim_waveform_w.setLayout(self.layout_stim_waveform)
+
         self.stim_amp_label = QtWidgets.QLabel("Initial amplitude (peak to peak) [V]")
         self.def_stim_amp = "1"
         self.stim_amp_line = QtWidgets.QLineEdit(self.def_stim_amp)
@@ -153,6 +162,7 @@ class Ui_MainWindow(object):
         self.start_button.setStyleSheet("background-color: rgb(230,230,230)")
         self.start_button.clicked.connect(self.on_click_start)
 
+        self.splitter_left.addWidget(self.stim_waveform_w)
         self.splitter_left.addWidget(self.stim_com_w)
         self.splitter_left.addWidget(self.stim_amp_w)
         self.splitter_left.addWidget(self.stim_count_w)
@@ -260,7 +270,7 @@ class Ui_MainWindow(object):
             self.send_command("WMF200000" + "\n")# 200mhz
             self.FG_init_state += 1
         elif self.FG_init_state == 2:
-            self.send_command("WMW34" + "\n")# WMW34 -> arbitary wave 1
+            self.send_command("WMW" + self.stim_waveform_line.text() + "\n")# WMW34 -> arbitary wave 1
             self.FG_init_state += 1
         elif self.FG_init_state == 3:
             self.send_command("WMO0" + "\n")# offset 0 V
