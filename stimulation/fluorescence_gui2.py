@@ -54,8 +54,17 @@ class Ui_MainWindow(object):
         self.treeWidget.setObjectName("treeWidget")
         self.item_0 = QtWidgets.QTreeWidgetItem(self.treeWidget)
 
-        self.stim_amp_label = QtWidgets.QLabel("Muximal amplitude (peak to peak) [V]")
-        self.def_stim_amp = "5"
+        self.stim_com_label = QtWidgets.QLabel("COM")
+        self.def_stim_com = "4"
+        self.stim_com_line = QtWidgets.QLineEdit(self.def_stim_com)
+        self.layout_stim_com = QtWidgets.QHBoxLayout()
+        self.layout_stim_com.addWidget(self.stim_com_label)
+        self.layout_stim_com.addWidget(self.stim_com_line)
+        self.stim_com_w = QtWidgets.QWidget()
+        self.stim_com_w.setLayout(self.layout_stim_com)
+
+        self.stim_amp_label = QtWidgets.QLabel("Initial amplitude (peak to peak) [V]")
+        self.def_stim_amp = "1"
         self.stim_amp_line = QtWidgets.QLineEdit(self.def_stim_amp)
         self.layout_stim_amp = QtWidgets.QHBoxLayout()
         self.layout_stim_amp.addWidget(self.stim_amp_label)
@@ -63,7 +72,7 @@ class Ui_MainWindow(object):
         self.stim_amp_w = QtWidgets.QWidget()
         self.stim_amp_w.setLayout(self.layout_stim_amp)
 
-        self.stim_count_label = QtWidgets.QLabel(" Number of stimuli(仮)")
+        self.stim_count_label = QtWidgets.QLabel("Number of stimuli")
         self.def_stim_count = "5"
         self.stim_count_line = QtWidgets.QLineEdit(self.def_stim_count)
         self.layout_stim_count = QtWidgets.QHBoxLayout()
@@ -72,8 +81,8 @@ class Ui_MainWindow(object):
         self.stim_count_w = QtWidgets.QWidget()
         self.stim_count_w.setLayout(self.layout_stim_count)
 
-        self.stim_deltaV_label = QtWidgets.QLabel(" Delta amplitude(仮)")
-        self.def_stim_deltaV = "5"
+        self.stim_deltaV_label = QtWidgets.QLabel("Delta amplitude [V]")
+        self.def_stim_deltaV = "1"
         self.stim_deltaV_line = QtWidgets.QLineEdit(self.def_stim_deltaV)
         self.layout_stim_deltaV = QtWidgets.QHBoxLayout()
         self.layout_stim_deltaV.addWidget(self.stim_deltaV_label)
@@ -82,7 +91,7 @@ class Ui_MainWindow(object):
         self.stim_deltaV_w.setLayout(self.layout_stim_deltaV)
 
         self.stim_interval_label = QtWidgets.QLabel("Interval of stimuli")
-        self.def_stim_interval = "5"
+        self.def_stim_interval = "1"
         self.stim_interval_line = QtWidgets.QLineEdit(self.def_stim_interval)
         self.stim_interval_line.setValidator(QtGui.QIntValidator())
         self.layout_stim_interval = QtWidgets.QHBoxLayout()
@@ -90,7 +99,6 @@ class Ui_MainWindow(object):
         self.layout_stim_interval.addWidget(self.stim_interval_line)
         self.stim_interval_w = QtWidgets.QWidget()
         self.stim_interval_w.setLayout(self.layout_stim_interval)
-
 
         self.stim_firststimulation_label = QtWidgets.QLabel("First Stimulation(-1=disabled)")
         self.def_stim_firststimulation = "60"
@@ -111,7 +119,6 @@ class Ui_MainWindow(object):
         self.stim_secondstimulation_w = QtWidgets.QWidget()
         self.stim_secondstimulation_w.setLayout(self.layout_stim_secondstimulation)
         self.second_stim_flag = False
-
 
         self.save_path_label = QtWidgets.QLabel("Save path")
         self.def_path = "G:/Stim_G/csvdata/"
@@ -146,6 +153,7 @@ class Ui_MainWindow(object):
         self.start_button.setStyleSheet("background-color: rgb(230,230,230)")
         self.start_button.clicked.connect(self.on_click_start)
 
+        self.splitter_left.addWidget(self.stim_com_w)
         self.splitter_left.addWidget(self.stim_amp_w)
         self.splitter_left.addWidget(self.stim_count_w)
         self.splitter_left.addWidget(self.stim_deltaV_w)
@@ -252,7 +260,7 @@ class Ui_MainWindow(object):
             self.send_command("WMF200000" + "\n")# 200mhz
             self.FG_init_state += 1
         elif self.FG_init_state == 2:
-            self.send_command("WMW34" + "\n")# arbitary wave
+            self.send_command("WMW34" + "\n")# WMW34 -> arbitary wave 1
             self.FG_init_state += 1
         elif self.FG_init_state == 3:
             self.send_command("WMO0" + "\n")# offset 0 V
@@ -280,14 +288,14 @@ class Ui_MainWindow(object):
             self.FG_connect_flg = True
             # serial communication setting
             # 11520 kbps
-            self.port_number = "COM9"
+            self.port_number = "COM" + self.stim_com_line.text()
             self.ser = serial.Serial(self.port_number, 115200, timeout=1)
             print(str(self.port_number) + " Opened!!")
-            self.tmp_counter = 0
 
             self.timer_FG_init.start(500)  # Need a delay for each command
             self.com_button.setStyleSheet("background-color: rgb(100,230,180)")
             self.com_button.setText("Connected")
+            self.stim_counter = 0
         else:
             pass
 
@@ -328,11 +336,11 @@ class Ui_MainWindow(object):
 
     # multiple
     def stimulate(self):
-        if self.amplitude >= int(self.stim_amp):
+        if self.stim_counter >= int(self.stim_count_line.text()):
             self.reset_stim_setting()
         else:
-
-            self.amplitude+=1
+            self.stim_counter += 1
+            self.amplitude += round(float(self.stim_deltaV_line.text()), 1)
             self.stim_for_csv = 255
             self.send_command("WMA" + str(self.amplitude) + "\n")
             # visualize
@@ -340,18 +348,7 @@ class Ui_MainWindow(object):
             self.p1.addItem(self.vline, ignoreBounds=True)
             self.vline.setPos(self.index[-1])
             self.timer_stim_reset.start(500)
-    """
-    # single
-    def stimulate(self):
-        self.amplitude = 4
-        self.stim_for_csv = 255
-        self.send_command("WMA" + str(self.amplitude) + "\n")
-        # visualize
-        self.vline = pg.InfiniteLine(angle=90, movable=False)
-        self.p1.addItem(self.vline, ignoreBounds=True)
-        self.vline.setPos(self.index[-1])
-        self.reset_stim_setting()
-    """
+
 
     def stimulate_interval_fix(self):
         # 5秒以上の刺激に対応する.
@@ -361,6 +358,7 @@ class Ui_MainWindow(object):
 
     def reset_stim_setting(self):
         self.amplitude = 0
+        self.stim_counter += 0
         self.click_flg = False
         self.stim_flg = False
         self.timer_stim.stop()
@@ -414,7 +412,6 @@ class Ui_MainWindow(object):
         df = pd.DataFrame(columns=[self.tm, self.stim_for_csv, self.gray])
 
         # Auto Stimulation System
-
         if (self.first_stim_flag == False and self.ms_start_flag == True and time.time() - self.start_time > self.stim_firststimulation):
             print("Auto Stimulation System starts...[FIRST STIMULATION]")
             print("Interval of Stimulation:" + str(self.stim_interval) + "seconds")
