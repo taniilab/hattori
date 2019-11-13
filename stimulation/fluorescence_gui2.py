@@ -138,7 +138,7 @@ class Ui_MainWindow(object):
         self.save_path_w = QtWidgets.QWidget()
         self.save_path_w.setLayout(self.layout_save_path)
 
-        self.stim_button = QtWidgets.QPushButton('Manual Stimulate')
+        self.stim_button = QtWidgets.QPushButton('Manual Stimulate(機能停止中)')
         self.bfont = self.stim_button.font()
         self.bfont.setPointSizeF(20)
         self.stim_button.setFont(self.bfont)
