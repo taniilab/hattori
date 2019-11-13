@@ -55,7 +55,7 @@ class Ui_MainWindow(object):
         self.item_0 = QtWidgets.QTreeWidgetItem(self.treeWidget)
 
         self.stim_com_label = QtWidgets.QLabel("COM")
-        self.def_stim_com = "4"
+        self.def_stim_com = "9"
         self.stim_com_line = QtWidgets.QLineEdit(self.def_stim_com)
         self.layout_stim_com = QtWidgets.QHBoxLayout()
         self.layout_stim_com.addWidget(self.stim_com_label)
@@ -368,7 +368,7 @@ class Ui_MainWindow(object):
 
     def reset_stim_setting(self):
         self.amplitude = 0
-        self.stim_counter += 0
+        self.stim_counter = 0
         self.click_flg = False
         self.stim_flg = False
         self.timer_stim.stop()
