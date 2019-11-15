@@ -47,7 +47,6 @@ class Ui_MainWindow(object):
         self.splitter.setObjectName("splitter")
 
         # value, path_box, and button
-
         self.splitter_left = QtWidgets.QSplitter(QtCore.Qt.Vertical)
         self.treeWidget = QtWidgets.QTreeWidget(self.splitter_left)
         self.treeWidget.setAutoScrollMargin(22)
@@ -142,12 +141,10 @@ class Ui_MainWindow(object):
         self.bfont = self.stim_button.font()
         self.bfont.setPointSizeF(20)
         self.stim_button.setFont(self.bfont)
-        self.click_flg = False
-        self.stim_flg = False
         self.stim_button.setStyleSheet("background-color: rgb(230,230,230)")
         self.stim_button.clicked.connect(self.on_click_stimlate)
 
-        self.com_button = QtWidgets.QPushButton('Connect')
+        self.com_button = QtWidgets.QPushButton('Disconnected')
         self.bfont = self.com_button.font()
         self.bfont.setPointSizeF(20)
         self.com_button.setFont(self.bfont)
@@ -280,13 +277,13 @@ class Ui_MainWindow(object):
             self.FG_init_state += 1
         elif self.FG_init_state == 5:
             self.timer_FG_init.stop()
+            self.FG_init_state = 0
 
     def on_click_stimlate(self):
         if self.click_flg == False:
             self.click_flg = True
             self.stim_flg = True
             self.stim_amp = self.stim_amp_line.text()
-            print(self.stim_amp)
             self.timer_stim.start(5000)  # 5s
             self.stim_button.setStyleSheet("background-color: rgb(100,230,180)")
             self.stim_button.setText("Stimulating ...")
@@ -307,38 +304,54 @@ class Ui_MainWindow(object):
             self.com_button.setText("Connected")
             self.stim_counter = 0
         else:
-            pass
+            self.FG_connect_flg = False
+            self.ser.close()
+            print(str(self.port_number) + " Closed!!")
+            self.com_button.setStyleSheet("background-color: rgb(230,230,230)")
+            self.com_button.setText("Disconnected")
+            self.stim_counter = 0
 
     def on_click_start(self):
-        # save
-        print("Starting...")
-        self.date = datetime.datetime.today()
-        self.save_path = self.save_path_line.text()
-        if os.path.exists(self.save_path) != True:
-            os.makedirs(self.save_path)
-        self.start_time = time.time()
-        self.timer.start()
-        try:
-            self.stim_interval =int(self.stim_interval_line.text())
-            self.stim_firststimulation = int(self.stim_firststimulation_line.text())
-            self.stim_secondstimulation = int(self.stim_secondstimulation_line.text())
-        except:
-            print("数値への変換に失敗??")
-            self.stim_interval = 5
-            self.stim_firststimulation = 60
-            self.stim_secondstimulation = -1
+        if self.ms_start_flag == False:
+            print("Starting...")
+            self.date = datetime.datetime.today()
+            self.save_path = self.save_path_line.text()
+            if os.path.exists(self.save_path) != True:
+                os.makedirs(self.save_path)
+            self.start_time = time.time()
+            self.amplitude = float(self.stim_amp_line.text())
 
-        if self.stim_firststimulation == -1:
-            self.first_stim_flag = True
-            print("first stimulation disabled")
-        if self.stim_secondstimulation == -1:
-            self.second_stim_flag = True
-            print("second stimulation disabled")
+            self.timer.start()
 
-        self.stim_firststimulation = self.stim_firststimulation - self.stim_interval
-        self.stim_secondstimulation = self.stim_secondstimulation - self.stim_interval
+            try:
+                self.stim_interval =int(self.stim_interval_line.text())
+                self.stim_firststimulation = int(self.stim_firststimulation_line.text())
+                self.stim_secondstimulation = int(self.stim_secondstimulation_line.text())
+            except:
+                print("数値への変換に失敗??")
+                self.stim_interval = 1
+                self.stim_firststimulation = 60
+                self.stim_secondstimulation = -1
 
-        print("Starting End")
+            if self.stim_firststimulation == -1:
+                self.first_stim_flag = True
+                print("first stimulation disabled")
+            if self.stim_secondstimulation == -1:
+                self.second_stim_flag = True
+                print("second stimulation disabled")
+
+            self.stim_firststimulation = self.stim_firststimulation - self.stim_interval
+            self.stim_secondstimulation = self.stim_secondstimulation - self.stim_interval
+
+        elif self.ms_start_flag == True:
+            self.timer.stop()
+            self.ms_start_flag = False
+            self.first_stim_flag = False
+            self.second_stim_flag = False
+            self.start_button.setStyleSheet("background-color: rgb(230,230,230)")
+            self.start_button.setText("Measure")
+            print("End")
+
 
     def send_command(self, command):
         self.ser.write(command.encode())
@@ -349,20 +362,20 @@ class Ui_MainWindow(object):
         if self.stim_counter >= int(self.stim_count_line.text()):
             self.reset_stim_setting()
         else:
+            if self.stim_counter != 0:
+                self.amplitude += round(float(self.stim_deltaV_line.text()), 1)
             self.stim_counter += 1
-            self.amplitude += round(float(self.stim_deltaV_line.text()), 1)
             self.stim_for_csv = 255
             self.send_command("WMA" + str(self.amplitude) + "\n")
             # visualize
             self.vline = pg.InfiniteLine(angle=90, movable=False)
             self.p1.addItem(self.vline, ignoreBounds=True)
             self.vline.setPos(self.index[-1])
-            self.timer_stim_reset.start(500)
-
+            self.timer_stim_reset.start(200)
 
     def stimulate_interval_fix(self):
         # 5秒以上の刺激に対応する.
-        # 刺激導入後0.5秒後に呼び出され、amplitudeをリセットする
+        # 刺激導入後200秒後に呼び出され、amplitudeをリセットする
         self.send_command("WMA0\n")
         self.timer_stim_reset.stop()
 
@@ -426,8 +439,6 @@ class Ui_MainWindow(object):
             print("Auto Stimulation System starts...[FIRST STIMULATION]")
             print("Interval of Stimulation:" + str(self.stim_interval) + "seconds")
             print("Start time of Stimulation:" + str(self.stim_firststimulation) + "seconds")
-            self.click_flg = True
-            self.stim_flg = True
             self.first_stim_flag = True
             self.stim_amp = self.stim_amp_line.text()
             self.timer_stim.start(self.stim_interval*1000)  # 5s
@@ -438,8 +449,6 @@ class Ui_MainWindow(object):
             print("Auto Stimulation System starts...[SECOND STIMULATION]")
             print("Interval of Stimulation:" + str(self.stim_interval) + "seconds")
             print("Start time of Stimulation:" + str(self.stim_secondstimulation) + "seconds")
-            self.click_flg = True
-            self.stim_flg = True
             self.second_stim_flag = True
             self.stim_amp = self.stim_amp_line.text()
             self.timer_stim.start(self.stim_interval*1000)  # 5s
@@ -455,14 +464,12 @@ class Ui_MainWindow(object):
         # リストの末項以外の値が全て同じ値の時に計測開始フラグ（self.ms_start_flag）が立つようにしてある
         # self.dummy_for_start_flag[self.dummy_for_start_flag != self.dummy_for_start_flag[0]]　→　リスト先頭の値と異なる要素を全て抽出
         # 誤検出回避のため、self.dummy_for_start_flagの値は計測場所の輝度値で全て初期化してある（def plot_position(self)）
-
         if (self.ms_start_flag == False):
             self.dummy2 = self.dummy_for_start_flag[self.dummy_for_start_flag != self.dummy_for_start_flag[0]]
             if self.dummy2 == self.dummy_for_start_flag[-1]:
                 #print(self.dummy_for_start_flag)
                 self.ms_start_flag = True
                 self.start_time = time.time()
-                print(self.start_time)
         else:
             df.to_csv(self.save_path + self.filename, mode="a")
 
