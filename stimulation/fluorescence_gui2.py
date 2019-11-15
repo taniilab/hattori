@@ -199,7 +199,7 @@ class Ui_MainWindow(object):
         # glaph setting
         self.pixel_pitch = 10
         self.x, self.y = 1000, 1000  # plot position
-        self.index = np.arange(0, 1000)
+        self.index = np.arange(0, 3000)
         self.stim_data = np.zeros(len(self.index))
         self.flu_data = np.zeros(len(self.index))
 
@@ -416,7 +416,6 @@ class Ui_MainWindow(object):
         self.index = np.append(self.index, self.index[-1]+1)
         self.flu_data = np.delete(self.flu_data, 0)
         self.flu_data = np.append(self.flu_data, [self.gray])
-
         # plot
         self.curve1.setData(self.index, self.flu_data)
 
