@@ -25,7 +25,8 @@ import pyqtgraph as pg
 from pyqtgraph.Qt import QtGui, QtCore
 import os
 import time
-
+import csv
+import shutil
 
 class Ui_MainWindow(object):
     timer: QTimer
@@ -137,6 +138,56 @@ class Ui_MainWindow(object):
         self.save_path_w = QtWidgets.QWidget()
         self.save_path_w.setLayout(self.layout_save_path)
 
+        self.save1_button = QtWidgets.QPushButton('Save1')
+        self.bfont = self.save1_button.font()
+        self.bfont.setPointSizeF(20)
+        self.save1_button.setFont(self.bfont)
+        self.save1_button.setStyleSheet("background-color: rgb(230,230,230)")
+        self.save1_button.clicked.connect(self.save1)
+        self.save2_button = QtWidgets.QPushButton('Save2')
+        self.bfont = self.save2_button.font()
+        self.bfont.setPointSizeF(20)
+        self.save2_button.setFont(self.bfont)
+        self.save2_button.setStyleSheet("background-color: rgb(230,230,230)")
+        #self.save2_button.clicked.connect(self.save2)
+        self.save3_button = QtWidgets.QPushButton('Save3')
+        self.bfont = self.save3_button.font()
+        self.bfont.setPointSizeF(20)
+        self.save3_button.setFont(self.bfont)
+        self.save3_button.setStyleSheet("background-color: rgb(230,230,230)")
+        #self.save3_button.clicked.connect(self.save3)
+        self.layout_save = QtWidgets.QHBoxLayout()
+        self.layout_save.addWidget(self.save1_button)
+        self.layout_save.addWidget(self.save2_button)
+        self.layout_save.addWidget(self.save3_button)
+        self.save_button = QtWidgets.QWidget()
+        self.save_button.setLayout(self.layout_save)
+
+        self.load1_button = QtWidgets.QPushButton('Load1')
+        self.bfont = self.load1_button.font()
+        self.bfont.setPointSizeF(20)
+        self.load1_button.setFont(self.bfont)
+        self.load1_button.setStyleSheet("background-color: rgb(230,230,230)")
+        self.load1_button.clicked.connect(self.load1)
+        self.load2_button = QtWidgets.QPushButton('Load2')
+        self.bfont = self.load2_button.font()
+        self.bfont.setPointSizeF(20)
+        self.load2_button.setFont(self.bfont)
+        self.load2_button.setStyleSheet("background-color: rgb(230,230,230)")
+        #self.load2_button.clicked.connect(self.load2)
+        self.load3_button = QtWidgets.QPushButton('Load3')
+        self.bfont = self.load3_button.font()
+        self.bfont.setPointSizeF(20)
+        self.load3_button.setFont(self.bfont)
+        self.load3_button.setStyleSheet("background-color: rgb(230,230,230)")
+        #self.load3_button.clicked.connect(self.load3)
+        self.layout_load = QtWidgets.QHBoxLayout()
+        self.layout_load.addWidget(self.load1_button)
+        self.layout_load.addWidget(self.load2_button)
+        self.layout_load.addWidget(self.load3_button)
+        self.load_button = QtWidgets.QWidget()
+        self.load_button.setLayout(self.layout_load)
+
         self.stim_button = QtWidgets.QPushButton('Manual Stimulate(機能停止中)')
         self.bfont = self.stim_button.font()
         self.bfont.setPointSizeF(20)
@@ -168,6 +219,8 @@ class Ui_MainWindow(object):
         self.splitter_left.addWidget(self.stim_firststimulation_w)
         self.splitter_left.addWidget(self.stim_secondstimulation_w)
         self.splitter_left.addWidget(self.save_path_w)
+        self.splitter_left.addWidget(self.save_button)
+        self.splitter_left.addWidget(self.load_button)
         self.splitter_left.addWidget(self.stim_button)
         self.splitter_left.addWidget(self.com_button)
         self.splitter_left.addWidget(self.start_button)
@@ -256,6 +309,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(1)
+        self.load_previous()
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
 
@@ -313,6 +367,7 @@ class Ui_MainWindow(object):
 
     def on_click_start(self):
         if self.ms_start_flag == False:
+            self.save_previous()
             print("Starting...")
             self.date = datetime.datetime.today()
             self.save_path = self.save_path_line.text()
@@ -352,6 +407,154 @@ class Ui_MainWindow(object):
             self.start_button.setText("Measure")
             print("End")
 
+    def save_previous(self):
+        cfg_path = os.getcwd()+'/previous.cfg'
+        data = np.zeros(8,dtype=int)
+        data[0] = self.stim_waveform_line.text()
+        data[1] = self.stim_com_line.text()
+        data[2] = self.stim_amp_line.text()
+        data[3] = self.stim_count_line.text()
+        data[4] = self.stim_deltaV_line.text()
+        data[5] = self.stim_interval_line.text()
+        data[6] = self.stim_firststimulation_line.text()
+        data[7] = self.stim_secondstimulation_line.text()
+        data2 = []
+        data2.append(self.save_path_line.text())
+        with open(cfg_path, 'w' , newline = "") as f:
+            writer = csv.writer(f)
+            writer.writerow(data)
+            writer.writerow(data2)
+        return
+
+    def load_previous(self):
+        cfg_path = os.getcwd()+'/previous.cfg'
+        if not os.path.isfile(cfg_path):
+            return
+        data = np.zeros(8,dtype=int)
+        data[0] = self.stim_waveform_line.text()
+        data[1] = self.stim_com_line.text()
+        data[2] = self.stim_amp_line.text()
+        data[3] = self.stim_count_line.text()
+        data[4] = self.stim_deltaV_line.text()
+        data[5] = self.stim_interval_line.text()
+        data[6] = self.stim_firststimulation_line.text()
+        data[7] = self.stim_secondstimulation_line.text()
+        data2 = []
+        data2.append(self.save_path_line.text())
+        with open(cfg_path, 'w' , newline = "") as f:
+            writer = csv.writer(f)
+            writer.writerow(data)
+            writer.writerow(data2)
+        return
+
+    def save1(self):
+        cfg_path = os.getcwd()+'/save1.cfg'
+        data = np.zeros(8,dtype=int)
+        data[0] = self.stim_waveform_line.text()
+        data[1] = self.stim_com_line.text()
+        data[2] = self.stim_amp_line.text()
+        data[3] = self.stim_count_line.text()
+        data[4] = self.stim_deltaV_line.text()
+        data[5] = self.stim_interval_line.text()
+        data[6] = self.stim_firststimulation_line.text()
+        data[7] = self.stim_secondstimulation_line.text()
+        data2 = []
+        data2.append(self.save_path_line.text())
+        with open(cfg_path, 'w' , newline = "") as f:
+            writer = csv.writer(f)
+            writer.writerow(data)
+            writer.writerow(data2)
+        return
+
+
+    def load1(self):
+        cfg_path = os.getcwd()+'/save1.cfg'
+        with open(cfg_path,'r') as f:
+            reader = csv.reader(f)
+            l = [row for row in reader]
+            self.stim_waveform_line.setText(l[0][0])
+            self.stim_com_line.setText(l[0][1])
+            self.stim_amp_line.setText(l[0][2])
+            self.stim_count_line.setText(l[0][3])
+            self.stim_deltaV_line.setText(l[0][4])
+            self.stim_interval_line.setText(l[0][5])
+            self.stim_firststimulation_line.setText(l[0][6])
+            self.stim_secondstimulation_line.setText(l[0][7])
+            self.save_path_line.setText(l[1][0])
+
+        return
+
+    def save2(self):
+        cfg_path = os.getcwd()+'/save2.cfg'
+        data = np.zeros(8,dtype=int)
+        data[0] = self.stim_waveform_line.text()
+        data[1] = self.stim_com_line.text()
+        data[2] = self.stim_amp_line.text()
+        data[3] = self.stim_count_line.text()
+        data[4] = self.stim_deltaV_line.text()
+        data[5] = self.stim_interval_line.text()
+        data[6] = self.stim_firststimulation_line.text()
+        data[7] = self.stim_secondstimulation_line.text()
+        data2 = []
+        data2.append(self.save_path_line.text())
+        with open(cfg_path, 'w' , newline = "") as f:
+            writer = csv.writer(f)
+            writer.writerow(data)
+            writer.writerow(data2)
+        return
+
+    def load2(self):
+        cfg_path = os.getcwd()+'/save2.cfg'
+        with open(cfg_path,'r') as f:
+            reader = csv.reader(f)
+            l = [row for row in reader]
+            self.stim_waveform_line.setText(l[0][0])
+            self.stim_com_line.setText(l[0][1])
+            self.stim_amp_line.setText(l[0][2])
+            self.stim_count_line.setText(l[0][3])
+            self.stim_deltaV_line.setText(l[0][4])
+            self.stim_interval_line.setText(l[0][5])
+            self.stim_firststimulation_line.setText(l[0][6])
+            self.stim_secondstimulation_line.setText(l[0][7])
+            self.save_path_line.setText(l[1][0])
+
+        return
+
+    def save3(self):
+        cfg_path = os.getcwd()+'/save3.cfg'
+        data = np.zeros(8,dtype=int)
+        data[0] = self.stim_waveform_line.text()
+        data[1] = self.stim_com_line.text()
+        data[2] = self.stim_amp_line.text()
+        data[3] = self.stim_count_line.text()
+        data[4] = self.stim_deltaV_line.text()
+        data[5] = self.stim_interval_line.text()
+        data[6] = self.stim_firststimulation_line.text()
+        data[7] = self.stim_secondstimulation_line.text()
+        data2 = []
+        data2.append(self.save_path_line.text())
+        with open(cfg_path, 'w' , newline = "") as f:
+            writer = csv.writer(f)
+            writer.writerow(data)
+            writer.writerow(data2)
+        return
+
+    def load3(self):
+        cfg_path = os.getcwd()+'/save3.cfg'
+        with open(cfg_path,'r') as f:
+            reader = csv.reader(f)
+            l = [row for row in reader]
+            self.stim_waveform_line.setText(l[0][0])
+            self.stim_com_line.setText(l[0][1])
+            self.stim_amp_line.setText(l[0][2])
+            self.stim_count_line.setText(l[0][3])
+            self.stim_deltaV_line.setText(l[0][4])
+            self.stim_interval_line.setText(l[0][5])
+            self.stim_firststimulation_line.setText(l[0][6])
+            self.stim_secondstimulation_line.setText(l[0][7])
+            self.save_path_line.setText(l[1][0])
+
+        return
 
     def send_command(self, command):
         self.ser.write(command.encode())
