@@ -480,7 +480,7 @@ class Ui_MainWindow(object):
             if self.stim_counter != 0:
                 self.amplitude += round(float(self.stim_deltaV_line.text()), 1)
             self.stim_counter += 1
-            self.stim_for_csv = 255
+            self.stim_for_csv = self.amplitude
             self.send_command("WMA" + str(self.amplitude) + "\n")
             # visualize
             self.vline = pg.InfiniteLine(angle=90, movable=False)
@@ -490,7 +490,7 @@ class Ui_MainWindow(object):
 
     def stimulate_interval_fix(self):
         # 5秒以上の刺激に対応する.
-        # 刺激導入後200秒後に呼び出され、amplitudeをリセットする
+        # 刺激導入後200ミリ秒後に呼び出され、amplitudeをリセットする
         self.send_command("WMA0\n")
         self.timer_stim_reset.stop()
 
@@ -549,6 +549,11 @@ class Ui_MainWindow(object):
         df = pd.DataFrame(columns=[self.tm, self.stim_for_csv, self.gray])
 
         # Auto Stimulation System
+
+        self.stim_interval = int(self.stim_interval_line.text())
+        self.stim_firststimulation = int(self.stim_firststimulation_line.text())
+        self.stim_secondstimulation = int(self.stim_secondstimulation_line.text())
+
         if (self.first_stim_flag == False and self.ms_start_flag == True and time.time() - self.start_time > self.stim_firststimulation):
             print("Auto Stimulation System starts...[FIRST STIMULATION]")
             print("Interval of Stimulation:" + str(self.stim_interval) + "seconds")
@@ -587,8 +592,7 @@ class Ui_MainWindow(object):
         else:
             df.to_csv(self.save_path + self.filename, mode="a")
 
-        if self.stim_for_csv == 255:
-            self.stim_for_csv = 0
+        self.stim_for_csv = 0
 
 
     def plot_position(self):
