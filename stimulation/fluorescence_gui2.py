@@ -335,7 +335,7 @@ class Ui_MainWindow(object):
 
     def on_click_stimlate(self):
         if self.click_flg == False:
-            self.click_flg = Tru
+            self.click_flg = True
             self.stim_flg = True
             self.stim_amp = self.stim_amp_line.text()
             self.timer_stim.start(5000)  # 5s
@@ -559,7 +559,8 @@ class Ui_MainWindow(object):
             print("Interval of Stimulation:" + str(self.stim_interval) + "seconds")
             print("Start time of Stimulation:" + str(self.stim_firststimulation) + "seconds")
             self.first_stim_flag = True
-            self.stim_amp = self.stim_amp_line.text()
+            #self.stim_amp = self.stim_amp_line.text()
+            self.amplitude = float(self.stim_amp_line.text())
             self.timer_stim.start(self.stim_interval*1000)  # 5s
             self.stim_button.setStyleSheet("background-color: rgb(100,230,180)")
             self.stim_button.setText("Stimulating ...")
@@ -569,7 +570,8 @@ class Ui_MainWindow(object):
             print("Interval of Stimulation:" + str(self.stim_interval) + "seconds")
             print("Start time of Stimulation:" + str(self.stim_secondstimulation) + "seconds")
             self.second_stim_flag = True
-            self.stim_amp = self.stim_amp_line.text()
+            #self.stim_amp = self.stim_amp_line.text()
+            self.amplitude = float(self.stim_amp_line.text())
             self.timer_stim.start(self.stim_interval*1000)  # 5s
             self.stim_button.setStyleSheet("background-color: rgb(100,230,180)")
             self.stim_button.setText("Stimulating ...")
