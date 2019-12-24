@@ -13,22 +13,21 @@ def main():
 
 
 
-       path = "C:/Users/Tanii_Lab/Box Sync/Personal/experimental_data/20190905/"
-       csv_name = "570.csv"
+       path = "I:/Box Sync/Personal/Experimental Data/20191218/Data64/csv/"
+       csv_name = "Data64_roi_data.csv"
        fig_name = "output.png"
 
        # parameters
-       sample = 20000
        target_dpi = 600
        config_dpi = 600
        ratio = target_dpi/config_dpi
        """inch"""
-       graph_width = 10
-       graph_hight = 5
+       graph_width = 4
+       graph_hight = 2.5
        skip_rows = 0
-       plot_line_w = 2
-       ax_line_w = 4
-       fsize = 20
+       plot_line_w = 0.2
+       ax_line_w = 2
+       fsize = 8
        label_color = "black"
 
        fig = plt.figure(figsize=(graph_width*ratio, graph_hight*ratio), dpi=config_dpi)
@@ -39,60 +38,61 @@ def main():
        # matplotlib
        ax0 = fig.add_subplot(1, 1, 1)
 
-
-       init = int(1)
-       last = int(-1)
-
        print(len(df['Area1']))
-       Time = 3 * (np.arange(0, len(df['Area1']))) / len(df['Area1'])
-       Fmax = 4095
-       Mean1 = df['Mean1']/Fmax
-       Mean2 = df['Mean2']/Fmax
-
-       Mean3 = df['Mean3']/Fmax
-       Mean4 = df['Mean4']/Fmax
-       """
-       Mean5 = df['Mean5']/Fmax
-       Mean6 = df['Mean6']/Fmax
-       Mean7 = df['Mean7']/Fmax
-       Mean8 = df['Mean8']/Fmax
-       """
+       Time = np.arange(0, len(df['Area1']))/ 10
+       Mean1 = df['Mean1']
        # drift removal
-       Mean1 = signal.detrend(Mean1) - np.min(signal.detrend(Mean1))
-       Mean2 = signal.detrend(Mean2) - np.min(signal.detrend(Mean2))
-       Mean3 = signal.detrend(Mean3) - np.min(signal.detrend(Mean3))
-       Mean4 = signal.detrend(Mean4) - np.min(signal.detrend(Mean4))
-       """
-       Mean5 = signal.detrend(Mean5) - np.min(signal.detrend(Mean5))
-       Mean6 = signal.detrend(Mean6) - np.min(signal.detrend(Mean6))
-       Mean7 = signal.detrend(Mean7) - np.min(signal.detrend(Mean7))
-       Mean8 = signal.detrend(Mean8) - np.min(signal.detrend(Mean8))
-       """
+       #Mean1 = signal.detrend(Mean1) - np.min(signal.detrend(Mean1))
+
+       #10 pulse
+       start_pulse = 300
+       ax0.axvline(start_pulse, linewidth=plot_line_w, color="orange")
+       start_pulse += 10
+       ax0.axvline(start_pulse, linewidth=plot_line_w, color="orange")
+       start_pulse += 10
+       ax0.axvline(start_pulse, linewidth=plot_line_w, color="orange")
+       start_pulse += 10
+       ax0.axvline(start_pulse, linewidth=plot_line_w, color="orange")
+       start_pulse += 10
+       ax0.axvline(start_pulse, linewidth=plot_line_w, color="orange")
+       start_pulse += 10
+       ax0.axvline(start_pulse, linewidth=plot_line_w, color="orange")
+       start_pulse += 10
+       ax0.axvline(start_pulse, linewidth=plot_line_w, color="orange")
+       start_pulse += 10
+       ax0.axvline(start_pulse, linewidth=plot_line_w, color="orange")
+       start_pulse += 10
+       ax0.axvline(start_pulse, linewidth=plot_line_w, color="orange")
+       start_pulse += 10
+       ax0.axvline(start_pulse, linewidth=plot_line_w, color="orange")
+       start_pulse += 10
+       ax0.axvline(start_pulse, linewidth=plot_line_w, color="orange")
+       start_pulse += 10
+       ax0.axvline(start_pulse, linewidth=plot_line_w, color="orange")
+       start_pulse += 10
+       ax0.axvline(start_pulse, linewidth=plot_line_w, color="orange")
+       start_pulse += 10
+       ax0.axvline(start_pulse, linewidth=plot_line_w, color="orange")
+       start_pulse += 10
+       ax0.axvline(start_pulse, linewidth=plot_line_w, color="orange")
+       start_pulse += 10
+       ax0.axvline(start_pulse, linewidth=plot_line_w, color="orange")
+       start_pulse += 10
+       ax0.axvline(start_pulse, linewidth=plot_line_w, color="orange")
+       start_pulse += 10
+       ax0.axvline(start_pulse, linewidth=plot_line_w, color="orange")
+       start_pulse += 10
+       ax0.axvline(start_pulse, linewidth=plot_line_w, color="orange")
+       start_pulse += 10
+       ax0.axvline(start_pulse, linewidth=plot_line_w, color="orange")
+
        ax0.plot(Time, Mean1,
-                color="deepskyblue", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
-       ax0.plot(Time, Mean2,
-                color="maroon", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
-       ax0.plot(Time, Mean3,
-                color="seagreen", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
-       ax0.plot(Time, Mean4,
-                color="purple", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
-       """
-       ax1.plot(Time, Mean5,
-                color="maroon", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
-       ax2.plot(Time, Mean3,
-                color="dodgerblue", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
-       
-       ax3.plot(Time, Mean7,
                 color="black", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
-       ax4.plot(Time, Mean8,
-                color="dodgerblue", linewidth=plot_line_w, markevery=[0, -1], alpha=1)
-       """
-       #ax0.set_ylim([0, 0.2])
 
        ax0.tick_params(labelsize=fsize, axis="x", colors=label_color)
        ax0.tick_params(labelsize=fsize, axis="y", colors=label_color)
-       #ax1.set_xlabel("time[ms]", fontsize=fsize, color="gray")
-       #ax1.set_ylabel("membrane potential[mV]", fontsize=fsize)
+       ax0.set_xlabel("time[s]", fontsize=fsize, color="black")
+       ax0.set_ylabel("Fluorescence intensity [a.u.]", fontsize=fsize)
 
        ax0.spines["right"].set_color("none")
        ax0.spines["top"].set_color("none")
@@ -101,7 +101,7 @@ def main():
 
        plt.savefig(path + fig_name)
        fig.tight_layout()
-       #plt.show()
+       plt.show()
 
 if __name__ == '__main__':
      main()
