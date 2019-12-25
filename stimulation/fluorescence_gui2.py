@@ -33,7 +33,7 @@ class Ui_MainWindow(object):
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1800, 900)
+        MainWindow.resize(3000, 1000)
         self.centralWidget = QtWidgets.QWidget(MainWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -98,6 +98,15 @@ class Ui_MainWindow(object):
         self.layout_stim_deltaV.addWidget(self.stim_deltaV_line)
         self.stim_deltaV_w = QtWidgets.QWidget()
         self.stim_deltaV_w.setLayout(self.layout_stim_deltaV)
+
+        self.stim_offset_label = QtWidgets.QLabel("Offset voltage [V]")
+        self.def_stim_offset = "0"
+        self.stim_offset_line = QtWidgets.QLineEdit(self.def_stim_offset)
+        self.layout_stim_offset = QtWidgets.QHBoxLayout()
+        self.layout_stim_offset.addWidget(self.stim_offset_label)
+        self.layout_stim_offset.addWidget(self.stim_offset_line)
+        self.stim_offset_w = QtWidgets.QWidget()
+        self.stim_offset_w.setLayout(self.layout_stim_offset)
 
         self.stim_interval_label = QtWidgets.QLabel("Interval of stimuli")
         self.def_stim_interval = "1"
@@ -215,6 +224,7 @@ class Ui_MainWindow(object):
         self.splitter_left.addWidget(self.stim_amp_w)
         self.splitter_left.addWidget(self.stim_count_w)
         self.splitter_left.addWidget(self.stim_deltaV_w)
+        self.splitter_left.addWidget(self.stim_offset_w)
         self.splitter_left.addWidget(self.stim_interval_w)
         self.splitter_left.addWidget(self.stim_firststimulation_w)
         self.splitter_left.addWidget(self.stim_secondstimulation_w)
@@ -252,7 +262,7 @@ class Ui_MainWindow(object):
         # glaph setting
         self.pixel_pitch = 10
         self.x, self.y = 1000, 1000  # plot position
-        self.index = np.arange(0, 3000)
+        self.index = np.arange(0, 10000)
         self.stim_data = np.zeros(len(self.index))
         self.flu_data = np.zeros(len(self.index))
 
@@ -324,7 +334,7 @@ class Ui_MainWindow(object):
             self.send_command("WMW" + self.stim_waveform_line.text() + "\n")# WMW34 -> arbitary wave 1
             self.FG_init_state += 1
         elif self.FG_init_state == 3:
-            self.send_command("WMO0" + "\n")# offset 0 V
+            self.send_command("WMO" + self.stim_offset_line.text() +"\n")# offset 0 V
             self.FG_init_state += 1
         elif self.FG_init_state == 4:
             self.send_command("WMN1" + "\n")# output on
