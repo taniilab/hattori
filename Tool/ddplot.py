@@ -32,7 +32,9 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.centralWidget.sizePolicy().hasHeightForWidth())
         self.centralWidget.setSizePolicy(sizePolicy)
         self.centralWidget.setObjectName("centralWidget")
-        self.centralWidget.setStyleSheet("QLabel {font: 12pt Arial}" "QLineEdit {font: 12pt Arial}")
+        self.centralWidget.setStyleSheet("QLabel {font: 12pt Arial}"
+                                         "QComboBox {font: 12pt Arial}"
+                                         "QLineEdit {font: 12pt Arial}")
 
         self.layout = QtWidgets.QVBoxLayout()
         self.db = DropButton("CSVファイルをここにかわいくドラッグして下さいね")
