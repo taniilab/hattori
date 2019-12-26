@@ -1,13 +1,6 @@
 # -*- coding: utf-8 -*-
-# Fluorescence Plotter for HCImage Live
-# programmed by Kouhei Hattori, Hekiru Kurakake of Waseda University
-
-"""
-After running the software, please enter "shift + F". Converts pixel values
-on mouse cursor coordinates at the time of input to grayscale and plots them.
-Currently, it is programmed for single cell and is not compatible with
-multicellular plotting.
-"""
+# CAWAII Plotter
+# programmed by Kouhei Hattoriof Waseda University
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTimer
@@ -37,7 +30,7 @@ class Ui_MainWindow(object):
                                          "QLineEdit {font: 12pt Arial}")
 
         self.layout = QtWidgets.QVBoxLayout()
-        self.db = DropButton("CSVファイルをここにかわいくドラッグして下さいね")
+        self.db = DropButton("ここにCSVファイルをかわいくドラッグして下さいね")
         self.db.setStyleSheet("QPushButton{font-size: 30px;"
                               "font-family: MS Sans Serif;"
                               "color: rgb(255, 255, 255);"
@@ -210,7 +203,8 @@ class Ui_MainWindow(object):
             print(self.db.mineData)
             plt.rcParams["font.family"] = str(self.fig_font_line.text())
             df = pd.read_csv(self.db.mineData, skiprows=int(self.skiprows_line.text()))
-            #plt.rcParams["font.family"] = "IPAexGothic"
+
+            #plot
             fig = plt.figure(figsize=(float(self.width_line.text()),
                                       float(self.height_line.text())),
                              dpi=float(self.dpi_line.text()))
@@ -249,16 +243,12 @@ class DropButton(QPushButton):
         super().__init__(title, parent)
         self.mineData = "Null"
         self.drop_flg = False
-        # ボタンに対してドロップ操作を可能にする
         self.setAcceptDrops(True)
 
 
     def dragEnterEvent(self, e):
-        # ドラッグ可能なデータ形式を設定
         self.mineData = e.mimeData().text()
         e.acceptProposedAction()
 
     def dropEvent(self, e):
         self.drop_flg = True
-        # ドロップしたときにボタンラベルを入れ替える
-        #self.setText(e.mimeData().text())
