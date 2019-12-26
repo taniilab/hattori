@@ -11,12 +11,9 @@ multicellular plotting.
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTimer
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt5 import NavigationToolbar2QT as NavigationToolbar
-from matplotlib.figure import Figure
+from PyQt5.QtGui import QIcon
 import numpy as np
 import serial
-from time import sleep
 import pandas as pd
 import datetime
 import pyautogui as pag
@@ -25,7 +22,6 @@ import pyqtgraph as pg
 from pyqtgraph.Qt import QtGui, QtCore
 import os
 import time
-
 
 class Ui_MainWindow(object):
     timer: QTimer
@@ -41,7 +37,6 @@ class Ui_MainWindow(object):
         self.centralWidget.setSizePolicy(sizePolicy)
         self.centralWidget.setObjectName("centralWidget")
         self.centralWidget.setStyleSheet("QLabel {font: 13pt Arial}" "QLineEdit {font: 13pt Arial}")
-        self.centralWidget.move(0, 0)
 
         self.splitter = QtWidgets.QSplitter(self.centralWidget)
         #self.splitter.setGeometry(QtCore.QRect(0, 0, 1481, 941))
@@ -207,6 +202,7 @@ class Ui_MainWindow(object):
         layout_main = QtWidgets.QHBoxLayout()
         layout_main.addWidget(self.splitter)
         self.centralWidget.setLayout(layout_main)
+
 
         # glaph setting
         self.pixel_pitch = 10
@@ -501,6 +497,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Fluorescence Plotter"))
+        MainWindow.setWindowIcon(QIcon('maria.png'))
         self.treeWidget.headerItem().setText(0, _translate("MainWindow", "R"))
         self.treeWidget.headerItem().setText(1, _translate("MainWindow", "G"))
         self.treeWidget.headerItem().setText(2, _translate("MainWindow", "B"))

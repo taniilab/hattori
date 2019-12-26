@@ -2,6 +2,7 @@ import sys
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from fluorescence_gui2 import Ui_MainWindow
+from PyQt5.QtGui import QIcon
 
 
 class Main(QMainWindow):
