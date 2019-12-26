@@ -34,7 +34,7 @@ class Ui_MainWindow(object):
         self.centralWidget.setStyleSheet("QLabel {font: 13pt Arial}" "QLineEdit {font: 13pt Arial}")
 
         self.layout = QtWidgets.QVBoxLayout()
-        self.db = DropButton("CSVファイルをここにドラッグするぴっぴ")
+        self.db = DropButton("CSVファイルをここにかわいくドラッグして下さいね")
         self.db.setStyleSheet("QPushButton{font-size: 30px;"
                               "font-family: MS Sans Serif;"
                               "color: rgb(255, 255, 255);"
@@ -76,13 +76,95 @@ class Ui_MainWindow(object):
         self.height_w = QtWidgets.QWidget()
         self.height_w.setLayout(self.layout_height)
 
+        self.plot_line_w_label = QtWidgets.QLabel("Plot linewidth")
+        self.def_plot_line_w = "1"
+        self.plot_line_w_line = QtWidgets.QLineEdit(self.def_plot_line_w)
+        self.layout_plot_line_w = QtWidgets.QHBoxLayout()
+        self.layout_plot_line_w.addWidget(self.plot_line_w_label)
+        self.layout_plot_line_w.addWidget(self.plot_line_w_line)
+        self.plot_line_w_w = QtWidgets.QWidget()
+        self.plot_line_w_w.setLayout(self.layout_plot_line_w)
 
+        self.ax_line_w_label = QtWidgets.QLabel("Axis linewidth")
+        self.def_ax_line_w = "2"
+        self.ax_line_w_line = QtWidgets.QLineEdit(self.def_ax_line_w)
+        self.layout_ax_line_w = QtWidgets.QHBoxLayout()
+        self.layout_ax_line_w.addWidget(self.ax_line_w_label)
+        self.layout_ax_line_w.addWidget(self.ax_line_w_line)
+        self.ax_line_w_w = QtWidgets.QWidget()
+        self.ax_line_w_w.setLayout(self.layout_ax_line_w)
+
+        self.x_label_label = QtWidgets.QLabel("X label")
+        self.def_x_label = "Time [s]"
+        self.x_label_line = QtWidgets.QLineEdit(self.def_x_label)
+        self.layout_x_label = QtWidgets.QHBoxLayout()
+        self.layout_x_label.addWidget(self.x_label_label)
+        self.layout_x_label.addWidget(self.x_label_line)
+        self.x_label_w = QtWidgets.QWidget()
+        self.x_label_w.setLayout(self.layout_x_label)
+
+        self.y_label_label = QtWidgets.QLabel("Y label")
+        self.def_y_label = "Fruorescence intensity [a.u.]"
+        self.y_label_line = QtWidgets.QLineEdit(self.def_y_label)
+        self.layout_y_label = QtWidgets.QHBoxLayout()
+        self.layout_y_label.addWidget(self.y_label_label)
+        self.layout_y_label.addWidget(self.y_label_line)
+        self.y_label_w = QtWidgets.QWidget()
+        self.y_label_w.setLayout(self.layout_y_label)
+
+        self.xy_label_fsize_label = QtWidgets.QLabel("XY label font-size")
+        self.def_xy_label_fsize = "5"
+        self.xy_label_fsize_line = QtWidgets.QLineEdit(self.def_xy_label_fsize)
+        self.layout_xy_label_fsize = QtWidgets.QHBoxLayout()
+        self.layout_xy_label_fsize.addWidget(self.xy_label_fsize_label)
+        self.layout_xy_label_fsize.addWidget(self.xy_label_fsize_line)
+        self.xy_label_fsize_w = QtWidgets.QWidget()
+        self.xy_label_fsize_w.setLayout(self.layout_xy_label_fsize)
+
+        self.ax_tick_fsize_label = QtWidgets.QLabel("Axis tick font-size")
+        self.def_ax_tick_fsize = "5"
+        self.ax_tick_fsize_line = QtWidgets.QLineEdit(self.def_ax_tick_fsize)
+        self.layout_ax_tick_fsize = QtWidgets.QHBoxLayout()
+        self.layout_ax_tick_fsize.addWidget(self.ax_tick_fsize_label)
+        self.layout_ax_tick_fsize.addWidget(self.ax_tick_fsize_line)
+        self.ax_tick_fsize_w = QtWidgets.QWidget()
+        self.ax_tick_fsize_w.setLayout(self.layout_ax_tick_fsize)
+
+
+        self.save_path_label = QtWidgets.QLabel("Save path")
+        self.def_save_path = "C:/"
+        self.save_path_line = QtWidgets.QLineEdit(self.def_save_path)
+        self.layout_save_path = QtWidgets.QHBoxLayout()
+        self.layout_save_path.addWidget(self.save_path_label)
+        self.layout_save_path.addWidget(self.save_path_line)
+        self.save_path_w = QtWidgets.QWidget()
+        self.save_path_w.setLayout(self.layout_save_path)
+
+        self.save_button = QtWidgets.QPushButton('Save figure')
+        self.save_button.setStyleSheet("QPushButton{font-size: 30px;"
+                                       "font-family: MS Sans Serif;"
+                                       "color: rgb(255, 255, 255);"
+                                       "background-color: rgb(65, 65, 65);}")
+        self.save_button.clicked.connect(self.on_click_savefig)
 
         self.layout.addWidget(self.db)
         self.layout.addWidget(self.skiprows_w)
         self.layout.addWidget(self.dpi_w)
         self.layout.addWidget(self.width_w)
         self.layout.addWidget(self.height_w)
+        self.layout.addWidget(self.plot_line_w_w)
+        self.layout.addWidget(self.ax_line_w_w)
+        self.layout.addWidget(self.x_label_w)
+        self.layout.addWidget(self.y_label_w)
+        self.layout.addWidget(self.xy_label_fsize_w)
+        self.layout.addWidget(self.ax_tick_fsize_w)
+        self.layout.addWidget(self.save_path_w)
+        self.layout.addWidget(self.save_button)
+        """
+        self.layout.addWidget()
+        self.layout.addWidget()
+        self.layout.addWidget()
+        """
         self.centralWidget.setLayout(self.layout)
         MainWindow.setCentralWidget(self.centralWidget)
 
@@ -104,17 +186,31 @@ class Ui_MainWindow(object):
             print(self.db.mineData)
 
             df = pd.read_csv(self.db.mineData, skiprows=int(self.skiprows_line.text()))
-            #print(df)
-
-            fig = plt.figure(figsize=(int(self.width_line.text()),
-                                      int(self.height_line.text())),
-                             dpi=int(self.dpi_line.text()))
+            fig = plt.figure(figsize=(float(self.width_line.text()),
+                                      float(self.height_line.text())),
+                             dpi=float(self.dpi_line.text()))
             self.ax = fig.add_subplot(1, 1, 1)
             print(df)
             print(df.columns[0])
-            self.ax.plot(df[str(df.columns[0])], df[str(df.columns[3])])
+            self.ax.plot(df[str(df.columns[0])], df[str(df.columns[3])],
+                         color="black",
+                         linewidth=float(self.plot_line_w_line.text()))
+            self.ax.spines["right"].set_linewidth(0)
+            self.ax.spines["top"].set_linewidth(0)
+            self.ax.spines["left"].set_linewidth(self.ax_line_w_line.text())
+            self.ax.spines["bottom"].set_linewidth(self.ax_line_w_line.text())
+            self.ax.set_xlabel(str(self.x_label_line.text()),
+                               fontsize=float(self.xy_label_fsize_line.text()),
+                               color="black")
+            self.ax.set_ylabel(str(self.y_label_line.text()),
+                               fontsize=float(self.xy_label_fsize_line.text()),
+                               color="black")
+            self.ax.tick_params(labelsize=str(self.ax_tick_fsize_line.text()), colors="black")
+            fig.tight_layout()
             plt.show()
 
+    def on_click_savefig(self):
+        print("Saved!!!")
 
 class DropButton(QPushButton):
 
