@@ -27,6 +27,7 @@ class Ui_MainWindow(object):
         self.centralWidget.setObjectName("centralWidget")
         self.centralWidget.setStyleSheet("QLabel {font: 12pt Arial}"
                                          "QComboBox {font: 12pt Arial}"
+                                         "QCheckBox {font: 12pt Arial}"
                                          "QLineEdit {font: 12pt Arial}")
 
         self.layout = QtWidgets.QVBoxLayout()
@@ -83,13 +84,13 @@ class Ui_MainWindow(object):
 
         self.plot_color_label = QtWidgets.QLabel("Plot line-color")
         self.def_plot_color = "red"
-        self.plot_color_box = QtWidgets.QComboBox()
+        self.plot_color_cmbox = QtWidgets.QComboBox()
         self.items = {"black", "blue", "red", "green", "purple", "orange"}
-        self.plot_color_box.addItems(self.items)
-        self.plot_color_box.setCurrentText("black")
+        self.plot_color_cmbox.addItems(self.items)
+        self.plot_color_cmbox.setCurrentText("black")
         self.layout_plot_color = QtWidgets.QHBoxLayout()
         self.layout_plot_color.addWidget(self.plot_color_label)
-        self.layout_plot_color.addWidget(self.plot_color_box)
+        self.layout_plot_color.addWidget(self.plot_color_cmbox)
         self.plot_color_w = QtWidgets.QWidget()
         self.plot_color_w.setLayout(self.layout_plot_color)
 
@@ -101,6 +102,20 @@ class Ui_MainWindow(object):
         self.layout_ax_line_w.addWidget(self.ax_line_w_line)
         self.ax_line_w_w = QtWidgets.QWidget()
         self.ax_line_w_w.setLayout(self.layout_ax_line_w)
+
+        self.ax_spines_top_chbox = QtWidgets.QCheckBox("Top spine")
+        self.ax_spines_bottom_chbox = QtWidgets.QCheckBox("Bottom spine")
+        self.ax_spines_left_chbox = QtWidgets.QCheckBox("Left spine")
+        self.ax_spines_right_chbox = QtWidgets.QCheckBox("Right spine")
+        self.ax_spines_bottom_chbox.toggle()
+        self.ax_spines_left_chbox.toggle()
+        self.layout_ax_spines = QtWidgets.QHBoxLayout()
+        self.layout_ax_spines.addWidget(self.ax_spines_top_chbox)
+        self.layout_ax_spines.addWidget(self.ax_spines_bottom_chbox)
+        self.layout_ax_spines.addWidget(self.ax_spines_left_chbox)
+        self.layout_ax_spines.addWidget(self.ax_spines_right_chbox)
+        self.ax_spines_w = QtWidgets.QWidget()
+        self.ax_spines_w.setLayout(self.layout_ax_spines)
 
         self.x_label_label = QtWidgets.QLabel("X label")
         self.def_x_label = "Time [s]"
@@ -147,7 +162,6 @@ class Ui_MainWindow(object):
         self.ax_tick_fsize_w = QtWidgets.QWidget()
         self.ax_tick_fsize_w.setLayout(self.layout_ax_tick_fsize)
 
-
         self.save_path_label = QtWidgets.QLabel("Save path")
         self.def_save_path = "Z:/test/"
         self.save_path_line = QtWidgets.QLineEdit(self.def_save_path)
@@ -156,6 +170,13 @@ class Ui_MainWindow(object):
         self.layout_save_path.addWidget(self.save_path_line)
         self.save_path_w = QtWidgets.QWidget()
         self.save_path_w.setLayout(self.layout_save_path)
+
+        self.replot_button = QtWidgets.QPushButton('Replot')
+        self.replot_button.setStyleSheet("QPushButton{font-size: 30px;"
+                                         "font-family: MS Sans Serif;"
+                                         "color: rgb(255, 255, 255);"
+                                         "background-color: rgb(204, 102, 102);}")
+        self.replot_button.clicked.connect(self.on_click_replot_figure)
 
         self.save_button = QtWidgets.QPushButton('Save figure')
         self.save_button.setStyleSheet("QPushButton{font-size: 30px;"
@@ -172,12 +193,14 @@ class Ui_MainWindow(object):
         self.layout.addWidget(self.plot_line_w_w)
         self.layout.addWidget(self.plot_color_w)
         self.layout.addWidget(self.ax_line_w_w)
+        self.layout.addWidget(self.ax_spines_w)
         self.layout.addWidget(self.x_label_w)
         self.layout.addWidget(self.y_label_w)
         self.layout.addWidget(self.fig_font_w)
         self.layout.addWidget(self.xy_label_fsize_w)
         self.layout.addWidget(self.ax_tick_fsize_w)
         self.layout.addWidget(self.save_path_w)
+        self.layout.addWidget(self.replot_button)
         self.layout.addWidget(self.save_button)
         """
         self.layout.addWidget()
@@ -202,31 +225,45 @@ class Ui_MainWindow(object):
             self.db.drop_flg = False
             print(self.db.mineData)
             plt.rcParams["font.family"] = str(self.fig_font_line.text())
-            df = pd.read_csv(self.db.mineData, skiprows=int(self.skiprows_line.text()))
+            self.df = pd.read_csv(self.db.mineData, skiprows=int(self.skiprows_line.text()))
+            self.plot()
 
-            #plot
-            fig = plt.figure(figsize=(float(self.width_line.text()),
-                                      float(self.height_line.text())),
-                             dpi=float(self.dpi_line.text()))
-            self.ax = fig.add_subplot(1, 1, 1)
-            print(df)
-            print(df.columns[0])
-            self.ax.plot(df[str(df.columns[0])], df[str(df.columns[3])],
-                         color=str(self.plot_color_box.currentText()),
-                         linewidth=float(self.plot_line_w_line.text()))
-            self.ax.spines["right"].set_linewidth(0)
+    def plot(self):
+        fig = plt.figure(figsize=(float(self.width_line.text()),
+                                       float(self.height_line.text())),
+                              dpi=float(self.dpi_line.text()))
+        self.ax = fig.add_subplot(1, 1, 1)
+        self.ax.plot(self.df[str(self.df.columns[0])], self.df[str(self.df.columns[3])],
+                     color=str(self.plot_color_cmbox.currentText()),
+                     linewidth=float(self.plot_line_w_line.text()))
+
+        if self.ax_spines_top_chbox.isChecked():
+            self.ax.spines["top"].set_linewidth(self.ax_line_w_line.text())
+        else:
             self.ax.spines["top"].set_linewidth(0)
-            self.ax.spines["left"].set_linewidth(self.ax_line_w_line.text())
+        if self.ax_spines_bottom_chbox.isChecked():
             self.ax.spines["bottom"].set_linewidth(self.ax_line_w_line.text())
-            self.ax.set_xlabel(str(self.x_label_line.text()),
-                               fontsize=float(self.xy_label_fsize_line.text()),
-                               color="black")
-            self.ax.set_ylabel(str(self.y_label_line.text()),
-                               fontsize=float(self.xy_label_fsize_line.text()),
-                               color="black")
-            self.ax.tick_params(labelsize=str(self.ax_tick_fsize_line.text()), colors="black")
-            fig.tight_layout()
-            plt.show()
+        else:
+            self.ax.spines["bottom"].set_linewidth(0)
+        if self.ax_spines_left_chbox.isChecked():
+            self.ax.spines["left"].set_linewidth(self.ax_line_w_line.text())
+        else:
+            self.ax.spines["left"].set_linewidth(0)
+        if self.ax_spines_right_chbox.isChecked():
+            self.ax.spines["right"].set_linewidth(self.ax_line_w_line.text())
+        else:
+            self.ax.spines["right"].set_linewidth(0)
+
+        self.ax.set_xlabel(str(self.x_label_line.text()),
+                           fontsize=float(self.xy_label_fsize_line.text()),
+                           color="black")
+        self.ax.set_ylabel(str(self.y_label_line.text()),
+                           fontsize=float(self.xy_label_fsize_line.text()),
+                           color="black")
+        self.ax.tick_params(labelsize=str(self.ax_tick_fsize_line.text()), colors="black")
+
+        fig.tight_layout()
+        plt.show()
 
     def on_click_savefig(self):
         self.date = datetime.datetime.today()
@@ -236,6 +273,9 @@ class Ui_MainWindow(object):
         print(self.filename)
         plt.savefig(str(self.save_path_line.text())+str(self.filename))
         print("Saved!!!\n")
+
+    def on_click_replot_figure(self):
+        self.plot()
 
 class DropButton(QPushButton):
 
