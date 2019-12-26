@@ -18,12 +18,13 @@ from PyQt5.QtWidgets import *
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+import datetime
 
 class Ui_MainWindow(object):
     timer: QTimer
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(500, 500)
+        MainWindow.resize(480, 720)
         self.centralWidget = QtWidgets.QWidget(MainWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -31,7 +32,7 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.centralWidget.sizePolicy().hasHeightForWidth())
         self.centralWidget.setSizePolicy(sizePolicy)
         self.centralWidget.setObjectName("centralWidget")
-        self.centralWidget.setStyleSheet("QLabel {font: 13pt Arial}" "QLineEdit {font: 13pt Arial}")
+        self.centralWidget.setStyleSheet("QLabel {font: 12pt Arial}" "QLineEdit {font: 12pt Arial}")
 
         self.layout = QtWidgets.QVBoxLayout()
         self.db = DropButton("CSVファイルをここにかわいくドラッグして下さいね")
@@ -76,7 +77,7 @@ class Ui_MainWindow(object):
         self.height_w = QtWidgets.QWidget()
         self.height_w.setLayout(self.layout_height)
 
-        self.plot_line_w_label = QtWidgets.QLabel("Plot linewidth")
+        self.plot_line_w_label = QtWidgets.QLabel("Plot line-width")
         self.def_plot_line_w = "1"
         self.plot_line_w_line = QtWidgets.QLineEdit(self.def_plot_line_w)
         self.layout_plot_line_w = QtWidgets.QHBoxLayout()
@@ -85,7 +86,19 @@ class Ui_MainWindow(object):
         self.plot_line_w_w = QtWidgets.QWidget()
         self.plot_line_w_w.setLayout(self.layout_plot_line_w)
 
-        self.ax_line_w_label = QtWidgets.QLabel("Axis linewidth")
+        self.plot_color_label = QtWidgets.QLabel("Plot line-color")
+        self.def_plot_color = "red"
+        self.plot_color_box = QtWidgets.QComboBox()
+        self.items = {"black", "blue", "red", "green", "purple", "orange"}
+        self.plot_color_box.addItems(self.items)
+        self.plot_color_box.setCurrentText("black")
+        self.layout_plot_color = QtWidgets.QHBoxLayout()
+        self.layout_plot_color.addWidget(self.plot_color_label)
+        self.layout_plot_color.addWidget(self.plot_color_box)
+        self.plot_color_w = QtWidgets.QWidget()
+        self.plot_color_w.setLayout(self.layout_plot_color)
+
+        self.ax_line_w_label = QtWidgets.QLabel("Axis line-width")
         self.def_ax_line_w = "2"
         self.ax_line_w_line = QtWidgets.QLineEdit(self.def_ax_line_w)
         self.layout_ax_line_w = QtWidgets.QHBoxLayout()
@@ -112,6 +125,15 @@ class Ui_MainWindow(object):
         self.y_label_w = QtWidgets.QWidget()
         self.y_label_w.setLayout(self.layout_y_label)
 
+        self.fig_font_label = QtWidgets.QLabel("Figure font")
+        self.def_fig_font = "Arial"
+        self.fig_font_line = QtWidgets.QLineEdit(self.def_fig_font)
+        self.layout_fig_font = QtWidgets.QHBoxLayout()
+        self.layout_fig_font.addWidget(self.fig_font_label)
+        self.layout_fig_font.addWidget(self.fig_font_line)
+        self.fig_font_w = QtWidgets.QWidget()
+        self.fig_font_w.setLayout(self.layout_fig_font)
+
         self.xy_label_fsize_label = QtWidgets.QLabel("XY label font-size")
         self.def_xy_label_fsize = "5"
         self.xy_label_fsize_line = QtWidgets.QLineEdit(self.def_xy_label_fsize)
@@ -132,7 +154,7 @@ class Ui_MainWindow(object):
 
 
         self.save_path_label = QtWidgets.QLabel("Save path")
-        self.def_save_path = "C:/"
+        self.def_save_path = "Z:/test/"
         self.save_path_line = QtWidgets.QLineEdit(self.def_save_path)
         self.layout_save_path = QtWidgets.QHBoxLayout()
         self.layout_save_path.addWidget(self.save_path_label)
@@ -153,16 +175,16 @@ class Ui_MainWindow(object):
         self.layout.addWidget(self.width_w)
         self.layout.addWidget(self.height_w)
         self.layout.addWidget(self.plot_line_w_w)
+        self.layout.addWidget(self.plot_color_w)
         self.layout.addWidget(self.ax_line_w_w)
         self.layout.addWidget(self.x_label_w)
         self.layout.addWidget(self.y_label_w)
+        self.layout.addWidget(self.fig_font_w)
         self.layout.addWidget(self.xy_label_fsize_w)
         self.layout.addWidget(self.ax_tick_fsize_w)
         self.layout.addWidget(self.save_path_w)
         self.layout.addWidget(self.save_button)
         """
-        self.layout.addWidget()
-        self.layout.addWidget()
         self.layout.addWidget()
         """
         self.centralWidget.setLayout(self.layout)
@@ -184,8 +206,9 @@ class Ui_MainWindow(object):
         if self.db.drop_flg == True:
             self.db.drop_flg = False
             print(self.db.mineData)
-
+            plt.rcParams["font.family"] = str(self.fig_font_line.text())
             df = pd.read_csv(self.db.mineData, skiprows=int(self.skiprows_line.text()))
+            #plt.rcParams["font.family"] = "IPAexGothic"
             fig = plt.figure(figsize=(float(self.width_line.text()),
                                       float(self.height_line.text())),
                              dpi=float(self.dpi_line.text()))
@@ -193,7 +216,7 @@ class Ui_MainWindow(object):
             print(df)
             print(df.columns[0])
             self.ax.plot(df[str(df.columns[0])], df[str(df.columns[3])],
-                         color="black",
+                         color=str(self.plot_color_box.currentText()),
                          linewidth=float(self.plot_line_w_line.text()))
             self.ax.spines["right"].set_linewidth(0)
             self.ax.spines["top"].set_linewidth(0)
@@ -210,7 +233,13 @@ class Ui_MainWindow(object):
             plt.show()
 
     def on_click_savefig(self):
-        print("Saved!!!")
+        self.date = datetime.datetime.today()
+        self.filename = ("fig" + str(self.date.year) + '_' + str(self.date.month) + '_' +
+                         str(self.date.day) + '_' + str(self.date.hour) + '_' + str(self.date.minute) + '_' + str(
+                         self.date.second)+ ".png")
+        print(self.filename)
+        plt.savefig(str(self.save_path_line.text())+str(self.filename))
+        print("Saved!!!\n")
 
 class DropButton(QPushButton):
 
