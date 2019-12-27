@@ -111,90 +111,92 @@ class Ui_MainWindow(object):
         self.plot_line_w_w = QtWidgets.QWidget()
         self.plot_line_w_w.setLayout(self.layout_plot_line_w)
 
+        ### up to 7 plots ###
         self.cl = Color_list()
+        self.plot_color_cmbox = []
+        self.plot_color_cmbox.append(QtWidgets.QComboBox())
+        self.plot_color_cmbox.append(QtWidgets.QComboBox())
+        self.plot_color_cmbox.append(QtWidgets.QComboBox())
+        self.plot_color_cmbox.append(QtWidgets.QComboBox())
+        self.plot_color_cmbox.append(QtWidgets.QComboBox())
+        self.plot_color_cmbox.append(QtWidgets.QComboBox())
+        self.plot_color_cmbox.append(QtWidgets.QComboBox())
+
+        self.plot_color_label = []
+        self.plot_color_label.append(QtWidgets.QLabel("Plot line-color1"))
+        self.plot_color_label.append(QtWidgets.QLabel("Plot line-color2"))
+        self.plot_color_label.append(QtWidgets.QLabel("Plot line-color3"))
+        self.plot_color_label.append(QtWidgets.QLabel("Plot line-color4"))
+        self.plot_color_label.append(QtWidgets.QLabel("Plot line-color5"))
+        self.plot_color_label.append(QtWidgets.QLabel("Plot line-color6"))
+        self.plot_color_label.append(QtWidgets.QLabel("Plot line-color7"))
+        self.def_plot_color = "black"
+        self.items = self.cl.list()
+        self.plot_color_cmbox[0].addItems(self.items)
+        self.plot_color_cmbox[1].addItems(self.items)
+        self.plot_color_cmbox[2].addItems(self.items)
+        self.plot_color_cmbox[3].addItems(self.items)
+        self.plot_color_cmbox[4].addItems(self.items)
+        self.plot_color_cmbox[5].addItems(self.items)
+        self.plot_color_cmbox[6].addItems(self.items)
+        self.plot_color_cmbox[0].setCurrentText(self.def_plot_color)
+        self.plot_color_cmbox[1].setCurrentText(self.def_plot_color)
+        self.plot_color_cmbox[2].setCurrentText(self.def_plot_color)
+        self.plot_color_cmbox[3].setCurrentText(self.def_plot_color)
+        self.plot_color_cmbox[4].setCurrentText(self.def_plot_color)
+        self.plot_color_cmbox[5].setCurrentText(self.def_plot_color)
+        self.plot_color_cmbox[6].setCurrentText(self.def_plot_color)
+        self.layout_plot_color = []
+        self.layout_plot_color.append(QtWidgets.QHBoxLayout())
+        self.layout_plot_color.append(QtWidgets.QHBoxLayout())
+        self.layout_plot_color.append(QtWidgets.QHBoxLayout())
+        self.layout_plot_color.append(QtWidgets.QHBoxLayout())
+        self.layout_plot_color.append(QtWidgets.QHBoxLayout())
+        self.layout_plot_color.append(QtWidgets.QHBoxLayout())
+        self.layout_plot_color.append(QtWidgets.QHBoxLayout())
+        self.layout_plot_color[0].addWidget(self.plot_color_label[0])
+        self.layout_plot_color[0].addWidget(self.plot_color_cmbox[0])
+        self.layout_plot_color[1].addWidget(self.plot_color_label[1])
+        self.layout_plot_color[1].addWidget(self.plot_color_cmbox[1])
+        self.layout_plot_color[2].addWidget(self.plot_color_label[2])
+        self.layout_plot_color[2].addWidget(self.plot_color_cmbox[2])
+        self.layout_plot_color[3].addWidget(self.plot_color_label[3])
+        self.layout_plot_color[3].addWidget(self.plot_color_cmbox[3])
+        self.layout_plot_color[4].addWidget(self.plot_color_label[4])
+        self.layout_plot_color[4].addWidget(self.plot_color_cmbox[4])
+        self.layout_plot_color[5].addWidget(self.plot_color_label[5])
+        self.layout_plot_color[5].addWidget(self.plot_color_cmbox[5])
+        self.layout_plot_color[6].addWidget(self.plot_color_label[6])
+        self.layout_plot_color[6].addWidget(self.plot_color_cmbox[6])
+        self.plot_color_w = []
+        self.plot_color_w.append(QtWidgets.QWidget())
+        self.plot_color_w.append(QtWidgets.QWidget())
+        self.plot_color_w.append(QtWidgets.QWidget())
+        self.plot_color_w.append(QtWidgets.QWidget())
+        self.plot_color_w.append(QtWidgets.QWidget())
+        self.plot_color_w.append(QtWidgets.QWidget())
+        self.plot_color_w.append(QtWidgets.QWidget())
+        self.plot_color_w[0].setLayout(self.layout_plot_color[0])
+        self.plot_color_w[1].setLayout(self.layout_plot_color[1])
+        self.plot_color_w[2].setLayout(self.layout_plot_color[2])
+        self.plot_color_w[3].setLayout(self.layout_plot_color[3])
+        self.plot_color_w[4].setLayout(self.layout_plot_color[4])
+        self.plot_color_w[5].setLayout(self.layout_plot_color[5])
+        self.plot_color_w[6].setLayout(self.layout_plot_color[6])
+
+        """
         self.plot_color1_label = QtWidgets.QLabel("Plot line-color1")
         self.def_plot_color1 = "black"
-        self.plot_color1_cmbox = QtWidgets.QComboBox()
         self.items = self.cl.list()
-        self.plot_color1_cmbox.addItems(self.items)
-        self.plot_color1_cmbox.setCurrentText("black")
+        self.plot_color_cmbox[0].addItems(self.items)
+        self.plot_color_cmbox[0].setCurrentText("black")
         self.layout_plot_color1 = QtWidgets.QHBoxLayout()
         self.layout_plot_color1.addWidget(self.plot_color1_label)
-        self.layout_plot_color1.addWidget(self.plot_color1_cmbox)
+        self.layout_plot_color1.addWidget(self.plot_color_cmbox[0])
         self.plot_color1_w = QtWidgets.QWidget()
         self.plot_color1_w.setLayout(self.layout_plot_color1)
-
-        self.plot_color2_label = QtWidgets.QLabel("Plot line-color2")
-        self.def_plot_color2 = "black"
-        self.plot_color2_cmbox = QtWidgets.QComboBox()
-        self.items = self.cl.list()
-        self.plot_color2_cmbox.addItems(self.items)
-        self.plot_color2_cmbox.setCurrentText("black")
-        self.layout_plot_color2 = QtWidgets.QHBoxLayout()
-        self.layout_plot_color2.addWidget(self.plot_color2_label)
-        self.layout_plot_color2.addWidget(self.plot_color2_cmbox)
-        self.plot_color2_w = QtWidgets.QWidget()
-        self.plot_color2_w.setLayout(self.layout_plot_color2)
-
-        self.plot_color3_label = QtWidgets.QLabel("Plot line-color3")
-        self.def_plot_color3 = "black"
-        self.plot_color3_cmbox = QtWidgets.QComboBox()
-        self.items = self.cl.list()
-        self.plot_color3_cmbox.addItems(self.items)
-        self.plot_color3_cmbox.setCurrentText("black")
-        self.layout_plot_color3 = QtWidgets.QHBoxLayout()
-        self.layout_plot_color3.addWidget(self.plot_color3_label)
-        self.layout_plot_color3.addWidget(self.plot_color3_cmbox)
-        self.plot_color3_w = QtWidgets.QWidget()
-        self.plot_color3_w.setLayout(self.layout_plot_color3)
-
-        self.plot_color4_label = QtWidgets.QLabel("Plot line-color4")
-        self.def_plot_color4 = "black"
-        self.plot_color4_cmbox = QtWidgets.QComboBox()
-        self.items = self.cl.list()
-        self.plot_color4_cmbox.addItems(self.items)
-        self.plot_color4_cmbox.setCurrentText("black")
-        self.layout_plot_color4 = QtWidgets.QHBoxLayout()
-        self.layout_plot_color4.addWidget(self.plot_color4_label)
-        self.layout_plot_color4.addWidget(self.plot_color4_cmbox)
-        self.plot_color4_w = QtWidgets.QWidget()
-        self.plot_color4_w.setLayout(self.layout_plot_color4)
-
-        self.plot_color5_label = QtWidgets.QLabel("Plot line-color5")
-        self.def_plot_color5 = "black"
-        self.plot_color5_cmbox = QtWidgets.QComboBox()
-        self.items = self.cl.list()
-        self.plot_color5_cmbox.addItems(self.items)
-        self.plot_color5_cmbox.setCurrentText("black")
-        self.layout_plot_color5 = QtWidgets.QHBoxLayout()
-        self.layout_plot_color5.addWidget(self.plot_color5_label)
-        self.layout_plot_color5.addWidget(self.plot_color5_cmbox)
-        self.plot_color5_w = QtWidgets.QWidget()
-        self.plot_color5_w.setLayout(self.layout_plot_color5)
-
-        self.plot_color6_label = QtWidgets.QLabel("Plot line-color6")
-        self.def_plot_color6 = "black"
-        self.plot_color6_cmbox = QtWidgets.QComboBox()
-        self.items = self.cl.list()
-        self.plot_color6_cmbox.addItems(self.items)
-        self.plot_color6_cmbox.setCurrentText("black")
-        self.layout_plot_color6 = QtWidgets.QHBoxLayout()
-        self.layout_plot_color6.addWidget(self.plot_color6_label)
-        self.layout_plot_color6.addWidget(self.plot_color6_cmbox)
-        self.plot_color6_w = QtWidgets.QWidget()
-        self.plot_color6_w.setLayout(self.layout_plot_color6)
-
-        self.plot_color7_label = QtWidgets.QLabel("Plot line-color7")
-        self.def_plot_color7 = "black"
-        self.plot_color7_cmbox = QtWidgets.QComboBox()
-        self.items = self.cl.list()
-        self.plot_color7_cmbox.addItems(self.items)
-        self.plot_color7_cmbox.setCurrentText("black")
-        self.layout_plot_color7 = QtWidgets.QHBoxLayout()
-        self.layout_plot_color7.addWidget(self.plot_color7_label)
-        self.layout_plot_color7.addWidget(self.plot_color7_cmbox)
-        self.plot_color7_w = QtWidgets.QWidget()
-        self.plot_color7_w.setLayout(self.layout_plot_color7)
+        """
+        #####################
 
         self.ax_line_w_label = QtWidgets.QLabel("Axis line-width")
         self.def_ax_line_w = "2"
@@ -360,13 +362,13 @@ class Ui_MainWindow(object):
         self.scroll_layout.addWidget(self.width_w)
         self.scroll_layout.addWidget(self.height_w)
         self.scroll_layout.addWidget(self.plot_line_w_w)
-        self.scroll_layout.addWidget(self.plot_color1_w)
-        self.scroll_layout.addWidget(self.plot_color2_w)
-        self.scroll_layout.addWidget(self.plot_color3_w)
-        self.scroll_layout.addWidget(self.plot_color4_w)
-        self.scroll_layout.addWidget(self.plot_color5_w)
-        self.scroll_layout.addWidget(self.plot_color6_w)
-        self.scroll_layout.addWidget(self.plot_color7_w)
+        self.scroll_layout.addWidget(self.plot_color_w[0])
+        self.scroll_layout.addWidget(self.plot_color_w[1])
+        self.scroll_layout.addWidget(self.plot_color_w[2])
+        self.scroll_layout.addWidget(self.plot_color_w[3])
+        self.scroll_layout.addWidget(self.plot_color_w[4])
+        self.scroll_layout.addWidget(self.plot_color_w[5])
+        self.scroll_layout.addWidget(self.plot_color_w[6])
         self.scroll_layout.addWidget(self.ax_line_w_w)
         self.scroll_layout.addWidget(self.ax_spines_w)
         self.scroll_layout.addWidget(self.x_label_w)
@@ -414,10 +416,11 @@ class Ui_MainWindow(object):
         self.selected_xrow = self.xrow_line.text()
         self.selected_yrow = [x.strip() for x in self.yrow_line.text().split(',')]
 
-        self.ax.plot(self.df[str(self.df.columns[int(self.selected_xrow)])],
-                     self.df[str(self.df.columns[int(self.selected_yrow[0])])],
-                     color=str(self.plot_color_cmbox.currentText()),
-                     linewidth=float(self.plot_line_w_line.text()))
+        for i in range(len(self.selected_yrow)):
+            self.ax.plot(self.df[str(self.df.columns[int(self.selected_xrow)])],
+                         self.df[str(self.df.columns[int(self.selected_yrow[i])])],
+                         color=str(self.plot_color_cmbox[i].currentText()),
+                         linewidth=float(self.plot_line_w_line.text()))
 
         if self.ax_spines_top_chbox.isChecked():
             self.ax.spines["top"].set_linewidth(self.ax_line_w_line.text())
