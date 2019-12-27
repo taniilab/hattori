@@ -334,22 +334,30 @@ class Ui_MainWindow(object):
         fig.tight_layout()
         plt.show()
 
-    def save_profile(self,cfg_path):
-        data = np.zeros(8, dtype=int)
-        data[0] = self.stim_waveform_line.text()
-        data[1] = self.stim_com_line.text()
-        data[2] = self.stim_amp_line.text()
-        data[3] = self.stim_count_line.text()
-        data[4] = self.stim_deltaV_line.text()
-        data[5] = self.stim_interval_line.text()
-        data[6] = self.stim_firststimulation_line.text()
-        data[7] = self.stim_secondstimulation_line.text()
-        data2 = []
-        data2.append(self.save_path_line.text())
+    def save_profile(self, cfg_path):
+        data = []
+        data.append(int(self.skiprows_line.text()))
+        data.append(int(self.dpi_line.text()))
+        data.append(float(self.width_line.text()))
+        data.append(float(self.height_line.text()))
+        data.append(float(self.plot_line_w_line.text()))
+        data.append(str(self.plot_color_cmbox.currentText()))
+        data.append(float(self.ax_line_w_line.text()))
+        data.append(int(self.ax_spines_top_chbox.isChecked()))
+        data.append(int(self.ax_spines_bottom_chbox.isChecked()))
+        data.append(int(self.ax_spines_left_chbox.isChecked()))
+        data.append(int(self.ax_spines_right_chbox.isChecked()))
+        data.append(str(self.x_label_line.text()))
+        data.append(str(self.y_label_line.text()))
+        data.append(str(self.fig_font_line.text()))
+        data.append(int(self.xy_label_fsize_line.text()))
+        data.append(int(self.ax_tick_fsize_line.text()))
+        data.append(str(self.save_path_line.text()))
         with open(cfg_path, 'w', newline="") as f:
             writer = csv.writer(f)
             writer.writerow(data)
-            writer.writerow(data2)
+            print(data)
+            print("Setting saved\n")
         return
 
     def load_profile(self,cfg_path):
@@ -359,22 +367,31 @@ class Ui_MainWindow(object):
         with open(cfg_path,'r') as f:
             reader = csv.reader(f)
             l = [row for row in reader]
-            self.stim_waveform_line.setText(l[0][0])
-            self.stim_com_line.setText(l[0][1])
-            self.stim_amp_line.setText(l[0][2])
-            self.stim_count_line.setText(l[0][3])
-            self.stim_deltaV_line.setText(l[0][4])
-            self.stim_interval_line.setText(l[0][5])
-            self.stim_firststimulation_line.setText(l[0][6])
-            self.stim_secondstimulation_line.setText(l[0][7])
-            self.save_path_line.setText(l[1][0])
-
+            self.skiprows_line.setText(str(l[0][0]))
+            self.dpi_line.setText(str(l[0][1]))
+            self.width_line.setText(str(l[0][2]))
+            self.height_line.setText(str(l[0][3]))
+            self.plot_line_w_line.setText(str(l[0][4]))
+            self.plot_color_cmbox.setCurrentText(str(l[0][5]))
+            self.ax_line_w_line.setText(str(l[0][6]))
+            self.ax_spines_top_chbox.setChecked(bool(l[0][7]))
+            self.ax_spines_bottom_chbox.setChecked(bool(l[0][8]))
+            self.ax_spines_left_chbox.setChecked(bool(l[0][9]))
+            self.ax_spines_right_chbox.setChecked(bool(l[0][10]))
+            self.x_label_line.setText(str(l[0][11]))
+            self.y_label_line.setText(str(l[0][12]))
+            self.fig_font_line.setText(str(l[0][13]))
+            self.xy_label_fsize_line.setText(str(l[0][14]))
+            self.ax_tick_fsize_line.setText(str(l[0][15]))
+            self.save_path_line.setText(str(l[0][16]))
+            print(l)
+            print("Setting loaded\n")
         return
 
-    def save_previous(self):
+    def save_previous_setting(self):
         self.save_profile(os.getcwd()+'/previous.cfg')
 
-    def load_previous(self):
+    def load_previous_setting(self):
         self.load_profile(os.getcwd()+'/previous.cfg')
 
     def save_setting1(self):
