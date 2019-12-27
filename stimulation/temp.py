@@ -11,9 +11,12 @@ multicellular plotting.
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTimer
-from PyQt5.QtGui import QIcon
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5 import NavigationToolbar2QT as NavigationToolbar
+from matplotlib.figure import Figure
 import numpy as np
 import serial
+from time import sleep
 import pandas as pd
 import datetime
 import pyautogui as pag
@@ -23,6 +26,7 @@ from pyqtgraph.Qt import QtGui, QtCore
 import os
 import time
 import csv
+import shutil
 
 class Ui_MainWindow(object):
     timer: QTimer
@@ -37,10 +41,9 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.centralWidget.sizePolicy().hasHeightForWidth())
         self.centralWidget.setSizePolicy(sizePolicy)
         self.centralWidget.setObjectName("centralWidget")
-        self.centralWidget.setStyleSheet("QLabel {font: 13pt Arial}" "QLineEdit {font: 13pt Arial}")
 
         self.splitter = QtWidgets.QSplitter(self.centralWidget)
-        #self.splitter.setGeometry(QtCore.QRect(0, 0, 1481, 941))
+        self.splitter.setGeometry(QtCore.QRect(0, 0, 1481, 941))
         self.splitter.setOrientation(QtCore.Qt.Horizontal)
         self.splitter.setObjectName("splitter")
 
@@ -194,7 +197,7 @@ class Ui_MainWindow(object):
         self.load_button = QtWidgets.QWidget()
         self.load_button.setLayout(self.layout_load)
 
-        self.stim_button = QtWidgets.QPushButton('Manual Stimulate')
+        self.stim_button = QtWidgets.QPushButton('Manual Stimulate(機能停止中)')
         self.bfont = self.stim_button.font()
         self.bfont.setPointSizeF(20)
         self.stim_button.setFont(self.bfont)
@@ -256,7 +259,6 @@ class Ui_MainWindow(object):
         layout_main.addWidget(self.splitter)
         self.centralWidget.setLayout(layout_main)
 
-
         # glaph setting
         self.pixel_pitch = 10
         self.x, self.y = 1000, 1000  # plot position
@@ -315,11 +317,9 @@ class Ui_MainWindow(object):
         self.timer_FG_init = QtCore.QTimer()
         self.timer_FG_init.timeout.connect(self.FG_initialization)
 
-        # Splitter size adjustment
-        self.splitter.setStretchFactor(0, 2)
-        self.splitter.setStretchFactor(1, 8)
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(1)
+        self.load_previous()
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
 
@@ -334,7 +334,7 @@ class Ui_MainWindow(object):
             self.send_command("WMW" + self.stim_waveform_line.text() + "\n")# WMW34 -> arbitary wave 1
             self.FG_init_state += 1
         elif self.FG_init_state == 3:
-            self.send_command("WMO" + self.stim_offset_line.text() + "\n")# offset 0 V
+            self.send_command("WMO" + self.stim_offset_line.text() +"\n")# offset 0 V
             self.FG_init_state += 1
         elif self.FG_init_state == 4:
             self.send_command("WMN1" + "\n")# output on
@@ -377,6 +377,7 @@ class Ui_MainWindow(object):
 
     def on_click_start(self):
         if self.ms_start_flag == False:
+            self.save_previous()
             print("Starting...")
             self.date = datetime.datetime.today()
             self.save_path = self.save_path_line.text()
@@ -489,7 +490,7 @@ class Ui_MainWindow(object):
             if self.stim_counter != 0:
                 self.amplitude += round(float(self.stim_deltaV_line.text()), 1)
             self.stim_counter += 1
-            self.stim_for_csv = 255
+            self.stim_for_csv = self.amplitude
             self.send_command("WMA" + str(self.amplitude) + "\n")
             # visualize
             self.vline = pg.InfiniteLine(angle=90, movable=False)
@@ -499,7 +500,7 @@ class Ui_MainWindow(object):
 
     def stimulate_interval_fix(self):
         # 5秒以上の刺激に対応する.
-        # 刺激導入後200秒後に呼び出され、amplitudeをリセットする
+        # 刺激導入後200ミリ秒後に呼び出され、amplitudeをリセットする
         self.send_command("WMA0\n")
         self.timer_stim_reset.stop()
 
@@ -558,12 +559,18 @@ class Ui_MainWindow(object):
         df = pd.DataFrame(columns=[self.tm, self.stim_for_csv, self.gray])
 
         # Auto Stimulation System
+
+        self.stim_interval = int(self.stim_interval_line.text())
+        self.stim_firststimulation = int(self.stim_firststimulation_line.text())
+        self.stim_secondstimulation = int(self.stim_secondstimulation_line.text())
+
         if (self.first_stim_flag == False and self.ms_start_flag == True and time.time() - self.start_time > self.stim_firststimulation):
             print("Auto Stimulation System starts...[FIRST STIMULATION]")
             print("Interval of Stimulation:" + str(self.stim_interval) + "seconds")
             print("Start time of Stimulation:" + str(self.stim_firststimulation) + "seconds")
             self.first_stim_flag = True
-            self.stim_amp = self.stim_amp_line.text()
+            #self.stim_amp = self.stim_amp_line.text()
+            self.amplitude = float(self.stim_amp_line.text())
             self.timer_stim.start(self.stim_interval*1000)  # 5s
             self.stim_button.setStyleSheet("background-color: rgb(100,230,180)")
             self.stim_button.setText("Stimulating ...")
@@ -573,7 +580,8 @@ class Ui_MainWindow(object):
             print("Interval of Stimulation:" + str(self.stim_interval) + "seconds")
             print("Start time of Stimulation:" + str(self.stim_secondstimulation) + "seconds")
             self.second_stim_flag = True
-            self.stim_amp = self.stim_amp_line.text()
+            #self.stim_amp = self.stim_amp_line.text()
+            self.amplitude = float(self.stim_amp_line.text())
             self.timer_stim.start(self.stim_interval*1000)  # 5s
             self.stim_button.setStyleSheet("background-color: rgb(100,230,180)")
             self.stim_button.setText("Stimulating ...")
@@ -596,8 +604,7 @@ class Ui_MainWindow(object):
         else:
             df.to_csv(self.save_path + self.filename, mode="a")
 
-        if self.stim_for_csv == 255:
-            self.stim_for_csv = 0
+        self.stim_for_csv = 0
 
 
     def plot_position(self):
@@ -610,7 +617,6 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Fluorescence Plotter"))
-        MainWindow.setWindowIcon(QIcon('maria.png'))
         self.treeWidget.headerItem().setText(0, _translate("MainWindow", "R"))
         self.treeWidget.headerItem().setText(1, _translate("MainWindow", "G"))
         self.treeWidget.headerItem().setText(2, _translate("MainWindow", "B"))

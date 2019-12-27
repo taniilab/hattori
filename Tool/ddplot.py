@@ -31,7 +31,7 @@ class Ui_MainWindow(object):
                                          "QLineEdit {font: 12pt Arial}")
 
         self.layout = QtWidgets.QVBoxLayout()
-        self.db = DropButton("ここにCSVファイルをかわいくドラッグして下さいね")
+        self.db = DropButton("ここにCSVファイルをドラッグして下さい")
         self.db.setStyleSheet("QPushButton{font-size: 30px;"
                               "font-family: MS Sans Serif;"
                               "color: rgb(255, 255, 255);"
