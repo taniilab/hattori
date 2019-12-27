@@ -27,7 +27,7 @@ class Ui_MainWindow(object):
     timer: QTimer
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(480, 720)
+        MainWindow.resize(640, 960)
         self.centralWidget = QtWidgets.QWidget(MainWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -47,6 +47,8 @@ class Ui_MainWindow(object):
                               "color: rgb(255, 255, 255);"
                               "background-color: rgb(204, 102, 102);}")
 
+
+
         self.skiprows_label = QtWidgets.QLabel("Skip rows")
         self.def_skiprows = "0"
         self.skiprows_line = QtWidgets.QLineEdit(self.def_skiprows)
@@ -55,6 +57,24 @@ class Ui_MainWindow(object):
         self.layout_skiprows.addWidget(self.skiprows_line)
         self.skiprows_w = QtWidgets.QWidget()
         self.skiprows_w.setLayout(self.layout_skiprows)
+
+        self.xrow_label = QtWidgets.QLabel("X row (default → 0th)")
+        self.def_xrow = "0"
+        self.xrow_line = QtWidgets.QLineEdit(self.def_xrow)
+        self.layout_xrow = QtWidgets.QHBoxLayout()
+        self.layout_xrow.addWidget(self.xrow_label)
+        self.layout_xrow.addWidget(self.xrow_line)
+        self.xrow_w = QtWidgets.QWidget()
+        self.xrow_w.setLayout(self.layout_xrow)
+
+        self.yrow_label = QtWidgets.QLabel("Y row (if 1st and 2nd row → 1,2)")
+        self.def_yrow = "1, 2"
+        self.yrow_line = QtWidgets.QLineEdit(self.def_yrow)
+        self.layout_yrow = QtWidgets.QHBoxLayout()
+        self.layout_yrow.addWidget(self.yrow_label)
+        self.layout_yrow.addWidget(self.yrow_line)
+        self.yrow_w = QtWidgets.QWidget()
+        self.yrow_w.setLayout(self.layout_yrow)
 
         self.dpi_label = QtWidgets.QLabel("DPI")
         self.def_dpi = "600"
@@ -252,28 +272,37 @@ class Ui_MainWindow(object):
         self.load_setting_button_w.setLayout(self.layout_load_setting)
 
         self.layout.addWidget(self.db)
-        self.layout.addWidget(self.skiprows_w)
-        self.layout.addWidget(self.dpi_w)
-        self.layout.addWidget(self.width_w)
-        self.layout.addWidget(self.height_w)
-        self.layout.addWidget(self.plot_line_w_w)
-        self.layout.addWidget(self.plot_color_w)
-        self.layout.addWidget(self.ax_line_w_w)
-        self.layout.addWidget(self.ax_spines_w)
-        self.layout.addWidget(self.x_label_w)
-        self.layout.addWidget(self.y_label_w)
-        self.layout.addWidget(self.fig_font_w)
-        self.layout.addWidget(self.xy_label_fsize_w)
-        self.layout.addWidget(self.ax_tick_fsize_w)
-        self.layout.addWidget(self.save_path_w)
+        self.parameter_setting_area = QtWidgets.QScrollArea()
+        self.scroll_layout = QtWidgets.QVBoxLayout()
+        self.inner = QtWidgets.QWidget()
+        self.parameter_setting_area.setWidgetResizable(True)
+        self.parameter_setting_area.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        self.parameter_setting_area.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        self.inner.setLayout(self.scroll_layout)
+        self.parameter_setting_area.setWidget(self.inner)
+        self.layout.addWidget(self.parameter_setting_area)
+        self.scroll_layout.addWidget(self.skiprows_w)
+        self.scroll_layout.addWidget(self.xrow_w)
+        self.scroll_layout.addWidget(self.yrow_w)
+        self.scroll_layout.addWidget(self.dpi_w)
+        self.scroll_layout.addWidget(self.width_w)
+        self.scroll_layout.addWidget(self.height_w)
+        self.scroll_layout.addWidget(self.plot_line_w_w)
+        self.scroll_layout.addWidget(self.plot_color_w)
+        self.scroll_layout.addWidget(self.ax_line_w_w)
+        self.scroll_layout.addWidget(self.ax_spines_w)
+        self.scroll_layout.addWidget(self.x_label_w)
+        self.scroll_layout.addWidget(self.y_label_w)
+        self.scroll_layout.addWidget(self.fig_font_w)
+        self.scroll_layout.addWidget(self.xy_label_fsize_w)
+        self.scroll_layout.addWidget(self.ax_tick_fsize_w)
+        self.scroll_layout.addWidget(self.save_path_w)
         self.layout.addWidget(self.replot_button)
         self.layout.addWidget(self.save_button)
         self.layout.addWidget(self.save_setting_label)
         self.layout.addWidget(self.save_setting_button_w)
         self.layout.addWidget(self.load_setting_button_w)
-        """
-        self.layout.addWidget()
-        """
+
         self.centralWidget.setLayout(self.layout)
         MainWindow.setCentralWidget(self.centralWidget)
 
@@ -302,7 +331,13 @@ class Ui_MainWindow(object):
                                        float(self.height_line.text())),
                               dpi=float(self.dpi_line.text()))
         self.ax = fig.add_subplot(1, 1, 1)
-        self.ax.plot(self.df[str(self.df.columns[0])], self.df[str(self.df.columns[3])],
+        print(self.xrow_line.text())
+        print(type(self.xrow_line.text()))
+        self.selected_xrow = self.xrow_line.text()
+        self.selected_yrow = [x.strip() for x in self.yrow_line.text().split(',')]
+
+        self.ax.plot(self.df[str(self.df.columns[int(self.selected_xrow)])],
+                     self.df[str(self.df.columns[int(self.selected_yrow[0])])],
                      color=str(self.plot_color_cmbox.currentText()),
                      linewidth=float(self.plot_line_w_line.text()))
 
