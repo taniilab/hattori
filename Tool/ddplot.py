@@ -2,6 +2,15 @@
 # CAWAII Plotter
 # programmed by Kouhei Hattoriof Waseda University
 
+"""
+実装予定の機能
+・軸選択
+・二軸
+・刺激
+・複数プロット
+・設定保存
+"""
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QIcon
@@ -12,6 +21,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import datetime
+import csv
 
 class Ui_MainWindow(object):
     timer: QTimer
@@ -31,7 +41,7 @@ class Ui_MainWindow(object):
                                          "QLineEdit {font: 12pt Arial}")
 
         self.layout = QtWidgets.QVBoxLayout()
-        self.db = DropButton("ここにCSVファイルをドラッグして下さい")
+        self.db = DropButton("ここにCSVファイルをかわいくドラッグして下さいね")
         self.db.setStyleSheet("QPushButton{font-size: 30px;"
                               "font-family: MS Sans Serif;"
                               "color: rgb(255, 255, 255);"
@@ -182,8 +192,64 @@ class Ui_MainWindow(object):
         self.save_button.setStyleSheet("QPushButton{font-size: 30px;"
                                        "font-family: MS Sans Serif;"
                                        "color: rgb(255, 255, 255);"
-                                       "background-color: rgb(65, 65, 65);}")
+                                       "background-color: rgb(204, 102, 102);}")
         self.save_button.clicked.connect(self.on_click_savefig)
+
+        self.save_setting_label = QtWidgets.QLabel("Settings")
+        self.save_setting_label.setStyleSheet("QLabel{font-size: 30px;"
+                                         "font-family: MS Sans Serif;"
+                                         "color: rgb(0, 0, 0);"
+                                         "font-weight: bold;}")
+
+        self.save_setting1_button = QtWidgets.QPushButton('Save1')
+        self.save_setting1_button.setStyleSheet("QPushButton{font-size: 30px;"
+                                         "font-family: MS Sans Serif;"
+                                         "color: rgb(255, 255, 255);"
+                                         "background-color: rgb(65, 65, 65);}")
+        self.save_setting1_button.clicked.connect(self.save_setting1)
+        self.save_setting2_button = QtWidgets.QPushButton('Save2')
+        self.save_setting2_button.setStyleSheet("QPushButton{font-size: 30px;"
+                                         "font-family: MS Sans Serif;"
+                                         "color: rgb(255, 255, 255);"
+                                         "background-color: rgb(65, 65, 65);}")
+        self.save_setting2_button.clicked.connect(self.save_setting2)
+        self.save_setting3_button = QtWidgets.QPushButton('Save3')
+        self.save_setting3_button.setStyleSheet("QPushButton{font-size: 30px;"
+                                         "font-family: MS Sans Serif;"
+                                         "color: rgb(255, 255, 255);"
+                                         "background-color: rgb(65, 65, 65);}")
+        self.save_setting3_button.clicked.connect(self.save_setting3)
+        self.layout_save_setting = QtWidgets.QHBoxLayout()
+        self.layout_save_setting.addWidget(self.save_setting1_button)
+        self.layout_save_setting.addWidget(self.save_setting2_button)
+        self.layout_save_setting.addWidget(self.save_setting3_button)
+        self.save_setting_button_w = QtWidgets.QWidget()
+        self.save_setting_button_w.setLayout(self.layout_save_setting)
+
+        self.load_setting1_button = QtWidgets.QPushButton('Load1')
+        self.load_setting1_button.setStyleSheet("QPushButton{font-size: 30px;"
+                                         "font-family: MS Sans Serif;"
+                                         "color: rgb(255, 255, 255);"
+                                         "background-color: rgb(65, 65, 65);}")
+        self.load_setting1_button.clicked.connect(self.load_setting1)
+        self.load_setting2_button = QtWidgets.QPushButton('Load2')
+        self.load_setting2_button.setStyleSheet("QPushButton{font-size: 30px;"
+                                         "font-family: MS Sans Serif;"
+                                         "color: rgb(255, 255, 255);"
+                                         "background-color: rgb(65, 65, 65);}")
+        self.load_setting2_button.clicked.connect(self.load_setting2)
+        self.load_setting3_button = QtWidgets.QPushButton('Load3')
+        self.load_setting3_button.setStyleSheet("QPushButton{font-size: 30px;"
+                                         "font-family: MS Sans Serif;"
+                                         "color: rgb(255, 255, 255);"
+                                         "background-color: rgb(65, 65, 65);}")
+        self.load_setting3_button.clicked.connect(self.load_setting3)
+        self.layout_load_setting = QtWidgets.QHBoxLayout()
+        self.layout_load_setting.addWidget(self.load_setting1_button)
+        self.layout_load_setting.addWidget(self.load_setting2_button)
+        self.layout_load_setting.addWidget(self.load_setting3_button)
+        self.load_setting_button_w = QtWidgets.QWidget()
+        self.load_setting_button_w.setLayout(self.layout_load_setting)
 
         self.layout.addWidget(self.db)
         self.layout.addWidget(self.skiprows_w)
@@ -202,6 +268,9 @@ class Ui_MainWindow(object):
         self.layout.addWidget(self.save_path_w)
         self.layout.addWidget(self.replot_button)
         self.layout.addWidget(self.save_button)
+        self.layout.addWidget(self.save_setting_label)
+        self.layout.addWidget(self.save_setting_button_w)
+        self.layout.addWidget(self.load_setting_button_w)
         """
         self.layout.addWidget()
         """
@@ -264,6 +333,67 @@ class Ui_MainWindow(object):
 
         fig.tight_layout()
         plt.show()
+
+    def save_profile(self,cfg_path):
+        data = np.zeros(8, dtype=int)
+        data[0] = self.stim_waveform_line.text()
+        data[1] = self.stim_com_line.text()
+        data[2] = self.stim_amp_line.text()
+        data[3] = self.stim_count_line.text()
+        data[4] = self.stim_deltaV_line.text()
+        data[5] = self.stim_interval_line.text()
+        data[6] = self.stim_firststimulation_line.text()
+        data[7] = self.stim_secondstimulation_line.text()
+        data2 = []
+        data2.append(self.save_path_line.text())
+        with open(cfg_path, 'w', newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow(data)
+            writer.writerow(data2)
+        return
+
+    def load_profile(self,cfg_path):
+        if not os.path.isfile(cfg_path):
+            print("not exist")
+            return
+        with open(cfg_path,'r') as f:
+            reader = csv.reader(f)
+            l = [row for row in reader]
+            self.stim_waveform_line.setText(l[0][0])
+            self.stim_com_line.setText(l[0][1])
+            self.stim_amp_line.setText(l[0][2])
+            self.stim_count_line.setText(l[0][3])
+            self.stim_deltaV_line.setText(l[0][4])
+            self.stim_interval_line.setText(l[0][5])
+            self.stim_firststimulation_line.setText(l[0][6])
+            self.stim_secondstimulation_line.setText(l[0][7])
+            self.save_path_line.setText(l[1][0])
+
+        return
+
+    def save_previous(self):
+        self.save_profile(os.getcwd()+'/previous.cfg')
+
+    def load_previous(self):
+        self.load_profile(os.getcwd()+'/previous.cfg')
+
+    def save_setting1(self):
+        self.save_profile(os.getcwd()+'/save1.cfg')
+
+    def load_setting1(self):
+        self.load_profile(os.getcwd() + '/save1.cfg')
+
+    def save_setting2(self):
+        self.save_profile(os.getcwd() + '/save2.cfg')
+
+    def load_setting2(self):
+        self.load_profile(os.getcwd() + '/save2.cfg')
+
+    def save_setting3(self):
+        self.save_profile(os.getcwd() + '/save3.cfg')
+
+    def load_setting3(self):
+        self.load_profile(os.getcwd() + '/save3.cfg')
 
     def on_click_savefig(self):
         self.date = datetime.datetime.today()
