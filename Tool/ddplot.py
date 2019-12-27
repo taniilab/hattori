@@ -9,7 +9,6 @@
 ・刺激
 ・複数プロット
 """
-
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QIcon
