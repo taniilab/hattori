@@ -1,15 +1,10 @@
 # -*- coding: utf-8 -*-
 # CAWAII Plotter
-# programmed by Kouhei Hattoriof Waseda University
+# programmed by Kouhei Hattori of Waseda University
 
 """
-実装予定の機能
-・軸選択
-・二軸
-・刺激
-・複数プロット
-・時間　係数
-・保存パスないとき
+今後実装予定(時期未定)の機能
+・二軸プロット
 """
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTimer
@@ -36,13 +31,13 @@ class Ui_MainWindow(object):
         self.centralWidget.setSizePolicy(sizePolicy)
         self.centralWidget.setObjectName("centralWidget")
         self.centralWidget.setStyleSheet("QLabel {font: 12pt Arial}"
-                                         "QComboBox {font: 12pt Arial}"
-                                         "QCheckBox {font: 12pt Arial}"
-                                         "QLineEdit {font: 12pt Arial}")
+                                         "QComboBox {font: 12pt Arial; font-weight: bold}"
+                                         "QCheckBox {font: 12pt Arial; font-weight: bold}"
+                                         "QLineEdit {font: 12pt Arial; font-weight: bold}")
 
         self.layout = QtWidgets.QVBoxLayout()
-        self.db = DropButton("ここにCSVファイルをかわいくドラッグして下さいね")
-        self.db.setStyleSheet("QPushButton{font-size: 30px;"
+        self.dd_button = DropButton("ここにCSVファイルをかわいくドラッグして下さいね")
+        self.dd_button.setStyleSheet("QPushButton{font-size: 30px;"
                               "font-family: MS Sans Serif;"
                               "color: rgb(255, 255, 255);"
                               "background-color: rgb(204, 102, 102);}")
@@ -67,7 +62,7 @@ class Ui_MainWindow(object):
         self.xrow_w = QtWidgets.QWidget()
         self.xrow_w.setLayout(self.layout_xrow)
 
-        self.yrow_label = QtWidgets.QLabel("Y row (if 1st and 2nd row → 1,2)")
+        self.yrow_label = QtWidgets.QLabel("Y row (up to 6 rows)")
         self.def_yrow = "1, 2"
         self.yrow_line = QtWidgets.QLineEdit(self.def_yrow)
         self.layout_yrow = QtWidgets.QHBoxLayout()
@@ -75,6 +70,36 @@ class Ui_MainWindow(object):
         self.layout_yrow.addWidget(self.yrow_line)
         self.yrow_w = QtWidgets.QWidget()
         self.yrow_w.setLayout(self.layout_yrow)
+
+        self.xcoefficient_label = QtWidgets.QLabel("Coefficient (X)")
+        self.def_xcoefficient = "1"
+        self.ycoefficient_label = QtWidgets.QLabel("Coefficient (Y)")
+        self.def_ycoefficient = "1"
+        self.ycoefficient_line = QtWidgets.QLineEdit(self.def_ycoefficient)
+        self.xcoefficient_line = QtWidgets.QLineEdit(self.def_xcoefficient)
+        self.layout_coefficient = QtWidgets.QHBoxLayout()
+        self.layout_coefficient.addWidget(self.xcoefficient_label)
+        self.layout_coefficient.addWidget(self.xcoefficient_line)
+        self.layout_coefficient.addWidget(self.ycoefficient_label)
+        self.layout_coefficient.addWidget(self.ycoefficient_line)
+        self.coefficient_w = QtWidgets.QWidget()
+        self.coefficient_w.setLayout(self.layout_coefficient)
+
+        self.stimtiming_label = QtWidgets.QLabel("Stimulation timing [s]")
+        self.def_stimtiming = ""
+        self.stimtiming_line = QtWidgets.QLineEdit(self.def_stimtiming)
+        self.dd_stimtiming_button = DropButton("CSVファイル(刺激タイミング)")
+        self.dd_stimtiming_button.setStyleSheet("QPushButton{font-size: 15px;"
+                                                "font-weight: bold;"
+                                                "font-family: MS Sans Serif;"
+                                                "color: rgb(255, 255, 255);"
+                                                "background-color: rgb(204, 102, 102);}")
+        self.layout_stimtiming = QtWidgets.QHBoxLayout()
+        self.layout_stimtiming.addWidget(self.stimtiming_label)
+        self.layout_stimtiming.addWidget(self.stimtiming_line)
+        self.layout_stimtiming.addWidget(self.dd_stimtiming_button)
+        self.stimtiming_w = QtWidgets.QWidget()
+        self.stimtiming_w.setLayout(self.layout_stimtiming)
 
         self.dpi_label = QtWidgets.QLabel("DPI")
         self.def_dpi = "600"
@@ -87,21 +112,17 @@ class Ui_MainWindow(object):
 
         self.width_label = QtWidgets.QLabel("Width [inch]")
         self.def_width = "3"
-        self.width_line = QtWidgets.QLineEdit(self.def_width)
-        self.layout_width = QtWidgets.QHBoxLayout()
-        self.layout_width.addWidget(self.width_label)
-        self.layout_width.addWidget(self.width_line)
-        self.width_w = QtWidgets.QWidget()
-        self.width_w.setLayout(self.layout_width)
-
         self.height_label = QtWidgets.QLabel("Height [inch]")
         self.def_height = "2"
+        self.width_line = QtWidgets.QLineEdit(self.def_width)
         self.height_line = QtWidgets.QLineEdit(self.def_height)
-        self.layout_height = QtWidgets.QHBoxLayout()
-        self.layout_height.addWidget(self.height_label)
-        self.layout_height.addWidget(self.height_line)
-        self.height_w = QtWidgets.QWidget()
-        self.height_w.setLayout(self.layout_height)
+        self.layout_width_height = QtWidgets.QHBoxLayout()
+        self.layout_width_height.addWidget(self.width_label)
+        self.layout_width_height.addWidget(self.width_line)
+        self.layout_width_height.addWidget(self.height_label)
+        self.layout_width_height.addWidget(self.height_line)
+        self.width_height_w = QtWidgets.QWidget()
+        self.width_height_w.setLayout(self.layout_width_height)
 
         self.plot_line_w_label = QtWidgets.QLabel("Plot line-width")
         self.def_plot_line_w = "1"
@@ -112,8 +133,24 @@ class Ui_MainWindow(object):
         self.plot_line_w_w = QtWidgets.QWidget()
         self.plot_line_w_w.setLayout(self.layout_plot_line_w)
 
+        self.stim_line_w_label = QtWidgets.QLabel("Stim. line-width")
+        self.def_stim_line_w = "0.3"
+        self.stim_line_w_line = QtWidgets.QLineEdit(self.def_stim_line_w)
+        self.layout_stim_line_w = QtWidgets.QHBoxLayout()
+        self.layout_stim_line_w.addWidget(self.stim_line_w_label)
+        self.layout_stim_line_w.addWidget(self.stim_line_w_line)
+        self.stim_line_w_w = QtWidgets.QWidget()
+        self.stim_line_w_w.setLayout(self.layout_stim_line_w)
+
         ### up to 7 plots ###
-        self.cl = Color_list()
+        self.plot_color_label = []
+        self.plot_color_label.append(QtWidgets.QLabel("Plot line-color1"))
+        self.plot_color_label.append(QtWidgets.QLabel("Plot line-color2"))
+        self.plot_color_label.append(QtWidgets.QLabel("Plot line-color3"))
+        self.plot_color_label.append(QtWidgets.QLabel("Plot line-color4"))
+        self.plot_color_label.append(QtWidgets.QLabel("Plot line-color5"))
+        self.plot_color_label.append(QtWidgets.QLabel("Plot line-color6"))
+        self.plot_color_label.append(QtWidgets.QLabel("Plot line-color7(Stim. Tim.)"))
         self.plot_color_cmbox = []
         self.plot_color_cmbox.append(QtWidgets.QComboBox())
         self.plot_color_cmbox.append(QtWidgets.QComboBox())
@@ -122,25 +159,17 @@ class Ui_MainWindow(object):
         self.plot_color_cmbox.append(QtWidgets.QComboBox())
         self.plot_color_cmbox.append(QtWidgets.QComboBox())
         self.plot_color_cmbox.append(QtWidgets.QComboBox())
-
-        self.plot_color_label = []
-        self.plot_color_label.append(QtWidgets.QLabel("Plot line-color1"))
-        self.plot_color_label.append(QtWidgets.QLabel("Plot line-color2"))
-        self.plot_color_label.append(QtWidgets.QLabel("Plot line-color3"))
-        self.plot_color_label.append(QtWidgets.QLabel("Plot line-color4"))
-        self.plot_color_label.append(QtWidgets.QLabel("Plot line-color5"))
-        self.plot_color_label.append(QtWidgets.QLabel("Plot line-color6"))
-        self.plot_color_label.append(QtWidgets.QLabel("Plot line-color7"))
         self.def_plot_color = "black"
-        self.items = self.cl.list()
-        self.items = sorted(self.items)
-        self.plot_color_cmbox[0].addItems(self.items)
-        self.plot_color_cmbox[1].addItems(self.items)
-        self.plot_color_cmbox[2].addItems(self.items)
-        self.plot_color_cmbox[3].addItems(self.items)
-        self.plot_color_cmbox[4].addItems(self.items)
-        self.plot_color_cmbox[5].addItems(self.items)
-        self.plot_color_cmbox[6].addItems(self.items)
+        self.cl = Color_list()
+        self.color_items = self.cl.list()
+        self.color_items = sorted(self.color_items)
+        self.plot_color_cmbox[0].addItems(self.color_items)
+        self.plot_color_cmbox[1].addItems(self.color_items)
+        self.plot_color_cmbox[2].addItems(self.color_items)
+        self.plot_color_cmbox[3].addItems(self.color_items)
+        self.plot_color_cmbox[4].addItems(self.color_items)
+        self.plot_color_cmbox[5].addItems(self.color_items)
+        self.plot_color_cmbox[6].addItems(self.color_items)
         self.plot_color_cmbox[0].setCurrentText(self.def_plot_color)
         self.plot_color_cmbox[1].setCurrentText(self.def_plot_color)
         self.plot_color_cmbox[2].setCurrentText(self.def_plot_color)
@@ -148,6 +177,40 @@ class Ui_MainWindow(object):
         self.plot_color_cmbox[4].setCurrentText(self.def_plot_color)
         self.plot_color_cmbox[5].setCurrentText(self.def_plot_color)
         self.plot_color_cmbox[6].setCurrentText(self.def_plot_color)
+        self.plot_color_style_label = []
+        self.plot_color_style_label.append(QtWidgets.QLabel("Linestyle1"))
+        self.plot_color_style_label.append(QtWidgets.QLabel("Linestyle2"))
+        self.plot_color_style_label.append(QtWidgets.QLabel("Linestyle3"))
+        self.plot_color_style_label.append(QtWidgets.QLabel("Linestyle4"))
+        self.plot_color_style_label.append(QtWidgets.QLabel("Linestyle5"))
+        self.plot_color_style_label.append(QtWidgets.QLabel("Linestyle6"))
+        self.plot_color_style_label.append(QtWidgets.QLabel("Linestyle7"))
+        self.plot_color_style_cmbox = []
+        self.plot_color_style_cmbox.append(QtWidgets.QComboBox())
+        self.plot_color_style_cmbox.append(QtWidgets.QComboBox())
+        self.plot_color_style_cmbox.append(QtWidgets.QComboBox())
+        self.plot_color_style_cmbox.append(QtWidgets.QComboBox())
+        self.plot_color_style_cmbox.append(QtWidgets.QComboBox())
+        self.plot_color_style_cmbox.append(QtWidgets.QComboBox())
+        self.plot_color_style_cmbox.append(QtWidgets.QComboBox())
+        self.def_plot_color_style = "solid"
+        self.color_style_items = {"solid", "dashed", "dashdot", "dotted"}
+        self.color_style_items = sorted(self.color_style_items)
+        self.plot_color_style_cmbox[0].addItems(self.color_style_items)
+        self.plot_color_style_cmbox[1].addItems(self.color_style_items)
+        self.plot_color_style_cmbox[2].addItems(self.color_style_items)
+        self.plot_color_style_cmbox[3].addItems(self.color_style_items)
+        self.plot_color_style_cmbox[4].addItems(self.color_style_items)
+        self.plot_color_style_cmbox[5].addItems(self.color_style_items)
+        self.plot_color_style_cmbox[6].addItems(self.color_style_items)
+        self.plot_color_style_cmbox[0].setCurrentText(self.def_plot_color_style)
+        self.plot_color_style_cmbox[1].setCurrentText(self.def_plot_color_style)
+        self.plot_color_style_cmbox[2].setCurrentText(self.def_plot_color_style)
+        self.plot_color_style_cmbox[3].setCurrentText(self.def_plot_color_style)
+        self.plot_color_style_cmbox[4].setCurrentText(self.def_plot_color_style)
+        self.plot_color_style_cmbox[5].setCurrentText(self.def_plot_color_style)
+        self.plot_color_style_cmbox[6].setCurrentText(self.def_plot_color_style)
+
         self.layout_plot_color = []
         self.layout_plot_color.append(QtWidgets.QHBoxLayout())
         self.layout_plot_color.append(QtWidgets.QHBoxLayout())
@@ -158,18 +221,32 @@ class Ui_MainWindow(object):
         self.layout_plot_color.append(QtWidgets.QHBoxLayout())
         self.layout_plot_color[0].addWidget(self.plot_color_label[0])
         self.layout_plot_color[0].addWidget(self.plot_color_cmbox[0])
+        self.layout_plot_color[0].addWidget(self.plot_color_style_label[0])
+        self.layout_plot_color[0].addWidget(self.plot_color_style_cmbox[0])
         self.layout_plot_color[1].addWidget(self.plot_color_label[1])
         self.layout_plot_color[1].addWidget(self.plot_color_cmbox[1])
+        self.layout_plot_color[1].addWidget(self.plot_color_style_label[1])
+        self.layout_plot_color[1].addWidget(self.plot_color_style_cmbox[1])
         self.layout_plot_color[2].addWidget(self.plot_color_label[2])
         self.layout_plot_color[2].addWidget(self.plot_color_cmbox[2])
+        self.layout_plot_color[2].addWidget(self.plot_color_style_label[2])
+        self.layout_plot_color[2].addWidget(self.plot_color_style_cmbox[2])
         self.layout_plot_color[3].addWidget(self.plot_color_label[3])
         self.layout_plot_color[3].addWidget(self.plot_color_cmbox[3])
+        self.layout_plot_color[3].addWidget(self.plot_color_style_label[3])
+        self.layout_plot_color[3].addWidget(self.plot_color_style_cmbox[3])
         self.layout_plot_color[4].addWidget(self.plot_color_label[4])
         self.layout_plot_color[4].addWidget(self.plot_color_cmbox[4])
+        self.layout_plot_color[4].addWidget(self.plot_color_style_label[4])
+        self.layout_plot_color[4].addWidget(self.plot_color_style_cmbox[4])
         self.layout_plot_color[5].addWidget(self.plot_color_label[5])
         self.layout_plot_color[5].addWidget(self.plot_color_cmbox[5])
+        self.layout_plot_color[5].addWidget(self.plot_color_style_label[5])
+        self.layout_plot_color[5].addWidget(self.plot_color_style_cmbox[5])
         self.layout_plot_color[6].addWidget(self.plot_color_label[6])
         self.layout_plot_color[6].addWidget(self.plot_color_cmbox[6])
+        self.layout_plot_color[6].addWidget(self.plot_color_style_label[6])
+        self.layout_plot_color[6].addWidget(self.plot_color_style_cmbox[6])
         self.plot_color_w = []
         self.plot_color_w.append(QtWidgets.QWidget())
         self.plot_color_w.append(QtWidgets.QWidget())
@@ -185,19 +262,6 @@ class Ui_MainWindow(object):
         self.plot_color_w[4].setLayout(self.layout_plot_color[4])
         self.plot_color_w[5].setLayout(self.layout_plot_color[5])
         self.plot_color_w[6].setLayout(self.layout_plot_color[6])
-
-        """
-        self.plot_color1_label = QtWidgets.QLabel("Plot line-color1")
-        self.def_plot_color1 = "black"
-        self.items = self.cl.list()
-        self.plot_color_cmbox[0].addItems(self.items)
-        self.plot_color_cmbox[0].setCurrentText("black")
-        self.layout_plot_color1 = QtWidgets.QHBoxLayout()
-        self.layout_plot_color1.addWidget(self.plot_color1_label)
-        self.layout_plot_color1.addWidget(self.plot_color_cmbox[0])
-        self.plot_color1_w = QtWidgets.QWidget()
-        self.plot_color1_w.setLayout(self.layout_plot_color1)
-        """
         #####################
 
         self.ax_line_w_label = QtWidgets.QLabel("Axis line-width")
@@ -347,7 +411,7 @@ class Ui_MainWindow(object):
         self.load_setting_button_w = QtWidgets.QWidget()
         self.load_setting_button_w.setLayout(self.layout_load_setting)
 
-        self.layout.addWidget(self.db)
+        self.layout.addWidget(self.dd_button)
         self.parameter_setting_area = QtWidgets.QScrollArea()
         self.scroll_layout = QtWidgets.QVBoxLayout()
         self.inner = QtWidgets.QWidget()
@@ -360,10 +424,12 @@ class Ui_MainWindow(object):
         self.scroll_layout.addWidget(self.skiprows_w)
         self.scroll_layout.addWidget(self.xrow_w)
         self.scroll_layout.addWidget(self.yrow_w)
+        self.scroll_layout.addWidget(self.coefficient_w)
+        self.scroll_layout.addWidget(self.stimtiming_w)
         self.scroll_layout.addWidget(self.dpi_w)
-        self.scroll_layout.addWidget(self.width_w)
-        self.scroll_layout.addWidget(self.height_w)
+        self.scroll_layout.addWidget(self.width_height_w)
         self.scroll_layout.addWidget(self.plot_line_w_w)
+        self.scroll_layout.addWidget(self.stim_line_w_w)
         self.scroll_layout.addWidget(self.plot_color_w[0])
         self.scroll_layout.addWidget(self.plot_color_w[1])
         self.scroll_layout.addWidget(self.plot_color_w[2])
@@ -401,12 +467,21 @@ class Ui_MainWindow(object):
         MainWindow.setWindowIcon(QIcon('maria.png'))
 
     def readcsv(self):
-        if self.db.drop_flg == True:
-            self.db.drop_flg = False
-            print(self.db.mineData)
+        if self.dd_button.drop_flg == True:
+            self.dd_button.drop_flg = False
+            print(self.dd_button.mineData)
             plt.rcParams["font.family"] = str(self.fig_font_line.text())
-            self.df = pd.read_csv(self.db.mineData, skiprows=int(self.skiprows_line.text()))
+            self.df = pd.read_csv(self.dd_button.mineData, skiprows=int(self.skiprows_line.text()))
             self.plot()
+
+        if self.dd_stimtiming_button.drop_flg == True:
+            self.dd_stimtiming_button.drop_flg = False
+            print(self.dd_stimtiming_button.mineData)
+            print("")
+            self.df_stimtiming = pd.read_csv(self.dd_stimtiming_button.mineData,
+                                             header=None,
+                                             delimiter="x")# other than comma
+            self.stimtiming_line.setText(str(self.df_stimtiming[0][0]))
 
     def plot(self):
         fig = plt.figure(figsize=(float(self.width_line.text()),
@@ -418,11 +493,23 @@ class Ui_MainWindow(object):
         self.selected_xrow = self.xrow_line.text()
         self.selected_yrow = [x.strip() for x in self.yrow_line.text().split(',')]
 
+        if self.stimtiming_line.text() != "":
+            self.selected_stimtiming = [x.strip() for x in self.stimtiming_line.text().split(',')]
+            self.selected_stimtiming = [float(n) for n in self.selected_stimtiming]  # str to float
+            print(self.selected_stimtiming)
+            for i in range(len(self.selected_stimtiming)):
+                self.ax.axvline(self.selected_stimtiming[i],
+                                color=str(self.plot_color_cmbox[6].currentText()),
+                                linewidth=float(self.stim_line_w_line.text()),
+                                linestyle=str(self.plot_color_style_cmbox[6].currentText()))
+
         for i in range(len(self.selected_yrow)):
-            self.ax.plot(self.df[str(self.df.columns[int(self.selected_xrow)])],
-                         self.df[str(self.df.columns[int(self.selected_yrow[i])])],
+            self.ax.plot(self.df[str(self.df.columns[int(self.selected_xrow)])]*float(self.xcoefficient_line.text()),
+                         self.df[str(self.df.columns[int(self.selected_yrow[i])])]*float(self.ycoefficient_line.text()),
                          color=str(self.plot_color_cmbox[i].currentText()),
-                         linewidth=float(self.plot_line_w_line.text()))
+                         linewidth=float(self.plot_line_w_line.text()),
+                         linestyle=str(self.plot_color_style_cmbox[i].currentText()))
+
 
         if self.ax_spines_top_chbox.isChecked():
             self.ax.spines["top"].set_linewidth(self.ax_line_w_line.text())
@@ -550,7 +637,7 @@ class Ui_MainWindow(object):
         if os.path.isdir(str(self.save_path_line.text())):
             self.save_path_tmp = str(self.save_path_line.text())+str(self.filename)
         else:
-            self.save_path_tmp = os.path.dirname(self.db.mineData.strip("file:///"))+"/"+str(self.filename)
+            self.save_path_tmp = os.path.dirname(self.dd_button.mineData.strip("file:///"))+"/"+str(self.filename)
             print("Target directory does not exist !")
         plt.savefig(self.save_path_tmp)
         print(self.save_path_tmp)
