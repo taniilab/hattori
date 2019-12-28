@@ -32,7 +32,7 @@ class Ui_MainWindow(object):
     timer: QTimer
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(640, 960)
+        MainWindow.resize(550, 960)
         self.centralWidget = QtWidgets.QWidget(MainWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -40,17 +40,16 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.centralWidget.sizePolicy().hasHeightForWidth())
         self.centralWidget.setSizePolicy(sizePolicy)
         self.centralWidget.setObjectName("centralWidget")
-        self.centralWidget.setStyleSheet("QLabel {font: 12pt Arial}"
-                                         "QComboBox {font: 12pt Arial; font-weight: bold}"
-                                         "QCheckBox {font: 12pt Arial; font-weight: bold}"
-                                         "QLineEdit {font: 12pt Arial; font-weight: bold}")
+        self.centralWidget.setStyleSheet("QLabel {font: 10pt Arial}"
+                                         "QComboBox {font: 10pt Arial; font-weight: bold}"
+                                         "QCheckBox {font: 10pt Arial; font-weight: bold}"
+                                         "QLineEdit {font: 10pt Arial; font-weight: bold}"
+                                         "QPushButton{font: 13pt メイリオ}")
 
         self.layout = QtWidgets.QVBoxLayout()
-        self.dd_button = DropButton("ここにCSVファイルをかわいくドラッグして下さいね")
-        self.dd_button.setStyleSheet("QPushButton{font-size: 30px;"
-                              "font-family: MS Sans Serif;"
-                              "color: rgb(255, 255, 255);"
-                              "background-color: rgb(204, 102, 102);}")
+        self.dd_button = DropButton("プロットしたいデータ(csvファイル)をここに\nドラッグして下さい")
+        self.dd_button.setStyleSheet("QPushButton{color: rgb(255, 255, 255);"
+                                     "background-color: rgb(204, 102, 102);}")
 
 
 
@@ -100,8 +99,6 @@ class Ui_MainWindow(object):
         self.stimtiming_line = QtWidgets.QLineEdit(self.def_stimtiming)
         self.dd_stimtiming_button = DropButton("CSVファイル(刺激タイミング)")
         self.dd_stimtiming_button.setStyleSheet("QPushButton{font-size: 15px;"
-                                                "font-weight: bold;"
-                                                "font-family: MS Sans Serif;"
                                                 "color: rgb(255, 255, 255);"
                                                 "background-color: rgb(204, 102, 102);}")
         self.layout_stimtiming = QtWidgets.QHBoxLayout()
@@ -352,42 +349,30 @@ class Ui_MainWindow(object):
         self.save_path_w.setLayout(self.layout_save_path)
 
         self.replot_button = QtWidgets.QPushButton('Replot')
-        self.replot_button.setStyleSheet("QPushButton{font-size: 30px;"
-                                         "font-family: MS Sans Serif;"
-                                         "color: rgb(255, 255, 255);"
+        self.replot_button.setStyleSheet("QPushButton{color: rgb(255, 255, 255);"
                                          "background-color: rgb(204, 102, 102);}")
         self.replot_button.clicked.connect(self.on_click_replot_figure)
 
         self.save_button = QtWidgets.QPushButton('Save figure')
-        self.save_button.setStyleSheet("QPushButton{font-size: 30px;"
-                                       "font-family: MS Sans Serif;"
-                                       "color: rgb(255, 255, 255);"
+        self.save_button.setStyleSheet("QPushButton{color: rgb(255, 255, 255);"
                                        "background-color: rgb(204, 102, 102);}")
         self.save_button.clicked.connect(self.on_click_savefig)
 
         self.save_setting_label = QtWidgets.QLabel("Settings")
-        self.save_setting_label.setStyleSheet("QLabel{font-size: 30px;"
-                                         "font-family: MS Sans Serif;"
-                                         "color: rgb(0, 0, 0);"
-                                         "font-weight: bold;}")
+        self.save_setting_label.setStyleSheet("QLabel{color: rgb(0, 0, 0);"
+                                              "font-weight: bold;}")
 
         self.save_setting1_button = QtWidgets.QPushButton('Save1')
-        self.save_setting1_button.setStyleSheet("QPushButton{font-size: 30px;"
-                                         "font-family: MS Sans Serif;"
-                                         "color: rgb(255, 255, 255);"
-                                         "background-color: rgb(65, 65, 65);}")
+        self.save_setting1_button.setStyleSheet("QPushButton{color: rgb(255, 255, 255);"
+                                                "background-color: rgb(65, 65, 65);}")
         self.save_setting1_button.clicked.connect(self.save_setting1)
         self.save_setting2_button = QtWidgets.QPushButton('Save2')
-        self.save_setting2_button.setStyleSheet("QPushButton{font-size: 30px;"
-                                         "font-family: MS Sans Serif;"
-                                         "color: rgb(255, 255, 255);"
-                                         "background-color: rgb(65, 65, 65);}")
+        self.save_setting2_button.setStyleSheet("QPushButton{color: rgb(255, 255, 255);"
+                                                "background-color: rgb(65, 65, 65);}")
         self.save_setting2_button.clicked.connect(self.save_setting2)
         self.save_setting3_button = QtWidgets.QPushButton('Save3')
-        self.save_setting3_button.setStyleSheet("QPushButton{font-size: 30px;"
-                                         "font-family: MS Sans Serif;"
-                                         "color: rgb(255, 255, 255);"
-                                         "background-color: rgb(65, 65, 65);}")
+        self.save_setting3_button.setStyleSheet("QPushButton{color: rgb(255, 255, 255);"
+                                                "background-color: rgb(65, 65, 65);}")
         self.save_setting3_button.clicked.connect(self.save_setting3)
         self.layout_save_setting = QtWidgets.QHBoxLayout()
         self.layout_save_setting.addWidget(self.save_setting1_button)
@@ -397,22 +382,16 @@ class Ui_MainWindow(object):
         self.save_setting_button_w.setLayout(self.layout_save_setting)
 
         self.load_setting1_button = QtWidgets.QPushButton('Load1')
-        self.load_setting1_button.setStyleSheet("QPushButton{font-size: 30px;"
-                                         "font-family: MS Sans Serif;"
-                                         "color: rgb(255, 255, 255);"
-                                         "background-color: rgb(65, 65, 65);}")
+        self.load_setting1_button.setStyleSheet("QPushButton{color: rgb(255, 255, 255);"
+                                                "background-color: rgb(65, 65, 65);}")
         self.load_setting1_button.clicked.connect(self.load_setting1)
         self.load_setting2_button = QtWidgets.QPushButton('Load2')
-        self.load_setting2_button.setStyleSheet("QPushButton{font-size: 30px;"
-                                         "font-family: MS Sans Serif;"
-                                         "color: rgb(255, 255, 255);"
-                                         "background-color: rgb(65, 65, 65);}")
+        self.load_setting2_button.setStyleSheet("QPushButton{color: rgb(255, 255, 255);"
+                                                "background-color: rgb(65, 65, 65);}")
         self.load_setting2_button.clicked.connect(self.load_setting2)
         self.load_setting3_button = QtWidgets.QPushButton('Load3')
-        self.load_setting3_button.setStyleSheet("QPushButton{font-size: 30px;"
-                                         "font-family: MS Sans Serif;"
-                                         "color: rgb(255, 255, 255);"
-                                         "background-color: rgb(65, 65, 65);}")
+        self.load_setting3_button.setStyleSheet("QPushButton{color: rgb(255, 255, 255);"
+                                                "background-color: rgb(65, 65, 65);}")
         self.load_setting3_button.clicked.connect(self.load_setting3)
         self.layout_load_setting = QtWidgets.QHBoxLayout()
         self.layout_load_setting.addWidget(self.load_setting1_button)
