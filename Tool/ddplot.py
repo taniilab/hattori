@@ -8,6 +8,8 @@
 ・二軸
 ・刺激
 ・複数プロット
+・時間　係数
+・保存パスないとき
 """
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTimer
@@ -131,6 +133,7 @@ class Ui_MainWindow(object):
         self.plot_color_label.append(QtWidgets.QLabel("Plot line-color7"))
         self.def_plot_color = "black"
         self.items = self.cl.list()
+        self.items = sorted(self.items)
         self.plot_color_cmbox[0].addItems(self.items)
         self.plot_color_cmbox[1].addItems(self.items)
         self.plot_color_cmbox[2].addItems(self.items)
@@ -544,8 +547,13 @@ class Ui_MainWindow(object):
         self.filename = ("fig" + str(self.date.year) + '_' + str(self.date.month) + '_' +
                          str(self.date.day) + '_' + str(self.date.hour) + '_' + str(self.date.minute) + '_' + str(
                          self.date.second)+ ".png")
-        print(self.filename)
-        plt.savefig(str(self.save_path_line.text())+str(self.filename))
+        if os.path.isdir(str(self.save_path_line.text())):
+            self.save_path_tmp = str(self.save_path_line.text())+str(self.filename)
+        else:
+            self.save_path_tmp = os.path.dirname(self.db.mineData.strip("file:///"))+"/"+str(self.filename)
+            print("Target directory does not exist !")
+        plt.savefig(self.save_path_tmp)
+        print(self.save_path_tmp)
         print("Saved!!!\n")
 
     def on_click_replot_figure(self):
@@ -573,4 +581,25 @@ class Color_list():
         pass
 
     def list(self):
-        return {"black", "blue", "black", "green", "purple", "orange"}
+        return {"black", "dimgrey", "dimgray", "gray", "grey", "darkgrey", "darkgray", "silver",
+                "lightgray", "lightgrey", "gainsboro", "whitesmoke", "white", "snow", "rosybrown",
+                "lightcoral", "indianred", "brown", "firebrick", "maroon", "darkred", "red", "mistyrose",
+                "salmon", "tomato", "darksalmon", "coral", "orangered", "lightsalmon", "sienna",
+                "seashell", "chocolate", "saddlebrown", "sandybrown", "peachpuff", "peru", "linen", "bisque",
+                "darkorange", "burlywood", "antiquewhite", "tan", "navajowhite", "wheat", "oldlace",
+                "floralwhite", "darkgoldenrod", "goldenrod", "cornsilk", "gold", "lemonchiffon", "khaki",
+                "palegoldenrod", "darkkhaki", "ivory", "beige", "lightyellow", "lightgoldenrodyellow", "olive",
+                "yellow", "olivedrab", "lawngreen", "darkolivegreen", "greenyellow", "chartreuse",
+                "lawngreen", "sage", "lightsage", "darksage", "honeydew", "darkseagreen", "palegreen",
+                "lightgreen", "forestgreen", "limegreen", "darkgreen", "green", "lime", "seagreen",
+                "mediumseagreen", "springgreen", "mintcream", "mediumspringgreen", "mediumaquamarine",
+                "aquamarine", "turquoise", "lightseagreen", "mediumturquoise", "azure", "lightcyan",
+                "paleturquoise", "darkslategray", "darkslategrey", "teal", "darkcyan", "aqua", "cyan",
+                "darkturquoise", "cadetblue", "powderblue", "lightblue", "deepskyblue", "skyblue",
+                "lightskyblue", "steelblue", "aliceblue", "dodgerblue", "lightslategrey", "lightslategray",
+                "slategray", "slategrey", "lightsteelblue", "cornflowerblue", "royalblue", "ghostwhite",
+                "lavender", "midnightblue", "navy", "darkblue", "mediumblue", "blue", "slateblue",
+                "darkslateblue", "mediumslateblue", "mediumpurple", "blueviolet", "indigo", "darkorchid",
+                "darkviolet", "mediumorchid", "thistle", "plum", "violet", "purple", "darkmagenta", "fuchsia",
+                "magenta", "orchid", "mediumvioletred", "deeppink", "hotpink", "lavenderblush", "palevioletred",
+                "crimson", "pink", "lightpink"}
