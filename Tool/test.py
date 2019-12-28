@@ -1,5 +1,10 @@
-import os
+import matplotlib.pyplot as plt
+import japanize_matplotlib
 
-a = "G:/Box Sync/Personal/Experimental Data/20191218/Data60/csv/Data60_roi_data.csv"
+fig = plt.figure()
+ax = fig.add_subplot(1,1,1)
 
-print(os.path.dirname(a))
+ax.plot([1, 2, 3, 4])
+ax.set_xlabel('日本語を簡単に使える喜び')
+#plt.xlabel('日本語を簡単に使える喜び')
+plt.show()

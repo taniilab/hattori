@@ -5,18 +5,28 @@
 """
 今後実装予定(時期未定)の機能
 ・二軸プロット
+・日本語対応
+
+●どうしても軸名に日本語を使いたい場合
+1. まず日本語化モジュールをインストール
+pip install japanize-matplotlib
+
+2. import japanize_matplotlib　のコメントアウトを外す
+
+3. 逆に、plt.rcParams["font.family"] = str(self.fig_font_line.text())　をコメントアウトする
+
+4. 日本語が使えるようになります。この場合、設定項目「Figure font(font-family)」は機能しません
 """
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QIcon
-import numpy as np
 import os
 from PyQt5.QtWidgets import *
 import pandas as pd
 import matplotlib.pyplot as plt
-import matplotlib as mpl
 import datetime
 import csv
+#import japanize_matplotlib
 
 class Ui_MainWindow(object):
     timer: QTimer
@@ -305,7 +315,7 @@ class Ui_MainWindow(object):
         self.y_label_w = QtWidgets.QWidget()
         self.y_label_w.setLayout(self.layout_y_label)
 
-        self.fig_font_label = QtWidgets.QLabel("Figure font")
+        self.fig_font_label = QtWidgets.QLabel("Figure font (font-family)")
         self.def_fig_font = "Arial"
         self.fig_font_line = QtWidgets.QLineEdit(self.def_fig_font)
         self.layout_fig_font = QtWidgets.QHBoxLayout()
