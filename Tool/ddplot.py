@@ -450,9 +450,10 @@ class Ui_MainWindow(object):
         self.layout.addWidget(self.save_setting_label)
         self.layout.addWidget(self.save_setting_button_w)
         self.layout.addWidget(self.load_setting_button_w)
-
         self.centralWidget.setLayout(self.layout)
         MainWindow.setCentralWidget(self.centralWidget)
+
+        self.load_previous_setting()
 
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.readcsv)
@@ -469,6 +470,7 @@ class Ui_MainWindow(object):
     def readcsv(self):
         if self.dd_button.drop_flg == True:
             self.dd_button.drop_flg = False
+            self.save_previous_setting()
             print(self.dd_button.mineData)
             plt.rcParams["font.family"] = str(self.fig_font_line.text())
             self.df = pd.read_csv(self.dd_button.mineData, skiprows=int(self.skiprows_line.text()))
@@ -488,8 +490,6 @@ class Ui_MainWindow(object):
                                        float(self.height_line.text())),
                               dpi=float(self.dpi_line.text()))
         self.ax = fig.add_subplot(1, 1, 1)
-        print(self.xrow_line.text())
-        print(type(self.xrow_line.text()))
         self.selected_xrow = self.xrow_line.text()
         self.selected_yrow = [x.strip() for x in self.yrow_line.text().split(',')]
 
@@ -535,25 +535,37 @@ class Ui_MainWindow(object):
                            fontsize=float(self.xy_label_fsize_line.text()),
                            color="black")
         self.ax.tick_params(labelsize=str(self.ax_tick_fsize_line.text()), colors="black")
-
         fig.tight_layout()
         plt.show()
 
     def save_profile(self, cfg_path):
         data = []
-        data.append(int(self.skiprows_line.text()))
-        data.append(int(self.dpi_line.text()))
-        data.append(float(self.width_line.text()))
-        data.append(float(self.height_line.text()))
-        data.append(float(self.plot_line_w_line.text()))
+        data.append(str(self.skiprows_line.text()))
+        data.append(str(self.xrow_line.text()))
+        data.append(str(self.yrow_line.text()))
+        data.append(str(self.xcoefficient_line.text()))
+        data.append(str(self.ycoefficient_line.text()))
+        data.append(str(self.stimtiming_line.text()))
+        data.append(str(self.dpi_line.text()))
+        data.append(str(self.width_line.text()))
+        data.append(str(self.height_line.text()))
+        data.append(str(self.plot_line_w_line.text()))
+        data.append(str(self.stim_line_w_line.text()))
         data.append(str(self.plot_color_cmbox[0].currentText()))
+        data.append(str(self.plot_color_style_cmbox[0].currentText()))
         data.append(str(self.plot_color_cmbox[1].currentText()))
+        data.append(str(self.plot_color_style_cmbox[1].currentText()))
         data.append(str(self.plot_color_cmbox[2].currentText()))
+        data.append(str(self.plot_color_style_cmbox[2].currentText()))
         data.append(str(self.plot_color_cmbox[3].currentText()))
+        data.append(str(self.plot_color_style_cmbox[3].currentText()))
         data.append(str(self.plot_color_cmbox[4].currentText()))
+        data.append(str(self.plot_color_style_cmbox[4].currentText()))
         data.append(str(self.plot_color_cmbox[5].currentText()))
+        data.append(str(self.plot_color_style_cmbox[5].currentText()))
         data.append(str(self.plot_color_cmbox[6].currentText()))
-        data.append(float(self.ax_line_w_line.text()))
+        data.append(str(self.plot_color_style_cmbox[6].currentText()))
+        data.append(str(self.ax_line_w_line.text()))
         data.append(int(self.ax_spines_top_chbox.isChecked()))
         data.append(int(self.ax_spines_bottom_chbox.isChecked()))
         data.append(int(self.ax_spines_left_chbox.isChecked()))
@@ -561,8 +573,8 @@ class Ui_MainWindow(object):
         data.append(str(self.x_label_line.text()))
         data.append(str(self.y_label_line.text()))
         data.append(str(self.fig_font_line.text()))
-        data.append(int(self.xy_label_fsize_line.text()))
-        data.append(int(self.ax_tick_fsize_line.text()))
+        data.append(str(self.xy_label_fsize_line.text()))
+        data.append(str(self.ax_tick_fsize_line.text()))
         data.append(str(self.save_path_line.text()))
         with open(cfg_path, 'w', newline="") as f:
             writer = csv.writer(f)
@@ -579,28 +591,41 @@ class Ui_MainWindow(object):
             reader = csv.reader(f)
             l = [row for row in reader]
             self.skiprows_line.setText(str(l[0][0]))
-            self.dpi_line.setText(str(l[0][1]))
-            self.width_line.setText(str(l[0][2]))
-            self.height_line.setText(str(l[0][3]))
-            self.plot_line_w_line.setText(str(l[0][4]))
-            self.plot_color_cmbox[0].setCurrentText(str(l[0][5]))
-            self.plot_color_cmbox[1].setCurrentText(str(l[0][6]))
-            self.plot_color_cmbox[2].setCurrentText(str(l[0][7]))
-            self.plot_color_cmbox[3].setCurrentText(str(l[0][8]))
-            self.plot_color_cmbox[4].setCurrentText(str(l[0][9]))
-            self.plot_color_cmbox[5].setCurrentText(str(l[0][10]))
-            self.plot_color_cmbox[6].setCurrentText(str(l[0][11]))
-            self.ax_line_w_line.setText(str(l[0][12]))
-            self.ax_spines_top_chbox.setChecked(int(l[0][13]))
-            self.ax_spines_bottom_chbox.setChecked(int(l[0][14]))
-            self.ax_spines_left_chbox.setChecked(int(l[0][15]))
-            self.ax_spines_right_chbox.setChecked(int(l[0][16]))
-            self.x_label_line.setText(str(l[0][17]))
-            self.y_label_line.setText(str(l[0][18]))
-            self.fig_font_line.setText(str(l[0][19]))
-            self.xy_label_fsize_line.setText(str(l[0][20]))
-            self.ax_tick_fsize_line.setText(str(l[0][21]))
-            self.save_path_line.setText(str(l[0][22]))
+            self.xrow_line.setText(str(l[0][1]))
+            self.yrow_line.setText(str(l[0][2]))
+            self.xcoefficient_line.setText(str(l[0][3]))
+            self.ycoefficient_line.setText(str(l[0][4]))
+            self.stimtiming_line.setText(str(l[0][5]))
+            self.dpi_line.setText(str(l[0][6]))
+            self.width_line.setText(str(l[0][7]))
+            self.height_line.setText(str(l[0][8]))
+            self.plot_line_w_line.setText(str(l[0][9]))
+            self.stim_line_w_line.setText(str(l[0][10]))
+            self.plot_color_cmbox[0].setCurrentText(str(l[0][11]))
+            self.plot_color_style_cmbox[0].setCurrentText(str(l[0][12]))
+            self.plot_color_cmbox[1].setCurrentText(str(l[0][13]))
+            self.plot_color_style_cmbox[1].setCurrentText(str(l[0][14]))
+            self.plot_color_cmbox[2].setCurrentText(str(l[0][15]))
+            self.plot_color_style_cmbox[2].setCurrentText(str(l[0][16]))
+            self.plot_color_cmbox[3].setCurrentText(str(l[0][17]))
+            self.plot_color_style_cmbox[3].setCurrentText(str(l[0][18]))
+            self.plot_color_cmbox[4].setCurrentText(str(l[0][19]))
+            self.plot_color_style_cmbox[4].setCurrentText(str(l[0][20]))
+            self.plot_color_cmbox[5].setCurrentText(str(l[0][21]))
+            self.plot_color_style_cmbox[5].setCurrentText(str(l[0][22]))
+            self.plot_color_cmbox[6].setCurrentText(str(l[0][23]))
+            self.plot_color_style_cmbox[6].setCurrentText(str(l[0][24]))
+            self.ax_line_w_line.setText(str(l[0][25]))
+            self.ax_spines_top_chbox.setChecked(int(l[0][26]))
+            self.ax_spines_bottom_chbox.setChecked(int(l[0][27]))
+            self.ax_spines_left_chbox.setChecked(int(l[0][28]))
+            self.ax_spines_right_chbox.setChecked(int(l[0][29]))
+            self.x_label_line.setText(str(l[0][30]))
+            self.y_label_line.setText(str(l[0][31]))
+            self.fig_font_line.setText(str(l[0][32]))
+            self.xy_label_fsize_line.setText(str(l[0][33]))
+            self.ax_tick_fsize_line.setText(str(l[0][34]))
+            self.save_path_line.setText(str(l[0][35]))
             print(l)
             print("Setting loaded\n")
         return
@@ -630,30 +655,37 @@ class Ui_MainWindow(object):
         self.load_profile(os.getcwd() + '/save3.cfg')
 
     def on_click_savefig(self):
-        self.date = datetime.datetime.today()
-        self.filename = ("fig" + str(self.date.year) + '_' + str(self.date.month) + '_' +
-                         str(self.date.day) + '_' + str(self.date.hour) + '_' + str(self.date.minute) + '_' + str(
-                         self.date.second)+ ".png")
-        if os.path.isdir(str(self.save_path_line.text())):
-            self.save_path_tmp = str(self.save_path_line.text())+str(self.filename)
+        self.save_previous_setting()
+        if self.dd_button.mineData != "Null":
+            self.date = datetime.datetime.today()
+            self.filename = ("fig" + str(self.date.year) + '_' + str(self.date.month) + '_' +
+                             str(self.date.day) + '_' + str(self.date.hour) + '_' + str(self.date.minute) + '_' + str(
+                             self.date.second)+ ".png")
+            if os.path.isdir(str(self.save_path_line.text())):
+                self.save_path_tmp = str(self.save_path_line.text())+str(self.filename)
+            else:
+                self.save_path_tmp = os.path.dirname(self.dd_button.mineData.strip("file:///"))+"/"+str(self.filename)
+                print("Target directory does not exist !")
+            plt.savefig(self.save_path_tmp)
+            print(self.save_path_tmp)
+            print("Saved!!!\n")
         else:
-            self.save_path_tmp = os.path.dirname(self.dd_button.mineData.strip("file:///"))+"/"+str(self.filename)
-            print("Target directory does not exist !")
-        plt.savefig(self.save_path_tmp)
-        print(self.save_path_tmp)
-        print("Saved!!!\n")
+            print("No csv data plotted")
 
     def on_click_replot_figure(self):
-        self.plot()
+        self.save_previous_setting()
+        if self.dd_button.mineData != "Null":
+            self.plot()
+        else:
+            print("No csv file readed")
+
 
 class DropButton(QPushButton):
-
     def __init__(self, title, parent=None):
         super().__init__(title, parent)
         self.mineData = "Null"
         self.drop_flg = False
         self.setAcceptDrops(True)
-
 
     def dragEnterEvent(self, e):
         self.mineData = e.mimeData().text()
@@ -662,8 +694,8 @@ class DropButton(QPushButton):
     def dropEvent(self, e):
         self.drop_flg = True
 
-class Color_list():
 
+class Color_list():
     def __init__(self):
         pass
 
