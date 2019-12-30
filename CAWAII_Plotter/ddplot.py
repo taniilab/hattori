@@ -32,7 +32,7 @@ class Ui_MainWindow(object):
     timer: QTimer
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(550, 960)
+        MainWindow.resize(720, 960)
         self.centralWidget = QtWidgets.QWidget(MainWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -463,6 +463,8 @@ class Ui_MainWindow(object):
             print(self.dd_button.mineData)
             plt.rcParams["font.family"] = str(self.fig_font_line.text())
             self.df = pd.read_csv(self.dd_button.mineData, skiprows=int(self.skiprows_line.text()))
+
+            self.selected_yrow = [x.strip() for x in self.yrow_line.text().split(',')]
             self.plot()
 
         if self.dd_stimtiming_button.drop_flg == True:
@@ -475,57 +477,61 @@ class Ui_MainWindow(object):
             self.stimtiming_line.setText(str(self.df_stimtiming[0][0]))
 
     def plot(self):
-        fig = plt.figure(figsize=(float(self.width_line.text()),
-                                       float(self.height_line.text())),
-                              dpi=float(self.dpi_line.text()))
-        self.ax = fig.add_subplot(1, 1, 1)
         self.selected_xrow = self.xrow_line.text()
         self.selected_yrow = [x.strip() for x in self.yrow_line.text().split(',')]
+        if len(self.df.columns) > int(max(self.selected_yrow)):
+            fig = plt.figure(figsize=(float(self.width_line.text()),
+                                           float(self.height_line.text())),
+                                  dpi=float(self.dpi_line.text()))
+            self.ax = fig.add_subplot(1, 1, 1)
 
-        if self.stimtiming_line.text() != "":
-            self.selected_stimtiming = [x.strip() for x in self.stimtiming_line.text().split(',')]
-            self.selected_stimtiming = [float(n) for n in self.selected_stimtiming]  # str to float
-            print(self.selected_stimtiming)
-            for i in range(len(self.selected_stimtiming)):
-                self.ax.axvline(self.selected_stimtiming[i],
-                                color=str(self.plot_color_cmbox[6].currentText()),
-                                linewidth=float(self.stim_line_w_line.text()),
-                                linestyle=str(self.plot_color_style_cmbox[6].currentText()))
+            if self.stimtiming_line.text() != "":
+                self.selected_stimtiming = [x.strip() for x in self.stimtiming_line.text().split(',')]
+                self.selected_stimtiming = [float(n) for n in self.selected_stimtiming]  # str to float
+                print(self.selected_stimtiming)
+                for i in range(len(self.selected_stimtiming)):
+                    self.ax.axvline(self.selected_stimtiming[i],
+                                    color=str(self.plot_color_cmbox[6].currentText()),
+                                    linewidth=float(self.stim_line_w_line.text()),
+                                    linestyle=str(self.plot_color_style_cmbox[6].currentText()))
 
-        for i in range(len(self.selected_yrow)):
-            self.ax.plot(self.df[str(self.df.columns[int(self.selected_xrow)])]*float(self.xcoefficient_line.text()),
-                         self.df[str(self.df.columns[int(self.selected_yrow[i])])]*float(self.ycoefficient_line.text()),
-                         color=str(self.plot_color_cmbox[i].currentText()),
-                         linewidth=float(self.plot_line_w_line.text()),
-                         linestyle=str(self.plot_color_style_cmbox[i].currentText()))
+            for i in range(len(self.selected_yrow)):
+                self.ax.plot(self.df[str(self.df.columns[int(self.selected_xrow)])]*float(self.xcoefficient_line.text()),
+                             self.df[str(self.df.columns[int(self.selected_yrow[i])])]*float(self.ycoefficient_line.text()),
+                             color=str(self.plot_color_cmbox[i].currentText()),
+                             linewidth=float(self.plot_line_w_line.text()),
+                             linestyle=str(self.plot_color_style_cmbox[i].currentText()))
 
 
-        if self.ax_spines_top_chbox.isChecked():
-            self.ax.spines["top"].set_linewidth(self.ax_line_w_line.text())
+            if self.ax_spines_top_chbox.isChecked():
+                self.ax.spines["top"].set_linewidth(self.ax_line_w_line.text())
+            else:
+                self.ax.spines["top"].set_linewidth(0)
+            if self.ax_spines_bottom_chbox.isChecked():
+                self.ax.spines["bottom"].set_linewidth(self.ax_line_w_line.text())
+            else:
+                self.ax.spines["bottom"].set_linewidth(0)
+            if self.ax_spines_left_chbox.isChecked():
+                self.ax.spines["left"].set_linewidth(self.ax_line_w_line.text())
+            else:
+                self.ax.spines["left"].set_linewidth(0)
+            if self.ax_spines_right_chbox.isChecked():
+                self.ax.spines["right"].set_linewidth(self.ax_line_w_line.text())
+            else:
+                self.ax.spines["right"].set_linewidth(0)
+
+            self.ax.set_xlabel(str(self.x_label_line.text()),
+                               fontsize=float(self.xy_label_fsize_line.text()),
+                               color="black")
+            self.ax.set_ylabel(str(self.y_label_line.text()),
+                               fontsize=float(self.xy_label_fsize_line.text()),
+                               color="black")
+            self.ax.tick_params(labelsize=str(self.ax_tick_fsize_line.text()), colors="black")
+            fig.tight_layout()
+            plt.show()
+
         else:
-            self.ax.spines["top"].set_linewidth(0)
-        if self.ax_spines_bottom_chbox.isChecked():
-            self.ax.spines["bottom"].set_linewidth(self.ax_line_w_line.text())
-        else:
-            self.ax.spines["bottom"].set_linewidth(0)
-        if self.ax_spines_left_chbox.isChecked():
-            self.ax.spines["left"].set_linewidth(self.ax_line_w_line.text())
-        else:
-            self.ax.spines["left"].set_linewidth(0)
-        if self.ax_spines_right_chbox.isChecked():
-            self.ax.spines["right"].set_linewidth(self.ax_line_w_line.text())
-        else:
-            self.ax.spines["right"].set_linewidth(0)
-
-        self.ax.set_xlabel(str(self.x_label_line.text()),
-                           fontsize=float(self.xy_label_fsize_line.text()),
-                           color="black")
-        self.ax.set_ylabel(str(self.y_label_line.text()),
-                           fontsize=float(self.xy_label_fsize_line.text()),
-                           color="black")
-        self.ax.tick_params(labelsize=str(self.ax_tick_fsize_line.text()), colors="black")
-        fig.tight_layout()
-        plt.show()
+            print("Invalid settings -> please check Y row parameter or input csv file")
 
     def save_profile(self, cfg_path):
         data = []
