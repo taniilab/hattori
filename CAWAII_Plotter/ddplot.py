@@ -381,6 +381,13 @@ class Ui_MainWindow(object):
         self.save_setting_button_w = QtWidgets.QWidget()
         self.save_setting_button_w.setLayout(self.layout_save_setting)
 
+        self.show_grid_chbox = QtWidgets.QCheckBox("Show grid")
+        self.show_grid_chbox.toggle()
+        self.layout_show_grid = QtWidgets.QHBoxLayout()
+        self.layout_show_grid.addWidget(self.show_grid_chbox)
+        self.show_grid_w = QtWidgets.QWidget()
+        self.show_grid_w.setLayout(self.layout_show_grid)
+
         self.load_setting1_button = QtWidgets.QPushButton('Load1')
         self.load_setting1_button.setStyleSheet("QPushButton{color: rgb(255, 255, 255);"
                                                 "background-color: rgb(65, 65, 65);}")
@@ -434,6 +441,7 @@ class Ui_MainWindow(object):
         self.scroll_layout.addWidget(self.xy_label_fsize_w)
         self.scroll_layout.addWidget(self.ax_tick_fsize_w)
         self.scroll_layout.addWidget(self.save_path_w)
+        self.scroll_layout.addWidget(self.show_grid_w)
         self.layout.addWidget(self.replot_button)
         self.layout.addWidget(self.save_button)
         self.layout.addWidget(self.save_setting_label)
@@ -498,7 +506,10 @@ class Ui_MainWindow(object):
                          color=str(self.plot_color_cmbox[i].currentText()),
                          linewidth=float(self.plot_line_w_line.text()),
                          linestyle=str(self.plot_color_style_cmbox[i].currentText()))
-
+        if self.show_grid_chbox.isChecked():
+            self.ax.grid(b=True, linewidth=float(self.stim_line_w_line.text()))
+        else:
+            self.ax.grid(b=False)
 
         if self.ax_spines_top_chbox.isChecked():
             self.ax.spines["top"].set_linewidth(self.ax_line_w_line.text())
@@ -565,6 +576,8 @@ class Ui_MainWindow(object):
         data.append(str(self.xy_label_fsize_line.text()))
         data.append(str(self.ax_tick_fsize_line.text()))
         data.append(str(self.save_path_line.text()))
+        data.append(int(self.show_grid_chbox.isChecked()))
+
         with open(cfg_path, 'w', newline="") as f:
             writer = csv.writer(f)
             writer.writerow(data)
@@ -615,6 +628,7 @@ class Ui_MainWindow(object):
             self.xy_label_fsize_line.setText(str(l[0][33]))
             self.ax_tick_fsize_line.setText(str(l[0][34]))
             self.save_path_line.setText(str(l[0][35]))
+            self.show_grid_chbox.setChecked(int(l[0][36]))
             print(l)
             print("Setting loaded\n")
         return
