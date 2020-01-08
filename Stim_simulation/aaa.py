@@ -42,10 +42,11 @@ class HH_compartment:
         self.ItCa = np.zeros(allsteps)
         self.intracellular_current = np.zeros(allsteps)
 
-        self.V_intra = -74 * np.ones(allsteps)
+        self.V = -74 * np.ones(allsteps)
 
         v_stim = PotentialStimulation(sim_time_ms, dt_ms)
-        self.stim_timing_step, self.V_extra = v_stim.external_potential(stim_timing_ms, stim_ext_potential)
+        self.stim_timing_step, self.extV, self.extV_for_cell = v_stim.external_potential(stim_timing_ms,
+                                                                                         stim_ext_potential)
 
 
 class Neuron:
@@ -79,49 +80,33 @@ class Neuron:
         return a * (v - b) / (np.exp(np.clip(c * (v - d), -500, 500)) - 1)
 
     def calc_current(self, cell_compartment, Vth=-56.2, tau_max=608, gleak=0.0205, eleak=-70.3,
-                     gNa=56, eNa=50, gK=6, eK=-90, gm=0.075, gtCa=0.4, eCa=120):
+                       gNa=56, eNa=50, gK=6, eK=-90, gm=0.075, gtCa=0.4, eCa=120):
         cell_compartment.alpha_m[self.curstep] = self.activation_func_ReLUlike(-0.32, Vth + 13, -1 / 4, Vth + 13,
-                                                                               cell_compartment.V_intra[self.curstep] -
-                                                                               cell_compartment.V_extra[self.curstep])
+                                                                               cell_compartment.V[self.curstep])
         cell_compartment.beta_m[self.curstep] = self.activation_func_ReLUlike(0.28, Vth + 40, 1 / 5, Vth + 40,
-                                                                              cell_compartment.V_intra[self.curstep] -
-                                                                              cell_compartment.V_extra[self.curstep])
+                                                                              cell_compartment.V[self.curstep])
         cell_compartment.alpha_h[self.curstep] = self.activation_func_exp(0.128, -1 / 18, Vth + 17,
-                                                                          cell_compartment.V_intra[self.curstep] -
-                                                                          cell_compartment.V_extra[self.curstep])
+                                                                          cell_compartment.V[self.curstep])
         cell_compartment.beta_h[self.curstep] = self.activation_func_sigmoid(4, -1 / 5, Vth + 40,
-                                                                             cell_compartment.V_intra[self.curstep] -
-                                                                             cell_compartment.V_extra[self.curstep])
+                                                                             cell_compartment.V[self.curstep])
         cell_compartment.alpha_n[self.curstep] = self.activation_func_ReLUlike(-0.032, Vth + 15, -1 / 5, Vth + 15,
-                                                                               cell_compartment.V_intra[self.curstep] -
-                                                                               cell_compartment.V_extra[self.curstep])
+                                                                               cell_compartment.V[self.curstep])
         cell_compartment.beta_n[self.curstep] = self.activation_func_exp(0.5, -1 / 40, Vth + 10,
-                                                                         cell_compartment.V_intra[self.curstep] -
-                                                                         cell_compartment.V_extra[self.curstep])
+                                                                         cell_compartment.V[self.curstep])
         cell_compartment.p_inf[self.curstep] = self.activation_func_sigmoid(1, -1 / 10, -35,
-                                                                            cell_compartment.V_intra[self.curstep] -
-                                                                            cell_compartment.V_extra[self.curstep])
+                                                                            cell_compartment.V[self.curstep])
         cell_compartment.tau_p[self.curstep] = (tau_max / (
-                3.3 * np.exp(
-            np.clip((cell_compartment.V_intra[self.curstep] - cell_compartment.V_extra[self.curstep] + 35) / 20, -709,
-                    10000)) + np.exp(
-            - np.clip((cell_compartment.V_intra[self.curstep] - cell_compartment.V_extra[self.curstep] + 35) / 20, -709,
-                      10000))))
+                3.3 * np.exp(np.clip((cell_compartment.V[self.curstep] + 35) / 20, -709, 10000)) + np.exp(
+            - np.clip((cell_compartment.V[self.curstep] + 35) / 20, -709, 10000))))
 
         cell_compartment.s_inf[self.curstep] = self.activation_func_sigmoid(1, -1 / 6.2, -2 - 57,
-                                                                            cell_compartment.V_intra[self.curstep] -
-                                                                            cell_compartment.V_extra[self.curstep])
+                                                                            cell_compartment.V[self.curstep])
         cell_compartment.u_inf[self.curstep] = self.activation_func_sigmoid(1, 1 / 4, -2 - 81,
-                                                                            cell_compartment.V_intra[self.curstep] -
-                                                                            cell_compartment.V_extra[self.curstep])
+                                                                            cell_compartment.V[self.curstep])
         cell_compartment.tau_u[self.curstep] = 30.8 + (
-                211.4 + np.exp(
-            np.clip((cell_compartment.V_intra[self.curstep] - cell_compartment.V_extra[self.curstep] + 2 + 113.2) / 5,
-                    -709, 10000))) / \
+                211.4 + np.exp(np.clip((cell_compartment.V[self.curstep] + 2 + 113.2) / 5, -709, 10000))) / \
                                                (3.7 * (1 + np.exp(
-                                                   np.clip((cell_compartment.V_intra[self.curstep] -
-                                                            cell_compartment.V_extra[self.curstep] + 2 + 84) / 3.2,
-                                                           -709,
+                                                   np.clip((cell_compartment.V[self.curstep] + 2 + 84) / 3.2, -709,
                                                            10000))))
 
         dm = self.dt_ms * (cell_compartment.alpha_m[self.curstep] * (1 - cell_compartment.m[self.curstep])
@@ -141,36 +126,47 @@ class Neuron:
         cell_compartment.p[self.curstep + 1] = cell_compartment.p[self.curstep] + dp
         cell_compartment.u[self.curstep + 1] = cell_compartment.u[self.curstep] + du
 
-        cell_compartment.Ileak[self.curstep] = gleak * (
-                    eleak - cell_compartment.V_intra[self.curstep] - cell_compartment.V_extra[self.curstep])
+        cell_compartment.Ileak[self.curstep] = gleak * (eleak - cell_compartment.V[self.curstep])
         cell_compartment.INa[self.curstep] = gNa * cell_compartment.m[self.curstep] ** 3 * cell_compartment.h[
-            self.curstep] * (eNa - (cell_compartment.V_intra[self.curstep] - cell_compartment.V_extra[self.curstep]))
+            self.curstep] * (eNa - cell_compartment.V[self.curstep])
         cell_compartment.IK[self.curstep] = gK * cell_compartment.n[self.curstep] ** 4 * (
-                eK - (cell_compartment.V_intra[self.curstep] - cell_compartment.V_extra[self.curstep]))
+                    eK - cell_compartment.V[self.curstep])
         cell_compartment.Im[self.curstep] = gm * cell_compartment.p[self.curstep] * (
-                eK - (cell_compartment.V_intra[self.curstep] - cell_compartment.V_extra[self.curstep]))
+                    eK - cell_compartment.V[self.curstep])
         cell_compartment.ItCa[self.curstep] = gtCa * cell_compartment.s_inf[self.curstep] ** 2 * cell_compartment.u[
-            self.curstep] * (eCa - (cell_compartment.V_intra[self.curstep] - cell_compartment.V_extra[self.curstep]))
+            self.curstep] * (eCa - cell_compartment.V[self.curstep])
 
     def calc_potential(self, cell_left, cell_right, R=10, Cm=1):
         self.calc_current(cell_left)
-        if self.curstep * self.dt_ms > 500:
+        if self.curstep * self.dt_ms > 1000:
+
             cell_left.intracellular_current[self.curstep] = - (
-                        cell_left.V_intra[self.curstep] - cell_right.V_intra[self.curstep]) / R
-        dV_intra_left = (self.dt_ms * (
+                        cell_left.V[self.curstep] - cell_right.V[self.curstep]) / R
+
+            # cell_left.intracellular_current[self.curstep] = 0
+        dV_left = (self.dt_ms * (
                 cell_left.Ileak[self.curstep] + cell_left.INa[self.curstep] + cell_left.IK[self.curstep] +
                 cell_left.Im[self.curstep] + cell_left.intracellular_current[self.curstep]) / Cm)
-        cell_left.V_intra[self.curstep + 1] = cell_left.V_intra[self.curstep] + dV_intra_left
+        if self.curstep in list(cell_left.stim_timing_step):
+            # cell_left.V[self.curstep + 1] = cell_left.V[self.curstep] + dV_left - cell_left.extV[self.curstep]
+            cell_left.V[self.curstep + 1] = cell_left.V[self.curstep] + dV_left - cell_left.extV_for_cell[self.curstep]
+        else:
+            cell_left.V[self.curstep + 1] = cell_left.V[self.curstep] + dV_left
 
         self.calc_current(cell_right)
-        if self.curstep * self.dt_ms > 500:
-            cell_right.intracellular_current[self.curstep] = - (
-                    cell_right.V_intra[self.curstep] - cell_left.V_intra[self.curstep]) / R
+        if self.curstep * self.dt_ms > 1000:
 
-        dV_intra_right = (self.dt_ms * (
+            cell_right.intracellular_current[self.curstep] = - (
+                        cell_right.V[self.curstep] - cell_left.V[self.curstep]) / R
+
+        dV_right = (self.dt_ms * (
                 cell_right.Ileak[self.curstep] + cell_right.INa[self.curstep] + cell_right.IK[self.curstep] +
                 cell_right.Im[self.curstep] + cell_right.intracellular_current[self.curstep]) / Cm)
-        cell_right.V_intra[self.curstep + 1] = cell_right.V_intra[self.curstep] + dV_intra_right
+        if self.curstep in list(cell_right.stim_timing_step):
+            # cell_right.V[self.curstep + 1] = cell_right.V[self.curstep] + dV_right - cell_right.extV[self.curstep]
+            cell_right.V[self.curstep + 1] = cell_right.V[self.curstep] + dV_right - cell_right.extV_for_cell[self.curstep]
+        else:
+            cell_right.V[self.curstep + 1] = cell_right.V[self.curstep] + dV_right
 
 
 class CurrentStimulation:
@@ -196,25 +192,46 @@ class PotentialStimulation:
         self.allsteps = int(sim_time_ms / dt_ms)
 
     def external_potential(self, stim_timing_ms, potential_mv):
-        V_extra = np.zeros(self.allsteps)
+        extV = np.zeros(self.allsteps)
+        extV_for_cell = np.zeros(self.allsteps)
         stim_timing_step = np.zeros(len(stim_timing_ms))
+        for stim_i in range(0, len(stim_timing_ms)):
+            stim_timing_step[stim_i] = int(stim_timing_ms[stim_i] / self.dt_ms)
 
-        if len(stim_timing_ms) == 1:
-            V_extra[int(stim_timing_ms[0] / self.dt_ms):] = potential_mv[0]
-            return [int(stim_timing_ms[0] / self.dt_ms)], V_extra
+        for stim_i in range(0, len(stim_timing_step)-1):
+            extV[int(stim_timing_step[stim_i]):int(stim_timing_step[stim_i + 1])] = potential_mv[stim_i]
+            extV_for_cell[int(stim_timing_step[stim_i]):int(stim_timing_step[stim_i + 1])] = potential_mv[stim_i] - \
+                                                                                             extV[int(
+                                                                                                 stim_timing_step[
+                                                                                                     stim_i]) - 1]
+        extV[int(stim_timing_step[len(stim_timing_step) - 1]):] = potential_mv[len(stim_timing_step) - 1]
+        extV_for_cell[int(stim_timing_step[len(stim_timing_step) - 1]):] = potential_mv[len(stim_timing_step) - 1] - \
+                                                                           extV[int(stim_timing_step[
+                                                                                        len(stim_timing_step) - 1]) - 1]
+        """
+        if len(stim_timing_step) > 2:
+            k = 0
+            for step_i in range(int(stim_timing_step[0]), self.allsteps):
+                if stim_timing_step[k] <= step_i < stim_timing_step[k + 1]:
+                    extV[step_i] = potential_mv[k]
+                    if step_i + 1 == stim_timing_step[k + 1]:
+                        if k < len(stim_timing_step) - 2:
+                            k += 1
+                        elif k == len(stim_timing_step) - 1:
+                            extV[int(stim_timing_step[k + 1]):] = potential_mv[k + 1]
+                            break
+        elif len(stim_timing_step) == 2:
+            extV[int(stim_timing_step[0]):int(stim_timing_step[1]) - 1] = potential_mv[0]
+            extV[int(stim_timing_step[1]):] = potential_mv[1]
         else:
-            for stim_i in range(0, len(stim_timing_ms)):
-                stim_timing_step[stim_i] = int(stim_timing_ms[stim_i] / self.dt_ms)
-            for stim_i in range(0, len(stim_timing_step)-1):
-                V_extra[int(stim_timing_step[stim_i]):int(stim_timing_step[stim_i + 1])] = potential_mv[stim_i]
-            V_extra[int(stim_timing_step[len(stim_timing_step) - 1]):] = potential_mv[len(stim_timing_step) - 1]
-
-            return stim_timing_step, V_extra
+            extV[int(stim_timing_step[0]):] = potential_mv[0]
+        """
+        return stim_timing_step, extV, extV_for_cell
 
 
 def main():
-    left_stim_timing_ms = [1000,1500]
-    left_stim_ext_potential = [-30,0]
+    left_stim_timing_ms = [1000, 1020, 1040]
+    left_stim_ext_potential = [-60, 60, 0]
     neuron = Neuron(sim_time_ms=2000, dt_ms=0.04, left_stim_timing_ms=left_stim_timing_ms,
                     left_stim_ext_potential=left_stim_ext_potential)
     R = 1  # [M ohm]
@@ -229,37 +246,37 @@ def main():
                             'I_m [pA]': neuron.cell_left.Im,
                             'I_K [pA]': neuron.cell_left.IK,
                             'intracellular_current [pA]': neuron.cell_left.intracellular_current,
-                            'V_intra [mV]': neuron.cell_left.V_intra,
-                            'V_extra [mV]': neuron.cell_left.V_extra,
-                            'V_membrane [mV]': neuron.cell_left.V_intra - neuron.cell_left.V_extra})
+                            'V [mV]': neuron.cell_left.V,
+                            'extV [mV]': neuron.cell_left.extV,
+                            'extV for cell [mV]': neuron.cell_left.extV_for_cell})
     df_right = pd.DataFrame({'time [ms]': neuron.time_seq,
                              'I_Na [pA]': neuron.cell_right.INa,
                              'I_leak [pA]': neuron.cell_right.Ileak,
                              'I_m [pA]': neuron.cell_right.Im,
                              'I_K [pA]': neuron.cell_right.IK,
                              'intracellular_current [pA]': neuron.cell_right.intracellular_current,
-                             'V_intra [mV]': neuron.cell_right.V_intra,
-                             'V_extra [mV]': neuron.cell_right.V_extra,
-                             'V_membrane [mV]': neuron.cell_right.V_intra - neuron.cell_right.V_extra})
-    df_left.to_csv('C:/Users/Tanii_Lab/Downloads/cell_left_{0}_{1}.csv'.format(left_stim_ext_potential[0],
+                             'V [mV]': neuron.cell_right.V,
+                             'extV [mV]': neuron.cell_right.extV,
+                             'extV for cell [mV]': neuron.cell_right.extV_for_cell})
+    df_left.to_csv('I:/Box Sync/Personal/Simulation Data/cell_left.csv'.format(left_stim_ext_potential[0],
                                                                                           left_stim_ext_potential[1]))
-    df_right.to_csv('C:/Users/Tanii_Lab/Downloads/cell_right_{0}_{1}.csv'.format(left_stim_ext_potential[0],
+    df_right.to_csv('I:/Box Sync/Personal/Simulation Data/cell_right.csv'.format(left_stim_ext_potential[0],
                                                                                             left_stim_ext_potential[1]))
 
     fsize = 15
-    fig = plt.figure(figsize=(20, 8))
+    fig = plt.figure(figsize=(30, 10))
     ax1 = fig.add_subplot(111)
-    ax1.plot(neuron.time_seq / 1000, neuron.cell_left.V_intra, label='cell_left', color='darkcyan')
-    ax1.plot(neuron.time_seq / 1000, neuron.cell_right.V_intra, label='cell_right', color='darkgreen')
-    ax1.set_xlim([0.95, 2.0])
+    ax1.plot(neuron.time_seq / 1000, neuron.cell_left.V, label='cell_left', color='darkcyan')
+    ax1.plot(neuron.time_seq / 1000, neuron.cell_right.V, label='cell_right', color='darkgreen')
+    ax2 = ax1.twinx()
+    ax2.plot(neuron.time_seq / 1000, neuron.cell_left.extV, label='extV', color='purple')
+    ax2.set_ylabel('extV []', fontsize=fsize)
     ax1.set_xlabel('time [sec]', fontsize=fsize)
     ax1.set_ylabel('potential [mV]', fontsize=fsize)
-    ax1.legend(fontsize=fsize)
-    ax2 = ax1.twinx()
-    ax2.plot(neuron.time_seq / 1000, neuron.cell_left.V_extra, label='cell_right', color='crimson')
     plt.tick_params(labelsize=fsize)
     plt.tight_layout()
     plt.show()
+
 
 if __name__ == '__main__':
     main()
