@@ -217,7 +217,7 @@ def main():
     left_stim_ext_potential = [-30,0]
     neuron = Neuron(sim_time_ms=2000, dt_ms=0.04, left_stim_timing_ms=left_stim_timing_ms,
                     left_stim_ext_potential=left_stim_ext_potential)
-    R = 1  # [M ohm]
+    R = 0.1  # [M ohm]
 
     for step_i in range(0, neuron.allsteps-1):
         neuron.calc_potential(neuron.cell_left, neuron.cell_right, R)
@@ -249,8 +249,8 @@ def main():
     fsize = 15
     fig = plt.figure(figsize=(20, 8))
     ax1 = fig.add_subplot(111)
-    ax1.plot(neuron.time_seq / 1000, neuron.cell_left.V_intra, label='cell_left', color='darkcyan')
-    ax1.plot(neuron.time_seq / 1000, neuron.cell_right.V_intra, label='cell_right', color='darkgreen')
+    ax1.plot(neuron.time_seq / 1000, neuron.cell_left.V_extra + neuron.cell_left.V_intra, label='cell_left', color='darkcyan')
+    ax1.plot(neuron.time_seq / 1000, neuron.cell_right.V_extra + neuron.cell_right.V_intra, label='cell_right', color='darkgreen')
     ax1.set_xlim([0.95, 2.0])
     ax1.set_xlabel('time [sec]', fontsize=fsize)
     ax1.set_ylabel('potential [mV]', fontsize=fsize)
