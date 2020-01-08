@@ -153,7 +153,8 @@ class Neuron:
             self.curstep] * (eCa - (cell_compartment.V_intra[self.curstep] - cell_compartment.V_extra[self.curstep]))
 
     def calc_potential(self, cell_left, cell_right, R=10, Cm=1):
-        self.calc_current(cell_left)
+        self.calc_current(cell_left, Vth=-56.2, tau_max=608, gleak=0.0205, eleak=-70.3,
+                     gNa=56, eNa=50, gK=6, eK=-90, gm=0.075, gtCa=0, eCa=120)
         if self.curstep * self.dt_ms > 500:
             cell_left.intracellular_current[self.curstep] = - (
                         cell_left.V_intra[self.curstep] - cell_right.V_intra[self.curstep]) / R
@@ -162,7 +163,8 @@ class Neuron:
                 cell_left.Im[self.curstep] + cell_left.intracellular_current[self.curstep]) / Cm)
         cell_left.V_intra[self.curstep + 1] = cell_left.V_intra[self.curstep] + dV_intra_left
 
-        self.calc_current(cell_right)
+        self.calc_current(cell_right, Vth=-56.2, tau_max=608, gleak=0.0205, eleak=-70.3,
+                     gNa=56, eNa=50, gK=6, eK=-90, gm=0.075, gtCa=0, eCa=120)
         if self.curstep * self.dt_ms > 500:
             cell_right.intracellular_current[self.curstep] = - (
                     cell_right.V_intra[self.curstep] - cell_left.V_intra[self.curstep]) / R
@@ -213,11 +215,11 @@ class PotentialStimulation:
 
 
 def main():
-    left_stim_timing_ms = [1000,1500]
-    left_stim_ext_potential = [-30,0]
-    neuron = Neuron(sim_time_ms=2000, dt_ms=0.04, left_stim_timing_ms=left_stim_timing_ms,
+    left_stim_timing_ms = [500, 520, 540]
+    left_stim_ext_potential = [-10, 10, 0]
+    neuron = Neuron(sim_time_ms=1000, dt_ms=0.04, left_stim_timing_ms=left_stim_timing_ms,
                     left_stim_ext_potential=left_stim_ext_potential)
-    R = 0.1  # [M ohm]
+    R = 1  # [M ohm]
 
     for step_i in range(0, neuron.allsteps-1):
         neuron.calc_potential(neuron.cell_left, neuron.cell_right, R)
@@ -249,9 +251,9 @@ def main():
     fsize = 15
     fig = plt.figure(figsize=(20, 8))
     ax1 = fig.add_subplot(111)
-    ax1.plot(neuron.time_seq / 1000, neuron.cell_left.V_extra + neuron.cell_left.V_intra, label='cell_left', color='darkcyan')
-    ax1.plot(neuron.time_seq / 1000, neuron.cell_right.V_extra + neuron.cell_right.V_intra, label='cell_right', color='darkgreen')
-    ax1.set_xlim([0.95, 2.0])
+    ax1.plot(neuron.time_seq / 1000, neuron.cell_left.V_intra, label='cell_left', color='darkcyan')
+    ax1.plot(neuron.time_seq / 1000, neuron.cell_right.V_intra, label='cell_right', color='darkgreen')
+    #ax1.set_xlim([0.95, 2.0])
     ax1.set_xlabel('time [sec]', fontsize=fsize)
     ax1.set_ylabel('potential [mV]', fontsize=fsize)
     ax1.legend(fontsize=fsize)

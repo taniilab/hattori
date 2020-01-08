@@ -1,6 +1,6 @@
 """
 date: 20191213
-created by: ishida
+created by: ishida modified by hattori
 """
 import numpy as np
 import pandas as pd
