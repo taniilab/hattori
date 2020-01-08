@@ -1,42 +1,25 @@
-import sys
-from PyQt4 import QtGui, QtCore
-from PyQt4.QtGui import QScrollArea
-
-class Example(QtGui.QWidget):
-
-    def __init__(self):
-        super(Example, self).__init__()
-        self.initUI()
-
-    def initUI(self):
-        hbox = QtGui.QHBoxLayout(self)
-        first = QtGui.QFrame(self)
-        first.setFrameShape(QtGui.QFrame.StyledPanel)
-        scrollAreaLeft = QScrollArea()
-        scrollAreaLeft.setWidgetResizable(True)
-        scrollAreaLeft.setWidget(first)
-        second = QtGui.QFrame(self)
-        second.setFrameShape(QtGui.QFrame.StyledPanel)
-        scrollAreaRight = QScrollArea()
-        scrollAreaRight.setWidgetResizable(True)
-        scrollAreaRight.setWidget(second)
-        splitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
-        splitter.addWidget(scrollAreaLeft)
-        splitter.addWidget(scrollAreaRight)
-        splitter.setSizes([10, 100])
-        hbox.addWidget(splitter)
-        self.setLayout(hbox)
-        self.setGeometry(600, 600, 600, 600)
-        self.setWindowTitle('QtGui.QSplitter')
-        self.show()
-        print ("scrollAreaLeft width: "+str(scrollAreaLeft.width()))
-        print ("scrollAreaRight width: "+str(scrollAreaRight.width()))
-
-def main():
-    app = QtGui.QApplication(sys.argv)
-    ex = Example()
-    sys.exit(app.exec_())
+import numpy as np
 
 
-if __name__ == '__main__':
-    main()
+A = np.arange(0, 5)
+
+print(A)
+
+A=np.roll(A, -1)
+A[-1] = 5
+
+print(A)
+
+
+B = np.ones(10)
+B[-1] = 5
+
+print(B)
+B_dummy = B[B != B[0]]
+if B_dummy == B[-1]:
+    print("kanopero")
+
+print(B[B != B[0]])
+print(len(B[B != B[0]]))
+
+print(B[0:len(B)-1])
