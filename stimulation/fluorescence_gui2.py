@@ -335,8 +335,8 @@ class Ui_MainWindow(object):
             self.send_command("WMA0" + "\n")# 0 V
             self.FG_init_state += 1
         elif self.FG_init_state == 1:
-            #self.send_command("WMF200000" + "\n")# 200mhz
-            self.send_command("WMF2000000" + "\n")# 2Hz
+            self.send_command("WMF200000" + "\n")# 200mhzF
+            #self.send_command("WMF2000000" + "\n")# 2Hz
             self.FG_init_state += 1
         elif self.FG_init_state == 2:
             self.send_command("WMW" + self.stim_waveform_line.text() + "\n")# WMW34 -> arbitary wave 1
