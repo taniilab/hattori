@@ -241,9 +241,6 @@ class Ui_MainWindow(object):
         self.splitter_left.addWidget(self.stim_button)
         self.splitter_left.addWidget(self.com_button)
         self.splitter_left.addWidget(self.start_button)
-
-        self.tab_splitter_left = QtWidgets.QTabWidget()
-
         self.splitter.addWidget(self.splitter_left)
 
         # plotter
