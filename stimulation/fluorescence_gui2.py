@@ -27,6 +27,8 @@ import os
 import time
 import csv
 import shutil
+from PyQt5.QtGui import QIcon
+
 
 class Ui_MainWindow(object):
     timer: QTimer
@@ -41,6 +43,11 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.centralWidget.sizePolicy().hasHeightForWidth())
         self.centralWidget.setSizePolicy(sizePolicy)
         self.centralWidget.setObjectName("centralWidget")
+        self.centralWidget.setStyleSheet("QLabel {font: 11pt Arial}"
+                                         "QComboBox {font: 11pt Arial; font-weight: bold}"
+                                         "QCheckBox {font: 11pt Arial; font-weight: bold}"
+                                         "QLineEdit {font: 11pt Arial; font-weight: bold}"
+                                         "QPushButton{font: 13pt 游ゴシック; font-weight: bold}")
 
         self.splitter = QtWidgets.QSplitter(self.centralWidget)
         self.splitter.setGeometry(QtCore.QRect(0, 0, 1481, 941))
@@ -629,3 +636,5 @@ class Ui_MainWindow(object):
         self.treeWidget.setSortingEnabled(__sortingEnabled)
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "glaph"))
         self.menu.setTitle(_translate("MainWindow", "tanii lab"))
+        MainWindow.setWindowIcon(QIcon('maria.png'))
+
