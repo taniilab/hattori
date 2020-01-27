@@ -531,11 +531,12 @@ class Ui_MainWindow(object):
             self.ax.set_xlabel(str(self.x_label_line.text()),
                                fontsize=float(self.xy_label_fsize_line.text()),
                                color="black")
-            self.ax.set_ylabel(str(self.y_label_line.text()),
+            aaa = str(self.y_label_line.text())
+            self.ax.set_ylabel(aaa,
                                fontsize=float(self.xy_label_fsize_line.text()),
                                color="black")
             self.ax.tick_params(labelsize=str(self.ax_tick_fsize_line.text()), colors="black")
-
+            print(self.y_label_line.text())
             if self.show_grid_chbox.isChecked():
                 self.ax.grid(b=True, linewidth=float(self.stim_line_w_line.text()))
             else:

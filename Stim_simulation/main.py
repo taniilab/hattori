@@ -216,7 +216,7 @@ class PotentialStimulation:
 
 def main():
     left_stim_timing_ms = [500, 520, 540]
-    left_stim_ext_potential = [-10, 10, 0]
+    left_stim_ext_potential = [-20, 20, 0]
     neuron = Neuron(sim_time_ms=1000, dt_ms=0.04, left_stim_timing_ms=left_stim_timing_ms,
                     left_stim_ext_potential=left_stim_ext_potential)
     R = 1  # [M ohm]
