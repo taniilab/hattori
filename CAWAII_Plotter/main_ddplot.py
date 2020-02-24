@@ -4,7 +4,6 @@ from PyQt5.QtWidgets import *
 from ddplot import Ui_MainWindow
 from PyQt5.QtGui import QIcon
 
-
 class Main(QMainWindow):
     def __init__(self, parent=None):
         super(Main, self).__init__(parent)
