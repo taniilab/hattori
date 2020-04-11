@@ -8,13 +8,10 @@ import numpy as np
 
 
 class Neuron_HH():
-    def __init__(self, delay=20, syn_type=1, N=1, dt=0.05, T=1000, Cm=1, Vth=-56.2,
-                 eNa=50, gNa=56, eK=-90, gK=5, eL=-70.3, gL=0.0205, gM=0.075,
-                 tau_syn=5.26, esyn=0, gsyn=0.025, tau_max=608, eCa=120, gtCa=0.4, glCa=0.0001,
-                 gpNa=0, gkCa=0,
+    def __init__(self, delay=20, syn_type=1, N=1, dt=0.05, T=1000, Vth=-56.2,
                  Iext_amp=0, Pmax_AMPA=0, Pmax_NMDA=0,
-                 Iext_num=0, noise=0, ramda=-10, alpha=0.5,
-                 beta=0, D=1, ratio=0.5, Mg_conc=4,
+                 Iext_num=0, noise=0, alpha=0.5,
+                 beta=0, D=1, ratio=0.5,
                  U_SE_AMPA=0.3, U_SE_NMDA=0.03, tau_rise_AMPA=0.9, tau_rise_NMDA=70, tau_rec_AMPA=200, tau_rec_NMDA=200,
                  tau_inact_AMPA=5, tau_inact_NMDA=30):
 
@@ -23,7 +20,7 @@ class Neuron_HH():
                              tau_syn, esyn, gsyn, tau_max, eCa, gtCa, glCa,
                              gpNa, gkCa,
                              Iext_amp, Pmax_AMPA, Pmax_NMDA,
-                             Iext_num, noise, ramda, alpha,
+                             Iext_num, noise, alpha,
                              beta, D, ratio, Mg_conc,
                              U_SE_AMPA, U_SE_NMDA, tau_rise_AMPA, tau_rise_NMDA, tau_rec_AMPA, tau_rec_NMDA,
                              tau_inact_AMPA, tau_inact_NMDA)
@@ -33,7 +30,7 @@ class Neuron_HH():
                         tau_syn=5.26, esyn=0, gsyn=0.025, tau_max=608, eCa=120, gtCa=0.4, glCa=0.0001,
                         gpNa=0, gkCa=0,
                         Iext_amp=0, Pmax_AMPA=0, Pmax_NMDA=0,
-                        Iext_num=0, noise=0, ramda=-10, alpha=0.5,
+                        Iext_num=0, noise=0, alpha=0.5,
                         beta=0, D=1, ratio=0.5, Mg_conc=4,
                         U_SE_AMPA=0.3, U_SE_NMDA=0.03, tau_rise_AMPA=0.9, tau_rise_NMDA=70, tau_rec_AMPA=200,
                         tau_rec_NMDA=200, tau_inact_AMPA=5, tau_inact_NMDA=30):
@@ -180,7 +177,6 @@ class Neuron_HH():
         self.Inoise = np.zeros((self.N, self.allsteps))
 
         self.dn = np.zeros((self.N, self.allsteps))
-        self.ramda = ramda
         self.alpha = alpha
         self.beta = beta
         self.D = D

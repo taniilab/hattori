@@ -18,7 +18,7 @@ elapsed_time = 0
 save_path = "Z:/simulation/test"
 process = 6 #number of processors
 numneu = 20
-simtime = 1000
+simtime = 10000
 deltatime = 0.04
 
 class Main():
@@ -78,7 +78,7 @@ class Main():
         for i in range(0, self.neuron.allsteps-1):
             self.neuron.propagation()
 
-            if self.progress_counter % 1000 == 0:
+            if self.progress_counter % 10000 == 0:
                 self.log = 'process id : ' + str(self.pid) + ' : ' + \
                             str(self.progress_counter) + ' steps : ' + \
                             str(round(self.progress_counter*100/self.overall_steps, 1)) + "%"
@@ -89,8 +89,6 @@ class Main():
 
 
 def main():
-    d = datetime.datetime.today()
-    print("{0}/{1}/{2}/{3}:{4}:{5}".format(d.year, d.month, d.day, d.hour, d.minute, d.second))
     main = Main()
 
     for i in range(0, main.cycle_multiproc):
@@ -113,7 +111,7 @@ def main():
             res[k].parm_dict = res[k].parm_dict.replace(',', '_')
 
             filename = "{0}_{1}_{2}_{3}_{4}_{5}_P_AMPA{6}_" \
-                       "P_NMDA{7}_Mg_conc{8}_HH.csv".format(d.year,
+                       "P_NMDA{7}_Mg_conc{8}_gkCa{9}_HH.csv".format(d.year,
                                                                      d.month,
                                                                      d.day,
                                                                      d.hour,
@@ -121,18 +119,13 @@ def main():
                                                                      d.second,
                                                                      res[k].Pmax_AMPA,
                                                                      res[k].Pmax_NMDA,
-                                                                     res[k].Mg_conc)
+                                                                     res[k].Mg_conc,
+                                                                     res[k].gkCa)
             df = pd.DataFrame()
             for j in range(numneu):
                 df['T_{} [ms]'.format(j)]       = res[k].Tsteps
                 df['V_{} [mV]'.format(j)]       = res[k].V[j]
                 df['fire_{} [mV]'.format(j)]    = res[k].t_fire_list[j]
-                df['I_K_{} [uA]'.format(j)]     = res[k].IK[j]
-                df['I_Na_{} [uA]'.format(j)]    = res[k].INa[j]
-                df['Ca_conc_{} [uM]'.format(j)] = res[k].ca_influx[j]
-                df['I_kCa_{} [uA]'.format(j)]   = res[k].IlCa[j]
-                df['I_m_{} [uA]'.format(j)]     = res[k].Im[j]
-                df['I_leak_{} [uA]'.format(j)]  = res[k].Ileak[j]
                 df['I_syn_{} [uA]'.format(j)]   = res[k].Isyn[j]
                 df['I_AMPA_{} [uA]'.format(j)]  = res[k].IAMPA[j]
                 df['I_NMDA_{} [uA]'.format(j)]  = res[k].INMDA[j]
@@ -153,52 +146,11 @@ def main():
         main.process_counter += process
         main.now_cycle_multiproc += 1
 
-    # sample plotting
-    """
-    for i in range(0, process):
-        # initialize
-        ax = []
-        lines = []
-        tm = np.arange(0, res[i].allsteps*res[i].dt, res[i].dt)
-
-        # matrix
-        fig = plt.figure(figsize=(12, 12))
-        gs = grs.GridSpec(4, res[i].N)
-
-        for j in range(0, res[i].N):
-            ax.append(plt.subplot(gs[0, j]))
-            ax.append(plt.subplot(gs[1, j]))
-            ax.append(plt.subplot(gs[2, j]))
-            ax.append(plt.subplot(gs[3, j]))
-
-        # plot
-        for j in range(0, res[i].N):
-            lines.append([])
-            lines[j], = ax[j].plot(tm, res[i].V[j], color="indigo",
-                                   markevery=[0, -1])
-
-        ax[res[i].N].plot(tm, res[i].INa[0], color="coral", markevery=[0, -1])
-
-        ax[res[i].N+1].plot(tm, res[i].INMDA[0], color="coral",
-                           markevery=[0, -1])
-
-        ax[res[i].N+2].plot(tm, res[i].ca_influx[0], color="coral",
-                           markevery=[0, -1])
-        fig.tight_layout()
-    plt.show()
-    """
-    d = datetime.datetime.today()
-    print("{0}/{1}/{2}/{3}:{4}:{5}".format(d.year, d.month, d.day, d.hour, d.minute, d.second))
     elapsed_time = time.time() - starttime
     #pic = Picture(save_path)
     #pic.run()
 
     print("elapsed_time:{0}".format(elapsed_time) + "[sec]")
-    """
-    print("")
-    print("終了するには何かキーを押してください . . .")
-    input()
-    """
 
 if __name__ == '__main__':
      main()
