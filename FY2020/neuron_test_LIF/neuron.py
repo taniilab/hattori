@@ -224,20 +224,6 @@ class Neuron_LIF():
         else:
             pass
 
-
-    # activation functions
-    # a / (1 + exp(b(v-c)))
-    def activation_func_sigmoid(self, a, b, c, v):
-        return a / (1.0 + np.exp(np.clip(b * (v - c), -500, 500)))
-
-    # a * exp(b(v-c))
-    def activation_func_exp(self, a, b, c, v):
-        return a * np.exp(np.clip(b * (v - c), -500, 500))
-
-    # a(v-b)/(exp(c(v-d))-1)
-    def activation_func_ReLUlike(self, a, b, c, d, v):
-        return a * (v - b) / (np.exp(np.clip(c * (v - d), -500, 500)) - 1)
-
     # one step processing
     def propagation(self):
         pass
@@ -278,5 +264,6 @@ class Neuron_LIF():
         self.V[:, self.curstep + 1] = self.Vi + self.k1V * self.dt
 
         # update original array
-        self.Inoise[:, self.curstep] = self.Inoisei
+        # I can't remember why I put it in!!!
+        #self.Inoise[:, self.curstep] = self.Inoisei
         self.curstep += 1
