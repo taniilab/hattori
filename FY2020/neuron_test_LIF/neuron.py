@@ -10,21 +10,21 @@ import numpy as np
 class Neuron_LIF():
     def __init__(self, delay=20, syn_type=1, N=1, dt=0.05, T=1000, Cm=1, Vth=-56.2, erest=-70,
                  Iext_amp=0, Pmax=0, Pmax_AMPA=0, Pmax_NMDA=0, tau_syn=5.26, esyn=0, gsyn=0,
-                 noise=0, alpha=0.5,
+                 noise_type=0, alpha=0.5,
                  beta=0, D=1, ratio=0.5, Mg_conc=1,
                  U_SE_AMPA=0.3, U_SE_NMDA=0.03, tau_rise_AMPA=0.9, tau_rise_NMDA=70, tau_rec_AMPA=200, tau_rec_NMDA=200,
                  tau_inact_AMPA=5, tau_inact_NMDA=30):
 
         self.set_neuron_palm(delay, syn_type, N, dt, T, Cm, Vth, erest,
                              Iext_amp, Pmax, Pmax_AMPA, Pmax_NMDA, tau_syn, esyn, gsyn,
-                             noise, alpha,
+                             noise_type, alpha,
                              beta, D, ratio, Mg_conc,
                              U_SE_AMPA, U_SE_NMDA, tau_rise_AMPA, tau_rise_NMDA, tau_rec_AMPA, tau_rec_NMDA,
                              tau_inact_AMPA, tau_inact_NMDA)
 
     def set_neuron_palm(self, delay=20, syn_type=1, N=1, dt=0.05, T=1000, Cm=1, Vth=-56.2, erest=-70,
                  Iext_amp=0, Pmax=0, Pmax_AMPA=0, Pmax_NMDA=0, tau_syn=5.26, esyn=0, gsyn=0,
-                 noise=0, alpha=0.5,
+                 noise_type=0, alpha=0.5,
                  beta=0, D=1, ratio=0.5, Mg_conc=1,
                  U_SE_AMPA=0.3, U_SE_NMDA=0.03, tau_rise_AMPA=0.9, tau_rise_NMDA=70, tau_rec_AMPA=200, tau_rec_NMDA=200,
                  tau_inact_AMPA=5, tau_inact_NMDA=30):
@@ -54,11 +54,7 @@ class Neuron_LIF():
 
         # connection relationship
         self.Syn_weight = np.zeros((self.N, self.N))
-        """
-        self.Syn_weight[0, 1] = 1
-        self.Syn_weight[1, 2] = 1
-        self.Syn_weight[2, 0] = 1
-        """
+
         # synaptic current
         self.Isyn = np.zeros((self.N, self.allsteps))
         self.INMDA = np.zeros((self.N, self.allsteps))
@@ -98,7 +94,7 @@ class Neuron_LIF():
         self.curstep = 0
 
         # noise
-        self.noise = noise
+        self.noise_type = noise_type
         self.Inoise = np.zeros((self.N, self.allsteps))
         self.dn = np.zeros((self.N, self.allsteps))
         self.alpha = alpha
@@ -151,13 +147,10 @@ class Neuron_LIF():
 
     def calc_synaptic_input(self, i):
         # recording fire time (positive edge)
-        if self.V[i, self.curstep - 1] <= 0 and self.V[i, self.curstep] > 0 and self.curstep * self.dt > 200:
+        if self.Vi[i] >= self.Vth and self.curstep * self.dt > 200:
             self.t_fire[i, :] = self.t_fire[i, :]
             self.t_fire[i, :] = self.curstep * self.dt
             self.t_fire_list[i, self.curstep] = 50
-        # sum of the synaptic current for each neuron
-
-        if self.Vi[i] >= self.Vth:
             self.Vi[i] = self.erest
 
         if self.syn_type == 1:
@@ -265,13 +258,13 @@ class Neuron_LIF():
         # 1 : gaussian white
         # 2 : Ornstein-Uhlenbeck process
         # 3 : sin wave
-        if self.noise == 1:
+        if self.noise_type == 1:
             self.Inoise[:, self.curstep + 1] = self.D * self.dWt[:, self.curstep]
-        elif self.noise == 2:
+        elif self.noise_type == 2:
             self.Inoise[:, self.curstep + 1] = (self.Inoisei +
                                                 (-self.alpha * (self.Inoisei - self.beta) * self.dt
                                                  + self.D * self.dWt[:, self.curstep]))
-        elif self.noise == 3:
+        elif self.noise_type == 3:
             self.Inoise[:, self.curstep + 1] = (self.alpha *
                                                 np.sin(np.pi *
                                                        self.curstep / (1000 / self.dt)))
@@ -287,4 +280,3 @@ class Neuron_LIF():
         # update original array
         self.Inoise[:, self.curstep] = self.Inoisei
         self.curstep += 1
-        

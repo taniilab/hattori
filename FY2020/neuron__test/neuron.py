@@ -13,7 +13,7 @@ class Neuron_HH():
                  tau_syn=5.26, esyn=0, gsyn=0.025, tau_max=608, eCa=120, gtCa=0.4, glCa=0.0001,
                  gpNa=0, gkCa=0,
                  Iext_amp=0, Pmax_AMPA=0, Pmax_NMDA=0,
-                 Iext_num=0, noise=0, ramda=-10, alpha=0.5,
+                 Iext_num=0, noise_type=0, ramda=-10, alpha=0.5,
                  beta=0, D=1, ratio=0.5, Mg_conc=1,
                  U_SE_AMPA=0.3, U_SE_NMDA=0.03, tau_rise_AMPA=0.9, tau_rise_NMDA=70, tau_rec_AMPA=200, tau_rec_NMDA=200,
                  tau_inact_AMPA=5, tau_inact_NMDA=30):
@@ -23,7 +23,7 @@ class Neuron_HH():
                              tau_syn, esyn, gsyn, tau_max, eCa, gtCa, glCa,
                              gpNa, gkCa,
                              Iext_amp, Pmax_AMPA, Pmax_NMDA,
-                             Iext_num, noise, ramda, alpha,
+                             Iext_num, noise_type, ramda, alpha,
                              beta, D, ratio, Mg_conc,
                              U_SE_AMPA, U_SE_NMDA, tau_rise_AMPA, tau_rise_NMDA, tau_rec_AMPA, tau_rec_NMDA,
                              tau_inact_AMPA, tau_inact_NMDA)
@@ -33,7 +33,7 @@ class Neuron_HH():
                         tau_syn=5.26, esyn=0, gsyn=0.025, tau_max=608, eCa=120, gtCa=0.4, glCa=0.0001,
                         gpNa=0, gkCa=0,
                         Iext_amp=0, Pmax_AMPA=0, Pmax_NMDA=0,
-                        Iext_num=0, noise=0, ramda=-10, alpha=0.5,
+                        Iext_num=0, noise_type=0, ramda=-10, alpha=0.5,
                         beta=0, D=1, ratio=0.5, Mg_conc=1,
                         U_SE_AMPA=0.3, U_SE_NMDA=0.03, tau_rise_AMPA=0.9, tau_rise_NMDA=70, tau_rec_AMPA=200,
                         tau_rec_NMDA=200, tau_inact_AMPA=5, tau_inact_NMDA=30):
@@ -129,10 +129,11 @@ class Neuron_HH():
         #self.Syn_weight = np.ones((self.N, self.N))
         #self.Syn_weight = np.identity(self.N)
         self.Syn_weight = np.zeros((self.N, self.N))
+        """
         self.Syn_weight[0, 1] = 1
         self.Syn_weight[1, 2] = 1
         self.Syn_weight[2, 0] = 1
-
+        """
         # synaptic current
         self.Isyn = np.zeros((self.N, self.allsteps))
         self.INMDA = np.zeros((self.N, self.allsteps))
@@ -174,7 +175,7 @@ class Neuron_HH():
         self.curstep = 0
 
         # noise
-        self.noise = noise
+        self.noise_type = noise_type
         self.Inoise = np.zeros((self.N, self.allsteps))
 
         self.dn = np.zeros((self.N, self.allsteps))
@@ -379,13 +380,13 @@ class Neuron_HH():
         # 1 : gaussian white
         # 2 : Ornstein-Uhlenbeck process
         # 3 : sin wave
-        if self.noise == 1:
+        if self.noise_type == 1:
             self.Inoise[:, self.curstep + 1] = self.D * self.dWt[:, self.curstep]
-        elif self.noise == 2:
+        elif self.noise_type == 2:
             self.Inoise[:, self.curstep + 1] = (self.Inoisei +
                                                 (-self.alpha * (self.Inoisei - self.beta) * self.dt
                                                  + self.D * self.dWt[:, self.curstep]))
-        elif self.noise == 3:
+        elif self.noise_type == 3:
             self.Inoise[:, self.curstep + 1] = (self.alpha *
                                                 np.sin(np.pi *
                                                        self.curstep / (1000 / self.dt)))

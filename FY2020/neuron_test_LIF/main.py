@@ -17,6 +17,8 @@ starttime = time.time()
 elapsed_time = 0
 save_path = "Z:/simulation/test"
 process = 6 #number of processors
+
+#parameters#
 numneu = 1
 simtime = 5000
 deltatime = 0.04
@@ -26,7 +28,7 @@ class Main():
         self.parm = []
 
         #combination
-        self.i = 6
+        self.i = 12
         self.j = 1
         self.k = 1
         self.l = 1
@@ -44,14 +46,12 @@ class Main():
             self.parm[self.parm_counter] = {'N': numneu,
                                             'T': simtime,
                                             'dt': deltatime,
-                                            'Iext_amp': 10,
+                                            'Iext_amp': round(10+i*10, 2),
                                             'syn_type': 4,
                                             'Pmax': 0.5,
-                                            'noise': 2,
-                                            'alpha': 0,
-                                            'beta': 0,
-                                            'D': 0,
-                                            'delay': 0}
+                                            'tau_syn': 5.26,
+                                            'noise_type': 1,
+                                            'D': 0.5}
             self.parm_counter += 1
             self.overall_steps = int(self.i*self.j*self.k*self.l*simtime/(deltatime*process))
 
@@ -100,12 +100,13 @@ def main():
             res[k].parm_dict = res[k].parm_dict.replace('\'', '')
             res[k].parm_dict = res[k].parm_dict.replace(',', '_')
 
-            filename = "{0}_{1}_{2}_{3}_{4}_{5}_LIF.csv".format(d.year,
-                                                                d.month,
-                                                                d.day,
-                                                                d.hour,
-                                                                d.minute,
-                                                                d.second)
+            filename = "{0}_{1}_{2}_{3}_{4}_{5}Iext_amp{6}_LIF_.csv".format(d.year,
+                                                                        d.month,
+                                                                        d.day,
+                                                                        d.hour,
+                                                                        d.minute,
+                                                                        d.second,
+                                                                        res[k].Iext_amp)
             df = pd.DataFrame()
             for j in range(numneu):
                 df['T_{} [ms]'.format(j)]       = res[k].Tsteps

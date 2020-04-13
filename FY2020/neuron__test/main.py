@@ -18,7 +18,7 @@ elapsed_time = 0
 save_path = "Z:/simulation/test"
 process = 6 #number of processors
 numneu = 1
-simtime = 1000
+simtime = 2000
 deltatime = 0.04
 
 class Main():
@@ -46,7 +46,7 @@ class Main():
                                             'dt': deltatime,
                                             'Iext_amp': 10,
                                             'syn_type': 6,
-                                            'noise': 2,
+                                            'noise_type': 2,
                                             'gpNa': 0,
                                             'gkCa': 0,
                                             'Pmax_AMPA': round(i*0.1, 2),
