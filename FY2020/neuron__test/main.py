@@ -17,7 +17,7 @@ starttime = time.time()
 elapsed_time = 0
 save_path = "Z:/simulation/test"
 process = 6 #number of processors
-numneu = 10
+numneu = 1
 simtime = 1000
 deltatime = 0.04
 
