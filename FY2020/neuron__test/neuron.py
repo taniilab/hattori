@@ -138,7 +138,6 @@ class Neuron_HH():
         self.Isyn = np.zeros((self.N, self.allsteps))
         self.INMDA = np.zeros((self.N, self.allsteps))
         self.IAMPA = np.zeros((self.N, self.allsteps))
-        self.Isyn_hist = np.zeros((self.N, self.N, 5))
 
         # synaptic conductance
         self.gsyn = np.zeros((self.N, self.N))
@@ -230,7 +229,6 @@ class Neuron_HH():
     def calc_synaptic_input(self, i):
         # recording fire time (positive edge)
         if self.V[i, self.curstep - 1] <= 0 and self.V[i, self.curstep] > 0 and self.curstep * self.dt > 200:
-            self.t_fire[i, :] = self.t_fire[i, :]
             self.t_fire[i, :] = self.curstep * self.dt
             self.t_fire_list[i, self.curstep] = 50
         # sum of the synaptic current for each neuron
@@ -241,7 +239,7 @@ class Neuron_HH():
         elif self.syn_type == 3:
             pass
 
-        # alpha function
+        # alpha synapse
         elif self.syn_type == 4:
             for j in range(0, self.N):
                 self.gsyn[i, j] = \
