@@ -8,37 +8,29 @@ import numpy as np
 
 
 class Neuron_HH():
-    def __init__(self, delay=20, syn_type=1, N=1, dt=0.05, T=1000, Vth=-56.2,
-                 Iext_amp=0, Pmax_AMPA=0, Pmax_NMDA=0,
-                 Iext_num=0, noise=0, alpha=0.5,
-                 beta=0, D=1, ratio=0.5,
+    def __init__(self, delay=20, syn_type=1, N=1, dt=0.05, T=1000, Cm=1, Vth=-56.2, Erest=-70,
+                 Iext_amp=0, Pmax_AMPA=0, Pmax_NMDA=0, tau_syn=5.26, esyn=0, gsyn=0,
+                 noise=0, alpha=0.5,
+                 beta=0, D=1, ratio=0.5, Mg_conc=1,
                  U_SE_AMPA=0.3, U_SE_NMDA=0.03, tau_rise_AMPA=0.9, tau_rise_NMDA=70, tau_rec_AMPA=200, tau_rec_NMDA=200,
                  tau_inact_AMPA=5, tau_inact_NMDA=30):
 
-        self.set_neuron_palm(delay, syn_type, N, dt, T, Cm, Vth,
-                             eNa, gNa, eK, gK, eL, gL, gM,
-                             tau_syn, esyn, gsyn, tau_max, eCa, gtCa, glCa,
-                             gpNa, gkCa,
-                             Iext_amp, Pmax_AMPA, Pmax_NMDA,
-                             Iext_num, noise, alpha,
+        self.set_neuron_palm(delay, syn_type, N, dt, T, Cm, Vth, Erest,
+                             Iext_amp, Pmax_AMPA, Pmax_NMDA, tau_syn, esyn, gsyn,
+                             noise, alpha,
                              beta, D, ratio, Mg_conc,
                              U_SE_AMPA, U_SE_NMDA, tau_rise_AMPA, tau_rise_NMDA, tau_rec_AMPA, tau_rec_NMDA,
                              tau_inact_AMPA, tau_inact_NMDA)
 
-    def set_neuron_palm(self, delay=20, syn_type=1, N=1, dt=0.05, T=5000, Cm=1, Vth=-56.2,
-                        eNa=50, gNa=56, eK=-90, gK=5, eL=-70.3, gL=0.0205, gM=0.075,
-                        tau_syn=5.26, esyn=0, gsyn=0.025, tau_max=608, eCa=120, gtCa=0.4, glCa=0.0001,
-                        gpNa=0, gkCa=0,
-                        Iext_amp=0, Pmax_AMPA=0, Pmax_NMDA=0,
-                        Iext_num=0, noise=0, alpha=0.5,
-                        beta=0, D=1, ratio=0.5, Mg_conc=4,
-                        U_SE_AMPA=0.3, U_SE_NMDA=0.03, tau_rise_AMPA=0.9, tau_rise_NMDA=70, tau_rec_AMPA=200,
-                        tau_rec_NMDA=200, tau_inact_AMPA=5, tau_inact_NMDA=30):
+    def set_neuron_palm(self, delay=20, syn_type=1, N=1, dt=0.05, T=1000, Cm=1, Vth=-56.2, Erest=-70,
+                 Iext_amp=0, Pmax_AMPA=0, Pmax_NMDA=0, tau_syn=5.26, esyn=0, gsyn=0,
+                 noise=0, alpha=0.5,
+                 beta=0, D=1, ratio=0.5, Mg_conc=1,
+                 U_SE_AMPA=0.3, U_SE_NMDA=0.03, tau_rise_AMPA=0.9, tau_rise_NMDA=70, tau_rec_AMPA=200, tau_rec_NMDA=200,
+                 tau_inact_AMPA=5, tau_inact_NMDA=30):
 
-        self.delay = delay
         # parameters (used by main.py)
         self.parm_dict = {}
-        self.ratio = ratio
 
         # type of synaptic coupling
         self.syn_type = syn_type
@@ -56,73 +48,9 @@ class Neuron_HH():
         # HH model
         self.Cm = Cm
         self.Vth = Vth
+        self.Erest = Erest
         self.V = -65 * np.ones((self.N, self.allsteps))
         self.k1V = 0 * np.ones(self.N)
-
-        # sodium
-        self.INa = 0 * np.ones((self.N, self.allsteps))
-        self.eNa = eNa * np.ones(self.N)
-        self.gNa = gNa * np.ones(self.N)
-        self.m = 0.5 * np.ones((self.N, self.allsteps))
-        self.h = 0.06 * np.ones((self.N, self.allsteps))
-        self.alpha_m = 0 * np.ones((self.N, self.allsteps))
-        self.alpha_h = 0 * np.ones((self.N, self.allsteps))
-        self.beta_m = 0 * np.ones((self.N, self.allsteps))
-        self.beta_h = 0 * np.ones((self.N, self.allsteps))
-        self.k1m = 0 * np.ones(self.N)
-        self.k1h = 0 * np.ones(self.N)
-        # persistent sodium
-        self.IpNa = 0 * np.ones((self.N, self.allsteps))
-        self.gpNa = gpNa * np.ones(self.N)
-        self.pna = 0.06 * np.ones((self.N, self.allsteps))
-        self.alpha_pna = 0 * np.ones((self.N, self.allsteps))
-        self.beta_pna = 0 * np.ones((self.N, self.allsteps))
-        # potassium
-        self.IK = 0 * np.ones((self.N, self.allsteps))
-        self.eK = eK * np.ones(self.N)
-        self.gK = gK * np.ones(self.N)
-        self.n = 0.5 * np.ones((self.N, self.allsteps))
-        self.alpha_n = 0 * np.ones((self.N, self.allsteps))
-        self.beta_n = 0 * np.ones((self.N, self.allsteps))
-        self.k1n = 0 * np.ones(self.N)
-        # leak
-        self.Ileak = 0 * np.ones((self.N, self.allsteps))
-        self.eL = eL * np.ones(self.N)
-        self.gL = gL * np.ones(self.N)
-        # slow voltage-dependent potassium
-        self.Im = 0 * np.ones((self.N, self.allsteps))
-        self.gM = gM * np.ones(self.N)
-        self.p = 0.5 * np.ones((self.N, self.allsteps))
-        self.p_inf = 0 * np.ones((self.N, self.allsteps))
-        self.tau_p = 0 * np.ones((self.N, self.allsteps))
-        self.tau_max = tau_max
-        self.k1p = 0 * np.ones(self.N)
-        # T type calcium
-        self.ItCa = 0 * np.ones((self.N, self.allsteps))
-        self.eCa = eCa * np.ones(self.N)
-        self.gtCa = gtCa * np.ones(self.N)
-        self.u = 0.5 * np.ones((self.N, self.allsteps))
-        self.s_inf = 0 * np.ones((self.N, self.allsteps))
-        self.u_inf = 0 * np.ones((self.N, self.allsteps))
-        self.tau_u = 0 * np.ones((self.N, self.allsteps))
-        self.k1u = 0 * np.ones(self.N)
-        # L type calcium
-        self.IlCa = 0 * np.ones((self.N, self.allsteps))
-        self.glCa = glCa * np.ones(self.N)
-        self.q = 0.5 * np.ones((self.N, self.allsteps))
-        self.r = 0.5 * np.ones((self.N, self.allsteps))
-        self.alpha_q = 0 * np.ones((self.N, self.allsteps))
-        self.alpha_r = 0 * np.ones((self.N, self.allsteps))
-        self.beta_q = 0 * np.ones((self.N, self.allsteps))
-        self.beta_r = 0 * np.ones((self.N, self.allsteps))
-        self.k1q = 0 * np.ones(self.N)
-        self.k1r = 0 * np.ones(self.N)
-        # Ca activated K
-        self.IkCa = 0 * np.ones((self.N, self.allsteps))
-        self.gkCa = gkCa * np.ones(self.N)
-        self.ca_influx = 0 * np.ones((self.N, self.allsteps))
-        self.tau_ca_influx = 2700
-        self.ca_influx_step = 100
 
         # connection relationship
         #self.Syn_weight = np.ones((self.N, self.N))
@@ -145,17 +73,13 @@ class Neuron_HH():
 
         # synaptic reversal potential
         self.esyn = esyn * np.ones((self.N, self.N))
-        self.tau_syn = tau_syn
-        self.Mg_conc = Mg_conc
-
-        # maximal synaptic conductance
         self.Pmax_AMPA = Pmax_AMPA
         self.Pmax_NMDA = Pmax_NMDA
 
         # external input
         self.Iext_amp = Iext_amp
         self.Iext = np.zeros((self.N, self.allsteps))
-        self.Iext[0, int(1000 / self.dt):int(1005 / self.dt)] = self.Iext_amp
+        self.Iext[0, int(1000 / self.dt):int(3000 / self.dt)] = self.Iext_amp
         """
         self.Iext[0, int(220/self.dt):int(225/self.dt)] = self.Iext_amp
         self.Iext[0, int(240/self.dt):int(245/self.dt)] = self.Iext_amp
@@ -172,10 +96,9 @@ class Neuron_HH():
         # current step
         self.curstep = 0
 
-        # noise palameter
+        # noise
         self.noise = noise
         self.Inoise = np.zeros((self.N, self.allsteps))
-
         self.dn = np.zeros((self.N, self.allsteps))
         self.alpha = alpha
         self.beta = beta
@@ -183,6 +106,7 @@ class Neuron_HH():
         self.dWt = np.random.normal(0, self.dt ** (1 / 2), (self.N, self.allsteps))
 
         # dynamic synapse
+        self.delay = delay
         self.R_AMPA = np.ones((self.N, self.N, self.allsteps))
         self.R_NMDA = np.ones((self.N, self.N, self.allsteps))
         self.E_AMPA = np.zeros((self.N, self.N, self.allsteps))
@@ -208,6 +132,7 @@ class Neuron_HH():
             return 0
         else:
             return (self.Pmax * t / self.tau_syn) * np.exp(-t / self.tau_syn)
+
 
     def biexp_func(self, t, Pmax, t_rise, t_fall):
         if t < 0:
@@ -313,59 +238,9 @@ class Neuron_HH():
     def propagation(self):
         # slice
         self.Vi = self.V[:, self.curstep]
-        # sodium
-        self.INai = self.INa[:, self.curstep]
-        self.mi = self.m[:, self.curstep]
-        self.hi = self.h[:, self.curstep]
-        self.alpha_mi = self.alpha_m[:, self.curstep]
-        self.beta_mi = self.beta_m[:, self.curstep]
-        self.alpha_hi = self.alpha_h[:, self.curstep]
-        self.beta_hi = self.beta_h[:, self.curstep]
-        # persistent sodium
-        """
-        self.IpNai = self.IpNa[:, self.curstep]
-        self.pnai = self.pna[:, self.curstep]
-        self.alpha_pnai = self.alpha_pna[:, self.curstep]
-        self.beta_pnai = self.beta_pna[:, self.curstep]
-        """
-        # potassium
-        self.IKi = self.IK[:, self.curstep]
-        self.ni = self.n[:, self.curstep]
-        self.alpha_ni = self.alpha_n[:, self.curstep]
-        self.beta_ni = self.beta_n[:, self.curstep]
-        # slow voltage dependent potassium
-        self.Imi = self.Im[:, self.curstep]
-        self.pi = self.p[:, self.curstep]
-        self.p_infi = self.p_inf[:, self.curstep]
-        self.tau_pi = self.tau_p[:, self.curstep]
-        # leak
-        self.Ileaki = self.Ileak[:, self.curstep]
-        # T type calcium
-        """
-        self.ItCai = self.ItCa[:, self.curstep]
-        self.ui = self.u[:, self.curstep]
-        self.s_infi = self.s_inf[:, self.curstep]
-        self.u_infi = self.u_inf[:, self.curstep]
-        self.tau_ui = self.tau_u[:, self.curstep]
-        """
-        # L type calcium
-        """
-        self.IlCai = self.IlCa[:, self.curstep]
-        self.qi = self.u[:, self.curstep]
-        self.ri = self.u[:, self.curstep]
-        self.alpha_qi = self.alpha_n[:, self.curstep]
-        self.beta_qi = self.beta_n[:, self.curstep]
-        self.alpha_ri = self.alpha_n[:, self.curstep]
-        self.beta_ri = self.beta_n[:, self.curstep]
-        """
-        # Ka activated calcium
-        self.IkCai = self.IkCa[:, self.curstep]
-        self.ca_influxi = self.ca_influx[:, self.curstep]
-        # synapse
         self.Isyni = self.Isyn[:, self.curstep]
         self.INMDAi = self.INMDA[:, self.curstep]
         self.IAMPAi = self.IAMPA[:, self.curstep]
-        # synaptic noise
         self.Inoisei = self.Inoise[:, self.curstep]
 
         # calculate synaptic input
@@ -390,108 +265,19 @@ class Neuron_HH():
             pass
 
         # ODE
-        # sodium
-        self.alpha_mi = self.activation_func_ReLUlike(-0.32, self.Vth + 13, -1 / 4, self.Vth + 13, self.Vi)
-        self.beta_mi = self.activation_func_ReLUlike(0.28, self.Vth + 40, 1 / 5, self.Vth + 40, self.Vi)
-        self.alpha_hi = self.activation_func_exp(0.128, -1 / 18, self.Vth + 17, self.Vi)
-        self.beta_hi = self.activation_func_sigmoid(4, -1 / 5, self.Vth + 40, self.Vi)
-        self.INai = self.gNa * self.mi ** 3 * self.hi * (self.eNa - self.Vi)
-        # persistent sodium
-        """
-        self.alpha_pnai = self.activation_func_ReLUlike(-0.0353, -27, -1/10.2, -27, self.Vi)
-        self.beta_pnai = self.activation_func_ReLUlike(0.000883, -34, 1/10, -34, self.Vi)
-        self.IpNai = self.gpNa * self.pnai**3 * (self.eNa - self.Vi)
-        """
-        # potassium
-        self.alpha_ni = self.activation_func_ReLUlike(-0.032, self.Vth + 15, -1 / 5, self.Vth + 15, self.Vi)
-        self.beta_ni = self.activation_func_exp(0.5, -1 / 40, self.Vth + 10, self.Vi)
-        self.IKi = self.gK * self.ni ** 4 * (self.eK - self.Vi)
-        # slow voltage dependent potassium
-        self.Imi = self.gM * self.pi * (self.eK - self.Vi)
-        # leak
-        self.Ileaki = self.gL * (self.eL - self.Vi)
-        self.p_infi = self.activation_func_sigmoid(1, -1 / 10, -35, self.Vi)
-        self.tau_pi = (self.tau_max /
-                       (3.3 * np.exp((self.Vi + 35) / 20) +
-                        np.exp(-(self.Vi + 35) / 20)))
+        self.k1V = (self.Isyni + self.Iext[:, self.curstep] + self.Inoisei)
 
-        # T type calcium
-        """
-
-        self.s_infi = self.activation_func_sigmoid(1, -1/6.2, -2-57, self.Vi)
-        self.u_infi = self.activation_func_sigmoid(1, 1/4, -2-81, self.Vi)
-        self.tau_ui = (30.8 + (211.4 + np.exp(np.clip((self.Vi+2+113.2)/5, -709, 10000))) /
-               (3.7 * (1 + np.exp(np.clip((self.Vi+2+84)/3.2, -709, 10000)))))
-        self.ItCai = self.gtCa * self.s_infi**2 * self.ui * (self.eCa - self.Vi)
-        """
-        # L type calcium
-        """
-        self.alpha_qi = self.activation_func_ReLUlike(-0.055, -27, -1/3.8, -27, self.Vi)
-        self.beta_qi = self.activation_func_exp(0.94, -1/17, -75, self.Vi)
-        self.alpha_ri = self.activation_func_exp(0.000457, -1/50, -13, self.Vi)
-        self.beta_ri = self.activation_func_sigmoid(0.0065, 1/28, -15, self.Vi)
-        self.IlCai = self.glCa * self.qi**2 * self.ri * (self.eCa - self.Vi)
-        """
-        # K activated calcium
-        self.IkCai = self.gkCa * self.ca_influxi * (self.eK - self.Vi)
-
-        self.k1V = (self.INai +
-                    self.IKi +
-                    self.Ileaki +
-                    self.Imi +
-                    self.Isyni +
-                    self.IkCai +
-                    self.Iext[:, self.curstep] +
-                    self.Inoisei)
-
+        #transient state
         if (self.curstep * self.dt) < 200:
             self.k1V -= self.Isyni
-        self.k1m = self.alpha_mi * (1 - self.mi) - self.beta_mi * self.mi
-        self.k1h = self.alpha_hi * (1 - self.hi) - self.beta_hi * self.hi
-        # self.k1pna = self.alpha_pnai * (1 - self.pnai) - self.beta_pnai * self.pnai
-        self.k1n = self.alpha_ni * (1 - self.ni) - self.beta_ni * self.ni
-        self.k1p = (self.p_infi - self.pi) / self.tau_pi
-
-        """
-        self.k1u = (self.u_infi - self.ui) / self.tau_ui
-        self.k1q = self.alpha_qi * (1-self.qi) - self.beta_qi * self.qi
-        self.k1r = self.alpha_ri * (1-self.ri) - self.beta_ri * self.ri
-        """
 
         # first order Euler method
         self.V[:, self.curstep + 1] = self.Vi + self.k1V * self.dt
-        self.m[:, self.curstep + 1] = self.mi + self.k1m * self.dt
-        self.h[:, self.curstep + 1] = self.hi + self.k1h * self.dt
-        # self.pna[:, self.curstep+1] = self.pnai + self.k1pna * self.dt
-        self.n[:, self.curstep + 1] = self.ni + self.k1n * self.dt
-        self.p[:, self.curstep + 1] = self.pi + self.k1p * self.dt
-        if self.V[i, self.curstep - 1] > 0 and self.V[i, self.curstep] <= 0 and self.curstep * self.dt > 200:
-            self.ca_influx[:, self.curstep + 1] = self.ca_influxi - (
-                    self.ca_influxi / self.tau_ca_influx) + self.dt + self.ca_influx_step
-        else:
-            self.ca_influx[:, self.curstep + 1] = self.ca_influxi - (self.ca_influxi / self.tau_ca_influx) + self.dt
-        """
-        self.u[:, self.curstep+1] = self.ui + self.k1u * self.dt
-        self.q[:, self.curstep+1] = self.qi + self.k1q * self.dt
-        self.r[:, self.curstep+1] = self.ri + self.k1r * self.dt
-        self.V[:, self.curstep+1] = self.Vi + self.k1V * self.dt
-        """
+
+        if self.V[:, self.curstep + 1] >= self.Vth:
+            self.V[:, self.curstep + 1] = self.Vrest
 
         # update original array
-        self.INa[:, self.curstep] = self.INai
-        # self.IpNa[:, self.curstep] = self.IpNai
-        self.IK[:, self.curstep] = self.IKi
-        self.Im[:, self.curstep] = self.Imi
-        self.Ileak[:, self.curstep] = self.Ileaki
-        self.IkCa[:, self.curstep] = self.IkCai
-        self.ca_influx[:, self.curstep] = self.ca_influxi
-
-        """
-        self.ItCa[:, self.curstep] = self.ItCai
-        self.s_inf[:, self.curstep] = self.s_infi
-        self.u_inf[:, self.curstep] = self.u_infi
-        self.tau_u[:, self.curstep] = self.tau_ui
-        self.IlCa[:, self.curstep] = self.IlCai
-        """
         self.Inoise[:, self.curstep] = self.Inoisei
+
         self.curstep += 1

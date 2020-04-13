@@ -17,7 +17,7 @@ starttime = time.time()
 elapsed_time = 0
 save_path = "Z:/simulation/test"
 process = 6 #number of processors
-numneu = 20
+numneu = 10
 simtime = 1000
 deltatime = 0.04
 
@@ -153,52 +153,13 @@ def main():
         main.process_counter += process
         main.now_cycle_multiproc += 1
 
-    # sample plotting
-    """
-    for i in range(0, process):
-        # initialize
-        ax = []
-        lines = []
-        tm = np.arange(0, res[i].allsteps*res[i].dt, res[i].dt)
 
-        # matrix
-        fig = plt.figure(figsize=(12, 12))
-        gs = grs.GridSpec(4, res[i].N)
-
-        for j in range(0, res[i].N):
-            ax.append(plt.subplot(gs[0, j]))
-            ax.append(plt.subplot(gs[1, j]))
-            ax.append(plt.subplot(gs[2, j]))
-            ax.append(plt.subplot(gs[3, j]))
-
-        # plot
-        for j in range(0, res[i].N):
-            lines.append([])
-            lines[j], = ax[j].plot(tm, res[i].V[j], color="indigo",
-                                   markevery=[0, -1])
-
-        ax[res[i].N].plot(tm, res[i].INa[0], color="coral", markevery=[0, -1])
-
-        ax[res[i].N+1].plot(tm, res[i].INMDA[0], color="coral",
-                           markevery=[0, -1])
-
-        ax[res[i].N+2].plot(tm, res[i].ca_influx[0], color="coral",
-                           markevery=[0, -1])
-        fig.tight_layout()
-    plt.show()
-    """
     d = datetime.datetime.today()
     print("{0}/{1}/{2}/{3}:{4}:{5}".format(d.year, d.month, d.day, d.hour, d.minute, d.second))
     elapsed_time = time.time() - starttime
     #pic = Picture(save_path)
     #pic.run()
-
     print("elapsed_time:{0}".format(elapsed_time) + "[sec]")
-    """
-    print("")
-    print("終了するには何かキーを押してください . . .")
-    input()
-    """
 
 if __name__ == '__main__':
      main()

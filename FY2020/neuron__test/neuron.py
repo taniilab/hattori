@@ -14,7 +14,7 @@ class Neuron_HH():
                  gpNa=0, gkCa=0,
                  Iext_amp=0, Pmax_AMPA=0, Pmax_NMDA=0,
                  Iext_num=0, noise=0, ramda=-10, alpha=0.5,
-                 beta=0, D=1, ratio=0.5, Mg_conc=4,
+                 beta=0, D=1, ratio=0.5, Mg_conc=1,
                  U_SE_AMPA=0.3, U_SE_NMDA=0.03, tau_rise_AMPA=0.9, tau_rise_NMDA=70, tau_rec_AMPA=200, tau_rec_NMDA=200,
                  tau_inact_AMPA=5, tau_inact_NMDA=30):
 
@@ -34,14 +34,12 @@ class Neuron_HH():
                         gpNa=0, gkCa=0,
                         Iext_amp=0, Pmax_AMPA=0, Pmax_NMDA=0,
                         Iext_num=0, noise=0, ramda=-10, alpha=0.5,
-                        beta=0, D=1, ratio=0.5, Mg_conc=4,
+                        beta=0, D=1, ratio=0.5, Mg_conc=1,
                         U_SE_AMPA=0.3, U_SE_NMDA=0.03, tau_rise_AMPA=0.9, tau_rise_NMDA=70, tau_rec_AMPA=200,
                         tau_rec_NMDA=200, tau_inact_AMPA=5, tau_inact_NMDA=30):
 
-        self.delay = delay
         # parameters (used by main.py)
         self.parm_dict = {}
-        self.ratio = ratio
 
         # type of synaptic coupling
         self.syn_type = syn_type
@@ -175,7 +173,7 @@ class Neuron_HH():
         # current step
         self.curstep = 0
 
-        # noise palameter
+        # noise
         self.noise = noise
         self.Inoise = np.zeros((self.N, self.allsteps))
 
@@ -187,6 +185,7 @@ class Neuron_HH():
         self.dWt = np.random.normal(0, self.dt ** (1 / 2), (self.N, self.allsteps))
 
         # dynamic synapse
+        self.delay = delay
         self.R_AMPA = np.ones((self.N, self.N, self.allsteps))
         self.R_NMDA = np.ones((self.N, self.N, self.allsteps))
         self.E_AMPA = np.zeros((self.N, self.N, self.allsteps))
