@@ -111,7 +111,6 @@ class Neuron_LIF():
             self.t_fire[i, :] = self.curstep * self.dt
             self.t_fire_list[i, self.curstep] = 50
             self.Vi[i] = self.erest-10
-            print(self.t_fire[i, :])
 
         if self.syn_type == 1:
             pass

@@ -15,7 +15,7 @@ process = 4 #number of processors
 
 #parameters#
 numneu = 10
-simtime = 2000
+simtime = 10000
 deltatime = 0.04
 
 class Main():

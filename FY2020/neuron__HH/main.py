@@ -16,7 +16,7 @@ import pandas as pd
 import time
 import datetime
 import itertools
-from picture_multi_thread import Picture
+#from picture_multi_thread import Picture
 #import matplotlib as mpl
 # for overflow error
 #mpl.rcParams['agg.path.chunksize'] = 100000
