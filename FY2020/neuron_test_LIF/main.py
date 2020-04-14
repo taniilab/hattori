@@ -1,8 +1,3 @@
-"""
-Created on Sat May 27 10:49:16 2017
-
-@author: Hattori
-"""
 # coding: UTF-8
 from multiprocessing import Pool
 import os
@@ -16,11 +11,11 @@ import itertools
 starttime = time.time()
 elapsed_time = 0
 save_path = "Z:/simulation/test"
-process = 6 #number of processors
+process = 4 #number of processors
 
 #parameters#
-numneu = 1
-simtime = 5000
+numneu = 10
+simtime = 2000
 deltatime = 0.04
 
 class Main():
@@ -28,8 +23,8 @@ class Main():
         self.parm = []
 
         #combination
-        self.i = 12
-        self.j = 1
+        self.i = 6
+        self.j = 2
         self.k = 1
         self.l = 1
 
@@ -46,12 +41,13 @@ class Main():
             self.parm[self.parm_counter] = {'N': numneu,
                                             'T': simtime,
                                             'dt': deltatime,
-                                            'Iext_amp': round(10+i*10, 2),
+                                            'RmCm': 10000,
+                                            'Iext_amp': round(0.1+i*0.1, 1),
                                             'syn_type': 4,
-                                            'Pmax': 0.5,
+                                            'Pmax': round(0.1+j*0.1, 1),
                                             'tau_syn': 5.26,
                                             'noise_type': 1,
-                                            'D': 0.5}
+                                            'D': 1.0}
             self.parm_counter += 1
             self.overall_steps = int(self.i*self.j*self.k*self.l*simtime/(deltatime*process))
 
@@ -130,8 +126,6 @@ def main():
     d = datetime.datetime.today()
     print("{0}/{1}/{2}/{3}:{4}:{5}".format(d.year, d.month, d.day, d.hour, d.minute, d.second))
     elapsed_time = time.time() - starttime
-    #pic = Picture(save_path)
-    #pic.run()
     print("elapsed_time:{0}".format(elapsed_time) + "[sec]")
 
 if __name__ == '__main__':

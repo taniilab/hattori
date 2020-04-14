@@ -1,8 +1,3 @@
-"""
-Created on Sat May 27 10:49:16 2017
-
-@author: Hattori
-"""
 # coding: UTF-8
 from multiprocessing import Pool
 import os
@@ -16,8 +11,8 @@ import itertools
 starttime = time.time()
 elapsed_time = 0
 save_path = "Z:/simulation/test"
-process = 6 #number of processors
-numneu = 1
+process = 4 #number of processors
+numneu = 10
 simtime = 2000
 deltatime = 0.04
 
@@ -27,7 +22,7 @@ class Main():
 
         #combination
         self.i = 6
-        self.j = 1
+        self.j = 2
         self.k = 1
         self.l = 1
 
@@ -157,8 +152,7 @@ def main():
     d = datetime.datetime.today()
     print("{0}/{1}/{2}/{3}:{4}:{5}".format(d.year, d.month, d.day, d.hour, d.minute, d.second))
     elapsed_time = time.time() - starttime
-    #pic = Picture(save_path)
-    #pic.run()
+
     print("elapsed_time:{0}".format(elapsed_time) + "[sec]")
 
 if __name__ == '__main__':

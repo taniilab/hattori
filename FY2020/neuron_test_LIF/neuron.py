@@ -25,7 +25,6 @@ class Neuron_LIF():
 
         # parameters (used by main.py)
         self.parm_dict = {}
-
         # type of synaptic coupling
         self.syn_type = syn_type
         # number of neuron
@@ -38,33 +37,27 @@ class Neuron_LIF():
         self.Tsteps = np.arange(0, self.T, self.dt)
         # number of time step
         self.allsteps = len(self.Tsteps)
-
         # LIF model
         self.RmCm = RmCm
         self.Vth = Vth
         self.erest = erest
-        self.V = -65 * np.ones((self.N, self.allsteps))
+        self.V = -70 * np.ones((self.N, self.allsteps))
         self.k1V = 0 * np.ones(self.N)
-
         # connection relationship
         self.Syn_weight = np.zeros((self.N, self.N))
         self.Syn_weight[0, 0] = 1
-
         # synaptic current
         self.Isyn = np.zeros((self.N, self.allsteps))
-
         # synaptic conductance
         self.gsyn = np.zeros((self.N, self.N))
-
         # synaptic reversal potential
         self.esyn = esyn * np.ones((self.N, self.N))
         self.Pmax = Pmax
         self.tau_syn = tau_syn
-
         # external input
         self.Iext_amp = Iext_amp
         self.Iext = np.zeros((self.N, self.allsteps))
-        self.Iext[0, int(1000 / self.dt):int(1005 / self.dt)] = self.Iext_amp
+        self.Iext[0, int(1000 / self.dt):int(1100 / self.dt)] = self.Iext_amp
         """
         self.Iext[0, int(220/self.dt):int(225/self.dt)] = self.Iext_amp
         self.Iext[0, int(240/self.dt):int(245/self.dt)] = self.Iext_amp
@@ -73,14 +66,11 @@ class Neuron_LIF():
         self.Iext[0, int(300/self.dt):int(305/self.dt)] = self.Iext_amp
         self.Iext[0, int(320/self.dt):int(325/self.dt)] = self.Iext_amp
         """
-
         # firing time
         self.t_fire = -10000 * np.ones((self.N, self.N))
         self.t_fire_list = np.zeros((self.N, self.allsteps))
-
         # current step
         self.curstep = 0
-
         # noise
         self.noise_type = noise_type
         self.Inoise = np.zeros((self.N, self.allsteps))
@@ -93,10 +83,11 @@ class Neuron_LIF():
     def alpha_function(self, t, Pmax, tau):
         if t < 0:
             return 0
-        elif ((Pmax * t / tau * 0.1) * np.exp(-t / tau * 0.1)) < 0.00001:
+        elif ((Pmax * t / tau) * np.exp(-t / tau)) < 0.00001:
             return 0
         else:
-            return (self.Pmax * t / tau) * np.exp(-t / tau)
+            #print("pippi")
+            return (Pmax * t / tau) * np.exp(-t / tau)
 
     """
     def biexp_func(self, t, Pmax, t_rise, t_fall):
@@ -119,7 +110,8 @@ class Neuron_LIF():
         if self.Vi[i] >= self.Vth and self.curstep * self.dt > 200:
             self.t_fire[i, :] = self.curstep * self.dt
             self.t_fire_list[i, self.curstep] = 50
-            self.Vi[i] = self.erest
+            self.Vi[i] = self.erest-10
+            print(self.t_fire[i, :])
 
         if self.syn_type == 1:
             pass
@@ -168,7 +160,4 @@ class Neuron_LIF():
         self.k1V = (1/self.RmCm)*(self.erest-self.Vi) + self.Isyni + self.Iext[:, self.curstep] + self.Inoisei
         self.V[:, self.curstep + 1] = self.Vi + self.k1V * self.dt
 
-        # update original array
-        # I can't remember why I put it in!!!
-        #self.Inoise[:, self.curstep] = self.Inoisei
         self.curstep += 1
