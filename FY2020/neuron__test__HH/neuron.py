@@ -130,10 +130,11 @@ class Neuron_HH():
         #self.Syn_weight = np.identity(self.N)
         self.Syn_weight = np.zeros((self.N, self.N))
 
+        """
         self.Syn_weight[0, 1] = 1
         self.Syn_weight[1, 2] = 1
         self.Syn_weight[2, 0] = 1
-
+        """
         # synaptic current
         self.Isyn = np.zeros((self.N, self.allsteps))
         self.INMDA = np.zeros((self.N, self.allsteps))
