@@ -8,17 +8,17 @@ import numpy as np
 
 
 class Neuron_LIF():
-    def __init__(self, delay=20, syn_type=1, N=1, dt=0.05, T=1000, RmCm=0.1, Vth=-56.2, erest=-70,
+    def __init__(self, delay=20, syn_type=1, N=1, dt=0.05, T=1000, Cm=1, G_L=25, Vth=-56.2, erest=-70,
                  Iext_amp=0, Pmax=0, Pmax_AMPA=0, Pmax_NMDA=0, tau_syn=5.26, esyn=0, gsyn=0,
                  noise_type=0, alpha=0.5,
                  beta=0, D=1):
 
-        self.set_neuron_palm(delay, syn_type, N, dt, T, RmCm, Vth, erest,
+        self.set_neuron_palm(delay, syn_type, N, dt, T, Cm, G_L, Vth, erest,
                              Iext_amp, Pmax, Pmax_AMPA, Pmax_NMDA, tau_syn, esyn, gsyn,
                              noise_type, alpha,
                              beta, D)
 
-    def set_neuron_palm(self, delay=20, syn_type=1, N=1, dt=0.05, T=1000, RmCm=0.1, Vth=-56.2, erest=-70,
+    def set_neuron_palm(self, delay=20, syn_type=1, N=1, dt=0.05, T=1000, Cm=1, G_L=25, Vth=-56.2, erest=-70,
                  Iext_amp=0, Pmax=0, Pmax_AMPA=0, Pmax_NMDA=0, tau_syn=5.26, esyn=0, gsyn=0,
                  noise_type=0, alpha=0.5,
                  beta=0, D=1):
@@ -38,7 +38,8 @@ class Neuron_LIF():
         # number of time step
         self.allsteps = len(self.Tsteps)
         # LIF model
-        self.RmCm = RmCm
+        self.Cm = Cm
+        self.G_L = G_L
         self.Vth = Vth
         self.erest = erest
         self.V = -70 * np.ones((self.N, self.allsteps))
@@ -57,7 +58,7 @@ class Neuron_LIF():
         # external input
         self.Iext_amp = Iext_amp
         self.Iext = np.zeros((self.N, self.allsteps))
-        self.Iext[0, int(1000 / self.dt):int(1100 / self.dt)] = self.Iext_amp
+        self.Iext[0, int(500 / self.dt):int(700 / self.dt)] = self.Iext_amp
         """
         self.Iext[0, int(220/self.dt):int(225/self.dt)] = self.Iext_amp
         self.Iext[0, int(240/self.dt):int(245/self.dt)] = self.Iext_amp
@@ -156,7 +157,7 @@ class Neuron_LIF():
             pass
 
         # ODE-first order Euler method
-        self.k1V = (1/self.RmCm)*(self.erest-self.Vi) + self.Isyni + self.Iext[:, self.curstep] + self.Inoisei
+        self.k1V = (self.G_L*(self.erest-self.Vi) + self.Isyni + self.Iext[:, self.curstep] + self.Inoisei)/self.Cm
         self.V[:, self.curstep + 1] = self.Vi + self.k1V * self.dt
 
         self.curstep += 1

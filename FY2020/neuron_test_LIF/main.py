@@ -11,11 +11,11 @@ import itertools
 starttime = time.time()
 elapsed_time = 0
 save_path = "Z:/simulation/test"
-process = 4 #number of processors
+process = 6 #number of processors
 
 #parameters#
-numneu = 10
-simtime = 10000
+numneu = 2
+simtime = 1000
 deltatime = 0.04
 
 class Main():
@@ -23,8 +23,8 @@ class Main():
         self.parm = []
 
         #combination
-        self.i = 6
-        self.j = 2
+        self.i = 12
+        self.j = 1
         self.k = 1
         self.l = 1
 
@@ -41,10 +41,11 @@ class Main():
             self.parm[self.parm_counter] = {'N': numneu,
                                             'T': simtime,
                                             'dt': deltatime,
-                                            'RmCm': 10000,
-                                            'Iext_amp': round(0.1+i*0.1, 1),
+                                            'Cm': 1.0,
+                                            'G_L': 0.025,
+                                            'Iext_amp': round(i*0.1, 2),
                                             'syn_type': 4,
-                                            'Pmax': round(0.1+j*0.1, 1),
+                                            'Pmax': round(j*0.1, 2),
                                             'tau_syn': 5.26,
                                             'noise_type': 1,
                                             'D': 1.0}
@@ -96,12 +97,13 @@ def main():
             res[k].parm_dict = res[k].parm_dict.replace('\'', '')
             res[k].parm_dict = res[k].parm_dict.replace(',', '_')
 
-            filename = "{0}_{1}_{2}_{3}_{4}_{5}Iext_amp{6}_LIF_.csv".format(d.year,
+            filename = "{0}_{1}_{2}_{3}_{4}_{5}Iext_amp{6}_Pmax{7}_LIF.csv".format(d.year,
                                                                         d.month,
                                                                         d.day,
                                                                         d.hour,
                                                                         d.minute,
                                                                         d.second,
+                                                                        res[k].Pmax,
                                                                         res[k].Iext_amp)
             df = pd.DataFrame()
             for j in range(numneu):
