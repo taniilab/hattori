@@ -1,7 +1,9 @@
 """
-Created on Wed May 24 11:37:33 2017
-
-@author: Hattori
+***Unit of parameters***
+membrane potential -> mV
+conductance -> mS
+capacitance -> uF
+current -> uA
 """
 # coding: UTF-8
 import numpy as np
@@ -47,6 +49,8 @@ class Neuron_LIF():
         # connection relationship
         self.Syn_weight = np.zeros((self.N, self.N))
         self.Syn_weight[0, 0] = 1
+        #self.Syn_weight[0, 1] = 1
+
         # synaptic current
         self.Isyn = np.zeros((self.N, self.allsteps))
         # synaptic conductance
@@ -58,7 +62,7 @@ class Neuron_LIF():
         # external input
         self.Iext_amp = Iext_amp
         self.Iext = np.zeros((self.N, self.allsteps))
-        self.Iext[0, int(500 / self.dt):int(700 / self.dt)] = self.Iext_amp
+        self.Iext[0, int(150 / self.dt):int(350 / self.dt)] = self.Iext_amp
         """
         self.Iext[0, int(220/self.dt):int(225/self.dt)] = self.Iext_amp
         self.Iext[0, int(240/self.dt):int(245/self.dt)] = self.Iext_amp
@@ -108,11 +112,6 @@ class Neuron_LIF():
 
     def calc_synaptic_input(self, i):
         # recording fire time (positive edge)
-        if self.Vi[i] >= self.Vth and self.curstep * self.dt > 200:
-            self.t_fire[i, :] = self.curstep * self.dt
-            self.t_fire_list[i, self.curstep] = 50
-            self.Vi[i] = self.erest-10
-
         if self.syn_type == 1:
             pass
         elif self.syn_type == 2:
@@ -140,9 +139,21 @@ class Neuron_LIF():
         self.Inoisei = self.Inoise[:, self.curstep]
 
         # calculate synaptic input
-        if (self.curstep * self.dt) > 200:
+        if (self.curstep * self.dt) > 50:
             for i in range(0, self.N):
                 self.calc_synaptic_input(i)
+                # mV
+                if self.Vi[i] >= self.Vth:
+                    self.t_fire[i, :] = self.curstep * self.dt
+                    self.t_fire_list[i, self.curstep] = 50
+                    self.Vi[i] = self.erest-10
+                """
+                # V
+                if self.Vi[i] >= self.Vth:
+                    self.t_fire[i, :] = self.curstep * self.dt
+                    self.t_fire_list[i, self.curstep] = 50
+                    self.Vi[i] = self.erest - 0.010
+                """
 
         # Noise
         # 1 : gaussian white

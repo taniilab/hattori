@@ -1,4 +1,10 @@
-# coding: UTF-8
+"""
+***Unit of parameters***
+membrane potential -> mV
+conductance -> mS
+capacitance -> uF
+current -> uA
+"""
 from multiprocessing import Pool
 import os
 from neuron import Neuron_LIF as Neuron
@@ -14,16 +20,16 @@ save_path = "Z:/simulation/test"
 process = 6 #number of processors
 
 #parameters#
-numneu = 2
-simtime = 1000
-deltatime = 0.04
+numneu = 1
+simtime = 500
+deltatime = 0.1
 
 class Main():
     def __init__(self):
         self.parm = []
 
         #combination
-        self.i = 12
+        self.i = 6
         self.j = 1
         self.k = 1
         self.l = 1
@@ -41,14 +47,18 @@ class Main():
             self.parm[self.parm_counter] = {'N': numneu,
                                             'T': simtime,
                                             'dt': deltatime,
-                                            'Cm': 1.0,
-                                            'G_L': 0.025,
-                                            'Iext_amp': round(i*0.1, 2),
+                                            'Cm': 100e-6,
+                                            'Vth': -50,
+                                            'G_L': 10e-6,
+                                            'erest': -70,
+                                            #'Iext_amp': round(j*0.1, 2),
+                                            'Iext_amp': 210e-6,
                                             'syn_type': 4,
-                                            'Pmax': round(j*0.1, 2),
+                                            'Pmax': 0,
+                                            #'Pmax': round(i*0.01, 2),
                                             'tau_syn': 5.26,
                                             'noise_type': 1,
-                                            'D': 1.0}
+                                            'D': 0}
             self.parm_counter += 1
             self.overall_steps = int(self.i*self.j*self.k*self.l*simtime/(deltatime*process))
 
@@ -103,8 +113,8 @@ def main():
                                                                         d.hour,
                                                                         d.minute,
                                                                         d.second,
-                                                                        res[k].Pmax,
-                                                                        res[k].Iext_amp)
+                                                                        res[k].Iext_amp,
+                                                                        res[k].Pmax)
             df = pd.DataFrame()
             for j in range(numneu):
                 df['T_{} [ms]'.format(j)]       = res[k].Tsteps
