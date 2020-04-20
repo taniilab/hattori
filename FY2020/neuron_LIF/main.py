@@ -1,6 +1,8 @@
 """
 ***Unit of parameters***
+Brunel &Wang 2001 integrate and fire neuron
 membrane potential -> mV
+time -> ms
 conductance -> mS
 capacitance -> uF
 current -> uA
@@ -22,7 +24,7 @@ process = 6 #number of processors
 #parameters#
 numneu = 1
 simtime = 500
-deltatime = 0.04
+deltatime = 0.02
 
 class Main():
     def __init__(self):
@@ -47,12 +49,13 @@ class Main():
             self.parm[self.parm_counter] = {'N': numneu,
                                             'T': simtime,
                                             'dt': deltatime,
-                                            'Cm': 100e-6,
+                                            'Cm': 0.5e-3,
+                                            'G_L': 25e-6,
+                                            'Vreset': -55,
                                             'Vth': -50,
-                                            'G_L': 10e-6,
                                             'erest': -70,
                                             #'Iext_amp': round(j*0.1, 2),
-                                            'Iext_amp': 210e-6,
+                                            'Iext_amp': 6e-4,
                                             'syn_type': 4,
                                             'Pmax': 0,
                                             #'Pmax': round(i*0.01, 2),
