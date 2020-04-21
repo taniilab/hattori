@@ -248,7 +248,7 @@ class Neuron_HH():
                                          self.t_fire[j, i]) +
                      self.alpha_function(self.curstep * self.dt -
                                          self.t_fire[j, i, 1]))
-        # NMDA & AMPA
+        # biexp synapse AMPA & NMDA
         elif self.syn_type == 5:
             for j in range(0, self.N):
 
@@ -262,7 +262,7 @@ class Neuron_HH():
                 else:
                     self.gsyn[i, j] = 0
 
-        # NMDA & AMPA with STP
+        # STP synapse AMPA & NMDA
         elif self.syn_type == 6:
             for j in range(0, self.N):
                 self.dR_AMPA = (self.dt * ((self.I_AMPA[i, j, self.curstep] / self.tau_rec_AMPA)

@@ -22,7 +22,7 @@ process = 6 #number of processors
 #parameters#
 numneu = 1
 simtime = 500
-deltatime = 0.04
+deltatime = 0.01
 
 class Main():
     def __init__(self):
