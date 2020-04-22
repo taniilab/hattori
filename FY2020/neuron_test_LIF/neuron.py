@@ -91,7 +91,6 @@ class Neuron_LIF():
         elif ((Pmax * t / tau) * np.exp(-t / tau)) < 0.00001:
             return 0
         else:
-            #print("pippi")
             return (Pmax * t / tau) * np.exp(-t / tau)
 
     """
