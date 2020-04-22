@@ -17,7 +17,7 @@ import itertools
 starttime = time.time()
 elapsed_time = 0
 save_path = "Z:/simulation/test"
-process = 6 #number of processors
+process = 1 #number of processors
 
 #parameters#
 numneu = 1
@@ -29,7 +29,7 @@ class Main():
         self.parm = []
 
         #combination
-        self.i = 6
+        self.i = 1
         self.j = 1
         self.k = 1
         self.l = 1
