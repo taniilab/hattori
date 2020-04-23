@@ -20,11 +20,11 @@ import numpy as np
 starttime = time.time()
 elapsed_time = 0
 save_path = "Z:/simulation/test"
-process = 1 #number of processors
+process = 6 #number of processors
 
 #parameters#
 numneu = 1
-simtime = 2000
+simtime = 4000
 lump = 1000
 num_lump = int(simtime/lump)
 deltatime = 0.04
@@ -34,7 +34,7 @@ class Main():
         self.parm = []
 
         #combination
-        self.i = 1
+        self.i = 6
         self.j = 1
         self.k = 1
         self.l = 1
@@ -60,8 +60,8 @@ class Main():
                                             #'Iext_amp': round(j*0.1, 2),
                                             'Iext_amp': 6e-4,
                                             'syn_type': 4,
-                                            #'Pmax_AMPA': round(i*0.00001, 5),
-                                            'Pmax_AMPA': 0.00002,
+                                            'Pmax_AMPA': round(i*0.00001, 5),
+                                            #'Pmax_AMPA': 0.00003,
                                             'Pmax_NMDA': 0,
                                             'tau_syn': 5.26,
                                             'noise_type': 1,
