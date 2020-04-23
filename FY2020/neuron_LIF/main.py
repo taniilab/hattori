@@ -6,7 +6,6 @@ time -> ms
 conductance -> mS
 capacitance -> uF
 current -> uA
-kashikoma
 """
 from multiprocessing import Pool
 import os
@@ -21,11 +20,11 @@ import numpy as np
 starttime = time.time()
 elapsed_time = 0
 save_path = "Z:/simulation/test"
-process = 6 #number of processors
+process = 1 #number of processors
 
 #parameters#
 numneu = 1
-simtime = 4000
+simtime = 2000
 lump = 1000
 num_lump = int(simtime/lump)
 deltatime = 0.04
@@ -35,13 +34,14 @@ class Main():
         self.parm = []
 
         #combination
-        self.i = 6
+        self.i = 1
         self.j = 1
         self.k = 1
         self.l = 1
 
         self.cycle_multiproc = int(self.i * self.j*self.k*self.l/process)
         self.process_counter = 0
+        self.lump_counter = 0
         self.now_cycle_multiproc = 0
         self.parm_counter = 0
 
@@ -69,6 +69,12 @@ class Main():
                                             'D': 0}
             self.parm_counter += 1
             self.overall_steps = int(self.i*self.j*self.k*self.l*simtime/(deltatime*process))
+
+    def input_generator(self):
+        t = np.arange(self.lump_counter * lump, (self.lump_counter + 1) * lump, deltatime)
+        self.neuron.Iext[0, :] = (8e-4) * np.sin(t * 0.05)
+        if self.lump_counter == 0:
+            self.neuron.Iext[0, :1000] = 0
 
     def simulate(self, process):
         # parallel processing on each setting value
@@ -104,7 +110,10 @@ class Main():
 
         df.to_csv(save_path + '/' + filename, mode='a')
 
+        ####### MAIN PROCESS #######
         for j in range(num_lump):
+            self.input_generator()
+            print(self.neuron.Iext)
             for i in range(0, self.neuron.allsteps-1):
                 self.neuron.propagation()
 
@@ -129,8 +138,6 @@ class Main():
             df.to_csv(save_path + '/' + filename, mode='a', header=None)
 
             # Preparation for calculating the next lump
-            print(self.neuron.t_fire)
-            print(self.neuron.t_fire - lump)
             self.neuron.Tsteps = self.neuron.Tsteps + lump
             self.neuron.V = np.fliplr(self.neuron.V)
             self.neuron.Isyn = np.fliplr(self.neuron.Isyn)
@@ -143,6 +150,7 @@ class Main():
             self.neuron.curstep = 0
             self.neuron.flip_flag = True
             self.neuron.flip_counter += 1
+            self.lump_counter += 1
 
 
 def main():

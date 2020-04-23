@@ -77,7 +77,7 @@ class Neuron_LIF():
         # external input
         self.Iext_amp = Iext_amp
         self.Iext = np.zeros((self.N, self.allsteps))
-        self.Iext[0, int(150 / self.dt):int(300 / self.dt)] = self.Iext_amp
+        #self.Iext[0, int(150 / self.dt):int(300 / self.dt)] = self.Iext_amp
         """
         self.Iext[0, int(220/self.dt):int(225/self.dt)] = self.Iext_amp
         self.Iext[0, int(240/self.dt):int(245/self.dt)] = self.Iext_amp
@@ -168,7 +168,7 @@ class Neuron_LIF():
         self.Inoisei = self.Inoise[:, self.curstep]
 
         # calculate synaptic input
-        if (self.curstep * self.dt) > 50 or self.flip_flag == True:
+        if (self.curstep * self.dt) > 100 or self.flip_flag == True:
             for i in range(0, self.N):
                 self.calc_synaptic_input(i)
                 # mV
