@@ -6,6 +6,7 @@ time -> ms
 conductance -> mS
 capacitance -> uF
 current -> uA
+kashikoma
 """
 from multiprocessing import Pool
 import os
