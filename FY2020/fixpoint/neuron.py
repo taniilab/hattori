@@ -53,8 +53,8 @@ class Neuron_LIF():
         self.V = -70 * np.ones((self.N, self.allsteps))
         self.k1V = 0 * np.ones(self.N)
         # connection relationship
-        self.Syn_weight = np.zeros((self.N, self.N))
-        self.Syn_weight[0, 0] = 1
+        self.Syn_weight = np.ones((self.N, self.N))
+        #self.Syn_weight[0, 0] = 1
         #self.Syn_weight[0, 1] = 1
 
         # synaptic current

@@ -15,15 +15,16 @@ import time
 import datetime
 import itertools
 import numpy as np
-
+from lsm import LSM
 
 starttime = time.time()
 elapsed_time = 0
 save_path = "Z:/simulation/test"
-process = 1 #number of processors
+#input_wave_path = "Z:/simulation/test"
+process = 6 #number of processors
 
 #parameters#
-numneu = 1
+numneu = 2
 simtime = 2000
 lump = 1000
 num_lump = int(simtime/lump)
@@ -34,7 +35,7 @@ class Main():
         self.parm = []
 
         #combination
-        self.i = 1
+        self.i = 6
         self.j = 1
         self.k = 1
         self.l = 1
@@ -71,6 +72,7 @@ class Main():
             self.overall_steps = int(self.i*self.j*self.k*self.l*simtime/(deltatime*process))
 
     def input_generator(self):
+        # sin wave
         t = np.arange(self.lump_counter * lump, (self.lump_counter + 1) * lump, deltatime)
         self.neuron.Iext[0, :] = (8e-4) * np.sin(t * 0.05)
         if self.lump_counter == 0:
@@ -113,7 +115,7 @@ class Main():
         ####### MAIN PROCESS #######
         for j in range(num_lump):
             self.input_generator()
-            print(self.neuron.Iext)
+            ####### MAIN CYCLE #######
             for i in range(0, self.neuron.allsteps-1):
                 self.neuron.propagation()
 
@@ -134,7 +136,6 @@ class Main():
                 df['Iext_{} [uA]'.format(k)] = self.neuron.Iext[k]
                 df['I_noise_{} [uA]'.format(k)] = self.neuron.Inoise[k]
                 df['g_ampa'.format(k)] = -self.neuron.Isyn[k]/self.neuron.V[k]
-
             df.to_csv(save_path + '/' + filename, mode='a', header=None)
 
             # Preparation for calculating the next lump
@@ -152,6 +153,9 @@ class Main():
             self.neuron.flip_counter += 1
             self.lump_counter += 1
 
+        print("lsm")
+        lsm = LSM()
+        lsm.train()
 
 def main():
     d = datetime.datetime.today()
