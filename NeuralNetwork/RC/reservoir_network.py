@@ -29,19 +29,25 @@ class ReservoirNetWork:
 
     # 出力層の重みを更新
     def _update_weights_output(self, lambda0):
-        # Ridge Regression
-        E_lambda0 = np.identity(self.num_reservoir_nodes) * lambda0 # lambda0
+        E_lambda0 = np.identity(self.num_reservoir_nodes) * lambda0
         inv_x = np.linalg.inv(self.log_reservoir_nodes.T @ self.log_reservoir_nodes + E_lambda0)
-        # update weights of output layer
         self.weights_output = (inv_x @ self.log_reservoir_nodes.T) @ self.inputs
-        print(np.shape(E_lambda0))
-        print(np.shape(self.log_reservoir_nodes))
-        print(np.shape(self.log_reservoir_nodes.T))
-        print(np.shape(self.log_reservoir_nodes.T @ self.log_reservoir_nodes))
-        print(np.shape(self.inputs))
-        print(np.shape(inv_x))
-        print(np.shape(inv_x @ self.log_reservoir_nodes.T))
+        self.lam = E_lambda0
+        self.wei = self.weights_output
+        self.inp = self.inputs
+        self.outp = self.log_reservoir_nodes
 
+    def test(self):
+        """
+        print("E_lamda0{}".format(E_lambda0.shape))
+        print("weight{}".format(self.weights_output.shape))
+        print("target{}".format(self.inputs.shape))
+        print("output{}".format(self.log_reservoir_nodes.shape))
+        """
+        print("E_lamda0{}".format(self.lam.shape))
+        print("weight{}".format(self.wei.shape))
+        print("target{}".format(self.inp.shape))
+        print("output{}".format(self.outp.shape))
 
     # 学習する
     def train(self, lambda0=0.1):

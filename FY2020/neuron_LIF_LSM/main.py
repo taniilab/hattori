@@ -21,7 +21,7 @@ starttime = time.time()
 elapsed_time = 0
 save_path = "Z:/simulation/test"
 #input_wave_path = "Z:/simulation/test"
-process = 6 #number of processors
+process = 1 #number of processors
 
 #parameters#
 numneu = 2
@@ -35,7 +35,7 @@ class Main():
         self.parm = []
 
         #combination
-        self.i = 6
+        self.i = 1
         self.j = 1
         self.k = 1
         self.l = 1
@@ -154,8 +154,13 @@ class Main():
             self.lump_counter += 1
 
         print("lsm")
-        lsm = LSM()
-        lsm.train()
+        df = pd.read_csv(save_path+filename, usecols=["V_0 [mV]"], skiprows=1)
+        print(df)
+        matrix = df.as_matrix()
+
+        print(matrix)
+        #lsm = LSM()
+        #lsm.train()
 
 def main():
     d = datetime.datetime.today()
