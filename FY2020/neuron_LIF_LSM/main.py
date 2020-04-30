@@ -16,6 +16,7 @@ import datetime
 import itertools
 import numpy as np
 from lsm import LSM
+import matplotlib.pyplot as plt
 
 starttime = time.time()
 elapsed_time = 0
@@ -24,7 +25,7 @@ save_path = "Z:/simulation/test"
 process = 1 #number of processors
 
 #parameters#
-numneu = 2
+numneu = 1
 simtime = 2000
 lump = 1000
 num_lump = int(simtime/lump)
@@ -62,7 +63,7 @@ class Main():
                                             #'Iext_amp': round(j*0.1, 2),
                                             'Iext_amp': 6e-4,
                                             'syn_type': 4,
-                                            'Pmax_AMPA': round(i*0.00001, 5),
+                                            'Pmax_AMPA': round(0.00001+i*0.00001, 6),
                                             #'Pmax_AMPA': 0.00003,
                                             'Pmax_NMDA': 0,
                                             'tau_syn': 5.26,
@@ -74,7 +75,7 @@ class Main():
     def input_generator(self):
         # sin wave
         t = np.arange(self.lump_counter * lump, (self.lump_counter + 1) * lump, deltatime)
-        self.neuron.Iext[0, :] = (8e-4) * np.sin(t * 0.05)
+        self.neuron.Iext[0, :] = (8e-4) * np.sin(t * 0.03)
         if self.lump_counter == 0:
             self.neuron.Iext[0, :1000] = 0
 
@@ -153,14 +154,35 @@ class Main():
             self.neuron.flip_counter += 1
             self.lump_counter += 1
 
-        print("lsm")
-        df = pd.read_csv(save_path+filename, usecols=["V_0 [mV]"], skiprows=1)
-        print(df)
-        matrix = df.as_matrix()
+        ###### LEARNING AND PREDICTION PROCESS ######
+        df = pd.read_csv(save_path + '/' + filename, usecols=["T_0 [ms]", "V_0 [mV]", "I_syn_0 [uA]"], skiprows=1)
+        times = df.values[:, 0].reshape((len(df.values[:, 0]), 1))
+        train = df.values[:, 1].reshape((len(df.values[:, 1]), 1)) + 70
+        target = np.sin(times * 0.03)
+        Isyn = df.values[:, 2].reshape((len(df.values[:, 2]), 1))
 
-        print(matrix)
-        #lsm = LSM()
-        #lsm.train()
+        lsm = LSM()
+        lsm.train(train, target)
+        predict = (train @ lsm.output_w).T
+
+        fig = plt.figure(figsize=(12, 12))
+        ax1 = fig.add_subplot(211)
+        ax2 = fig.add_subplot(212)
+        ax1.plot(times, train[:, 0], label="output")
+        ax1.plot(times, target[:, 0], label="target")
+        ax1.plot(times, predict[0], label="after training")
+        ax1.legend()
+        ax2.plot(times, Isyn[:, 0], label="Isyn")
+        ax2.legend()
+        print(times.shape)
+        print(train.shape)
+        print(target.shape)
+        print(lsm.output_w.shape)
+        print((train @ lsm.output_w).shape)
+        print(predict.shape)
+        fig.tight_layout()
+        plt.show()
+
 
 def main():
     d = datetime.datetime.today()

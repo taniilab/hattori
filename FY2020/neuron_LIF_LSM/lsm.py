@@ -21,6 +21,7 @@ class LSM():
     def pridict(self):
         pass
 
+"""
 read_path = "Z:/simulation/test/2020_4_27_21_6_46_Iext_amp0.0006_Pmax_AMPA0.0_Pmax_NMDA0_LIF.csv"
 
 df = pd.read_csv(read_path, usecols=["V_0 [mV]"], skiprows=1)
@@ -44,6 +45,8 @@ predict = (train @ lsm.output_w).T
 plt.plot(t, predict[0], label="after training")
 plt.legend()
 plt.show()
+
+"""
 
 """
 
