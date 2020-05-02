@@ -23,6 +23,7 @@ for i in range(24):
     timezone_list.append(0)
 remotehost_list = pd.DataFrame()
 
+
 def main():
     lump_init_line = 0
     files = glob.glob(read_path)
@@ -43,13 +44,12 @@ def main():
 
     # save
     remotehost_list_T = remotehost_list.transpose()
-    remotehost_list_T = remotehost_list_T.rename(columns={'0': 'traffic'})
+    remotehost_list_T = remotehost_list_T.sort_values(0, ascending=False)
     remotehost_list_T.to_csv('./remotehost.csv', header=None)
     df = pd.DataFrame()
     df['timezone'] = timezone_label
     df['traffic'] = timezone_list
     df.to_csv('./timezone.csv')
-
     # visualize
     plt.figure(figsize=(10, 5))
     plt.bar(timezone_label, timezone_list)
