@@ -1,4 +1,10 @@
-# coding: UTF-8
+"""
+***Unit of parameters***
+membrane potential -> mV
+conductance -> mS
+capacitance -> uF
+current -> uA
+"""
 from multiprocessing import Pool
 import os
 from neuron import Neuron_LIF as Neuron
@@ -11,20 +17,20 @@ import itertools
 starttime = time.time()
 elapsed_time = 0
 save_path = "Z:/simulation/test"
-process = 4 #number of processors
+process = 1 #number of processors
 
 #parameters#
-numneu = 10
-simtime = 10000
-deltatime = 0.04
+numneu = 1
+simtime = 500
+deltatime = 0.01
 
 class Main():
     def __init__(self):
         self.parm = []
 
         #combination
-        self.i = 6
-        self.j = 2
+        self.i = 1
+        self.j = 1
         self.k = 1
         self.l = 1
 
@@ -41,13 +47,18 @@ class Main():
             self.parm[self.parm_counter] = {'N': numneu,
                                             'T': simtime,
                                             'dt': deltatime,
-                                            'RmCm': 10000,
-                                            'Iext_amp': round(0.1+i*0.1, 1),
+                                            'Cm': 100e-6,
+                                            'Vth': -50,
+                                            'G_L': 10e-6,
+                                            'erest': -70,
+                                            #'Iext_amp': round(j*0.1, 2),
+                                            'Iext_amp': 210e-6,
                                             'syn_type': 4,
-                                            'Pmax': round(0.1+j*0.1, 1),
+                                            'Pmax': 0,
+                                            #'Pmax': round(i*0.01, 2),
                                             'tau_syn': 5.26,
                                             'noise_type': 1,
-                                            'D': 1.0}
+                                            'D': 0}
             self.parm_counter += 1
             self.overall_steps = int(self.i*self.j*self.k*self.l*simtime/(deltatime*process))
 
@@ -96,13 +107,14 @@ def main():
             res[k].parm_dict = res[k].parm_dict.replace('\'', '')
             res[k].parm_dict = res[k].parm_dict.replace(',', '_')
 
-            filename = "{0}_{1}_{2}_{3}_{4}_{5}Iext_amp{6}_LIF_.csv".format(d.year,
+            filename = "{0}_{1}_{2}_{3}_{4}_{5}Iext_amp{6}_Pmax{7}_LIF.csv".format(d.year,
                                                                         d.month,
                                                                         d.day,
                                                                         d.hour,
                                                                         d.minute,
                                                                         d.second,
-                                                                        res[k].Iext_amp)
+                                                                        res[k].Iext_amp,
+                                                                        res[k].Pmax)
             df = pd.DataFrame()
             for j in range(numneu):
                 df['T_{} [ms]'.format(j)]       = res[k].Tsteps
