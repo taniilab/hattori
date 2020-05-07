@@ -18,7 +18,7 @@ class LSM():
             """
             self.output_w = (np.linalg.inv(train_data.T @ train_data + \
                                            lamda * np.identity(np.size(train_data, 1))) @ train_data.T) @ target_data
-    def pridict(self):
+    def predict(self):
         pass
 
 """

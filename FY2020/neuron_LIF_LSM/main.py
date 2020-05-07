@@ -26,10 +26,10 @@ process = 1 #number of processors
 
 #parameters#
 numneu = 1
-simtime = 2000
+simtime = 3000
 lump = 1000
 num_lump = int(simtime/lump)
-deltatime = 0.04
+deltatime = 0.02
 
 class Main():
     def __init__(self):
@@ -120,7 +120,7 @@ class Main():
             for i in range(0, self.neuron.allsteps-1):
                 self.neuron.propagation()
 
-                if self.progress_counter % 1000 == 0:
+                if self.progress_counter % 100000 == 0:
                     self.log = 'process id : ' + str(self.pid) + ' : ' + \
                                 str(self.progress_counter) + ' steps : ' + \
                                 str(round(self.progress_counter*100/self.overall_steps, 1)) + "%"
@@ -148,11 +148,12 @@ class Main():
             self.neuron.Inoise = np.fliplr(self.neuron.Inoise)
             self.neuron.dn = np.fliplr(self.neuron.dn)
             self.neuron.dWt = np.fliplr(self.neuron.dWt)
-            self.neuron.t_fire = self.neuron.t_fire - lump
+            #self.neuron.t_fire = self.neuron.t_fire - lump
             self.neuron.curstep = 0
             self.neuron.flip_flag = True
             self.neuron.flip_counter += 1
             self.lump_counter += 1
+            print(self.neuron.Tsteps)
 
         ###### LEARNING AND PREDICTION PROCESS ######
         df = pd.read_csv(save_path + '/' + filename, usecols=["T_0 [ms]", "V_0 [mV]", "I_syn_0 [uA]"], skiprows=1)

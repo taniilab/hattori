@@ -92,13 +92,15 @@ class Neuron_LIF():
         self.D = D
         self.dWt = np.random.normal(0, self.dt ** (1 / 2), (self.N, self.allsteps))
 
+        self.Flg = False
+
+
     def alpha_function(self, t, Pmax, tau):
         if t < 0:
             return 0
         elif ((Pmax * t / tau) * np.exp(-t / tau)) < 10e-10:
             return 0
         else:
-            #print("pippi")
             return (Pmax * t / tau) * np.exp(-t / tau)
 
 
@@ -128,7 +130,7 @@ class Neuron_LIF():
         # alpha synapse
         elif self.syn_type == 4:
             for j in range(0, self.N):
-                self.gsyn[i, j] = self.alpha_function(self.curstep * self.dt - self.t_fire[j, i], self.Pmax_AMPA, self.tau_syn)
+                self.gsyn[i, j] = self.alpha_function(self.Tsteps[self.curstep] - self.t_fire[j, i], self.Pmax_AMPA, self.tau_syn)
             for j in range(0, self.N):
                 self.Isyni[i] += self.Syn_weight[j, i] * self.gsyn[i, j] * (self.esyn[i, j] - self.Vi[i])
         # biexp synapse AMPA + NMDA
@@ -165,8 +167,9 @@ class Neuron_LIF():
                 self.calc_synaptic_input(i)
                 # mV
                 if self.Vi[i] >= self.Vth:
-                    self.t_fire[i, :] = self.curstep * self.dt
-                    self.t_fire_list[i, self.curstep] = self.curstep * self.dt + self.flip_counter*self.T
+                    #self.t_fire[i, :] = self.curstep * self.dt
+                    self.t_fire[i, :] = self.Tsteps[self.curstep]
+                    self.t_fire_list[i, self.curstep] = self.Tsteps[self.curstep]
                     self.Vi[i] = self.Vreset
 
         # Noise
@@ -181,8 +184,8 @@ class Neuron_LIF():
         else:
             pass
 
+
         # ODE-first order Euler method
         self.k1V = (self.G_L*(self.erest-self.Vi) + self.Isyni + self.Iext[:, self.curstep] + self.Inoisei)/self.Cm
         self.V[:, self.curstep + 1] = self.Vi + self.k1V * self.dt
-
         self.curstep += 1
