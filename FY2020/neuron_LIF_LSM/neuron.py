@@ -37,9 +37,6 @@ class Neuron_LIF():
         self.dt = dt
         # simulation time
         self.T = T
-        # for np.fliplr()
-        self.flip_flag = False
-        self.flip_counter = 0
         # all time
         self.Tsteps = np.arange(0, self.T, self.dt)
         # number of time step
@@ -133,6 +130,7 @@ class Neuron_LIF():
                 self.gsyn[i, j] = self.alpha_function(self.Tsteps[self.curstep] - self.t_fire[j, i], self.Pmax_AMPA, self.tau_syn)
             for j in range(0, self.N):
                 self.Isyni[i] += self.Syn_weight[j, i] * self.gsyn[i, j] * (self.esyn[i, j] - self.Vi[i])
+                print(self.Tsteps[self.curstep] - self.t_fire[j, i])
         # biexp synapse AMPA + NMDA
         elif self.syn_type == 5:
             # Individual connection
@@ -162,7 +160,7 @@ class Neuron_LIF():
         self.Inoisei = self.Inoise[:, self.curstep]
 
         # calculate synaptic input
-        if (self.curstep * self.dt) > 100 or self.flip_flag == True:
+        if self.Tsteps[self.curstep] > 100:
             for i in range(0, self.N):
                 self.calc_synaptic_input(i)
                 # mV

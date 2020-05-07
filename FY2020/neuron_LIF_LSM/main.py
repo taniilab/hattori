@@ -26,8 +26,8 @@ process = 1 #number of processors
 
 #parameters#
 numneu = 1
-simtime = 3000
-lump = 1000
+simtime = 1000
+lump = 500
 num_lump = int(simtime/lump)
 deltatime = 0.02
 
@@ -143,6 +143,7 @@ class Main():
             self.neuron.Tsteps = self.neuron.Tsteps + lump
             self.neuron.V = np.fliplr(self.neuron.V)
             self.neuron.Isyn = np.fliplr(self.neuron.Isyn)
+            self.neuron.Isyn[:, 1:] = 0
             self.neuron.Iext = np.fliplr(self.neuron.Iext)
             self.neuron.t_fire_list = 0 * self.neuron.t_fire_list
             self.neuron.Inoise = np.fliplr(self.neuron.Inoise)
@@ -150,10 +151,7 @@ class Main():
             self.neuron.dWt = np.fliplr(self.neuron.dWt)
             #self.neuron.t_fire = self.neuron.t_fire - lump
             self.neuron.curstep = 0
-            self.neuron.flip_flag = True
-            self.neuron.flip_counter += 1
             self.lump_counter += 1
-            print(self.neuron.Tsteps)
 
         ###### LEARNING AND PREDICTION PROCESS ######
         df = pd.read_csv(save_path + '/' + filename, usecols=["T_0 [ms]", "V_0 [mV]", "I_syn_0 [uA]"], skiprows=1)
@@ -175,12 +173,14 @@ class Main():
         ax1.legend()
         ax2.plot(times, Isyn[:, 0], label="Isyn")
         ax2.legend()
+        """
         print(times.shape)
         print(train.shape)
         print(target.shape)
         print(lsm.output_w.shape)
         print((train @ lsm.output_w).shape)
         print(predict.shape)
+        """
         fig.tight_layout()
         plt.show()
 
