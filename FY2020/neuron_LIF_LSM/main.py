@@ -62,10 +62,10 @@ class Main():
                                             'erest': -70,
                                             #'Iext_amp': round(j*0.1, 2),
                                             'Iext_amp': 6e-4,
-                                            'syn_type': 4,
+                                            'syn_type': 5,
                                             'Pmax_AMPA': round(0.00001+i*0.00001, 6),
                                             #'Pmax_AMPA': 0.00003,
-                                            'Pmax_NMDA': 0,
+                                            'Pmax_NMDA': round(0.00001+i*0.00001, 6),
                                             'tau_syn': 5.26,
                                             'noise_type': 1,
                                             'D': 0}
@@ -107,6 +107,8 @@ class Main():
             df['V_{} [mV]'.format(k)] = ""
             df['fire_{} [mV]'.format(k)] = ""
             df['I_syn_{} [uA]'.format(k)] = ""
+            df['I_AMPA_{} [uA]'.format(k)] = ""
+            df['I_NMDA_{} [uA]'.format(k)] = ""
             df['Iext_{} [uA]'.format(k)] = ""
             df['I_noise_{} [uA]'.format(k)] = ""
             df['g_ampa'.format(k)] = ""
@@ -134,6 +136,8 @@ class Main():
                 df['V_{} [mV]'.format(k)] = self.neuron.V[k]
                 df['fire_{} [mV]'.format(k)] = self.neuron.t_fire_list[k]
                 df['I_syn_{} [uA]'.format(k)] = self.neuron.Isyn[k]
+                df['I_AMPA_{} [uA]'.format(k)] = self.neuron.IAMPA[k]
+                df['I_NMDA_{} [uA]'.format(k)] = self.neuron.INMDA[k]
                 df['Iext_{} [uA]'.format(k)] = self.neuron.Iext[k]
                 df['I_noise_{} [uA]'.format(k)] = self.neuron.Inoise[k]
                 df['g_ampa'.format(k)] = -self.neuron.Isyn[k]/self.neuron.V[k]
@@ -145,6 +149,10 @@ class Main():
             self.neuron.V = np.fliplr(self.neuron.V)
             self.neuron.Isyn = np.fliplr(self.neuron.Isyn)
             self.neuron.Isyn[:, 1:] = 0
+            self.neuron.IAMPA = np.fliplr(self.neuron.IAMPA)
+            self.neuron.IAMPA[:, 1:] = 0
+            self.neuron.INMDA = np.fliplr(self.neuron.INMDA)
+            self.neuron.INMDA[:, 1:] = 0
             self.neuron.Iext = np.fliplr(self.neuron.Iext)
             self.neuron.t_fire_list = 0 * self.neuron.t_fire_list
             self.neuron.Inoise = np.fliplr(self.neuron.Inoise)
@@ -154,11 +162,14 @@ class Main():
             self.lump_counter += 1
 
         ###### LEARNING AND PREDICTION PROCESS ######
-        df = pd.read_csv(save_path + '/' + filename, usecols=["T_0 [ms]", "V_0 [mV]", "I_syn_0 [uA]"], skiprows=1)
+        df = pd.read_csv(save_path + '/' + filename, usecols=['T_0 [ms]', 'V_0 [mV]', 'I_syn_0 [uA]', 'I_AMPA_0 [uA]', 'I_NMDA_0 [uA]'], skiprows=1)
+        print(df)
         times = df.values[:, 0].reshape((len(df.values[:, 0]), 1))
         train = df.values[:, 1].reshape((len(df.values[:, 1]), 1)) + 70
         target = np.sin(times * 0.03)
         Isyn = df.values[:, 2].reshape((len(df.values[:, 2]), 1))
+        IAMPA = df.values[:, 3].reshape((len(df.values[:, 3]), 1))
+        INMDA = df.values[:, 4].reshape((len(df.values[:, 4]), 1))
 
         lsm = LSM()
         lsm.train(train, target)
@@ -172,6 +183,8 @@ class Main():
         ax1.plot(times, predict[0], label="after training")
         ax1.legend()
         ax2.plot(times, Isyn[:, 0], label="Isyn")
+        ax2.plot(times, IAMPA[:, 0], label="IAMPA")
+        ax2.plot(times, INMDA[:, 0], label="INMDA")
         ax2.legend()
         """
         print(times.shape)
