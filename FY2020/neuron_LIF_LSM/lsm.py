@@ -10,12 +10,6 @@ class LSM():
         if regularization == 0:
             pass
         else:
-            """
-            print(train_data)
-            print(train_data.shape)
-            print(target_data)
-            print(target_data.shape)
-            """
             self.output_w = (np.linalg.inv(train_data.T @ train_data + \
                                            lamda * np.identity(np.size(train_data, 1))) @ train_data.T) @ target_data
     def predict(self):

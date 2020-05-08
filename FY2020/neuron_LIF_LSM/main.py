@@ -25,7 +25,7 @@ save_path = "Z:/simulation/test"
 process = 1 #number of processors
 
 #parameters#
-numneu = 1
+numneu = 2
 simtime = 1000
 lump = 500
 num_lump = int(simtime/lump)
@@ -162,38 +162,50 @@ class Main():
             self.lump_counter += 1
 
         ###### LEARNING AND PREDICTION PROCESS ######
-        df = pd.read_csv(save_path + '/' + filename, usecols=['T_0 [ms]', 'V_0 [mV]', 'I_syn_0 [uA]', 'I_AMPA_0 [uA]', 'I_NMDA_0 [uA]'], skiprows=1)
-        print(df)
+        df = pd.read_csv(save_path + '/' + filename, usecols=['T_0 [ms]',
+                                                              'V_0 [mV]',
+                                                              'I_syn_0 [uA]',
+                                                              'I_AMPA_0 [uA]',
+                                                              'I_NMDA_0 [uA]',
+                                                              'V_1 [mV]'],
+                                                              skiprows=1)
+        train_ratio = 0.5
+        border = int(len(df.values[:, 0])*train_ratio)
+        print(border)
         times = df.values[:, 0].reshape((len(df.values[:, 0]), 1))
-        train = df.values[:, 1].reshape((len(df.values[:, 1]), 1)) + 70
-        target = np.sin(times * 0.03)
+        times_bef = df.values[:border, 0].reshape((len(df.values[:border, 0]), 1))
+        times_af = df.values[border:, 0].reshape((len(df.values[border:, 0]), 1))
+        train = df.values[:border, [1, 5]].reshape((len(df.values[:border, [1, 5]]), 2)) + 70
+        output = df.values[border:, [1, 5]].reshape((len(df.values[border:, [1, 5]]), 2)) + 70
+        target = np.sin(times_bef * 0.03)
+        target_all = np.sin(times * 0.03)
         Isyn = df.values[:, 2].reshape((len(df.values[:, 2]), 1))
         IAMPA = df.values[:, 3].reshape((len(df.values[:, 3]), 1))
         INMDA = df.values[:, 4].reshape((len(df.values[:, 4]), 1))
 
         lsm = LSM()
         lsm.train(train, target)
-        predict = (train @ lsm.output_w).T
+        predict = (output @ lsm.output_w).T
 
         fig = plt.figure(figsize=(12, 12))
         ax1 = fig.add_subplot(211)
         ax2 = fig.add_subplot(212)
-        ax1.plot(times, train[:, 0], label="output")
-        ax1.plot(times, target[:, 0], label="target")
-        ax1.plot(times, predict[0], label="after training")
+        ax1.plot(times_bef, train[:, 0], label="train")
+        ax1.plot(times_bef, train[:, 1], label="train")
+        ax1.plot(times, target_all[:, 0], label="target")
+        ax1.plot(times_af, predict[0], label="after training")
         ax1.legend()
         ax2.plot(times, Isyn[:, 0], label="Isyn")
         ax2.plot(times, IAMPA[:, 0], label="IAMPA")
         ax2.plot(times, INMDA[:, 0], label="INMDA")
         ax2.legend()
-        """
         print(times.shape)
         print(train.shape)
         print(target.shape)
         print(lsm.output_w.shape)
         print((train @ lsm.output_w).shape)
         print(predict.shape)
-        """
+        print("W:{0}".format(lsm.output_w))
         fig.tight_layout()
         plt.show()
 

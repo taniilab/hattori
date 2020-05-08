@@ -51,8 +51,10 @@ class Neuron_LIF():
         self.k1V = 0 * np.ones(self.N)
         # connection relationship
         self.Syn_weight = np.ones((self.N, self.N))
-        #self.Syn_weight[0, 0] = 1
-        #self.Syn_weight[0, 1] = 1
+        self.Syn_weight[0, 0] = 0
+        self.Syn_weight[0, 1] = 3
+        self.Syn_weight[1, 0] = 3
+        self.Syn_weight[1, 1] = 0
 
         # synaptic current
         self.Isyn = np.zeros((self.N, self.allsteps))
@@ -136,7 +138,7 @@ class Neuron_LIF():
                                                                     self.Pmax_AMPA, 0.8, 5)
                 self.gNMDA[i, j] = self.biexp_func(self.Tsteps[self.curstep] - self.t_fire[j, i],
                                                                     self.Pmax_NMDA, 20, 125) / \
-                                   (1 + (self.Mg_conc / 3.57) * np.exp(-0.062 * self.Vi))
+                                   (1 + (self.Mg_conc / 3.57) * np.exp(-0.062 * self.Vi[i]))
             # sum
             for j in range(0, self.N):
                 self.INMDAi[i] += self.Syn_weight[j, i] * self.gNMDA[i, j] * (self.esyn[i, j] - self.Vi[i])
