@@ -74,7 +74,7 @@ class Main():
 
     def input_generator(self):
         # sin wave
-        t = np.arange(self.lump_counter * lump, (self.lump_counter + 1) * lump, deltatime)
+        t = np.arange(self.lump_counter * lump, (self.lump_counter + 1) * lump + deltatime, deltatime)
         self.neuron.Iext[0, :] = (8e-4) * np.sin(t * 0.03)
         if self.lump_counter == 0:
             self.neuron.Iext[0, :1000] = 0
@@ -120,7 +120,7 @@ class Main():
             for i in range(0, self.neuron.allsteps-1):
                 self.neuron.propagation()
 
-                if self.progress_counter % 100000 == 0:
+                if self.progress_counter % 1000 == 0:
                     self.log = 'process id : ' + str(self.pid) + ' : ' + \
                                 str(self.progress_counter) + ' steps : ' + \
                                 str(round(self.progress_counter*100/self.overall_steps, 1)) + "%"
@@ -137,6 +137,7 @@ class Main():
                 df['Iext_{} [uA]'.format(k)] = self.neuron.Iext[k]
                 df['I_noise_{} [uA]'.format(k)] = self.neuron.Inoise[k]
                 df['g_ampa'.format(k)] = -self.neuron.Isyn[k]/self.neuron.V[k]
+            df = df[:-1]
             df.to_csv(save_path + '/' + filename, mode='a', header=None)
 
             # Preparation for calculating the next lump
@@ -149,7 +150,6 @@ class Main():
             self.neuron.Inoise = np.fliplr(self.neuron.Inoise)
             self.neuron.dn = np.fliplr(self.neuron.dn)
             self.neuron.dWt = np.fliplr(self.neuron.dWt)
-            #self.neuron.t_fire = self.neuron.t_fire - lump
             self.neuron.curstep = 0
             self.lump_counter += 1
 

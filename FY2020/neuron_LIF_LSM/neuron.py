@@ -38,7 +38,7 @@ class Neuron_LIF():
         # simulation time
         self.T = T
         # all time
-        self.Tsteps = np.arange(0, self.T, self.dt)
+        self.Tsteps = np.arange(0, self.T+self.dt, self.dt) # contains the buffer for array wrapping
         # number of time step
         self.allsteps = len(self.Tsteps)
         # LIF model
@@ -89,8 +89,6 @@ class Neuron_LIF():
         self.D = D
         self.dWt = np.random.normal(0, self.dt ** (1 / 2), (self.N, self.allsteps))
 
-        self.Flg = False
-
 
     def alpha_function(self, t, Pmax, tau):
         if t < 0:
@@ -130,14 +128,13 @@ class Neuron_LIF():
                 self.gsyn[i, j] = self.alpha_function(self.Tsteps[self.curstep] - self.t_fire[j, i], self.Pmax_AMPA, self.tau_syn)
             for j in range(0, self.N):
                 self.Isyni[i] += self.Syn_weight[j, i] * self.gsyn[i, j] * (self.esyn[i, j] - self.Vi[i])
-                print(self.Tsteps[self.curstep] - self.t_fire[j, i])
         # biexp synapse AMPA + NMDA
         elif self.syn_type == 5:
             # Individual connection
             for j in range(0, self.N):
-                self.gAMPA[i, j] = self.biexp_func(self.curstep * self.dt - self.t_fire[j, i],
+                self.gAMPA[i, j] = self.biexp_func(self.Tsteps[self.curstep] - self.t_fire[j, i],
                                                                     self.Pmax_AMPA, 0.8, 5)
-                self.gNMDA[i, j] = self.biexp_func(self.curstep * self.dt - self.t_fire[j, i],
+                self.gNMDA[i, j] = self.biexp_func(self.Tsteps[self.curstep] - self.t_fire[j, i],
                                                                     self.Pmax_NMDA, 20, 125) / \
                                    (1 + (self.Mg_conc / 3.57) * np.exp(-0.062 * self.Vi))
             # sum
@@ -182,8 +179,8 @@ class Neuron_LIF():
         else:
             pass
 
-
         # ODE-first order Euler method
         self.k1V = (self.G_L*(self.erest-self.Vi) + self.Isyni + self.Iext[:, self.curstep] + self.Inoisei)/self.Cm
         self.V[:, self.curstep + 1] = self.Vi + self.k1V * self.dt
         self.curstep += 1
+
