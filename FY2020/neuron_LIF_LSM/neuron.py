@@ -164,10 +164,11 @@ class Neuron_LIF():
                 self.calc_synaptic_input(i)
                 # mV
                 if self.Vi[i] >= self.Vth:
-                    #self.t_fire[i, :] = self.curstep * self.dt
                     self.t_fire[i, :] = self.Tsteps[self.curstep]
                     self.t_fire_list[i, self.curstep] = self.Tsteps[self.curstep]
                     self.Vi[i] = self.Vreset
+                    self.V[i, self.curstep-1] = 20
+
 
         # Noise
         # 1 : gaussian white
