@@ -29,7 +29,7 @@ numneu = 2
 simtime = 1000
 lump = 500
 num_lump = int(simtime/lump)
-deltatime = 0.02
+dt = 0.02
 
 class Main():
     def __init__(self):
@@ -54,7 +54,7 @@ class Main():
             self.parm.append({})
             self.parm[self.parm_counter] = {'N': numneu,
                                             'T': lump,
-                                            'dt': deltatime,
+                                            'dt': dt,
                                             'Cm': 0.5e-3,
                                             'G_L': 25e-6,
                                             'Vreset': -55,
@@ -70,14 +70,24 @@ class Main():
                                             'noise_type': 1,
                                             'D': 0}
             self.parm_counter += 1
-            self.overall_steps = int(self.i*self.j*self.k*self.l*simtime/(deltatime*process))
+            self.overall_steps = int(self.i*self.j*self.k*self.l*simtime/(dt*process))
 
-    def input_generator(self):
+    def input_generator_sin(self):
         # sin wave
-        t = np.arange(self.lump_counter * lump, (self.lump_counter + 1) * lump + deltatime, deltatime)
+        t = np.arange(self.lump_counter * lump, (self.lump_counter + 1) * lump + dt, dt)
         self.neuron.Iext[0, :] = (8e-4) * np.sin(t * 0.03)
         if self.lump_counter == 0:
             self.neuron.Iext[0, :1000] = 0
+
+    def input_generator_mackey_glass(self, beta=2, gamma=1, tau=2, n=9.65):
+        t = np.arange(self.lump_counter * lump, (self.lump_counter + 1) * lump + dt, dt)
+        x = t * 0 + 0.5
+        for i in range(tau, len(t) - 1):
+            x[i + 1] = x[i] + dt * (beta * x[i - tau] / (1 + x[i - tau] ** n) - gamma * x[i])
+        self.neuron.Iext[0, :] = (8e-4) * x
+        if self.lump_counter == 0:
+            self.neuron.Iext[0, :1000] = 0
+
 
     def simulate(self, process):
         # parallel processing on each setting value
@@ -117,7 +127,9 @@ class Main():
 
         ####### MAIN PROCESS #######
         for j in range(num_lump):
-            self.input_generator()
+            self.input_generator_sin()
+            #self.input_generator_mackey_glass()
+
             ####### MAIN CYCLE #######
             for i in range(0, self.neuron.allsteps-1):
                 self.neuron.propagation()
@@ -160,54 +172,63 @@ class Main():
             self.neuron.dWt = np.fliplr(self.neuron.dWt)
             self.neuron.curstep = 0
             self.lump_counter += 1
+        ####### MAIN PROCESS END#######
+
 
         ###### LEARNING AND PREDICTION PROCESS ######
-        df = pd.read_csv(save_path + '/' + filename, usecols=['T_0 [ms]',
-                                                              'V_0 [mV]',
-                                                              'I_syn_0 [uA]',
-                                                              'I_AMPA_0 [uA]',
-                                                              'I_NMDA_0 [uA]',
-                                                              'V_1 [mV]'],
-                                                              skiprows=1)
+        read_cols = ['T_0 [ms]',  # 0
+                'V_0 [mV]',  # 1
+                'I_syn_0 [uA]',  # 2
+                'I_AMPA_0 [uA]',  # 3
+                'I_NMDA_0 [uA]',  # 4
+                'V_1 [mV]',  # 5
+                'Iext_0 [uA]' #6
+                ]
+        df = pd.read_csv(save_path + '/' + filename, usecols=read_cols, skiprows=1)[read_cols]
         train_ratio = 0.5
         border = int(len(df.values[:, 0])*train_ratio)
         print(border)
+        print(df)
+
         times = df.values[:, 0].reshape((len(df.values[:, 0]), 1))
         times_bef = df.values[:border, 0].reshape((len(df.values[:border, 0]), 1))
         times_af = df.values[border:, 0].reshape((len(df.values[border:, 0]), 1))
-        train = df.values[:border, [1, 5]].reshape((len(df.values[:border, [1, 5]]), 2)) + 70
-        output = df.values[border:, [1, 5]].reshape((len(df.values[border:, [1, 5]]), 2)) + 70
-        target = np.sin(times_bef * 0.03)
-        target_all = np.sin(times * 0.03)
+
+        input = df.values[:, 6].reshape((len(df.values[:, 6]), 1))
+        target = input[:border]
+        output_train = df.values[:border, [1, 5]].reshape((len(df.values[:border, [1, 5]]), 2)) + 70
+        output_predict = df.values[border:, [1, 5]].reshape((len(df.values[border:, [1, 5]]), 2)) + 70
+
         Isyn = df.values[:, 2].reshape((len(df.values[:, 2]), 1))
         IAMPA = df.values[:, 3].reshape((len(df.values[:, 3]), 1))
         INMDA = df.values[:, 4].reshape((len(df.values[:, 4]), 1))
 
         lsm = LSM()
-        lsm.train(train, target)
-        predict = (output @ lsm.output_w).T
+        lsm.train(output_train, target)
+        predict_res = (output_predict @ lsm.output_w).T
 
         fig = plt.figure(figsize=(12, 12))
         ax1 = fig.add_subplot(211)
         ax2 = fig.add_subplot(212)
-        ax1.plot(times_bef, train[:, 0], label="train")
-        ax1.plot(times_bef, train[:, 1], label="train")
-        ax1.plot(times, target_all[:, 0], label="target")
-        ax1.plot(times_af, predict[0], label="after training")
+        ax1.plot(times_bef, output_train[:, 0], label="train_output_n0")
+        ax1.plot(times_bef, output_train[:, 1], label="train_output_n1")
+        ax1.plot(times, input[:, 0], label="input(target)_Iext0")
+        ax1.plot(times_af, predict_res[0], label="after training")
         ax1.legend()
         ax2.plot(times, Isyn[:, 0], label="Isyn")
         ax2.plot(times, IAMPA[:, 0], label="IAMPA")
         ax2.plot(times, INMDA[:, 0], label="INMDA")
         ax2.legend()
         print(times.shape)
-        print(train.shape)
+        print(output_train.shape)
         print(target.shape)
         print(lsm.output_w.shape)
-        print((train @ lsm.output_w).shape)
-        print(predict.shape)
+        print((output_train @ lsm.output_w).shape)
+        print(output_predict.shape)
         print("W:{0}".format(lsm.output_w))
         fig.tight_layout()
         plt.show()
+        ###### LEARNING AND PREDICTION PROCESS END######
 
 
 def main():
