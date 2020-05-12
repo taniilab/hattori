@@ -57,7 +57,7 @@ class Main():
                                             'dt': dt,
                                             'Cm': 0.5e-3,
                                             'G_L': 25e-6,
-                                            'Vreset': -55,
+                                            'Vreset': -80,
                                             'Vth': -50,
                                             'erest': -70,
                                             #'Iext_amp': round(j*0.1, 2),
@@ -72,27 +72,32 @@ class Main():
             self.parm_counter += 1
             self.overall_steps = int(self.i*self.j*self.k*self.l*simtime/(dt*process))
 
+
     def input_generator_sin(self):
         # sin wave
         t = np.arange(self.lump_counter * lump, (self.lump_counter + 1) * lump + dt, dt)
         self.neuron.Iext[0, :] = (8e-4) * np.sin(t * 0.03)
         if self.lump_counter == 0:
-            self.neuron.Iext[0, :1000] = 0
+            self.neuron.Iext[0, :2500] = 0
+
 
     def input_generator_mackey_glass(self, beta=2, gamma=1, tau=2, n=9.65):
-        t = np.arange(self.lump_counter * lump, (self.lump_counter + 1) * lump + dt, dt)
-        x = t * 0 + 0.5
-        for i in range(tau, len(t) - 1):
+        index = np.arange(1+simtime/dt) #including buffer
+        x = index * 0 + 0.5
+        tau = int(tau / dt)
+        for i in range(tau, len(index) - 1):
             x[i + 1] = x[i] + dt * (beta * x[i - tau] / (1 + x[i - tau] ** n) - gamma * x[i])
-        self.neuron.Iext[0, :] = (8e-4) * x
+        print(len(x[int(self.lump_counter * lump/dt):
+                                            int(((self.lump_counter + 1) * lump/dt)+1)]))
+        self.neuron.Iext[0, :] = (8e-4) * x[int(self.lump_counter * lump/dt):
+                                            int(((self.lump_counter + 1) * lump/dt)+1)]
         if self.lump_counter == 0:
-            self.neuron.Iext[0, :1000] = 0
+            self.neuron.Iext[0, :2500] = 0
 
 
     def simulate(self, process):
         # parallel processing on each setting value
         self.pid = os.getpid()
-        print(process)
         self.neuron = Neuron(**self.parm[process+self.process_counter])
         self.neuron.parm_dict = self.parm[process+self.process_counter]
         self.progress_counter = self.now_cycle_multiproc*self.neuron.allsteps
@@ -127,8 +132,8 @@ class Main():
 
         ####### MAIN PROCESS #######
         for j in range(num_lump):
-            self.input_generator_sin()
-            #self.input_generator_mackey_glass()
+            #self.input_generator_sin()
+            self.input_generator_mackey_glass()
 
             ####### MAIN CYCLE #######
             for i in range(0, self.neuron.allsteps-1):
@@ -196,8 +201,8 @@ class Main():
 
         input = df.values[:, 6].reshape((len(df.values[:, 6]), 1))
         target = input[:border]
-        output_train = df.values[:border, [1, 5]].reshape((len(df.values[:border, [1, 5]]), 2)) + 70
-        output_predict = df.values[border:, [1, 5]].reshape((len(df.values[border:, [1, 5]]), 2)) + 70
+        output_train = df.values[:border, [1, 5]].reshape((len(df.values[:border, [1, 5]]), 2))
+        output_predict = df.values[border:, [1, 5]].reshape((len(df.values[border:, [1, 5]]), 2))
 
         Isyn = df.values[:, 2].reshape((len(df.values[:, 2]), 1))
         IAMPA = df.values[:, 3].reshape((len(df.values[:, 3]), 1))

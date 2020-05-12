@@ -51,10 +51,10 @@ class Neuron_LIF():
         self.k1V = 0 * np.ones(self.N)
         # connection relationship
         self.Syn_weight = np.ones((self.N, self.N))
-        self.Syn_weight[0, 0] = 0
-        self.Syn_weight[0, 1] = 3
-        self.Syn_weight[1, 0] = 3
-        self.Syn_weight[1, 1] = 0
+        self.Syn_weight[0, 0] = 1
+        self.Syn_weight[0, 1] = 5
+        self.Syn_weight[1, 0] = 5
+        self.Syn_weight[1, 1] = 1
 
         # synaptic current
         self.Isyn = np.zeros((self.N, self.allsteps))
@@ -76,7 +76,6 @@ class Neuron_LIF():
         # external input
         self.Iext_amp = Iext_amp
         self.Iext = np.zeros((self.N, self.allsteps))
-
         # firing time
         self.t_fire = -10000 * np.ones((self.N, self.N))
         self.t_fire_list = np.zeros((self.N, self.allsteps))
@@ -159,7 +158,7 @@ class Neuron_LIF():
         self.Inoisei = self.Inoise[:, self.curstep]
 
         # calculate synaptic input
-        if self.Tsteps[self.curstep] > 100:
+        if self.Tsteps[self.curstep] > 50:
             for i in range(0, self.N):
                 self.calc_synaptic_input(i)
                 # mV
