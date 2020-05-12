@@ -21,11 +21,10 @@ import matplotlib.pyplot as plt
 starttime = time.time()
 elapsed_time = 0
 save_path = "Z:/simulation/test"
-#input_wave_path = "Z:/simulation/test"
 process = 1 #number of processors
 
 #parameters#
-numneu = 2
+numneu = 10
 simtime = 1000
 lump = 500
 num_lump = int(simtime/lump)
@@ -182,13 +181,20 @@ class Main():
 
         ###### LEARNING AND PREDICTION PROCESS ######
         read_cols = ['T_0 [ms]',  # 0
-                'V_0 [mV]',  # 1
-                'I_syn_0 [uA]',  # 2
-                'I_AMPA_0 [uA]',  # 3
-                'I_NMDA_0 [uA]',  # 4
-                'V_1 [mV]',  # 5
-                'Iext_0 [uA]' #6
-                ]
+                     'V_0 [mV]',  # 1
+                     'I_syn_0 [uA]',  # 2
+                     'I_AMPA_0 [uA]',  # 3
+                     'I_NMDA_0 [uA]',  # 4
+                     'V_1 [mV]',  # 5
+                     'Iext_0 [uA]', #6
+                     'V_2 [mV]',
+                     'V_3 [mV]',
+                     'V_4 [mV]',
+                     'V_5 [mV]',
+                     'V_6 [mV]',
+                     'V_7 [mV]',
+                     'V_8 [mV]',
+                     'V_9 [mV]']
         df = pd.read_csv(save_path + '/' + filename, usecols=read_cols, skiprows=1)[read_cols]
         train_ratio = 0.5
         border = int(len(df.values[:, 0])*train_ratio)
@@ -201,8 +207,8 @@ class Main():
 
         input = df.values[:, 6].reshape((len(df.values[:, 6]), 1))
         target = input[:border]
-        output_train = df.values[:border, [1, 5]].reshape((len(df.values[:border, [1, 5]]), 2))
-        output_predict = df.values[border:, [1, 5]].reshape((len(df.values[border:, [1, 5]]), 2))
+        output_train = df.values[:border, [1, 5, 7, 8, 9, 10, 11, 12, 13, 14]].reshape((len(df.values[:border, [1, 5, 7, 8, 9, 10, 11, 12, 13, 14]]), 10))
+        output_predict = df.values[border:, [1, 5, 7, 8, 9, 10, 11, 12, 13, 14]].reshape((len(df.values[border:, [1, 5, 7, 8, 9, 10, 11, 12, 13, 14]]), 10))
 
         Isyn = df.values[:, 2].reshape((len(df.values[:, 2]), 1))
         IAMPA = df.values[:, 3].reshape((len(df.values[:, 3]), 1))
