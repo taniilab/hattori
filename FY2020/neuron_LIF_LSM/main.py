@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 starttime = time.time()
 elapsed_time = 0
 save_path = "Z:/simulation/test"
-process = 1 #number of processors
+process = 6 #number of processors
 
 #parameters#
 numneu = 10
@@ -35,9 +35,9 @@ class Main():
         self.parm = []
 
         #combination
-        self.i = 1
-        self.j = 1
-        self.k = 1
+        self.i = 6
+        self.j = 3
+        self.k = 3
         self.l = 1
 
         self.cycle_multiproc = int(self.i * self.j*self.k*self.l/process)
@@ -60,11 +60,11 @@ class Main():
                                             'Vth': -50,
                                             'erest': -70,
                                             #'Iext_amp': round(j*0.1, 2),
-                                            'Iext_amp': 6e-4,
+                                            'Iext_amp': round(2e-4+3e-4*i, 6),
                                             'syn_type': 5,
-                                            'Pmax_AMPA': round(0.00001+i*0.00001, 6),
+                                            'Pmax_AMPA': round(0.000005+j*0.000005, 6),
                                             #'Pmax_AMPA': 0.00003,
-                                            'Pmax_NMDA': round(0.00001+i*0.00001, 6),
+                                            'Pmax_NMDA': round(0.000005+k*0.000005, 6),
                                             'tau_syn': 5.26,
                                             'noise_type': 1,
                                             'D': 0}
@@ -75,7 +75,7 @@ class Main():
     def input_generator_sin(self):
         # sin wave
         t = np.arange(self.lump_counter * lump, (self.lump_counter + 1) * lump + dt, dt)
-        self.neuron.Iext[0, :] = (8e-4) * np.sin(t * 0.03)
+        self.neuron.Iext[0, :] =  np.sin(t * 0.03)
         if self.lump_counter == 0:
             self.neuron.Iext[0, :2500] = 0
 
@@ -88,7 +88,7 @@ class Main():
             x[i + 1] = x[i] + dt * (beta * x[i - tau] / (1 + x[i - tau] ** n) - gamma * x[i])
         print(len(x[int(self.lump_counter * lump/dt):
                                             int(((self.lump_counter + 1) * lump/dt)+1)]))
-        self.neuron.Iext[0, :] = (8e-4) * x[int(self.lump_counter * lump/dt):
+        self.neuron.Iext[0, :] = x[int(self.lump_counter * lump/dt):
                                             int(((self.lump_counter + 1) * lump/dt)+1)]
         if self.lump_counter == 0:
             self.neuron.Iext[0, :2500] = 0
@@ -180,6 +180,7 @@ class Main():
 
 
         ###### LEARNING AND PREDICTION PROCESS ######
+        """
         read_cols = ['T_0 [ms]',  # 0
                      'V_0 [mV]',  # 1
                      'I_syn_0 [uA]',  # 2
@@ -239,6 +240,7 @@ class Main():
         print("W:{0}".format(lsm.output_w))
         fig.tight_layout()
         plt.show()
+        """
         ###### LEARNING AND PREDICTION PROCESS END######
 
 

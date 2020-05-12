@@ -50,7 +50,7 @@ class Neuron_LIF():
         self.V = -70 * np.ones((self.N, self.allsteps))
         self.k1V = 0 * np.ones(self.N)
         # connection relationship
-        self.Syn_weight = np.ones((self.N, self.N))*3
+        self.Syn_weight = np.ones((self.N, self.N))
         """
         self.Syn_weight[0, 0] = 1
         self.Syn_weight[0, 1] = 5
@@ -183,7 +183,7 @@ class Neuron_LIF():
             pass
 
         # ODE-first order Euler method
-        self.k1V = (self.G_L*(self.erest-self.Vi) + self.Isyni + self.Iext[:, self.curstep] + self.Inoisei)/self.Cm
+        self.k1V = (self.G_L*(self.erest-self.Vi) + self.Isyni + self.Iext_amp*self.Iext[:, self.curstep] + self.Inoisei)/self.Cm
         self.V[:, self.curstep + 1] = self.Vi + self.k1V * self.dt
         self.curstep += 1
 
