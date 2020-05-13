@@ -407,6 +407,10 @@ class Ui_MainWindow(object):
         self.load_setting_button_w = QtWidgets.QWidget()
         self.load_setting_button_w.setLayout(self.layout_load_setting)
 
+        self.dd_button_delimiter = DropButton("デリミタ変換(「tab」→「,」)したい場合はこちらにドラッグして下さい")
+        self.dd_button_delimiter.setStyleSheet("QPushButton{color: rgb(255, 255, 255);"
+                                               "background-color: rgb(204, 102, 102);}")
+
         self.layout.addWidget(self.dd_button)
         self.parameter_setting_area = QtWidgets.QScrollArea()
         self.scroll_layout = QtWidgets.QVBoxLayout()
@@ -447,6 +451,7 @@ class Ui_MainWindow(object):
         self.layout.addWidget(self.save_setting_label)
         self.layout.addWidget(self.save_setting_button_w)
         self.layout.addWidget(self.load_setting_button_w)
+        self.layout.addWidget(self.dd_button_delimiter)
         self.centralWidget.setLayout(self.layout)
         MainWindow.setCentralWidget(self.centralWidget)
 
@@ -468,21 +473,32 @@ class Ui_MainWindow(object):
         if self.dd_button.drop_flg == True:
             self.dd_button.drop_flg = False
             self.save_previous_setting()
-            print(self.dd_button.mineData)
+            print(self.dd_button.mimeData)
             plt.rcParams["font.family"] = str(self.fig_font_line.text())
-            self.df = pd.read_csv(self.dd_button.mineData, skiprows=int(self.skiprows_line.text()))
+            self.df = pd.read_csv(self.dd_button.mimeData, skiprows=int(self.skiprows_line.text()))
 
             self.selected_yrow = [x.strip() for x in self.yrow_line.text().split(',')]
             self.plot()
 
         if self.dd_stimtiming_button.drop_flg == True:
             self.dd_stimtiming_button.drop_flg = False
-            print(self.dd_stimtiming_button.mineData)
+            print(self.dd_stimtiming_button.mimeData)
             print("")
-            self.df_stimtiming = pd.read_csv(self.dd_stimtiming_button.mineData,
+            self.df_stimtiming = pd.read_csv(self.dd_stimtiming_button.mimeData,
                                              header=None,
                                              delimiter="x")# other than comma
             self.stimtiming_line.setText(str(self.df_stimtiming[0][0]))
+
+        if self.dd_button_delimiter.drop_flg == True:
+            self.dd_button_delimiter.drop_flg = False
+            print("delimiter conversion")
+            self.df_delimiter = pd.read_csv(self.dd_button_delimiter.mimeData, delimiter='\t')
+            self.delicon_res_path = str(os.path.dirname(self.dd_button_delimiter.mimeData)) + \
+                                    "/re" + \
+                                    str(os.path.basename(self.dd_button_delimiter.mimeData).split('.', 1)[0]) + \
+                                    ".csv"
+            print(self.delicon_res_path.lstrip("file:///"))
+            self.df_delimiter.to_csv(self.delicon_res_path.lstrip("file:///"), index=False)
 
     def plot(self):
         self.selected_xrow = self.xrow_line.text()
@@ -668,7 +684,7 @@ class Ui_MainWindow(object):
 
     def on_click_savefig(self):
         self.save_previous_setting()
-        if self.dd_button.mineData != "Null":
+        if self.dd_button.mimeData != "Null":
             self.date = datetime.datetime.today()
             self.filename = ("fig" + str(self.date.year) + '_' + str(self.date.month) + '_' +
                              str(self.date.day) + '_' + str(self.date.hour) + '_' + str(self.date.minute) + '_' + str(
@@ -676,7 +692,7 @@ class Ui_MainWindow(object):
             if os.path.isdir(str(self.save_path_line.text())):
                 self.save_path_tmp = str(self.save_path_line.text())+str(self.filename)
             else:
-                self.save_path_tmp = os.path.dirname(self.dd_button.mineData.strip("file:///"))+"/"+str(self.filename)
+                self.save_path_tmp = os.path.dirname(self.dd_button.mimeData.strip("file:///"))+"/"+str(self.filename)
                 print("Target directory does not exist !")
             plt.savefig(self.save_path_tmp)
             print(self.save_path_tmp)
@@ -686,7 +702,7 @@ class Ui_MainWindow(object):
 
     def on_click_replot_figure(self):
         self.save_previous_setting()
-        if self.dd_button.mineData != "Null":
+        if self.dd_button.mimeData != "Null":
             self.plot()
         else:
             print("No csv file readed")
@@ -695,12 +711,13 @@ class Ui_MainWindow(object):
 class DropButton(QPushButton):
     def __init__(self, title, parent=None):
         super().__init__(title, parent)
-        self.mineData = "Null"
+        self.mimeData = "Null"
         self.drop_flg = False
         self.setAcceptDrops(True)
 
     def dragEnterEvent(self, e):
-        self.mineData = e.mimeData().text()
+        self.mimeData = e.mimeData().text()
+        print(e.mimeData().text())
         e.acceptProposedAction()
 
     def dropEvent(self, e):
