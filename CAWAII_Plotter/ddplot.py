@@ -497,7 +497,6 @@ class Ui_MainWindow(object):
                                     "/re" + \
                                     str(os.path.basename(self.dd_button_delimiter.mimeData).split('.', 1)[0]) + \
                                     ".csv"
-            print(self.delicon_res_path.lstrip("file:///"))
             self.df_delimiter.to_csv(self.delicon_res_path.lstrip("file:///"), index=False)
 
     def plot(self):
