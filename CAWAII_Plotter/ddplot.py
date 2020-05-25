@@ -479,6 +479,9 @@ class Ui_MainWindow(object):
 
             self.selected_yrow = [x.strip() for x in self.yrow_line.text().split(',')]
             self.plot()
+            subWindow = SubWindow()
+            subWindow.setpalm(self.df)
+            subWindow.show()
 
         if self.dd_stimtiming_button.drop_flg == True:
             self.dd_stimtiming_button.drop_flg = False
@@ -706,6 +709,31 @@ class Ui_MainWindow(object):
         else:
             print("No csv file readed")
 
+
+class SubWindow(QWidget):
+    def __init__(self, parent=None):
+        self.w = QDialog(parent)
+        self.table = QTableWidget()
+
+    def setpalm(self, df):
+        self.table.setRowCount(1)
+        self.table.setColumnCount(len(df.columns))
+        self.table.setHorizontalHeaderLabels(df.columns)
+        self.table.setVerticalHeaderLabels(["index"])
+
+        self.item = []
+        for i in range(len(df.columns)):
+            self.item.append(QTableWidgetItem(str(i)))
+            self.table.setItem(0, i, self.item[i])
+
+        self.layout = QHBoxLayout()
+        self.layout.addWidget(self.table)
+        self.w.setLayout(self.layout)
+
+    def show(self):
+        # it can run as a "modeless" dialog, but I don't know why it works.
+        self.w.show()
+        self.w.exec_()
 
 class DropButton(QPushButton):
     def __init__(self, title, parent=None):

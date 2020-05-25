@@ -68,7 +68,7 @@ class Main():
                                             'Pmax_NMDA': 0.00003,
                                             'tau_syn': 5.26,
                                             'noise_type': 1,
-                                            'D': 0}
+                                            'D': 0.005}
             self.parm_counter += 1
             self.overall_steps = int(self.i*self.j*self.k*self.l*simtime/(dt*process))
 
@@ -215,10 +215,10 @@ class Main():
         fig = plt.figure(figsize=(12, 12))
         ax1 = fig.add_subplot(211)
         ax2 = fig.add_subplot(212)
-        ax1.plot(times_bef, output_train[:, 0], label="train_output_n0")
-        ax1.plot(times_bef, output_train[:, 1], label="train_output_n1")
-        ax1.plot(times, input[:, 0], label="input(target)_Iext0")
-        ax1.plot(times_af, predict_res[0], label="after training")
+        ax1.plot(times_bef, output_train[:, 0], label="train_output_n0", color="blue")
+        ax1.plot(times_bef, output_train[:, 1], label="train_output_n1", color="mediumorchid")
+        ax1.plot(times, input[:, 0], label="input(target)_Iext0", color="green")
+        ax1.plot(times_af, predict_res[0], label="after training", color="red")
         ax1.legend()
         ax2.plot(times, Isyn[:, 0], label="Isyn")
         ax2.plot(times, IAMPA[:, 0], label="IAMPA")

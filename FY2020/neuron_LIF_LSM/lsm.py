@@ -4,7 +4,7 @@ import pandas as pd
 
 
 save_path = "Z:/simulation/test"
-filename = "2020_5_12_16_33_2_Iext_amp0.0017_Pmax_AMPA1e-05_Pmax_NMDA1.5e-05_LIF.csv"
+filename = "2020_5_22_13_26_38_Iext_amp0.001_Pmax_AMPA3e-05_Pmax_NMDA3e-05_LIF.csv"
 
 class LSM():
     def __init__(self):
