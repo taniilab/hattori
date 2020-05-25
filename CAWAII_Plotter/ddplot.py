@@ -710,7 +710,6 @@ class Ui_MainWindow(object):
             print("No csv file readed")
 
 
-
 class SubWindow(QWidget):
     def __init__(self, parent=None):
         self.w = QDialog(parent)
