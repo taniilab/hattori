@@ -461,6 +461,8 @@ class Ui_MainWindow(object):
         self.timer.timeout.connect(self.readcsv)
         self.timer.start(100)
 
+        self.qdialog_flg = False
+
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -479,9 +481,14 @@ class Ui_MainWindow(object):
 
             self.selected_yrow = [x.strip() for x in self.yrow_line.text().split(',')]
             self.plot()
-            subWindow = SubWindow()
-            subWindow.setpalm(self.df)
-            subWindow.show()
+
+            if self.s == False:
+                self.qdialog_flg = True
+                self.subWindow = SubWindow()
+                self.subWindow.setpalm(self.df)
+                self.subWindow.show()
+            else:
+                self.subWindow.w.close()
 
         if self.dd_stimtiming_button.drop_flg == True:
             self.dd_stimtiming_button.drop_flg = False
@@ -729,6 +736,8 @@ class SubWindow(QWidget):
         self.layout = QHBoxLayout()
         self.layout.addWidget(self.table)
         self.w.setLayout(self.layout)
+
+        self.w.resize(115*len(df.columns), 80)
 
     def show(self):
         # it can run as a "modeless" dialog, but I don't know why it works.
