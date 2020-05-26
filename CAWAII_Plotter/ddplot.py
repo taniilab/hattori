@@ -51,7 +51,12 @@ class Ui_MainWindow(object):
         self.dd_button.setStyleSheet("QPushButton{color: rgb(255, 255, 255);"
                                      "background-color: rgb(204, 102, 102);}")
 
-
+        self.table = QTableWidget(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        self.table.setFixedHeight(80)
+        self.table.setRowCount(1)
+        self.table.setColumnCount(1)
+        self.table.setHorizontalHeaderLabels(["1"])
+        self.table.setVerticalHeaderLabels(["index"])
 
         self.skiprows_label = QtWidgets.QLabel("Skip rows")
         self.def_skiprows = "0"
@@ -412,6 +417,7 @@ class Ui_MainWindow(object):
                                                "background-color: rgb(204, 102, 102);}")
 
         self.layout.addWidget(self.dd_button)
+        self.layout.addWidget(self.table)
         self.parameter_setting_area = QtWidgets.QScrollArea()
         self.scroll_layout = QtWidgets.QVBoxLayout()
         self.inner = QtWidgets.QWidget()
@@ -461,8 +467,6 @@ class Ui_MainWindow(object):
         self.timer.timeout.connect(self.readcsv)
         self.timer.start(100)
 
-        self.qdialog_flg = False
-
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -478,17 +482,16 @@ class Ui_MainWindow(object):
             print(self.dd_button.mimeData)
             plt.rcParams["font.family"] = str(self.fig_font_line.text())
             self.df = pd.read_csv(self.dd_button.mimeData, skiprows=int(self.skiprows_line.text()))
-
             self.selected_yrow = [x.strip() for x in self.yrow_line.text().split(',')]
-            self.plot()
 
-            if self.s == False:
-                self.qdialog_flg = True
-                self.subWindow = SubWindow()
-                self.subWindow.setpalm(self.df)
-                self.subWindow.show()
-            else:
-                self.subWindow.w.close()
+            self.table.setColumnCount(len(self.df.columns))
+            self.table.setHorizontalHeaderLabels(self.df.columns)
+            self.item = []
+            for i in range(len(self.df.columns)):
+                self.item.append(QTableWidgetItem(str(i)))
+                self.table.setItem(0, i, self.item[i])
+
+            self.plot()
 
         if self.dd_stimtiming_button.drop_flg == True:
             self.dd_stimtiming_button.drop_flg = False
@@ -717,41 +720,16 @@ class Ui_MainWindow(object):
             print("No csv file readed")
 
 
-class SubWindow(QWidget):
-    def __init__(self, parent=None):
-        self.w = QDialog(parent)
-        self.table = QTableWidget()
-
-    def setpalm(self, df):
-        self.table.setRowCount(1)
-        self.table.setColumnCount(len(df.columns))
-        self.table.setHorizontalHeaderLabels(df.columns)
-        self.table.setVerticalHeaderLabels(["index"])
-
-        self.item = []
-        for i in range(len(df.columns)):
-            self.item.append(QTableWidgetItem(str(i)))
-            self.table.setItem(0, i, self.item[i])
-
-        self.layout = QHBoxLayout()
-        self.layout.addWidget(self.table)
-        self.w.setLayout(self.layout)
-
-        self.w.resize(115*len(df.columns), 80)
-
-    def show(self):
-        # it can run as a "modeless" dialog, but I don't know why it works.
-        self.w.show()
-        self.w.exec_()
-
 class DropButton(QPushButton):
     def __init__(self, title, parent=None):
         super().__init__(title, parent)
         self.mimeData = "Null"
         self.drop_flg = False
+        self.drag_flg = False
         self.setAcceptDrops(True)
 
     def dragEnterEvent(self, e):
+        self.drag_flg = True
         self.mimeData = e.mimeData().text()
         print(e.mimeData().text())
         e.acceptProposedAction()
