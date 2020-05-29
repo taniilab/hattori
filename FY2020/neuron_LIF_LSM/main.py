@@ -68,7 +68,8 @@ class Main():
                                             'Pmax_NMDA': 0.00003,
                                             'tau_syn': 5.26,
                                             'noise_type': 1,
-                                            'D': 0.005}
+                                            #'D': 0.005,
+                                            'D': 0}
             self.parm_counter += 1
             self.overall_steps = int(self.i*self.j*self.k*self.l*simtime/(dt*process))
 
@@ -132,8 +133,8 @@ class Main():
 
         ####### MAIN PROCESS #######
         for j in range(num_lump):
-            self.input_generator_sin()
-            #self.input_generator_mackey_glass()
+            #self.input_generator_sin()
+            self.input_generator_mackey_glass()
 
             ####### MAIN CYCLE #######
             for i in range(0, self.neuron.allsteps-1):
