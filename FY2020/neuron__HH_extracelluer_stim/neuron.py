@@ -56,8 +56,11 @@ class Neuron_HH():
         self.Cm = Cm
         self.Vth = Vth
         self.V_intra = -65 * np.ones((self.N, self.allsteps))
-        self.V_extrta = np.zeros((self.N, self.allsteps))
-        self.V = self.V_extrta -self.V_intra
+        self.V_extra = np.zeros((self.N, self.allsteps))
+        for i in range(int(50/self.dt)):
+            self.V_extra[0, int(1000 / self.dt)+i] = 30 * np.exp(- i*0.1*self.dt)
+            self.V_extra[1, int(1000 / self.dt)+i] = -30 * np.exp(- i*0.1*self.dt)
+        self.V = self.V_extra -self.V_intra
 
         self.k1V = 0 * np.ones(self.N)
 
@@ -105,11 +108,16 @@ class Neuron_HH():
         # external input
         self.Iext_amp = Iext_amp
         self.Iext = np.zeros((self.N, self.allsteps))
-        self.Iext[0, int(1000 / self.dt):int(1005 / self.dt)] = self.Iext_amp
+        self.Iext[0, int(1000 / self.dt):int(1001 / self.dt)] = self.Iext_amp
+        self.Iext[0, int(1001 / self.dt):int(1002 / self.dt)] = -self.Iext_amp
 
         # firing time
         self.t_fire = -10000 * np.ones((self.N, self.N))
         self.t_fire_list = np.zeros((self.N, self.allsteps))
+
+        # compartment model
+        self.g_extra = 0
+        self.g_intra = 0.1
 
         # current step
         self.curstep = 0
@@ -131,12 +139,12 @@ class Neuron_HH():
 
     # one step processing
     def propagation(self):
-        self.V = self.V_intra - self.V_extrta
+        self.V = self.V_intra - self.V_extra
 
         # slice
         self.Vi = self.V[:, self.curstep]
         self.V_intrai = self.V_intra[:, self.curstep]
-        self.V_extrtai = self.V_extrta[:, self.curstep]
+        self.V_extrai = self.V_extra[:, self.curstep]
         # sodium
         self.INai = self.INa[:, self.curstep]
         self.mi = self.m[:, self.curstep]
@@ -190,8 +198,14 @@ class Neuron_HH():
         self.k1p = (self.p_infi - self.pi) / self.tau_pi
 
         # first order Euler method
-        self.V_extrta[:, self.curstep + 1] = self.V_extrtai + self.Iext[:, self.curstep] * self.dt
-        self.V_intra[:, self.curstep + 1] = self.V_intrai + (self.INai + self.IKi + self.Ileaki + self.Imi)* self.dtz
+        #self.V_extra[:, self.curstep + 1] = self.V_extrai  - self.Iext[:, self.curstep] * self.dt
+        #self.V_intra[:, self.curstep + 1] = self.V_intrai + (self.INai + self.IKi + self.Ileaki + self.Imi)* self.dt
+
+        #self.V_extra[0, self.curstep + 1] = self.V_extrai[0] - self.Iext[0, self.curstep] * self.dt - self.g_extra * (self.V_extrai[0]-self.V_extrai[1])
+        self.V_intra[0, self.curstep + 1] = self.V_intrai[0] + (self.INai[0] + self.IKi[0] + self.Ileaki[0] + self.Imi[0]) * self.dt  + self.g_intra * (self.V_intrai[1]-self.V_intrai[0])
+        #self.V_extra[1, self.curstep + 1] = self.V_extrai[1] + self.Iext[0, self.curstep] * self.dt  - self.g_extra * (self.V_extrai[1]-self.V_extrai[0])
+        self.V_intra[1, self.curstep + 1] = self.V_intrai[1] + (self.INai[1] + self.IKi[1] + self.Ileaki[1] + self.Imi[1]) * self.dt  + self.g_intra * (self.V_intrai[0]-self.V_intrai[1])
+
         self.m[:, self.curstep + 1] = self.mi + self.k1m * self.dt
         self.h[:, self.curstep + 1] = self.hi + self.k1h * self.dt
         self.n[:, self.curstep + 1] = self.ni + self.k1n * self.dt

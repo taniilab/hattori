@@ -536,7 +536,11 @@ class Ui_MainWindow(object):
                              self.df[str(self.df.columns[int(self.selected_yrow[i])])]*float(self.ycoefficient_line.text()),
                              color=str(self.plot_color_cmbox[i].currentText()),
                              linewidth=float(self.plot_line_w_line.text()),
-                             linestyle=str(self.plot_color_style_cmbox[i].currentText()))
+                             linestyle=str(self.plot_color_style_cmbox[i].currentText()),
+                             label = str(self.df.columns.values[int(self.selected_yrow[i])]))
+
+            # plan to implement button later
+            plt.legend(fontsize=3)
 
 
             if self.ax_spines_top_chbox.isChecked():

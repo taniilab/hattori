@@ -12,7 +12,7 @@ starttime = time.time()
 elapsed_time = 0
 save_path = "G:/Box Sync/Personal/xxx"
 process = 1 #number of processors
-numneu = 2
+numneu = 2 # fix(2 compartment)
 simtime = 2000
 deltatime = 0.04
 
@@ -39,7 +39,7 @@ class Main():
             self.parm[self.parm_counter] = {'N': numneu,
                                             'T': simtime,
                                             'dt': deltatime,
-                                            'Iext_amp': 10}
+                                            'Iext_amp': 50}
             self.parm_counter += 1
             self.overall_steps = int(self.i*self.j*self.k*self.l*simtime/(deltatime*process))
 
@@ -97,6 +97,8 @@ def main():
             for j in range(numneu):
                 df['T_{} [ms]'.format(j)]       = res[k].Tsteps
                 df['V_{} [mV]'.format(j)]       = res[k].V[j]
+                df['V_intra{} [mV]'.format(j)] = res[k].V_intra[j]
+                df['V_extra{} [mV]'.format(j)] = res[k].V_extra[j]
                 df['fire_{} [mV]'.format(j)]    = res[k].t_fire_list[j]
                 df['I_K_{} [uA]'.format(j)]     = res[k].IK[j]
                 df['I_Na_{} [uA]'.format(j)]    = res[k].INa[j]
