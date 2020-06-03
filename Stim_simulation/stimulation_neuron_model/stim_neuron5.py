@@ -234,8 +234,8 @@ def main():
                              'V_intra [mV]': neuron.V_right_intra,
                              'V_extra [mV]': neuron.V_right_extra,
                              'V_membrane [mV]': neuron.cell_right.V_m})
-    df_left.to_csv('I:/Box Sync/Personal/Simulation Data/202001/cell_left.csv')
-    df_right.to_csv('I:/Box Sync/Personal/Simulation Data/202001/cell_right.csv')
+    df_left.to_csv('G:/Box Sync/Personal/xxx/cell_left.csv')
+    df_right.to_csv('G:/Box Sync/Personal/xxx/cell_right.csv')
     df_potential = pd.DataFrame({'V_left_extra_ext': neuron.V_left_extra_ext,
                                  'V_left_extra_left': neuron.V_left_extra_left,
                                  'V_left_extra_right': neuron.V_left_extra_right,
@@ -251,7 +251,7 @@ def main():
                                  'V_right_intra_right': neuron.V_right_intra_right,
                                  'I_total_right': neuron.I_total_right})
     df_potential.to_csv(
-        'I:/Box Sync/Personal/Simulation Data/202001/cell_potential.csv')
+        'G:/Box Sync/Personal/xxx/cell_potential.csv')
 
 
     fsize = 15
