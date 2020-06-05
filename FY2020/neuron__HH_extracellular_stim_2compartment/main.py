@@ -11,7 +11,7 @@ import itertools
 starttime = time.time()
 elapsed_time = 0
 save_path = "G:/Box Sync/Personal/xxx"
-process = 1 #number of processors
+process = 6 #number of processors
 numneu = 2 # fix(2 compartment)
 simtime = 2000
 deltatime = 0.04
@@ -21,7 +21,7 @@ class Main():
         self.parm = []
 
         #combination
-        self.i = 1
+        self.i = 6
         self.j = 1
         self.k = 1
         self.l = 1
@@ -39,7 +39,7 @@ class Main():
             self.parm[self.parm_counter] = {'N': numneu,
                                             'T': simtime,
                                             'dt': deltatime,
-                                            'Iext_amp': 50}
+                                            'g_intra': i+1}
             self.parm_counter += 1
             self.overall_steps = int(self.i*self.j*self.k*self.l*simtime/(deltatime*process))
 
@@ -87,12 +87,13 @@ def main():
             res[k].parm_dict = res[k].parm_dict.replace('\'', '')
             res[k].parm_dict = res[k].parm_dict.replace(',', '_')
 
-            filename = "{0}_{1}_{2}_{3}_{4}_{5}_HH.csv".format(d.year,
+            filename = "{0}_{1}_{2}_{3}_{4}_{5}_gintra{6}_HH.csv".format(d.year,
                                                                      d.month,
                                                                      d.day,
                                                                      d.hour,
                                                                      d.minute,
-                                                                     d.second)
+                                                                     d.second,
+                                                                     res[k].g_intra)
             df = pd.DataFrame()
             for j in range(numneu):
                 df['T_{} [ms]'.format(j)]       = res[k].Tsteps
@@ -104,7 +105,7 @@ def main():
                 df['I_Na_{} [uA]'.format(j)]    = res[k].INa[j]
                 df['I_m_{} [uA]'.format(j)]     = res[k].Im[j]
                 df['I_leak_{} [uA]'.format(j)]  = res[k].Ileak[j]
-                df['I_ext_{} [uA]'.format(j)] = res[k].Iext[j]
+                df['I_link_{} [uA]'.format(j)] = res[k].Ilink[j]
 
             config = pd.DataFrame(columns=[filename])
             config.to_csv(save_path + '/' + filename)

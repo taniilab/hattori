@@ -24,7 +24,7 @@ save_path = "Z:/simulation/test"
 process = 1 #number of processors
 
 #parameters#
-numneu = 2
+numneu = 5
 simtime = 1000
 lump = 500
 num_lump = int(simtime/lump)

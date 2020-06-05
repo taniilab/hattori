@@ -16,7 +16,7 @@ class Neuron_HH():
                  Iext_num=0, noise_type=0, ramda=-10, alpha=0.5,
                  beta=0, D=1, ratio=0.5, Mg_conc=1,
                  U_SE_AMPA=0.3, U_SE_NMDA=0.03, tau_rise_AMPA=0.9, tau_rise_NMDA=70, tau_rec_AMPA=200, tau_rec_NMDA=200,
-                 tau_inact_AMPA=5, tau_inact_NMDA=30):
+                 tau_inact_AMPA=5, tau_inact_NMDA=30, g_intra=3):
 
         self.set_neuron_palm(delay, syn_type, N, dt, T, Cm, Vth,
                              eNa, gNa, eK, gK, eL, gL, gM,
@@ -26,7 +26,7 @@ class Neuron_HH():
                              Iext_num, noise_type, ramda, alpha,
                              beta, D, ratio, Mg_conc,
                              U_SE_AMPA, U_SE_NMDA, tau_rise_AMPA, tau_rise_NMDA, tau_rec_AMPA, tau_rec_NMDA,
-                             tau_inact_AMPA, tau_inact_NMDA)
+                             tau_inact_AMPA, tau_inact_NMDA, g_intra)
 
     def set_neuron_palm(self, delay=20, syn_type=1, N=1, dt=0.05, T=5000, Cm=1, Vth=-56.2,
                         eNa=50, gNa=56, eK=-90, gK=5, eL=-70.3, gL=0.0205, gM=0.075,
@@ -36,7 +36,7 @@ class Neuron_HH():
                         Iext_num=0, noise_type=0, ramda=-10, alpha=0.5,
                         beta=0, D=1, ratio=0.5, Mg_conc=1,
                         U_SE_AMPA=0.3, U_SE_NMDA=0.03, tau_rise_AMPA=0.9, tau_rise_NMDA=70, tau_rec_AMPA=200,
-                        tau_rec_NMDA=200, tau_inact_AMPA=5, tau_inact_NMDA=30):
+                        tau_rec_NMDA=200, tau_inact_AMPA=5, tau_inact_NMDA=30, g_intra=3):
 
         # parameters (used by main.py)
         self.parm_dict = {}
@@ -57,10 +57,10 @@ class Neuron_HH():
         self.Vth = Vth
         self.V_intra = -65 * np.ones((self.N, self.allsteps))
         self.V_extra = np.zeros((self.N, self.allsteps))
+        # extracellular stimulation pattern
         for i in range(int(50/self.dt)):
-            self.V_extra[0, int(1000 / self.dt)+i] = 30 * np.exp(- i*0.1*self.dt)
+            self.V_extra[0, int(1000 / self.dt)+i] = 30 * np.exp(- i*0.1*self.dt) # exp decay
             self.V_extra[1, int(1000 / self.dt)+i] = -30 * np.exp(- i*0.1*self.dt)
-        self.V = self.V_extra -self.V_intra
 
         self.k1V = 0 * np.ones(self.N)
 
@@ -105,19 +105,14 @@ class Neuron_HH():
 
         self.Isyn = np.zeros((self.N, self.allsteps))
 
-        # external input
-        self.Iext_amp = Iext_amp
-        self.Iext = np.zeros((self.N, self.allsteps))
-        self.Iext[0, int(1000 / self.dt):int(1001 / self.dt)] = self.Iext_amp
-        self.Iext[0, int(1001 / self.dt):int(1002 / self.dt)] = -self.Iext_amp
-
         # firing time
         self.t_fire = -10000 * np.ones((self.N, self.N))
         self.t_fire_list = np.zeros((self.N, self.allsteps))
 
-        # compartment model
-        self.g_extra = 0
-        self.g_intra = 0.1
+        # 2 compartment model
+        self.Ilink = 0 * np.ones((self.N, self.allsteps))
+        #self.g_extra = 0
+        self.g_intra = g_intra
 
         # current step
         self.curstep = 0
@@ -165,6 +160,8 @@ class Neuron_HH():
         self.tau_pi = self.tau_p[:, self.curstep]
         # leak
         self.Ileaki = self.Ileak[:, self.curstep]
+        # 2 compartment
+        self.Ilinki = self.Ilink[:, self.curstep]
 
         # ODE
         # sodium
@@ -186,25 +183,16 @@ class Neuron_HH():
                        (3.3 * np.exp((self.Vi + 35) / 20) +
                         np.exp(-(self.Vi + 35) / 20)))
 
-        self.k1V = (self.INai +
-                    self.IKi +
-                    self.Ileaki +
-                    self.Imi +
-                    self.Iext[:, self.curstep])
-
         self.k1m = self.alpha_mi * (1 - self.mi) - self.beta_mi * self.mi
         self.k1h = self.alpha_hi * (1 - self.hi) - self.beta_hi * self.hi
         self.k1n = self.alpha_ni * (1 - self.ni) - self.beta_ni * self.ni
         self.k1p = (self.p_infi - self.pi) / self.tau_pi
 
         # first order Euler method
-        #self.V_extra[:, self.curstep + 1] = self.V_extrai  - self.Iext[:, self.curstep] * self.dt
-        #self.V_intra[:, self.curstep + 1] = self.V_intrai + (self.INai + self.IKi + self.Ileaki + self.Imi)* self.dt
-
-        #self.V_extra[0, self.curstep + 1] = self.V_extrai[0] - self.Iext[0, self.curstep] * self.dt - self.g_extra * (self.V_extrai[0]-self.V_extrai[1])
-        self.V_intra[0, self.curstep + 1] = self.V_intrai[0] + (self.INai[0] + self.IKi[0] + self.Ileaki[0] + self.Imi[0]) * self.dt  + self.g_intra * (self.V_intrai[1]-self.V_intrai[0])
-        #self.V_extra[1, self.curstep + 1] = self.V_extrai[1] + self.Iext[0, self.curstep] * self.dt  - self.g_extra * (self.V_extrai[1]-self.V_extrai[0])
-        self.V_intra[1, self.curstep + 1] = self.V_intrai[1] + (self.INai[1] + self.IKi[1] + self.Ileaki[1] + self.Imi[1]) * self.dt  + self.g_intra * (self.V_intrai[0]-self.V_intrai[1])
+        self.Ilinki[0] = self.g_intra * (self.V_intrai[1] - self.V_intrai[0])
+        self.Ilinki[1] = self.g_intra * (self.V_intrai[0] - self.V_intrai[1])
+        self.V_intra[0, self.curstep + 1] = self.V_intrai[0] + (self.INai[0] + self.IKi[0] + self.Ileaki[0] + self.Imi[0] + self.Ilinki[0]) * self.dt
+        self.V_intra[1, self.curstep + 1] = self.V_intrai[1] + (self.INai[1] + self.IKi[1] + self.Ileaki[1] + self.Imi[1] + self.Ilinki[1]) * self.dt
 
         self.m[:, self.curstep + 1] = self.mi + self.k1m * self.dt
         self.h[:, self.curstep + 1] = self.hi + self.k1h * self.dt
