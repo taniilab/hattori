@@ -4,7 +4,7 @@ import pandas as pd
 
 
 save_path = "Z:/simulation/test"
-filename = "2020_5_22_13_26_38_Iext_amp0.001_Pmax_AMPA3e-05_Pmax_NMDA3e-05_LIF.csv"
+filename = "2020_6_5_14_41_28_Iext_amp0.001_Pmax_AMPA3e-05_Pmax_NMDA3e-05_LIF.csv"
 
 class LSM():
     def __init__(self):
@@ -21,6 +21,17 @@ class LSM():
 
 
 def main():
+    num_read_nodes = 5
+    read_cols = ['T_0 [ms]']
+    for i in range(num_read_nodes):
+        read_cols.append('V_{} [mV]'.format(i))
+        read_cols.append('I_syn_{} [uA]'.format(i))
+
+    read_cols.append('I_AMPA_{} [uA]'.format(0))
+    read_cols.append('I_NMDA_{} [uA]'.format(0))
+    read_cols.append('Iext_{} [uA]'.format(0))
+    print(read_cols)
+    """
     read_cols = ['T_0 [ms]',  # 0
                  'V_0 [mV]',  # 1
                  'I_syn_0 [uA]',  # 2
@@ -36,6 +47,7 @@ def main():
                  'V_7 [mV]',
                  'V_8 [mV]',
                  'V_9 [mV]']
+    """
     df = pd.read_csv(save_path + '/' + filename, usecols=read_cols, skiprows=1)[read_cols]
     train_ratio = 0.5
     border = int(len(df.values[:, 0])*train_ratio)
@@ -46,10 +58,15 @@ def main():
     times_bef = df.values[:border, 0].reshape((len(df.values[:border, 0]), 1))
     times_af = df.values[border:, 0].reshape((len(df.values[border:, 0]), 1))
 
-    input = df.values[:, 6].reshape((len(df.values[:, 6]), 1))
+    index_tmp = []
+    index_tmp.append(int(2*num_read_nodes+3))
+    input = df.values[:, index_tmp].reshape((len(df.values[:, index_tmp]), len(index_tmp))) # ampa, nmda, "Iext"
     target = input[:border]
-    output_train = df.values[:border, [1, 5, 7, 8, 9, 10, 11, 12, 13, 14]].reshape((len(df.values[:border, [1, 5, 7, 8, 9, 10, 11, 12, 13, 14]]), 10))
-    output_predict = df.values[border:, [1, 5, 7, 8, 9, 10, 11, 12, 13, 14]].reshape((len(df.values[border:, [1, 5, 7, 8, 9, 10, 11, 12, 13, 14]]), 10))
+    index_tmp = []
+    for i in range(num_read_nodes):
+        index_tmp.append(i*2+1)
+    output_train = df.values[:border, index_tmp].reshape((len(df.values[:border, index_tmp]), len(index_tmp)))
+    output_predict = df.values[border:, index_tmp].reshape((len(df.values[border:, index_tmp]), len(index_tmp)))
 
     Isyn = df.values[:, 2].reshape((len(df.values[:, 2]), 1))
     IAMPA = df.values[:, 3].reshape((len(df.values[:, 3]), 1))

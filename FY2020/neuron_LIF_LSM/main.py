@@ -192,6 +192,7 @@ class Main():
 
 
         ###### LEARNING AND PREDICTION PROCESS ######
+        """
         read_cols = ['T_0 [ms]',  # 0
                      'V_0 [mV]',  # 1
                      'I_syn_0 [uA]',  # 2
@@ -244,6 +245,7 @@ class Main():
         print("W:{0}".format(lsm.output_w))
         fig.tight_layout()
         plt.show()
+        """
         """
         read_cols = ['T_0 [ms]',  # 0
                      'V_0 [mV]',  # 1
