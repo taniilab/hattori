@@ -82,16 +82,26 @@ class Main():
             self.neuron.Iext[0, :2500] = 0
 
 
-    def input_generator_mackey_glass(self, beta=2, gamma=1, tau=2, n=9.65):
+    def input_generator_mackey_glass(self, beta=2, gamma=1, tau=2, n=9.65, expand=False):
         index = np.arange(1+simtime/dt) #including buffer
         x = index * 0 + 0.5
         tau = int(tau / dt)
         for i in range(tau, len(index) - 1):
             x[i + 1] = x[i] + dt * (beta * x[i - tau] / (1 + x[i - tau] ** n) - gamma * x[i])
-        print(len(x[int(self.lump_counter * lump/dt):
-                                            int(((self.lump_counter + 1) * lump/dt)+1)]))
+
         self.neuron.Iext[0, :] = x[int(self.lump_counter * lump/dt):
                                             int(((self.lump_counter + 1) * lump/dt)+1)]
+
+        #scaling
+        if expand == True:
+            x_expand = np.ones(len(x)*2)*0 + 0.5
+            for i in range(len(x)):
+                x_expand[2 * i] = x[i]
+            for i in range(len(x) - 2):
+                x_expand[2 * i + 1] = (x_expand[2 * i + 2] + x_expand[2 * i]) / 2
+            self.neuron.Iext[0, :] = x_expand[int(self.lump_counter * lump/dt):
+                                              int(((self.lump_counter + 1) * lump/dt)+1)]
+
         if self.lump_counter == 0:
             self.neuron.Iext[0, :2500] = 0
 

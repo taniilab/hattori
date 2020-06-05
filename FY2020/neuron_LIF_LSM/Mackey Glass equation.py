@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 from scipy import interpolate
 
 dt = 0.1
-t = np.arange(0, 100, dt)
+t_length = 200
+t = np.arange(0, t_length, dt)
 x = t*0+0.5
 
 
@@ -29,7 +30,7 @@ for i in range(tau, len(t)-1):
     x[i+1] = x[i] + dt*(beta*x[i-tau]/(1+x[i-tau]**n) - gamma*x[i])
 """
 #補間
-t2 = np.arange(0, 200, dt)
+t2 = np.arange(0, t_length*2, dt)
 x_expand = t2*0+0.5
 print(len(x))
 print(len(x_expand))
@@ -45,7 +46,7 @@ ax3.plot(x[tau:], x[:len(x)-tau], lw=0.1)
 ax4 = fig.add_subplot(224)
 #index = np.arange(0, len(x[tau*2:len(x)-tau]))
 ax4.plot(t[tau:], x[tau:], lw=0.4)
-ax4.plot(t2[tau:], x_expand[tau:], lw=0.4)
+ax4.plot(t[tau:], x_expand[tau:tau+len(t[tau:])], lw=0.4)
 
 print(x_expand)
 
