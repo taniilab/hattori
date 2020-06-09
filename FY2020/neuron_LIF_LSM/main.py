@@ -17,6 +17,8 @@ import itertools
 import numpy as np
 from lsm import LSM
 import matplotlib.pyplot as plt
+import subprocess
+
 
 starttime = time.time()
 elapsed_time = 0
@@ -59,16 +61,15 @@ class Main():
                                             'Vreset': -80,
                                             'Vth': -50,
                                             'erest': -70,
-                                            'Iext_amp': round(2e-4+3e-4*i, 6),
-                                            'Iext_amp': 1e-3,
-                                            'syn_type': 5,
-                                            #'Pmax_AMPA': round(0.000005+j*0.000005, 6),
-                                            'Pmax_AMPA': 0.00003,
+                                            #'Iext_amp': round(2e-4+3e-4*i, 6),
+                                            'Iext_amp': 0.8e-3,
+                                            'syn_type': 3,
+                                            'Pmax_AMPA': round(0.000027+i*0.0000005, 8),
+                                            #'Pmax_AMPA': 0.00003,
                                             #'Pmax_NMDA': round(0.000005+k*0.000005, 6),
-                                            'Pmax_NMDA': 0.00003,
+                                            'Pmax_NMDA': 0.00005,
                                             'tau_syn': 5.26,
                                             'noise_type': 1,
-                                            #'D': 0.005,
                                             'D': 0}
             self.parm_counter += 1
             self.overall_steps = int(self.i*self.j*self.k*self.l*simtime/(dt*process))
@@ -116,7 +117,7 @@ class Main():
         # record
         d = datetime.datetime.today()
         filename = "{0}_{1}_{2}_{3}_{4}_{5}_" \
-                   "Iext_amp{6}_Pmax_AMPA{7}_Pmax_NMDA{8}_LIF.csv".format(d.year,
+                   "Iext_amp{6}_Pmax_AMPA{7}_Pmax_NMDA{8}_LIF".format(d.year,
                                                                           d.month,
                                                                           d.day,
                                                                           d.hour,
@@ -126,7 +127,7 @@ class Main():
                                                                           self.neuron.Pmax_AMPA,
                                                                           self.neuron.Pmax_NMDA)
         df = pd.DataFrame(columns=[filename])
-        df.to_csv(save_path + '/' + filename)
+        df.to_csv(save_path + '/' + filename + '.csv')
         df = pd.DataFrame()
         for k in range(numneu):
             df['T_{} [ms]'.format(k)] = ""
@@ -139,12 +140,12 @@ class Main():
             df['I_noise_{} [uA]'.format(k)] = ""
             df['g_ampa'.format(k)] = ""
 
-        df.to_csv(save_path + '/' + filename, mode='a')
+        df.to_csv(save_path + '/' + filename + '.csv', mode='a')
 
         ####### MAIN PROCESS #######
         for j in range(num_lump):
-            #self.input_generator_sin()
-            self.input_generator_mackey_glass()
+            self.input_generator_sin()
+            #self.input_generator_mackey_glass()
 
             ####### MAIN CYCLE #######
             for i in range(0, self.neuron.allsteps-1):
@@ -170,7 +171,7 @@ class Main():
                 df['I_noise_{} [uA]'.format(k)] = self.neuron.Inoise[k]
                 df['g_ampa'.format(k)] = -self.neuron.Isyn[k]/self.neuron.V[k]
             df = df[:-1]
-            df.to_csv(save_path + '/' + filename, mode='a', header=None)
+            df.to_csv(save_path + '/' + filename + '.csv', mode='a', header=None)
 
             # Preparation for calculating the next lump
             self.neuron.Tsteps = self.neuron.Tsteps + lump
@@ -191,122 +192,98 @@ class Main():
         ####### MAIN PROCESS END#######
 
 
+        # Visualization of connection structure
+        dot_txt = 'digraph g{\n'
+        dot_txt += 'graph [ dpi = 300, ratio = 1.0];\n'
+        for i in range(self.neuron.N):
+            dot_txt += '{} [label="{}", color=lightseagreen, fontcolor=white, style=filled]\n'.format(i, 'N'+str(i))
+        for i, j in itertools.product(range(self.neuron.N), range(self.neuron.N)):
+            if self.neuron.Syn_weight[i, j] != 0:
+                dot_txt += '{}->{}\n'.format(i, j)
+        dot_txt += "}\n"
+        print(dot_txt)
+
+        with open(save_path + '/' + filename + '.dot', 'w') as f:
+            f.write(dot_txt)
+        self.cmd = 'dot {} -T png -o {}'.format(save_path + '/' + filename + '.dot', save_path + '/' + filename + '.png')
+        print(self.cmd)
+        subprocess.run(self.cmd, shell=True)
+
+
         ###### LEARNING AND PREDICTION PROCESS ######
-        """
-        read_cols = ['T_0 [ms]',  # 0
-                     'V_0 [mV]',  # 1
-                     'I_syn_0 [uA]',  # 2
-                     'I_AMPA_0 [uA]',  # 3
-                     'I_NMDA_0 [uA]',  # 4
-                     'V_1 [mV]',  # 5
-                     'Iext_0 [uA]', #6
-                     ]
-        df = pd.read_csv(save_path + '/' + filename, usecols=read_cols, skiprows=1)[read_cols]
+        num_read_nodes = 5
+        read_cols = ['T_0 [ms]']
+        for i in range(num_read_nodes):
+            read_cols.append('V_{} [mV]'.format(i))
+            read_cols.append('I_syn_{} [uA]'.format(i))
+
+        read_cols.append('I_AMPA_{} [uA]'.format(0))
+        read_cols.append('I_NMDA_{} [uA]'.format(0))
+        read_cols.append('Iext_{} [uA]'.format(0))
+        print(read_cols)
+
+        df = pd.read_csv(save_path + '/' + filename + '.csv', usecols=read_cols, skiprows=1)[read_cols]
         train_ratio = 0.5
-        border = int(len(df.values[:, 0])*train_ratio)
-        print(border)
-        print(df)
+        border = int(len(df.values[:, 0]) * train_ratio)
 
         times = df.values[:, 0].reshape((len(df.values[:, 0]), 1))
         times_bef = df.values[:border, 0].reshape((len(df.values[:border, 0]), 1))
         times_af = df.values[border:, 0].reshape((len(df.values[border:, 0]), 1))
 
-        input = df.values[:, 6].reshape((len(df.values[:, 6]), 1))
+        index_tmp = []
+        index_tmp.append(int(2 * num_read_nodes + 3))
+        input = df.values[:, index_tmp].reshape((len(df.values[:, index_tmp]), len(index_tmp)))  # ampa, nmda, "Iext"
         target = input[:border]
-        output_train = df.values[:border, [1, 5]].reshape((len(df.values[:border, [1, 5]]), 2))
-        output_predict = df.values[border:, [1, 5]].reshape((len(df.values[border:, [1, 5]]), 2))
+        index_tmp = []
+        for i in range(num_read_nodes):
+            index_tmp.append(i * 2 + 1)
+        output_train = df.values[:border, index_tmp].reshape((len(df.values[:border, index_tmp]), len(index_tmp)))
+        output_predict = df.values[border:, index_tmp].reshape((len(df.values[border:, index_tmp]), len(index_tmp)))
 
+        # index_tmp = []
+        # index_tmp.append(int(2 * num_read_nodes + 3))
         Isyn = df.values[:, 2].reshape((len(df.values[:, 2]), 1))
-        IAMPA = df.values[:, 3].reshape((len(df.values[:, 3]), 1))
-        INMDA = df.values[:, 4].reshape((len(df.values[:, 4]), 1))
-
+        IAMPA = df.values[:, num_read_nodes * 2 + 1].reshape((len(df.values[:, num_read_nodes * 2 + 1]), 1))
+        INMDA = df.values[:, num_read_nodes * 2 + 2].reshape((len(df.values[:, num_read_nodes * 2 + 2]), 1))
+        """
+        print(Isyn)
+        print(IAMPA)
+        print(INMDA)
+        """
         lsm = LSM()
         lsm.train(output_train, target)
         predict_res = (output_predict @ lsm.output_w).T
 
-        fig = plt.figure(figsize=(12, 12))
-        ax1 = fig.add_subplot(211)
-        ax2 = fig.add_subplot(212)
-        ax1.plot(times_bef, output_train[:, 0], label="train_output_n0", color="blue")
-        ax1.plot(times_bef, output_train[:, 1], label="train_output_n1", color="mediumorchid")
-        ax1.plot(times, input[:, 0], label="input(target)_Iext0", color="green")
-        ax1.plot(times_af, predict_res[0], label="after training", color="red")
-        ax1.legend()
-        ax2.plot(times, Isyn[:, 0], label="Isyn")
-        ax2.plot(times, IAMPA[:, 0], label="IAMPA")
-        ax2.plot(times, INMDA[:, 0], label="INMDA")
-        ax2.legend()
+        fig = plt.figure(figsize=(20, 15))
+        plt.title(filename)
+
+        # Firing pattern of individual neurons
+        ax = []
+        for i in range(num_read_nodes):
+            ax.append(fig.add_subplot(num_read_nodes, 2, 2 * i + 1))
+            ax[i].plot(times_bef, output_train[:, i], label="train_output_n{}".format(i))
+            if i == 0:
+                ax[i].plot(times, input[:, 0], label="input(target)_Iext0")
+                ax[i].plot(times_af, predict_res[0], label="after training")
+            ax[i].legend()
+
+        # sample plot of neuron 0 synaptic current
+        ax.append(fig.add_subplot(num_read_nodes, 2, 2))
+        ax[num_read_nodes].plot(times, Isyn[:, 0], label="Isyn")
+        ax[num_read_nodes].plot(times, IAMPA[:, 0], label="IAMPA")
+        ax[num_read_nodes].plot(times, INMDA[:, 0], label="INMDA")
+        ax[num_read_nodes].legend()
+        """
         print(times.shape)
         print(output_train.shape)
         print(target.shape)
         print(lsm.output_w.shape)
         print((output_train @ lsm.output_w).shape)
         print(output_predict.shape)
-        print("W:{0}".format(lsm.output_w))
+        print("W:{}".format(lsm.output_w))
+        """
         fig.tight_layout()
         plt.show()
-        """
-        """
-        read_cols = ['T_0 [ms]',  # 0
-                     'V_0 [mV]',  # 1
-                     'I_syn_0 [uA]',  # 2
-                     'I_AMPA_0 [uA]',  # 3
-                     'I_NMDA_0 [uA]',  # 4
-                     'V_1 [mV]',  # 5
-                     'Iext_0 [uA]', #6
-                     'V_2 [mV]',
-                     'V_3 [mV]',
-                     'V_4 [mV]',
-                     'V_5 [mV]',
-                     'V_6 [mV]',
-                     'V_7 [mV]',
-                     'V_8 [mV]',
-                     'V_9 [mV]']
-        df = pd.read_csv(save_path + '/' + filename, usecols=read_cols, skiprows=1)[read_cols]
-        train_ratio = 0.5
-        border = int(len(df.values[:, 0])*train_ratio)
-        print(border)
-        print(df)
-
-        times = df.values[:, 0].reshape((len(df.values[:, 0]), 1))
-        times_bef = df.values[:border, 0].reshape((len(df.values[:border, 0]), 1))
-        times_af = df.values[border:, 0].reshape((len(df.values[border:, 0]), 1))
-
-        input = df.values[:, 6].reshape((len(df.values[:, 6]), 1))
-        target = input[:border]
-        output_train = df.values[:border, [1, 5, 7, 8, 9, 10, 11, 12, 13, 14]].reshape((len(df.values[:border, [1, 5, 7, 8, 9, 10, 11, 12, 13, 14]]), 10))
-        output_predict = df.values[border:, [1, 5, 7, 8, 9, 10, 11, 12, 13, 14]].reshape((len(df.values[border:, [1, 5, 7, 8, 9, 10, 11, 12, 13, 14]]), 10))
-
-        Isyn = df.values[:, 2].reshape((len(df.values[:, 2]), 1))
-        IAMPA = df.values[:, 3].reshape((len(df.values[:, 3]), 1))
-        INMDA = df.values[:, 4].reshape((len(df.values[:, 4]), 1))
-
-        lsm = LSM()
-        lsm.train(output_train, target)
-        predict_res = (output_predict @ lsm.output_w).T
-
-        fig = plt.figure(figsize=(12, 12))
-        ax1 = fig.add_subplot(211)
-        ax2 = fig.add_subplot(212)
-        ax1.plot(times_bef, output_train[:, 0], label="train_output_n0")
-        ax1.plot(times_bef, output_train[:, 1], label="train_output_n1")
-        ax1.plot(times, input[:, 0], label="input(target)_Iext0")
-        ax1.plot(times_af, predict_res[0], label="after training")
-        ax1.legend()
-        ax2.plot(times, Isyn[:, 0], label="Isyn")
-        ax2.plot(times, IAMPA[:, 0], label="IAMPA")
-        ax2.plot(times, INMDA[:, 0], label="INMDA")
-        ax2.legend()
-        print(times.shape)
-        print(output_train.shape)
-        print(target.shape)
-        print(lsm.output_w.shape)
-        print((output_train @ lsm.output_w).shape)
-        print(output_predict.shape)
-        print("W:{0}".format(lsm.output_w))
-        fig.tight_layout()
-        plt.show()
-        """
         ###### LEARNING AND PREDICTION PROCESS END######
 
 

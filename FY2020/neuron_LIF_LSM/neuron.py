@@ -9,23 +9,25 @@ current -> uA
 """
 # coding: UTF-8
 import numpy as np
-
+import itertools
+import subprocess
+import pandas as pd
 
 class Neuron_LIF():
     def __init__(self, delay=20, syn_type=1, N=1, dt=0.05, T=1000, Cm=1, G_L=25, Vth=-56.2, Vreset=-55, erest=-70,
                  Iext_amp=0, Pmax=0, Pmax_AMPA=0, Pmax_NMDA=0, tau_syn=5.26, Mg_conc=1.0, esyn=0, gsyn=0,
-                 noise_type=0, alpha=0.5,
-                 beta=0, D=1):
+                 U_SE_AMPA=0.3, U_SE_NMDA=0.03, tau_rec_AMPA=200, tau_rec_NMDA=200, tau_inact_AMPA=5, tau_inact_NMDA=30,
+                 noise_type=0, alpha=0.5, beta=0, D=1):
 
         self.set_neuron_palm(delay, syn_type, N, dt, T, Cm, G_L, Vth, Vreset, erest,
                              Iext_amp, Pmax, Pmax_AMPA, Pmax_NMDA, tau_syn, Mg_conc, esyn, gsyn,
-                             noise_type, alpha,
-                             beta, D)
+                             U_SE_AMPA, U_SE_NMDA, tau_rec_AMPA, tau_rec_NMDA, tau_inact_AMPA, tau_inact_NMDA,
+                             noise_type, alpha, beta, D)
 
     def set_neuron_palm(self, delay=20, syn_type=1, N=1, dt=0.05, T=1000, Cm=1, G_L=25, Vth=-56.2, Vreset=-55, erest=-70,
-                 Iext_amp=0, Pmax=0, Pmax_AMPA=0, Pmax_NMDA=0, tau_syn=5.26, Mg_conc=1.0, esyn=0, gsyn=0,
-                 noise_type=0, alpha=0.5,
-                 beta=0, D=1):
+                        Iext_amp=0, Pmax=0, Pmax_AMPA=0, Pmax_NMDA=0, tau_syn=5.26, Mg_conc=1.0, esyn=0, gsyn=0,
+                        U_SE_AMPA=0.3, U_SE_NMDA=0.03, tau_rec_AMPA=200, tau_rec_NMDA=200, tau_inact_AMPA=5, tau_inact_NMDA=30,
+                        noise_type=0, alpha=0.5, beta=0, D=1):
 
         # parameters (used by main.py)
         self.parm_dict = {}
@@ -51,12 +53,34 @@ class Neuron_LIF():
         self.k1V = 0 * np.ones(self.N)
         # connection relationship
         self.Syn_weight = np.ones((self.N, self.N))
+        self.Syn_weight[0, 1] = 0
+        self.Syn_weight[1, 2] = 0
+        self.Syn_weight[2, 3] = 0
+        self.Syn_weight[3, 4] = 0
+        self.Syn_weight[4, 0] = 0
+        self.Syn_weight[1, 1] = 0
+
+        print(self.Syn_weight)
+
+        # Visualization of connection structure
         """
-        self.Syn_weight[0, 0] = 1
-        self.Syn_weight[0, 1] = 5
-        self.Syn_weight[1, 0] = 5
-        self.Syn_weight[1, 1] = 1
+        txt = 'digraph g{\n'
+        txt += 'graph [ dpi = 300, ratio = 1.0];\n'
+        for i in range(self.N):
+            txt += '{} [label="{}", color=lightseagreen, fontcolor=white, style=filled]\n'.format(i, 'N'+str(i))
+        for i, j in itertools.product(range(self.N), range(self.N)):
+            if self.Syn_weight[i, j] != 0:
+                txt += '{}->{}\n'.format(i, j)
+        txt += "}\n"
+        print(txt)
+
+        with open('test.dot', 'w') as f:
+            f.write(txt)
+        self.cmd = 'dot {} -T png -o {}'.format('C:/Users/6969p/Documents/GitHub/hattori/FY2020/neuron_LIF_LSM/test.dot', 'C:/Users/6969p/Documents/GitHub/hattori/FY2020/neuron_LIF_LSM/test.png')
+        print(self.cmd)
+        subprocess.run(self.cmd, shell=True)
         """
+
         # synaptic current
         self.Isyn = np.zeros((self.N, self.allsteps))
         self.INMDA = np.zeros((self.N, self.allsteps))
@@ -73,6 +97,22 @@ class Neuron_LIF():
         # maximal synaptic conductance
         self.Pmax_AMPA = Pmax_AMPA
         self.Pmax_NMDA = Pmax_NMDA
+
+        # dynamic synapse
+        self.R_AMPA = np.ones((self.N, self.N, self.allsteps))
+        self.R_NMDA = np.ones((self.N, self.N, self.allsteps))
+        self.E_AMPA = np.zeros((self.N, self.N, self.allsteps))
+        self.E_NMDA = np.zeros((self.N, self.N, self.allsteps))
+        self.I_AMPA = np.zeros((self.N, self.N, self.allsteps))
+        self.I_NMDA = np.zeros((self.N, self.N, self.allsteps))
+        self.dR = 0
+        self.dE = 0
+        self.U_SE_AMPA = U_SE_AMPA
+        self.U_SE_NMDA = U_SE_NMDA
+        self.tau_rec_AMPA = tau_rec_AMPA
+        self.tau_rec_NMDA = tau_rec_AMPA
+        self.tau_inact_AMPA = tau_inact_AMPA
+        self.tau_inact_NMDA = tau_inact_NMDA
 
         # external input
         self.Iext_amp = Iext_amp
@@ -115,6 +155,11 @@ class Neuron_LIF():
         else:
             return np.exp(- x / tau_rise)
 
+    def delta_func(self, time):
+        if time == 0:
+            return 1/self.dt
+        else:
+            return 0
 
     def calc_synaptic_input(self, i):
         # recording fire time (positive edge)
@@ -122,8 +167,34 @@ class Neuron_LIF():
             pass
         elif self.syn_type == 2:
             pass
+        # depression synapse
         elif self.syn_type == 3:
-            pass
+            for j in range(0, self.N):
+                self.dR_AMPA = self.dt * ((self.I_AMPA[i, j, self.curstep] / self.tau_rec_AMPA) \
+                                        - self.R_AMPA[i, j, self.curstep] * self.U_SE_AMPA * self.delta_func(self.curstep * self.dt - self.t_fire[j, i]))
+                self.dR_NMDA = self.dt * ((self.I_AMPA[i, j, self.curstep] / self.tau_rec_NMDA) \
+                                           - self.R_NMDA[i, j, self.curstep] * self.U_SE_NMDA * self.delta_func(self.curstep * self.dt - self.t_fire[j, i]))
+                self.dE_AMPA = self.dt * ((- self.E_AMPA[i, j, self.curstep] / self.tau_inact_AMPA) \
+                                           + self.U_SE_AMPA * self.R_AMPA[i, j, self.curstep] * self.delta_func(self.curstep * self.dt - self.t_fire[j, i]))
+                self.dE_NMDA = self.dt * ((- self.E_NMDA[i, j, self.curstep] / self.tau_inact_NMDA) \
+                                            + self.U_SE_NMDA * self.R_NMDA[i, j, self.curstep] * self.delta_func(self.curstep * self.dt - self.t_fire[j, i]))
+
+                self.R_AMPA[i, j, self.curstep + 1] = self.R_AMPA[i, j, self.curstep] + self.dR_AMPA
+                self.R_NMDA[i, j, self.curstep + 1] = self.R_NMDA[i, j, self.curstep] + self.dR_NMDA
+                self.E_AMPA[i, j, self.curstep + 1] = self.E_AMPA[i, j, self.curstep] + self.dE_AMPA
+                self.E_NMDA[i, j, self.curstep + 1] = self.E_NMDA[i, j, self.curstep] + self.dE_NMDA
+                self.I_AMPA[i, j, self.curstep + 1] = 1 - self.R_AMPA[i, j, self.curstep + 1] - self.E_AMPA[i, j, self.curstep + 1]
+                self.I_NMDA[i, j, self.curstep + 1] = 1 - self.R_NMDA[i, j, self.curstep + 1] - self.E_NMDA[i, j, self.curstep + 1]
+
+                self.gAMPA[i, j] = self.Pmax_AMPA * self.E_AMPA[i, j, self.curstep]
+                self.gNMDA[i, j] = self.Pmax_NMDA * self.E_NMDA[i, j, self.curstep] / \
+                                   (1 + (self.Mg_conc / 3.57) * np.exp(-0.062 * self.Vi[i]))
+            # sum
+            for j in range(0, self.N):
+                self.INMDAi[i] += self.Syn_weight[j, i] * self.gNMDA[i, j] * (self.esyn[i, j] - self.Vi[i])
+                self.IAMPAi[i] += self.Syn_weight[j, i] * self.gAMPA[i, j] * (self.esyn[i, j] - self.Vi[i])
+                self.Isyni[i] = self.INMDAi[i] + self.IAMPAi[i]
+
         # alpha synapse
         elif self.syn_type == 4:
             for j in range(0, self.N):
@@ -167,7 +238,7 @@ class Neuron_LIF():
                     self.t_fire[i, :] = self.Tsteps[self.curstep]
                     self.t_fire_list[i, self.curstep] = self.Tsteps[self.curstep]
                     self.Vi[i] = self.Vreset
-                    self.V[i, self.curstep-1] = 20
+                    #self.V[i, self.curstep-1] = 20
 
 
         # Noise
