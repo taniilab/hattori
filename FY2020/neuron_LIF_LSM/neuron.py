@@ -53,33 +53,15 @@ class Neuron_LIF():
         self.k1V = 0 * np.ones(self.N)
         # connection relationship
         self.Syn_weight = np.ones((self.N, self.N))
+        """
         self.Syn_weight[0, 1] = 0
         self.Syn_weight[1, 2] = 0
         self.Syn_weight[2, 3] = 0
         self.Syn_weight[3, 4] = 0
         self.Syn_weight[4, 0] = 0
         self.Syn_weight[1, 1] = 0
-
+        """
         print(self.Syn_weight)
-
-        # Visualization of connection structure
-        """
-        txt = 'digraph g{\n'
-        txt += 'graph [ dpi = 300, ratio = 1.0];\n'
-        for i in range(self.N):
-            txt += '{} [label="{}", color=lightseagreen, fontcolor=white, style=filled]\n'.format(i, 'N'+str(i))
-        for i, j in itertools.product(range(self.N), range(self.N)):
-            if self.Syn_weight[i, j] != 0:
-                txt += '{}->{}\n'.format(i, j)
-        txt += "}\n"
-        print(txt)
-
-        with open('test.dot', 'w') as f:
-            f.write(txt)
-        self.cmd = 'dot {} -T png -o {}'.format('C:/Users/6969p/Documents/GitHub/hattori/FY2020/neuron_LIF_LSM/test.dot', 'C:/Users/6969p/Documents/GitHub/hattori/FY2020/neuron_LIF_LSM/test.png')
-        print(self.cmd)
-        subprocess.run(self.cmd, shell=True)
-        """
 
         # synaptic current
         self.Isyn = np.zeros((self.N, self.allsteps))
@@ -105,8 +87,8 @@ class Neuron_LIF():
         self.E_NMDA = np.zeros((self.N, self.N, self.allsteps))
         self.I_AMPA = np.zeros((self.N, self.N, self.allsteps))
         self.I_NMDA = np.zeros((self.N, self.N, self.allsteps))
-        self.dR = 0
-        self.dE = 0
+        self.dR_AMPA = 0
+        self.dE_NMDA = 0
         self.U_SE_AMPA = U_SE_AMPA
         self.U_SE_NMDA = U_SE_NMDA
         self.tau_rec_AMPA = tau_rec_AMPA
@@ -156,7 +138,7 @@ class Neuron_LIF():
             return np.exp(- x / tau_rise)
 
     def delta_func(self, time):
-        if time == 0:
+        if -self.dt < time < self.dt:
             return 1/self.dt
         else:
             return 0
@@ -170,14 +152,15 @@ class Neuron_LIF():
         # depression synapse
         elif self.syn_type == 3:
             for j in range(0, self.N):
-                self.dR_AMPA = self.dt * ((self.I_AMPA[i, j, self.curstep] / self.tau_rec_AMPA) \
-                                        - self.R_AMPA[i, j, self.curstep] * self.U_SE_AMPA * self.delta_func(self.curstep * self.dt - self.t_fire[j, i]))
-                self.dR_NMDA = self.dt * ((self.I_AMPA[i, j, self.curstep] / self.tau_rec_NMDA) \
-                                           - self.R_NMDA[i, j, self.curstep] * self.U_SE_NMDA * self.delta_func(self.curstep * self.dt - self.t_fire[j, i]))
-                self.dE_AMPA = self.dt * ((- self.E_AMPA[i, j, self.curstep] / self.tau_inact_AMPA) \
-                                           + self.U_SE_AMPA * self.R_AMPA[i, j, self.curstep] * self.delta_func(self.curstep * self.dt - self.t_fire[j, i]))
-                self.dE_NMDA = self.dt * ((- self.E_NMDA[i, j, self.curstep] / self.tau_inact_NMDA) \
-                                            + self.U_SE_NMDA * self.R_NMDA[i, j, self.curstep] * self.delta_func(self.curstep * self.dt - self.t_fire[j, i]))
+                self.dR_AMPA = self.dt * ((self.I_AMPA[i, j, self.curstep] / self.tau_rec_AMPA) - \
+                                          self.R_AMPA[i, j, self.curstep] * self.U_SE_AMPA * self.delta_func(self.Tsteps[self.curstep] - self.t_fire[j, i]))
+                self.dR_NMDA = self.dt * ((self.I_AMPA[i, j, self.curstep] / self.tau_rec_NMDA) - \
+                                          self.R_NMDA[i, j, self.curstep] * self.U_SE_NMDA * self.delta_func(self.Tsteps[self.curstep] - self.t_fire[j, i]))
+                self.dE_AMPA = self.dt * ((- self.E_AMPA[i, j, self.curstep] / self.tau_inact_AMPA) + \
+                                          self.U_SE_AMPA * self.R_AMPA[i, j, self.curstep] * self.delta_func(self.Tsteps[self.curstep] - self.t_fire[j, i]))
+                self.dE_NMDA = self.dt * ((- self.E_NMDA[i, j, self.curstep] / self.tau_inact_NMDA) + \
+                                          self.U_SE_NMDA * self.R_NMDA[i, j, self.curstep] * self.delta_func(self.Tsteps[self.curstep] - self.t_fire[j, i]))
+
 
                 self.R_AMPA[i, j, self.curstep + 1] = self.R_AMPA[i, j, self.curstep] + self.dR_AMPA
                 self.R_NMDA[i, j, self.curstep + 1] = self.R_NMDA[i, j, self.curstep] + self.dR_NMDA
@@ -189,11 +172,19 @@ class Neuron_LIF():
                 self.gAMPA[i, j] = self.Pmax_AMPA * self.E_AMPA[i, j, self.curstep]
                 self.gNMDA[i, j] = self.Pmax_NMDA * self.E_NMDA[i, j, self.curstep] / \
                                    (1 + (self.Mg_conc / 3.57) * np.exp(-0.062 * self.Vi[i]))
+                if i == 0:
+                    if self.delta_func(self.Tsteps[self.curstep] - self.t_fire[j, i]) != 0:
+                        print("kanoperkanopero")
+                        print(self.dE_AMPA)
+                        print(self.Tsteps[self.curstep])
+                    print("{0}->0:{1}".format(j, self.delta_func(self.Tsteps[self.curstep] - self.t_fire[j, i])))
+
             # sum
             for j in range(0, self.N):
                 self.INMDAi[i] += self.Syn_weight[j, i] * self.gNMDA[i, j] * (self.esyn[i, j] - self.Vi[i])
                 self.IAMPAi[i] += self.Syn_weight[j, i] * self.gAMPA[i, j] * (self.esyn[i, j] - self.Vi[i])
                 self.Isyni[i] = self.INMDAi[i] + self.IAMPAi[i]
+
 
         # alpha synapse
         elif self.syn_type == 4:
@@ -215,6 +206,10 @@ class Neuron_LIF():
                 self.INMDAi[i] += self.Syn_weight[j, i] * self.gNMDA[i, j] * (self.esyn[i, j] - self.Vi[i])
                 self.IAMPAi[i] += self.Syn_weight[j, i] * self.gAMPA[i, j] * (self.esyn[i, j] - self.Vi[i])
                 self.Isyni[i] = self.INMDAi[i] + self.IAMPAi[i]
+                """
+                if i == 0:
+                    print("{0}->0:{1}".format(j, self.gAMPA[i, j] * (self.esyn[i, j] - self.Vi[i])))
+                """
         elif self.syn_type == 6:
             pass
         else:
@@ -232,13 +227,12 @@ class Neuron_LIF():
         # calculate synaptic input
         if self.Tsteps[self.curstep] > 50:
             for i in range(0, self.N):
-                self.calc_synaptic_input(i)
                 # mV
                 if self.Vi[i] >= self.Vth:
                     self.t_fire[i, :] = self.Tsteps[self.curstep]
                     self.t_fire_list[i, self.curstep] = self.Tsteps[self.curstep]
                     self.Vi[i] = self.Vreset
-                    #self.V[i, self.curstep-1] = 20
+                self.calc_synaptic_input(i)
 
 
         # Noise

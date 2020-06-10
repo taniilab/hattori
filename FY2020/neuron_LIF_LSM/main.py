@@ -62,12 +62,13 @@ class Main():
                                             'Vth': -50,
                                             'erest': -70,
                                             #'Iext_amp': round(2e-4+3e-4*i, 6),
-                                            'Iext_amp': 0.8e-3,
+                                            'Iext_amp': 1e-3,
                                             'syn_type': 3,
-                                            'Pmax_AMPA': round(0.000027+i*0.0000005, 8),
-                                            #'Pmax_AMPA': 0.00003,
+                                            #'Pmax_AMPA': round(0.000027+i*0.0000005, 8),
+                                            'Pmax_AMPA': 0.00003,
                                             #'Pmax_NMDA': round(0.000005+k*0.000005, 6),
-                                            'Pmax_NMDA': 0.00005,
+                                            #'Pmax_NMDA': 0.00005,
+                                            'Pmax_NMDA': 0,
                                             'tau_syn': 5.26,
                                             'noise_type': 1,
                                             'D': 0}
@@ -78,7 +79,7 @@ class Main():
     def input_generator_sin(self):
         # sin wave
         t = np.arange(self.lump_counter * lump, (self.lump_counter + 1) * lump + dt, dt)
-        self.neuron.Iext[0, :] =  np.sin(t * 0.03)
+        self.neuron.Iext[0, :] =  np.sin(t * 0.03)+1e-3
         if self.lump_counter == 0:
             self.neuron.Iext[0, :2500] = 0
 
@@ -138,7 +139,7 @@ class Main():
             df['I_NMDA_{} [uA]'.format(k)] = ""
             df['Iext_{} [uA]'.format(k)] = ""
             df['I_noise_{} [uA]'.format(k)] = ""
-            df['g_ampa'.format(k)] = ""
+            #df['g_ampa'.format(k)] = ""
 
         df.to_csv(save_path + '/' + filename + '.csv', mode='a')
 
@@ -169,7 +170,7 @@ class Main():
                 df['I_NMDA_{} [uA]'.format(k)] = self.neuron.INMDA[k]
                 df['Iext_{} [uA]'.format(k)] = self.neuron.Iext[k]
                 df['I_noise_{} [uA]'.format(k)] = self.neuron.Inoise[k]
-                df['g_ampa'.format(k)] = -self.neuron.Isyn[k]/self.neuron.V[k]
+                #df['g_ampa'.format(k)] = -self.neuron.Isyn[k]/self.neuron.V[k]
             df = df[:-1]
             df.to_csv(save_path + '/' + filename + '.csv', mode='a', header=None)
 
@@ -182,6 +183,18 @@ class Main():
             self.neuron.IAMPA[:, 1:] = 0
             self.neuron.INMDA = np.fliplr(self.neuron.INMDA)
             self.neuron.INMDA[:, 1:] = 0
+            self.neuron.R_AMPA = np.flip(self.neuron.R_AMPA, axis=2)
+            self.neuron.R_AMPA[:, :, 1:] = 0
+            self.neuron.R_NMDA = np.flip(self.neuron.R_NMDA, axis=2)
+            self.neuron.R_NMDA[:, :, 1:] = 0
+            self.neuron.E_AMPA = np.flip(self.neuron.E_AMPA, axis=2)
+            self.neuron.E_AMPA[:, :, 1:] = 0
+            self.neuron.E_NMDA = np.flip(self.neuron.E_NMDA, axis=2)
+            self.neuron.E_NMDA[:, :, 1:] = 0
+            self.neuron.I_AMPA = np.flip(self.neuron.I_AMPA, axis=2)
+            self.neuron.I_AMPA[:, :, 1:] = 0
+            self.neuron.I_NMDA = np.flip(self.neuron.I_NMDA, axis=2)
+            self.neuron.I_NMDA[:, :, 1:] = 0
             self.neuron.Iext = np.fliplr(self.neuron.Iext)
             self.neuron.t_fire_list = 0 * self.neuron.t_fire_list
             self.neuron.Inoise = np.fliplr(self.neuron.Inoise)
@@ -193,6 +206,11 @@ class Main():
 
 
         # Visualization of connection structure
+        # graphbiz must be installed
+        if not os.path.isdir(save_path + '/dot'):
+            os.mkdir(save_path + '/dot')
+        if not os.path.isdir(save_path + '/structure'):
+            os.mkdir(save_path + '/structure')
         dot_txt = 'digraph g{\n'
         dot_txt += 'graph [ dpi = 300, ratio = 1.0];\n'
         for i in range(self.neuron.N):
@@ -201,17 +219,15 @@ class Main():
             if self.neuron.Syn_weight[i, j] != 0:
                 dot_txt += '{}->{}\n'.format(i, j)
         dot_txt += "}\n"
-        print(dot_txt)
 
-        with open(save_path + '/' + filename + '.dot', 'w') as f:
+        with open(save_path + '/dot/' + filename + '.dot', 'w') as f:
             f.write(dot_txt)
-        self.cmd = 'dot {} -T png -o {}'.format(save_path + '/' + filename + '.dot', save_path + '/' + filename + '.png')
-        print(self.cmd)
+        self.cmd = 'dot {} -T png -o {}'.format(save_path + '/dot/' + filename + '.dot', save_path + '/structure/' + filename + '.png')
         subprocess.run(self.cmd, shell=True)
 
 
         ###### LEARNING AND PREDICTION PROCESS ######
-        num_read_nodes = 5
+        num_read_nodes = numneu
         read_cols = ['T_0 [ms]']
         for i in range(num_read_nodes):
             read_cols.append('V_{} [mV]'.format(i))
@@ -226,30 +242,31 @@ class Main():
         train_ratio = 0.5
         border = int(len(df.values[:, 0]) * train_ratio)
 
+        # time
         times = df.values[:, 0].reshape((len(df.values[:, 0]), 1))
         times_bef = df.values[:border, 0].reshape((len(df.values[:border, 0]), 1))
         times_af = df.values[border:, 0].reshape((len(df.values[border:, 0]), 1))
 
+        # Iext
         index_tmp = []
         index_tmp.append(int(2 * num_read_nodes + 3))
-        input = df.values[:, index_tmp].reshape((len(df.values[:, index_tmp]), len(index_tmp)))  # ampa, nmda, "Iext"
+        print(index_tmp)
+        input = df.values[:, index_tmp].reshape((len(df.values[:, index_tmp]), len(index_tmp)))
         target = input[:border]
+
+        # V
         index_tmp = []
         for i in range(num_read_nodes):
             index_tmp.append(i * 2 + 1)
+        output = df.values[:, index_tmp].reshape((len(df.values[:, index_tmp]), len(index_tmp)))
         output_train = df.values[:border, index_tmp].reshape((len(df.values[:border, index_tmp]), len(index_tmp)))
         output_predict = df.values[border:, index_tmp].reshape((len(df.values[border:, index_tmp]), len(index_tmp)))
 
-        # index_tmp = []
-        # index_tmp.append(int(2 * num_read_nodes + 3))
+        # Isyn, Iampa, Inmda
         Isyn = df.values[:, 2].reshape((len(df.values[:, 2]), 1))
         IAMPA = df.values[:, num_read_nodes * 2 + 1].reshape((len(df.values[:, num_read_nodes * 2 + 1]), 1))
         INMDA = df.values[:, num_read_nodes * 2 + 2].reshape((len(df.values[:, num_read_nodes * 2 + 2]), 1))
-        """
-        print(Isyn)
-        print(IAMPA)
-        print(INMDA)
-        """
+
         lsm = LSM()
         lsm.train(output_train, target)
         predict_res = (output_predict @ lsm.output_w).T
@@ -261,10 +278,12 @@ class Main():
         ax = []
         for i in range(num_read_nodes):
             ax.append(fig.add_subplot(num_read_nodes, 2, 2 * i + 1))
-            ax[i].plot(times_bef, output_train[:, i], label="train_output_n{}".format(i))
             if i == 0:
+                ax[i].plot(times_bef, output_train[:, i], label="train_output_n{}".format(i))
                 ax[i].plot(times, input[:, 0], label="input(target)_Iext0")
                 ax[i].plot(times_af, predict_res[0], label="after training")
+            else:
+                ax[i].plot(times, output[:, i], label="output_n{}".format(i))
             ax[i].legend()
 
         # sample plot of neuron 0 synaptic current
@@ -273,7 +292,7 @@ class Main():
         ax[num_read_nodes].plot(times, IAMPA[:, 0], label="IAMPA")
         ax[num_read_nodes].plot(times, INMDA[:, 0], label="INMDA")
         ax[num_read_nodes].legend()
-        """
+
         print(times.shape)
         print(output_train.shape)
         print(target.shape)
@@ -281,7 +300,6 @@ class Main():
         print((output_train @ lsm.output_w).shape)
         print(output_predict.shape)
         print("W:{}".format(lsm.output_w))
-        """
         fig.tight_layout()
         plt.show()
         ###### LEARNING AND PREDICTION PROCESS END######
