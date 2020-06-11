@@ -1,46 +1,28 @@
 """
-Created on Wed May 24 11:37:33 2017
-
-@author: Hattori
+***Unit of parameters***
+2 compartment hodgkin-huxley neuron for extracellular electrical stimulation
+membrane potential -> mV
+time -> ms
+conductance -> mS
+capacitance -> uF
+current -> uA
+/cm**2
 """
 # coding: UTF-8
 import numpy as np
 
 
 class Neuron_HH():
-    def __init__(self, delay=20, syn_type=1, N=1, dt=0.05, T=1000, Cm=1, Vth=-56.2,
-                 eNa=50, gNa=56, eK=-90, gK=5, eL=-70.3, gL=0.0205, gM=0.075,
-                 tau_syn=5.26, esyn=0, gsyn=0.025, tau_max=608, eCa=120, gtCa=0.4, glCa=0.0001,
-                 gpNa=0, gkCa=0,
-                 Iext_amp=0, Pmax_AMPA=0, Pmax_NMDA=0,
-                 Iext_num=0, noise_type=0, ramda=-10, alpha=0.5,
-                 beta=0, D=1, ratio=0.5, Mg_conc=1,
-                 U_SE_AMPA=0.3, U_SE_NMDA=0.03, tau_rise_AMPA=0.9, tau_rise_NMDA=70, tau_rec_AMPA=200, tau_rec_NMDA=200,
-                 tau_inact_AMPA=5, tau_inact_NMDA=30, g_intra=3):
-
+    def __init__(self, delay=20, syn_type=1, N=1, dt=0.05, T=5000, Cm=1, Vth=-56.2,
+                        eNa=50, gNa=56, eK=-90, gK=5, eL=-70.3, gL=0.0205, gM=0.075, tau_max=608, g_intra=3):
         self.set_neuron_palm(delay, syn_type, N, dt, T, Cm, Vth,
-                             eNa, gNa, eK, gK, eL, gL, gM,
-                             tau_syn, esyn, gsyn, tau_max, eCa, gtCa, glCa,
-                             gpNa, gkCa,
-                             Iext_amp, Pmax_AMPA, Pmax_NMDA,
-                             Iext_num, noise_type, ramda, alpha,
-                             beta, D, ratio, Mg_conc,
-                             U_SE_AMPA, U_SE_NMDA, tau_rise_AMPA, tau_rise_NMDA, tau_rec_AMPA, tau_rec_NMDA,
-                             tau_inact_AMPA, tau_inact_NMDA, g_intra)
+                             eNa, gNa, eK, gK, eL, gL, gM, tau_max, g_intra)
 
     def set_neuron_palm(self, delay=20, syn_type=1, N=1, dt=0.05, T=5000, Cm=1, Vth=-56.2,
-                        eNa=50, gNa=56, eK=-90, gK=5, eL=-70.3, gL=0.0205, gM=0.075,
-                        tau_syn=5.26, esyn=0, gsyn=0.025, tau_max=608, eCa=120, gtCa=0.4, glCa=0.0001,
-                        gpNa=0, gkCa=0,
-                        Iext_amp=0, Pmax_AMPA=0, Pmax_NMDA=0,
-                        Iext_num=0, noise_type=0, ramda=-10, alpha=0.5,
-                        beta=0, D=1, ratio=0.5, Mg_conc=1,
-                        U_SE_AMPA=0.3, U_SE_NMDA=0.03, tau_rise_AMPA=0.9, tau_rise_NMDA=70, tau_rec_AMPA=200,
-                        tau_rec_NMDA=200, tau_inact_AMPA=5, tau_inact_NMDA=30, g_intra=3):
+                        eNa=50, gNa=56, eK=-90, gK=5, eL=-70.3, gL=0.0205, gM=0.075, tau_max=608, g_intra=3):
 
         # parameters (used by main.py)
         self.parm_dict = {}
-
         # number of neuron
         self.N = N
         # time step
@@ -51,9 +33,9 @@ class Neuron_HH():
         self.Tsteps = np.arange(0, self.T, self.dt)
         # number of time step
         self.allsteps = len(self.Tsteps)
-
         # HH model
-        self.Cm = Cm
+        self.surface = 0.01
+        self.Cm = Cm * self.surface
         self.Vth = Vth
         self.V_intra = -65 * np.ones((self.N, self.allsteps))
         self.V_extra = np.zeros((self.N, self.allsteps))
@@ -67,7 +49,7 @@ class Neuron_HH():
         # sodium
         self.INa = 0 * np.ones((self.N, self.allsteps))
         self.eNa = eNa * np.ones(self.N)
-        self.gNa = gNa * np.ones(self.N)
+        self.gNa = gNa * np.ones(self.N) * self.surface
         self.m = 0.5 * np.ones((self.N, self.allsteps))
         self.h = 0.06 * np.ones((self.N, self.allsteps))
         self.alpha_m = 0 * np.ones((self.N, self.allsteps))
@@ -76,16 +58,10 @@ class Neuron_HH():
         self.beta_h = 0 * np.ones((self.N, self.allsteps))
         self.k1m = 0 * np.ones(self.N)
         self.k1h = 0 * np.ones(self.N)
-        # persistent sodium
-        self.IpNa = 0 * np.ones((self.N, self.allsteps))
-        self.gpNa = gpNa * np.ones(self.N)
-        self.pna = 0.06 * np.ones((self.N, self.allsteps))
-        self.alpha_pna = 0 * np.ones((self.N, self.allsteps))
-        self.beta_pna = 0 * np.ones((self.N, self.allsteps))
         # potassium
         self.IK = 0 * np.ones((self.N, self.allsteps))
         self.eK = eK * np.ones(self.N)
-        self.gK = gK * np.ones(self.N)
+        self.gK = gK * np.ones(self.N) * self.surface
         self.n = 0.5 * np.ones((self.N, self.allsteps))
         self.alpha_n = 0 * np.ones((self.N, self.allsteps))
         self.beta_n = 0 * np.ones((self.N, self.allsteps))
@@ -93,10 +69,10 @@ class Neuron_HH():
         # leak
         self.Ileak = 0 * np.ones((self.N, self.allsteps))
         self.eL = eL * np.ones(self.N)
-        self.gL = gL * np.ones(self.N)
+        self.gL = gL * np.ones(self.N) * self.surface
         # slow voltage-dependent potassium
         self.Im = 0 * np.ones((self.N, self.allsteps))
-        self.gM = gM * np.ones(self.N)
+        self.gM = gM * np.ones(self.N) * self.surface
         self.p = 0.5 * np.ones((self.N, self.allsteps))
         self.p_inf = 0 * np.ones((self.N, self.allsteps))
         self.tau_p = 0 * np.ones((self.N, self.allsteps))
@@ -112,11 +88,10 @@ class Neuron_HH():
         # 2 compartment model
         self.Ilink = 0 * np.ones((self.N, self.allsteps))
         #self.g_extra = 0
-        self.g_intra = g_intra
+        self.g_intra = g_intra * self.surface
 
         # current step
         self.curstep = 0
-
 
 
     # activation functions
@@ -191,8 +166,8 @@ class Neuron_HH():
         # first order Euler method
         self.Ilinki[0] = self.g_intra * (self.V_intrai[1] - self.V_intrai[0])
         self.Ilinki[1] = self.g_intra * (self.V_intrai[0] - self.V_intrai[1])
-        self.V_intra[0, self.curstep + 1] = self.V_intrai[0] + (self.INai[0] + self.IKi[0] + self.Ileaki[0] + self.Imi[0] + self.Ilinki[0]) * self.dt
-        self.V_intra[1, self.curstep + 1] = self.V_intrai[1] + (self.INai[1] + self.IKi[1] + self.Ileaki[1] + self.Imi[1] + self.Ilinki[1]) * self.dt
+        self.V_intra[0, self.curstep + 1] = self.V_intrai[0] + (1/self.Cm)*(self.INai[0] + self.IKi[0] + self.Ileaki[0] + self.Imi[0] + self.Ilinki[0]) * self.dt
+        self.V_intra[1, self.curstep + 1] = self.V_intrai[1] + (1/self.Cm)*(self.INai[1] + self.IKi[1] + self.Ileaki[1] + self.Imi[1] + self.Ilinki[1]) * self.dt
 
         self.m[:, self.curstep + 1] = self.mi + self.k1m * self.dt
         self.h[:, self.curstep + 1] = self.hi + self.k1h * self.dt

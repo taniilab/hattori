@@ -27,10 +27,10 @@ process = 6 #number of processors
 
 #parameters#
 numneu = 5
-simtime = 1000
+simtime = 3000
 lump = 500
 num_lump = int(simtime/lump)
-dt = 0.02
+dt = 0.04
 
 class Main():
     def __init__(self):
@@ -64,9 +64,9 @@ class Main():
                                             #'Iext_amp': round(2e-4+3e-4*i, 6),
                                             'Iext_amp': 1e-3,
                                             'syn_type': 3,
-                                            'Pmax_AMPA': round(0.0001+i*0.00005, 8),
+                                            'Pmax_AMPA': round(0.00005+i*0.00005, 8),
                                             #'Pmax_AMPA': 0.00003,
-                                            'Pmax_NMDA': round(0.0001+j*0.00005, 8),
+                                            'Pmax_NMDA': round(0.0001+j*0.0001, 8),
                                             #'Pmax_NMDA': 0.00005,
                                             #'Pmax_NMDA': 0,
                                             'tau_syn': 5.26,
@@ -79,8 +79,8 @@ class Main():
     def input_generator_sin(self):
         # sin wave
         t = np.arange(self.lump_counter * lump, (self.lump_counter + 1) * lump + dt, dt)
-        self.neuron.Iext[0, :] =  np.sin(t * 0.03)+1
-        self.neuron.Iext[3, :] = np.sin(t * 0.03) + 1
+        self.neuron.Iext[0, :] =  np.sin(t * 0.02)+1
+        self.neuron.Iext[3, :] = np.sin(t * 0.02) + 1
         if self.lump_counter == 0:
             self.neuron.Iext[0, :2500] = 0
             self.neuron.Iext[3, :2500] = 0

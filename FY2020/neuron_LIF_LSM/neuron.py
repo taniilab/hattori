@@ -53,6 +53,9 @@ class Neuron_LIF():
         self.k1V = 0 * np.ones(self.N)
         # connection relationship
         self.Syn_weight = np.ones((self.N, self.N))
+        self.Syn_weight[1, 1] = 0
+        self.Syn_weight[2, 2] = 0
+
         """
         self.Syn_weight[0, 1] = 0
         self.Syn_weight[1, 2] = 0
@@ -76,6 +79,8 @@ class Neuron_LIF():
         self.gAMPA = np.zeros((self.N, self.N))
         # synaptic reversal potential
         self.esyn = esyn * np.ones((self.N, self.N))
+        for i in range(self.N):
+            self.esyn[:, 1:3] = -80
         self.Pmax = Pmax
         self.tau_syn = tau_syn
         self.Mg_conc = Mg_conc
