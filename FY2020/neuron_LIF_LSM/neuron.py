@@ -52,15 +52,18 @@ class Neuron_LIF():
         self.V = -70 * np.ones((self.N, self.allsteps))
         self.k1V = 0 * np.ones(self.N)
         # connection relationship
-        self.Syn_weight = np.ones((self.N, self.N))
-        """
-        self.Syn_weight[0, 1] = 0
-        self.Syn_weight[1, 2] = 0
-        self.Syn_weight[2, 3] = 0
-        self.Syn_weight[3, 4] = 0
-        self.Syn_weight[4, 0] = 0
-        self.Syn_weight[1, 1] = 0
-        """
+        self.Syn_weight = np.zeros((self.N, self.N))
+
+        self.Syn_weight[0, 1] = 1
+        self.Syn_weight[1, 2] = 1
+        self.Syn_weight[2, 3] = 1
+        self.Syn_weight[3, 4] = 1
+        self.Syn_weight[4, 0] = 1
+        self.Syn_weight[1, 1] = 1
+        self.Syn_weight[2, 2] = 1
+        self.Syn_weight[3, 3] = 1
+        self.Syn_weight[4, 4] = 1
+
         print(self.Syn_weight)
 
         # synaptic current
@@ -172,13 +175,14 @@ class Neuron_LIF():
                 self.gAMPA[i, j] = self.Pmax_AMPA * self.E_AMPA[i, j, self.curstep]
                 self.gNMDA[i, j] = self.Pmax_NMDA * self.E_NMDA[i, j, self.curstep] / \
                                    (1 + (self.Mg_conc / 3.57) * np.exp(-0.062 * self.Vi[i]))
+                """
                 if i == 0:
                     if self.delta_func(self.Tsteps[self.curstep] - self.t_fire[j, i]) != 0:
                         print("kanoperkanopero")
                         print(self.dE_AMPA)
                         print(self.Tsteps[self.curstep])
                     print("{0}->0:{1}".format(j, self.delta_func(self.Tsteps[self.curstep] - self.t_fire[j, i])))
-
+                """
             # sum
             for j in range(0, self.N):
                 self.INMDAi[i] += self.Syn_weight[j, i] * self.gNMDA[i, j] * (self.esyn[i, j] - self.Vi[i])
@@ -250,5 +254,11 @@ class Neuron_LIF():
         # ODE-first order Euler method
         self.k1V = (self.G_L*(self.erest-self.Vi) + self.Isyni + self.Iext_amp*self.Iext[:, self.curstep] + self.Inoisei)/self.Cm
         self.V[:, self.curstep + 1] = self.Vi + self.k1V * self.dt
+
+        # refractory period
+        for i in range(0, self.N):
+            if self.Tsteps[self.curstep] - self.t_fire[i, i] < 2:
+                self.V[i, self.curstep + 1] = self.Vreset
+
         self.curstep += 1
 

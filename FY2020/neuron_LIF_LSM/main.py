@@ -23,7 +23,7 @@ import subprocess
 starttime = time.time()
 elapsed_time = 0
 save_path = "Z:/simulation/test"
-process = 1 #number of processors
+process = 6 #number of processors
 
 #parameters#
 numneu = 5
@@ -37,8 +37,8 @@ class Main():
         self.parm = []
 
         #combination
-        self.i = 1
-        self.j = 1
+        self.i = 12
+        self.j = 6
         self.k = 1
         self.l = 1
 
@@ -64,11 +64,11 @@ class Main():
                                             #'Iext_amp': round(2e-4+3e-4*i, 6),
                                             'Iext_amp': 1e-3,
                                             'syn_type': 3,
-                                            #'Pmax_AMPA': round(0.000027+i*0.0000005, 8),
-                                            'Pmax_AMPA': 0.00003,
-                                            #'Pmax_NMDA': round(0.000005+k*0.000005, 6),
+                                            'Pmax_AMPA': round(0.00005+i*0.000005, 8),
+                                            #'Pmax_AMPA': 0.00003,
+                                            'Pmax_NMDA': round(0.00005+j*0.000005, 6),
                                             #'Pmax_NMDA': 0.00005,
-                                            'Pmax_NMDA': 0,
+                                            #'Pmax_NMDA': 0,
                                             'tau_syn': 5.26,
                                             'noise_type': 1,
                                             'D': 0}
@@ -79,7 +79,7 @@ class Main():
     def input_generator_sin(self):
         # sin wave
         t = np.arange(self.lump_counter * lump, (self.lump_counter + 1) * lump + dt, dt)
-        self.neuron.Iext[0, :] =  np.sin(t * 0.03)+1e-3
+        self.neuron.Iext[0, :] =  np.sin(t * 0.03)+1
         if self.lump_counter == 0:
             self.neuron.Iext[0, :2500] = 0
 
@@ -133,7 +133,7 @@ class Main():
         for k in range(numneu):
             df['T_{} [ms]'.format(k)] = ""
             df['V_{} [mV]'.format(k)] = ""
-            df['fire_{} [mV]'.format(k)] = ""
+            df['fire_{}'.format(k)] = ""
             df['I_syn_{} [uA]'.format(k)] = ""
             df['I_AMPA_{} [uA]'.format(k)] = ""
             df['I_NMDA_{} [uA]'.format(k)] = ""
@@ -164,7 +164,7 @@ class Main():
             for k in range(numneu):
                 df['T_{} [ms]'.format(k)] = self.neuron.Tsteps
                 df['V_{} [mV]'.format(k)] = self.neuron.V[k]
-                df['fire_{} [mV]'.format(k)] = self.neuron.t_fire_list[k]
+                df['fire_{}'.format(k)] = self.neuron.t_fire_list[k]
                 df['I_syn_{} [uA]'.format(k)] = self.neuron.Isyn[k]
                 df['I_AMPA_{} [uA]'.format(k)] = self.neuron.IAMPA[k]
                 df['I_NMDA_{} [uA]'.format(k)] = self.neuron.INMDA[k]
@@ -214,7 +214,7 @@ class Main():
         dot_txt = 'digraph g{\n'
         dot_txt += 'graph [ dpi = 300, ratio = 1.0];\n'
         for i in range(self.neuron.N):
-            dot_txt += '{} [label="{}", color=lightseagreen, fontcolor=white, style=filled]\n'.format(i, 'N'+str(i))
+            dot_txt += '{} [label="{}", color=lightseagreen, fontcolor=white, style=filled]\n'.format(i, 'N'+str(i+1))
         for i, j in itertools.product(range(self.neuron.N), range(self.neuron.N)):
             if self.neuron.Syn_weight[i, j] != 0:
                 dot_txt += '{}->{}\n'.format(i, j)
@@ -225,8 +225,29 @@ class Main():
         self.cmd = 'dot {} -T png -o {}'.format(save_path + '/dot/' + filename + '.dot', save_path + '/structure/' + filename + '.png')
         subprocess.run(self.cmd, shell=True)
 
+        # Rastergram
+        if not os.path.isdir(save_path + '/rastergram'):
+            os.mkdir(save_path + '/rastergram')
+        num_read_nodes = numneu
+        read_cols = ['T_0 [ms]']
+        for i in range(num_read_nodes):
+            read_cols.append('fire_{}'.format(i))
+        df = pd.read_csv(save_path + '/' + filename + '.csv', usecols=read_cols, skiprows=1)[read_cols]
+
+        fig_r = plt.figure()
+        ax = fig_r.add_subplot(111)
+        for i in range(num_read_nodes):
+            x = []
+            y = []
+            for j in range(len(df.values[:, 0])):
+                if df.values[j, i+1] != 0:
+                    x.append(df.values[j, i+1])
+                    y.append(df.values[j, i+1])
+            ax.scatter(x, y)
+
 
         ###### LEARNING AND PREDICTION PROCESS ######
+        """
         num_read_nodes = numneu
         read_cols = ['T_0 [ms]']
         for i in range(num_read_nodes):
@@ -302,6 +323,7 @@ class Main():
         print("W:{}".format(lsm.output_w))
         fig.tight_layout()
         plt.show()
+        """
         ###### LEARNING AND PREDICTION PROCESS END######
 
 
