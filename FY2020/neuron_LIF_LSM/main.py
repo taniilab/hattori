@@ -37,8 +37,8 @@ class Main():
         self.parm = []
 
         #combination
-        self.i = 12
-        self.j = 6
+        self.i = 6
+        self.j = 1
         self.k = 1
         self.l = 1
 
@@ -64,11 +64,11 @@ class Main():
                                             #'Iext_amp': round(2e-4+3e-4*i, 6),
                                             'Iext_amp': 1e-3,
                                             'syn_type': 3,
-                                            'Pmax_AMPA': round(0.00005+i*0.000005, 8),
+                                            'Pmax_AMPA': round(0.00015+i*0.00005, 8),
                                             #'Pmax_AMPA': 0.00003,
-                                            'Pmax_NMDA': round(0.00005+j*0.000005, 6),
+                                            #'Pmax_NMDA': round(0.00005+j*0.000005, 6),
                                             #'Pmax_NMDA': 0.00005,
-                                            #'Pmax_NMDA': 0,
+                                            'Pmax_NMDA': 0,
                                             'tau_syn': 5.26,
                                             'noise_type': 1,
                                             'D': 0}
@@ -80,8 +80,10 @@ class Main():
         # sin wave
         t = np.arange(self.lump_counter * lump, (self.lump_counter + 1) * lump + dt, dt)
         self.neuron.Iext[0, :] =  np.sin(t * 0.03)+1
+        self.neuron.Iext[3, :] = np.sin(t * 0.03) + 1
         if self.lump_counter == 0:
             self.neuron.Iext[0, :2500] = 0
+            self.neuron.Iext[3, :2500] = 0
 
 
     def input_generator_mackey_glass(self, beta=2, gamma=1, tau=2, n=9.65, expand=False):
@@ -213,9 +215,9 @@ class Main():
             os.mkdir(save_path + '/structure')
         dot_txt = 'digraph g{\n'
         dot_txt += 'graph [ dpi = 300, ratio = 1.0];\n'
-        for i in range(self.neuron.N):
+        for i in range(numneu):
             dot_txt += '{} [label="{}", color=lightseagreen, fontcolor=white, style=filled]\n'.format(i, 'N'+str(i+1))
-        for i, j in itertools.product(range(self.neuron.N), range(self.neuron.N)):
+        for i, j in itertools.product(range(numneu), range(numneu)):
             if self.neuron.Syn_weight[i, j] != 0:
                 dot_txt += '{}->{}\n'.format(i, j)
         dot_txt += "}\n"
@@ -225,29 +227,44 @@ class Main():
         self.cmd = 'dot {} -T png -o {}'.format(save_path + '/dot/' + filename + '.dot', save_path + '/structure/' + filename + '.png')
         subprocess.run(self.cmd, shell=True)
 
+
         # Rastergram
+        plt.rcParams["font.size"] = 28
         if not os.path.isdir(save_path + '/rastergram'):
             os.mkdir(save_path + '/rastergram')
         num_read_nodes = numneu
+        raster_line_length = 1
+        raster_line_width = 0.5
         read_cols = ['T_0 [ms]']
+        ytick_list = []
         for i in range(num_read_nodes):
+            ytick_list.append(i + 1)
             read_cols.append('fire_{}'.format(i))
-        df = pd.read_csv(save_path + '/' + filename + '.csv', usecols=read_cols, skiprows=1)[read_cols]
 
-        fig_r = plt.figure()
-        ax = fig_r.add_subplot(111)
+        df = pd.read_csv(save_path + '/' + filename + '.csv', usecols=read_cols, skiprows=1)[read_cols]
+        fig = plt.figure(figsize=(20, 10))
+        ax = fig.add_subplot(111)
+        ax.set_ylim(0, num_read_nodes + 1)
+        ax.set_yticks(ytick_list)
+        ax.set_xlabel("Time [ms]")
+        ax.set_ylabel("Neuron number")
         for i in range(num_read_nodes):
-            x = []
-            y = []
             for j in range(len(df.values[:, 0])):
-                if df.values[j, i+1] != 0:
-                    x.append(df.values[j, i+1])
-                    y.append(df.values[j, i+1])
-            ax.scatter(x, y)
+                if df.values[j, i + 1] != 0:
+                    x = df.values[j, 0]
+                    ax.plot([x, x], [i + 1 - (raster_line_length / 2), i + 1 + (raster_line_length / 2)],
+                            linestyle="solid",
+                            linewidth=raster_line_width,
+                            color="black")
+        plt.tight_layout()
+        plt.savefig(save_path + '/rastergram/' + filename + '.png')
+        plt.close(fig)
 
 
         ###### LEARNING AND PREDICTION PROCESS ######
-        """
+        plt.rcParams["font.size"] = 18
+        if not os.path.isdir(save_path + '/RC'):
+            os.mkdir(save_path + '/RC')
         num_read_nodes = numneu
         read_cols = ['T_0 [ms]']
         for i in range(num_read_nodes):
@@ -322,8 +339,9 @@ class Main():
         print(output_predict.shape)
         print("W:{}".format(lsm.output_w))
         fig.tight_layout()
-        plt.show()
-        """
+        #plt.show()
+        plt.savefig(save_path + '/RC/' + filename + '.png')
+        plt.close(fig)
         ###### LEARNING AND PREDICTION PROCESS END######
 
 
