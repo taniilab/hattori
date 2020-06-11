@@ -38,7 +38,7 @@ class Main():
 
         #combination
         self.i = 6
-        self.j = 1
+        self.j = 6
         self.k = 1
         self.l = 1
 
@@ -64,11 +64,11 @@ class Main():
                                             #'Iext_amp': round(2e-4+3e-4*i, 6),
                                             'Iext_amp': 1e-3,
                                             'syn_type': 3,
-                                            'Pmax_AMPA': round(0.00015+i*0.00005, 8),
+                                            'Pmax_AMPA': round(0.0001+i*0.00005, 8),
                                             #'Pmax_AMPA': 0.00003,
-                                            #'Pmax_NMDA': round(0.00005+j*0.000005, 6),
+                                            'Pmax_NMDA': round(0.0001+j*0.00005, 8),
                                             #'Pmax_NMDA': 0.00005,
-                                            'Pmax_NMDA': 0,
+                                            #'Pmax_NMDA': 0,
                                             'tau_syn': 5.26,
                                             'noise_type': 1,
                                             'D': 0}
@@ -84,7 +84,6 @@ class Main():
         if self.lump_counter == 0:
             self.neuron.Iext[0, :2500] = 0
             self.neuron.Iext[3, :2500] = 0
-
 
     def input_generator_mackey_glass(self, beta=2, gamma=1, tau=2, n=9.65, expand=False):
         index = np.arange(1+simtime/dt) #including buffer
