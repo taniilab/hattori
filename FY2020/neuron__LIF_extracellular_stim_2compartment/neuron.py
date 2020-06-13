@@ -32,8 +32,15 @@ class Neuron_HH():
         self.Tsteps = np.arange(0, self.T, self.dt)
         # number of time step
         self.allsteps = len(self.Tsteps)
-        # HH model
+        # LIF model
         self.surface = 1e-5 # cm^2
+        self.Cm = Cm
+        self.G_L = G_L
+        self.Vth = Vth
+        self.erest = erest
+        self.Vreset = Vreset
+        self.V = -70 * np.ones((self.N, self.allsteps))
+        self.k1V = 0 * np.ones(self.N)
         self.Cm = Cm * self.surface
         self.Vth = Vth
         self.V_intra = -65 * np.ones((self.N, self.allsteps))
@@ -79,7 +86,7 @@ class Neuron_HH():
         # 2 compartment model
         self.Ilink = 0 * np.ones((self.N, self.allsteps))
         #self.g_extra = 0
-        self.g_intra = g_intra  * self.surface
+        self.g_intra = g_intra * self.surface
 
         # current step
         self.curstep = 0
