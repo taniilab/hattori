@@ -18,6 +18,7 @@ import numpy as np
 from lsm import LSM
 import matplotlib.pyplot as plt
 import subprocess
+from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
 
 
 starttime = time.time()
@@ -261,17 +262,16 @@ class Main():
 
 
         ###### LEARNING AND PREDICTION PROCESS ######
-        plt.rcParams["font.size"] = 18
+        plt.rcParams["font.size"] = 14
         if not os.path.isdir(save_path + '/RC'):
             os.mkdir(save_path + '/RC')
-        num_read_nodes = numneu
+        num_read_nodes = 5
         read_cols = ['T_0 [ms]']
         for i in range(num_read_nodes):
             read_cols.append('V_{} [mV]'.format(i))
             read_cols.append('I_syn_{} [uA]'.format(i))
-
-        read_cols.append('I_AMPA_{} [uA]'.format(0))
-        read_cols.append('I_NMDA_{} [uA]'.format(0))
+            read_cols.append('I_AMPA_{} [uA]'.format(i))
+            read_cols.append('I_NMDA_{} [uA]'.format(i))
         read_cols.append('Iext_{} [uA]'.format(0))
         print(read_cols)
 
@@ -286,49 +286,62 @@ class Main():
 
         # Iext
         index_tmp = []
-        index_tmp.append(int(2 * num_read_nodes + 3))
-        print(index_tmp)
+        index_tmp.append(int(4 * num_read_nodes + 1))
         input = df.values[:, index_tmp].reshape((len(df.values[:, index_tmp]), len(index_tmp)))
         target = input[:border]
 
         # V
         index_tmp = []
         for i in range(num_read_nodes):
-            index_tmp.append(i * 2 + 1)
+            index_tmp.append(i * 4 + 1)
         output = df.values[:, index_tmp].reshape((len(df.values[:, index_tmp]), len(index_tmp)))
         output_train = df.values[:border, index_tmp].reshape((len(df.values[:border, index_tmp]), len(index_tmp)))
         output_predict = df.values[border:, index_tmp].reshape((len(df.values[border:, index_tmp]), len(index_tmp)))
 
         # Isyn, Iampa, Inmda
-        Isyn = df.values[:, 2].reshape((len(df.values[:, 2]), 1))
-        IAMPA = df.values[:, num_read_nodes * 2 + 1].reshape((len(df.values[:, num_read_nodes * 2 + 1]), 1))
-        INMDA = df.values[:, num_read_nodes * 2 + 2].reshape((len(df.values[:, num_read_nodes * 2 + 2]), 1))
+        index_tmp = []
+        for i in range(num_read_nodes):
+            index_tmp.append(i * 4 + 2)
+        Isyn = df.values[:, index_tmp].reshape((len(df.values[:, index_tmp]), len(index_tmp)))
+        index_tmp = []
+        for i in range(num_read_nodes):
+            index_tmp.append(i * 4 + 3)
+        IAMPA = df.values[:, index_tmp].reshape((len(df.values[:, index_tmp]), len(index_tmp)))
+        index_tmp = []
+        for i in range(num_read_nodes):
+            index_tmp.append(i * 4 + 4)
+        INMDA = df.values[:, index_tmp].reshape((len(df.values[:, index_tmp]), len(index_tmp)))
 
         lsm = LSM()
         lsm.train(output_train, target)
         predict_res = (output_predict @ lsm.output_w).T
 
+        # layout
         fig = plt.figure(figsize=(20, 15))
-        plt.title(filename)
+        fig.suptitle(filename)
+        fig.subplots_adjust(left=0.075, bottom=0.05, right=0.95, top=0.95, wspace=0.15, hspace=0.15)
+        gs_master = GridSpec(nrows=num_read_nodes + 1, ncols=2)
+        gs_rc = GridSpecFromSubplotSpec(nrows=1, ncols=2, subplot_spec=gs_master[0, 0:2])
+        ax_rc = fig.add_subplot(gs_rc[:, :])
+        gs_status = GridSpecFromSubplotSpec(nrows=num_read_nodes, ncols=2, subplot_spec=gs_master[1:, :], hspace=0.4,
+                                            wspace=0.15)
+        ax_status_v = []
+        ax_status_i = []
 
         # Firing pattern of individual neurons
-        ax = []
         for i in range(num_read_nodes):
-            ax.append(fig.add_subplot(num_read_nodes, 2, 2 * i + 1))
+            ax_status_v.append(fig.add_subplot(gs_status[i, 0]))
+            ax_status_i.append(fig.add_subplot(gs_status[i, 1]))
             if i == 0:
-                ax[i].plot(times_bef, output_train[:, i], label="train_output_n{}".format(i))
-                ax[i].plot(times, input[:, 0], label="input(target)_Iext0")
-                ax[i].plot(times_af, predict_res[0], label="after training")
-            else:
-                ax[i].plot(times, output[:, i], label="output_n{}".format(i))
-            ax[i].legend()
-
-        # sample plot of neuron 0 synaptic current
-        ax.append(fig.add_subplot(num_read_nodes, 2, 2))
-        ax[num_read_nodes].plot(times, Isyn[:, 0], label="Isyn")
-        ax[num_read_nodes].plot(times, IAMPA[:, 0], label="IAMPA")
-        ax[num_read_nodes].plot(times, INMDA[:, 0], label="INMDA")
-        ax[num_read_nodes].legend()
+                ax_rc.plot(times_bef, output_train[:, i], label="train_output_n{}".format(i))
+                ax_rc.plot(times, input[:, 0], label="input(target)_Iext0")
+                ax_rc.plot(times_af, predict_res[0], label="after training")
+            ax_status_v[i].plot(times, output[:, i], label="output_n{}".format(i))
+            ax_status_i[i].plot(times, Isyn[:, i], label="Isyn")
+            ax_status_i[i].plot(times, IAMPA[:, i], label="IAMPA")
+            ax_status_i[i].plot(times, INMDA[:, i], label="INMDA")
+            ax_status_v[i].legend()
+            ax_status_i[i].legend()
 
         print(times.shape)
         print(output_train.shape)
@@ -337,10 +350,9 @@ class Main():
         print((output_train @ lsm.output_w).shape)
         print(output_predict.shape)
         print("W:{}".format(lsm.output_w))
-        fig.tight_layout()
         #plt.show()
         plt.savefig(save_path + '/RC/' + filename + '.png')
-        plt.close(fig)
+        #plt.close(fig)
         ###### LEARNING AND PREDICTION PROCESS END######
 
 

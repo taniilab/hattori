@@ -48,7 +48,6 @@ def main():
     # Iext
     index_tmp = []
     index_tmp.append(int(4 * num_read_nodes + 1))
-    print(index_tmp)
     input = df.values[:, index_tmp].reshape((len(df.values[:, index_tmp]), len(index_tmp)))
     target = input[:border]
 
@@ -80,7 +79,8 @@ def main():
 
     # layout
     fig = plt.figure(figsize=(20, 15))
-    #plt.title(filename)
+    fig.suptitle(filename)
+    fig.subplots_adjust(left=0.075, bottom=0.05, right=0.95, top=0.95, wspace=0.15, hspace=0.15)
     gs_master = GridSpec(nrows=num_read_nodes + 1, ncols=2)
     gs_rc = GridSpecFromSubplotSpec(nrows=1, ncols=2, subplot_spec=gs_master[0, 0:2])
     ax_rc = fig.add_subplot(gs_rc[:, :])
@@ -110,7 +110,6 @@ def main():
     print((output_train @ lsm.output_w).shape)
     print(output_predict.shape)
     print("W:{}".format(lsm.output_w))
-    fig.tight_layout()
     plt.show()
     #plt.savefig(save_path + '/RC/' + filename + '.png')
     plt.close(fig)
