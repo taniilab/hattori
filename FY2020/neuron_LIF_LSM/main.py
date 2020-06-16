@@ -27,8 +27,8 @@ save_path = "Z:/simulation/test"
 process = 6 #number of processors
 
 #parameters#
-numneu = 5
-simtime = 3000
+numneu = 1
+simtime = 1000
 lump = 500
 num_lump = int(simtime/lump)
 dt = 0.04
@@ -39,7 +39,7 @@ class Main():
 
         #combination
         self.i = 6
-        self.j = 6
+        self.j = 1
         self.k = 1
         self.l = 1
 
@@ -81,10 +81,10 @@ class Main():
         # sin wave
         t = np.arange(self.lump_counter * lump, (self.lump_counter + 1) * lump + dt, dt)
         self.neuron.Iext[0, :] =  np.sin(t * 0.02)+1
-        self.neuron.Iext[3, :] = np.sin(t * 0.02) + 1
+        #self.neuron.Iext[3, :] = np.sin(t * 0.02) + 1
         if self.lump_counter == 0:
             self.neuron.Iext[0, :2500] = 0
-            self.neuron.Iext[3, :2500] = 0
+            #self.neuron.Iext[3, :2500] = 0
 
     def input_generator_mackey_glass(self, beta=2, gamma=1, tau=2, n=9.65, expand=False):
         index = np.arange(1+simtime/dt) #including buffer
@@ -141,7 +141,6 @@ class Main():
             df['I_NMDA_{} [uA]'.format(k)] = ""
             df['Iext_{} [uA]'.format(k)] = ""
             df['I_noise_{} [uA]'.format(k)] = ""
-            #df['g_ampa'.format(k)] = ""
 
         df.to_csv(save_path + '/' + filename + '.csv', mode='a')
 
@@ -172,7 +171,6 @@ class Main():
                 df['I_NMDA_{} [uA]'.format(k)] = self.neuron.INMDA[k]
                 df['Iext_{} [uA]'.format(k)] = self.neuron.Iext[k]
                 df['I_noise_{} [uA]'.format(k)] = self.neuron.Inoise[k]
-                #df['g_ampa'.format(k)] = -self.neuron.Isyn[k]/self.neuron.V[k]
             df = df[:-1]
             df.to_csv(save_path + '/' + filename + '.csv', mode='a', header=None)
 
@@ -265,7 +263,7 @@ class Main():
         plt.rcParams["font.size"] = 14
         if not os.path.isdir(save_path + '/RC'):
             os.mkdir(save_path + '/RC')
-        num_read_nodes = 5
+        num_read_nodes = numneu
         read_cols = ['T_0 [ms]']
         for i in range(num_read_nodes):
             read_cols.append('V_{} [mV]'.format(i))
@@ -352,7 +350,7 @@ class Main():
         print("W:{}".format(lsm.output_w))
         #plt.show()
         plt.savefig(save_path + '/RC/' + filename + '.png')
-        #plt.close(fig)
+        plt.close(fig)
         ###### LEARNING AND PREDICTION PROCESS END######
 
 

@@ -53,8 +53,8 @@ class Neuron_LIF():
         self.k1V = 0 * np.ones(self.N)
         # connection relationship
         self.Syn_weight = np.ones((self.N, self.N))
-        self.Syn_weight[1, 1] = 0
-        self.Syn_weight[2, 2] = 0
+        #self.Syn_weight[1, 1] = 0
+        #self.Syn_weight[2, 2] = 0
 
         """
         self.Syn_weight[0, 1] = 0
