@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from scipy import interpolate
 
 dt = 0.1
-t_length = 200
+t_length = 2000
 t = np.arange(0, t_length, dt)
 x = t*0+0.5
 
@@ -11,6 +11,7 @@ x = t*0+0.5
 beta = 2
 gamma = 1
 tau = int(2/dt)
+n = 10
 n = 9.65
 
 for i in range(tau, len(t)-1):

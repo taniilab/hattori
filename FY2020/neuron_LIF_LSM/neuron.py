@@ -180,14 +180,7 @@ class Neuron_LIF():
                 self.gAMPA[i, j] = self.Pmax_AMPA * self.E_AMPA[i, j, self.curstep]
                 self.gNMDA[i, j] = self.Pmax_NMDA * self.E_NMDA[i, j, self.curstep] / \
                                    (1 + (self.Mg_conc / 3.57) * np.exp(-0.062 * self.Vi[i]))
-                """
-                if i == 0:
-                    if self.delta_func(self.Tsteps[self.curstep] - self.t_fire[j, i]) != 0:
-                        print("kanoperkanopero")
-                        print(self.dE_AMPA)
-                        print(self.Tsteps[self.curstep])
-                    print("{0}->0:{1}".format(j, self.delta_func(self.Tsteps[self.curstep] - self.t_fire[j, i])))
-                """
+
             # sum
             for j in range(0, self.N):
                 self.INMDAi[i] += self.Syn_weight[j, i] * self.gNMDA[i, j] * (self.esyn[i, j] - self.Vi[i])
@@ -215,10 +208,7 @@ class Neuron_LIF():
                 self.INMDAi[i] += self.Syn_weight[j, i] * self.gNMDA[i, j] * (self.esyn[i, j] - self.Vi[i])
                 self.IAMPAi[i] += self.Syn_weight[j, i] * self.gAMPA[i, j] * (self.esyn[i, j] - self.Vi[i])
                 self.Isyni[i] = self.INMDAi[i] + self.IAMPAi[i]
-                """
-                if i == 0:
-                    print("{0}->0:{1}".format(j, self.gAMPA[i, j] * (self.esyn[i, j] - self.Vi[i])))
-                """
+
         elif self.syn_type == 6:
             pass
         else:
