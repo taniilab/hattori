@@ -27,8 +27,8 @@ save_path = "Z:/simulation/test"
 process = 6 #number of processors
 
 #parameters#
-numneu = 1
-simtime = 1000
+numneu = 2
+simtime = 10000
 lump = 500
 num_lump = int(simtime/lump)
 dt = 0.04
@@ -38,7 +38,7 @@ class Main():
         self.parm = []
 
         #combination
-        self.i = 6
+        self.i = 30
         self.j = 1
         self.k = 1
         self.l = 1
