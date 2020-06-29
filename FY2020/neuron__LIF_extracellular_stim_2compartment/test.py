@@ -2,27 +2,35 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
+from decimal import Decimal
 
 # parameters
-r1 = 400000
-r2 = 400000
-r3 = 200e-6
-r4 = 200e-6
-r5 = 50e-3
-r6 = 50e-3
-r8 = 50
-r9 = 50
-c1 = 6e-6
-c2 = 6e-6
-c3 = 100
-c4 = 100
-dt = 0.01
-vrest = -70
+r1 = Decimal('400000')
+r2 = Decimal('400000')
+r3 = Decimal('200e-3')
+r4 = Decimal('200e-3')
+r5 = Decimal('50e-3')
+r6 = Decimal('50e-3')
+r8 = Decimal('50')
+r9 = Decimal('50')
+c1 = Decimal('1e-3')
+c2 = Decimal('1e-3')
+c3 = Decimal('100e-3')
+c4 = Decimal('100e-3')
+dt = Decimal('0.0001')
+vrest = Decimal('-70')
+tau = Decimal('0.01')
+v_amp = Decimal('2500')
 
-t = np.arange(0, 20.02, dt)
+t = np.arange(0, 50, dt)
 vdd = t*0
-vdd[int(20/dt):] = 1
-#vdd[500:] = -5000
+
+for k in range(int(tau/dt)):
+    vdd[int((5/dt) + k):] -= v_amp*dt/tau
+for k in range(int(2*tau/dt)):
+    vdd[int((25/dt) + k):] += v_amp*dt/tau
+vdd[int(45/dt):] = 0
+
 vc1 = t*0
 vc2 = t*0
 vc3 = t*0
@@ -34,9 +42,11 @@ dvc4 = 0
 i_vdd = 0
 i_r4 = 0
 
-for i in range(int(20.02/dt)-1):
+for i in range(len(t)-1):
+
     print(i)
     print("time: {}".format(t[i]))
+    """
     print("vdd: {}".format(vdd[i]))
     print("i_vdd: {}".format(i_vdd))
     print("i_r4: {}".format(i_r4))
@@ -44,6 +54,7 @@ for i in range(int(20.02/dt)-1):
     print("dvc2: {}".format(dvc2))
     print("dvc3: {}".format(dvc3))
     print("dvc4: {}\n".format(dvc4))
+    """
 
     i_vdd = ((r3+r4)*(vdd[i]-vc3[i]-vc4[i])-r4*(vc1[i]+vc2[i])) / \
             (r3*r4+(r3+r4)*(r5+r6))
@@ -63,9 +74,10 @@ for i in range(int(20.02/dt)-1):
 
 fig = plt.figure(figsize=(20, 10))
 ax = fig.add_subplot(111)
+ax.plot(t, vdd, label="vdd")
 ax.plot(t, vc1, label="vc1")
-ax.plot(t, vc2, label="vc2")
+ax.plot(t, -vc2, label="vc2")
 ax.plot(t, vc3, label="vc3")
-ax.plot(t, vc4, label="vc4")
+ax.plot(t, -vc4, label="vc4")
 plt.legend()
 plt.show()
