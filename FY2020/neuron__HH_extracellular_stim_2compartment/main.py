@@ -41,7 +41,8 @@ class Main():
             self.parm[self.parm_counter] = {'N': numneu,
                                             'T': simtime,
                                             'dt': deltatime,
-                                            'g_intra': round(1+i, 4)}
+                                            'g_intra': 2,
+                                            'tau_vextra':round(10*i*i, 4)}
             self.parm_counter += 1
             self.overall_steps = int(self.i*self.j*self.k*self.l*simtime/(deltatime*process))
 
