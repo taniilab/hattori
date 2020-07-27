@@ -2,124 +2,67 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="00223603-4d51-4c4a-a2ac-217937368cd0" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/neuron_HH_gui/main_CUI2.py" beforeDir="false" afterPath="$PROJECT_DIR$/neuron_HH_gui/main_CUI2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/neuron_HH_gui/neuron.py" beforeDir="false" afterPath="$PROJECT_DIR$/neuron_HH_gui/neuron.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/hattori.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/hattori.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FY2020/neuron__HH_extracellular_stim_2compartment/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/FY2020/neuron__HH_extracellular_stim_2compartment/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FY2020/neuron__HH_extracellular_stim_2compartment/neuron.py" beforeDir="false" afterPath="$PROJECT_DIR$/FY2020/neuron__HH_extracellular_stim_2compartment/neuron.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200526.asc" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200526.asc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200526.log" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200526.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200526.op.raw" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200526.op.raw" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200526.raw" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200526.raw" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200529.asc" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200529.asc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200529.log" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200529.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200529.op.raw" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200529.op.raw" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200529.raw" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200529.raw" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_2compartment_tmp4.log" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_2compartment_tmp4.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_2compartment_tmp4.op.raw" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_2compartment_tmp4.op.raw" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_2compartment_tmp4.raw" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_2compartment_tmp4.raw" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
-    <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.5193727">
-      <split-first>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="main_CUI2.py" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/neuron_HH_gui/main_CUI2.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="483">
-                  <caret line="53" column="60" lean-forward="true" selection-start-line="53" selection-start-column="60" selection-end-line="53" selection-end-column="60" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-first>
-      <split-second>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="neuron.py" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/neuron_HH_gui/neuron.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="204">
-                  <caret line="12" column="41" selection-start-line="12" selection-start-column="41" selection-end-line="12" selection-end-column="41" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-second>
-    </splitter>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="IdeDocumentHistory">
-    <option name="CHANGED_PATHS">
-      <list>
-        <option value="$PROJECT_DIR$/neuron_HH_gui/picture.py" />
-        <option value="$PROJECT_DIR$/neuron_HH_gui/main_CUI2.py" />
-        <option value="$PROJECT_DIR$/neuron_HH_gui/neuron.py" />
-      </list>
-    </option>
-  </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="95" />
-    <option name="width" value="2472" />
-    <option name="height" value="1607" />
-  </component>
-  <component name="ProjectView">
-    <navigator proportions="" version="1">
-      <foldersAlwaysOnTop value="true" />
-    </navigator>
-    <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="hattori" type="b2602c69:ProjectViewProjectNode" />
-              <item name="hattori" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="hattori" type="b2602c69:ProjectViewProjectNode" />
-              <item name="hattori" type="462c0819:PsiDirectoryNode" />
-              <item name="for_Qudi" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="hattori" type="b2602c69:ProjectViewProjectNode" />
-              <item name="hattori" type="462c0819:PsiDirectoryNode" />
-              <item name="neuron_HH_gui" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="hattori" type="b2602c69:ProjectViewProjectNode" />
-              <item name="hattori" type="462c0819:PsiDirectoryNode" />
-              <item name="neuron_HR_gui" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="hattori" type="b2602c69:ProjectViewProjectNode" />
-              <item name="hattori" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="Scope" />
-    </panes>
+  <component name="ProjectId" id="1f1lwezbRPwWTuviuKXcr4ponNO" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\6969p\Documents\GitHub\hattori\old" />
     </key>
   </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
-  </component>
-  <component name="RunManager" selected="Python.test">
+  <component name="RunManager" selected="Python.main">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="hattori" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/FY2020/neuron__HH_extracellular_stim_2compartment" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FY2020/neuron__HH_extracellular_stim_2compartment/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="main_CUI2" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="hattori" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -137,6 +80,51 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="main_ddplot" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="hattori" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/CAWAII_Plotter" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/CAWAII_Plotter/main_ddplot.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="neuron" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="hattori" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/FY2020/neuron__HH_extracellular_stim_2compartment" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FY2020/neuron__HH_extracellular_stim_2compartment/neuron.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
     </configuration>
     <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="hattori" />
@@ -155,13 +143,22 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
     </configuration>
     <list>
       <item itemvalue="Python.main_CUI2" />
       <item itemvalue="Python.test" />
+      <item itemvalue="Python.neuron" />
+      <item itemvalue="Python.main" />
+      <item itemvalue="Python.main_ddplot" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.main" />
+        <item itemvalue="Python.main_ddplot" />
+        <item itemvalue="Python.neuron" />
         <item itemvalue="Python.test" />
         <item itemvalue="Python.main_CUI2" />
       </list>
@@ -180,177 +177,35 @@
     </task>
     <servers />
   </component>
-  <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
-    <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1171875" />
-      <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.19359146" />
-      <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info anchor="bottom" id="Python Console" order="7" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
-      <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Message" order="0" />
-    </layout>
-  </component>
-  <component name="VcsContentAnnotationSettings">
-    <option name="myLimit" value="2678400000" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <option name="time" value="3" />
-    </breakpoint-manager>
-  </component>
-  <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/neuron_HH_gui/main_CUI2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1717">
-          <caret line="113" lean-forward="true" selection-start-line="113" selection-end-line="113" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/neuron_HR_gui/neuron.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4114">
-          <caret line="242" column="28" lean-forward="true" selection-start-line="242" selection-start-column="28" selection-end-line="242" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/neuron_HR_gui/OU.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" lean-forward="true" selection-start-line="6" selection-end-line="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/neuron_HH_gui/picture.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="935">
-          <caret line="62" column="28" selection-start-line="62" selection-start-column="28" selection-end-line="62" selection-end-column="28" />
-          <folding>
-            <element signature="e#86#117#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/neuron_HH_gui/neuron.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4658">
-          <caret line="274" column="60" lean-forward="true" selection-start-line="274" selection-start-column="60" selection-end-line="274" selection-end-column="60" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/multiprocessing_test/main.py" />
-    <entry file="file://$PROJECT_DIR$/multiprocessing_test/neuron.py" />
-    <entry file="file://$PROJECT_DIR$/for_Qudi/main_3.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="12" column="15" lean-forward="true" selection-start-line="12" selection-start-column="11" selection-end-line="12" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/for_Qudi/main_2.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/for_Qudi/main.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/noise_test/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="595">
-          <caret line="40" column="35" selection-start-line="40" selection-start-column="35" selection-end-line="40" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/old/Neuron/neuron.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1827">
-          <caret line="6" lean-forward="true" selection-start-line="6" selection-end-line="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/old/Neuron/main.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test2/kanon.jpg">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test2/test2.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/neuron_HH_gui/picture_rec.py" />
-    <entry file="file://$PROJECT_DIR$/neuron_HH_gui/qtdesignertest.py" />
-    <entry file="file://$PROJECT_DIR$/neuron_HH_gui/mainGUI_sankou.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/neuron_HH_gui/main_GUI.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/neuron_HH_gui/main_feedback.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/neuron_HH_gui/eggaeger.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="46" lean-forward="true" selection-start-line="10" selection-start-column="46" selection-end-line="10" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/main.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test2/main.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/neuron_HH_gui/test.py" />
-    <entry file="file://$PROJECT_DIR$/neuron_HH_gui/picture.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="29" column="22" lean-forward="true" selection-start-line="29" selection-start-column="22" selection-end-line="29" selection-end-column="22" />
-          <folding>
-            <element signature="e#86#117#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/neuron_HR_gui/OU.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" selection-start-line="6" selection-end-line="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/neuron_HR_gui/neuron.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="694">
-          <caret line="242" column="28" selection-start-line="242" selection-start-column="28" selection-end-line="242" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/neuron_HH_gui/neuron.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" column="41" selection-start-line="12" selection-start-column="41" selection-end-line="12" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/neuron_HH_gui/main_CUI2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="483">
-          <caret line="53" column="60" lean-forward="true" selection-start-line="53" selection-start-column="60" selection-end-line="53" selection-end-column="60" />
-        </state>
-      </provider>
-    </entry>
+  <component name="WindowStateProjectService">
+    <state x="1795" y="648" key="FileChooserDialogImpl" timestamp="1595394051972">
+      <screen x="68" y="0" width="3772" height="2160" />
+    </state>
+    <state x="1795" y="648" key="FileChooserDialogImpl/68.0.3772.2160/-3840.0.1920.1040@68.0.3772.2160" timestamp="1595394051972" />
+    <state width="1580" height="310" key="GridCell.Tab.0.bottom" timestamp="1595819416493">
+      <screen x="68" y="0" width="3772" height="2160" />
+    </state>
+    <state width="1580" height="310" key="GridCell.Tab.0.bottom/68.0.3772.2160/-3840.0.1920.1040@68.0.3772.2160" timestamp="1595819416493" />
+    <state width="1580" height="310" key="GridCell.Tab.0.center" timestamp="1595819416493">
+      <screen x="68" y="0" width="3772" height="2160" />
+    </state>
+    <state width="1580" height="310" key="GridCell.Tab.0.center/68.0.3772.2160/-3840.0.1920.1040@68.0.3772.2160" timestamp="1595819416493" />
+    <state width="1580" height="310" key="GridCell.Tab.0.left" timestamp="1595819416492">
+      <screen x="68" y="0" width="3772" height="2160" />
+    </state>
+    <state width="1580" height="310" key="GridCell.Tab.0.left/68.0.3772.2160/-3840.0.1920.1040@68.0.3772.2160" timestamp="1595819416492" />
+    <state width="1580" height="310" key="GridCell.Tab.0.right" timestamp="1595819416493">
+      <screen x="68" y="0" width="3772" height="2160" />
+    </state>
+    <state width="1580" height="310" key="GridCell.Tab.0.right/68.0.3772.2160/-3840.0.1920.1040@68.0.3772.2160" timestamp="1595819416493" />
+    <state x="1286" y="862" key="SettingsEditor" timestamp="1595394092831">
+      <screen x="68" y="0" width="3772" height="2160" />
+    </state>
+    <state x="1286" y="862" key="SettingsEditor/68.0.3772.2160/-3840.0.1920.1040@68.0.3772.2160" timestamp="1595394092831" />
+    <state x="1552" y="415" width="927" height="957" key="org.intellij.images.editor.actions.BackgroundImageDialog" timestamp="1595394054185">
+      <screen x="68" y="0" width="3772" height="2160" />
+    </state>
+    <state x="1552" y="415" width="927" height="957" key="org.intellij.images.editor.actions.BackgroundImageDialog/68.0.3772.2160/-3840.0.1920.1040@68.0.3772.2160" timestamp="1595394054185" />
   </component>
   <component name="masterDetails">
     <states>

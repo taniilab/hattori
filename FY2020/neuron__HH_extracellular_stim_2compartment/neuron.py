@@ -14,11 +14,11 @@ import numpy as np
 
 class Neuron_HH():
     def __init__(self, N=2, dt=0.05, T=5000, Cm=1, Vth=-56.2,
-                        eNa=50, gNa=56, eK=-90, gK=5, eL=-70.3, gL=0.0205, g_intra=3, tau_vextra=1):
-        self.set_neuron_palm(N, dt, T, Cm, Vth, eNa, gNa, eK, gK, eL, gL, g_intra, tau_vextra)
+                        eNa=50, gNa=56, eK=-90, gK=5, eL=-70.3, gL=0.0205, g_intra=3, tau_vextra=1, stim_amp=10):
+        self.set_neuron_palm(N, dt, T, Cm, Vth, eNa, gNa, eK, gK, eL, gL, g_intra, tau_vextra, stim_amp)
 
     def set_neuron_palm(self, N=2, dt=0.05, T=5000, Cm=1, Vth=-56.2,
-                        eNa=55, gNa=120, eK=-72, gK=36, eL=-49.387, gL=0.3, g_intra=3, tau_vextra=1):
+                        eNa=55, gNa=120, eK=-72, gK=36, eL=-49.387, gL=0.3, g_intra=3, tau_vextra=1, stim_amp=10):
 
         # parameters (used by main.py)
         self.parm_dict = {}
@@ -39,10 +39,14 @@ class Neuron_HH():
         self.V_intra = -65 * np.ones((self.N, self.allsteps))
         self.V_extra = np.zeros((self.N, self.allsteps))
         self.tau_vextra = tau_vextra
+        self.stim_amp = stim_amp
         # extracellular stimulation pattern
-        for i in range(int(50/self.dt)):
-            self.V_extra[0, int(1000 / self.dt)+i] = 50 * np.exp(- i*0.1*self.tau_vextra*self.dt) # exp decay
-            self.V_extra[1, int(1000 / self.dt)+i] = -50 * np.exp(- i*0.1*self.tau_vextra*self.dt)
+        self.V_extra[0, int(1000 / self.dt):int(1000.1 / self.dt)] = self.stim_amp
+        self.V_extra[1, int(1000 / self.dt):int(1000.1 / self.dt)] = -self.stim_amp
+
+        #for i in range(int(50/self.dt)):
+            #self.V_extra[0, int(1000 / self.dt)+i] = 50 * np.exp(- i*0.1*self.tau_vextra*self.dt) # exp decay
+            #self.V_extra[1, int(1000 / self.dt)+i] = -50 * np.exp(- i*0.1*self.tau_vextra*self.dt)
 
         self.k1V = 0 * np.ones(self.N)
 

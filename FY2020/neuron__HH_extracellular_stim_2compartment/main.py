@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 
 starttime = time.time()
 elapsed_time = 0
-save_path = "G:/Box Sync/Personal/xxx"
+save_path = "C:/Users/Kouhei/Downloads"
 process = 6 #number of processors
 numneu = 2 # fix(2 compartment)
 simtime = 2000
@@ -41,8 +41,9 @@ class Main():
             self.parm[self.parm_counter] = {'N': numneu,
                                             'T': simtime,
                                             'dt': deltatime,
-                                            'g_intra': 2,
-                                            'tau_vextra':round(10*i*i, 4)}
+                                            'g_intra': 5,
+                                            #'tau_vextra':round(10*i*i, 4)
+                                            'stim_amp': round(10+10*i, 4)}
             self.parm_counter += 1
             self.overall_steps = int(self.i*self.j*self.k*self.l*simtime/(deltatime*process))
 
@@ -126,8 +127,8 @@ def main():
             ax.set_xlim(998, 1006)
             plt.tight_layout()
             plt.savefig(fig_folder_path+'/'+str(os.path.splitext(os.path.basename(filename))[0])+'.png')
-            plt.close(fig)
-            #plt.show()
+            #plt.close(fig)
+            plt.show()
 
         pool.close()
         pool.join()
