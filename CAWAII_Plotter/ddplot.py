@@ -540,7 +540,7 @@ class Ui_MainWindow(object):
                              label = str(self.df.columns.values[int(self.selected_yrow[i])]))
 
             # plan to implement button later
-            plt.legend(fontsize=3)
+            #plt.legend(fontsize=3)
 
 
             if self.ax_spines_top_chbox.isChecked():

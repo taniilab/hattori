@@ -141,7 +141,6 @@ class Main():
             df['I_NMDA_{} [uA]'.format(k)] = ""
             df['Iext_{} [uA]'.format(k)] = ""
             df['I_noise_{} [uA]'.format(k)] = ""
-
         df.to_csv(save_path + '/' + filename + '.csv', mode='a')
 
         ####### MAIN PROCESS #######

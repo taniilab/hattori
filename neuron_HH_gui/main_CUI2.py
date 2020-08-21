@@ -24,19 +24,18 @@ from picture_multi_thread import Picture
 starttime = time.time()
 elapsed_time = 0
 #ave_path = "//192.168.13.10/Public/hattori/simulation/HH"
-save_path = "Z:/simulation/HH"
-#save_path = "G:/simulation/HH"
+save_path = "H:/simulation/HH"
 
 # number of processors
-process = 6
+process = 15
 
 class Main():
     def __init__(self):
         self.parm = []
 
         #combination
-        self.i = 6
-        self.j = 3
+        self.i = 15
+        self.j = 1
         self.k = 1
         self.l = 1
 
@@ -55,10 +54,12 @@ class Main():
                                             'syncp': 6,
                                             'noise': 2,
                                             'gpNa': 0,
-                                            'gkCa': round(0.00005*i, 6),
-                                            'Pmax_AMPA': 0,
-                                            'Pmax_NMDA': 0.8,
+                                            #'gkCa': 0.00002,
+                                            'gkCa': 0,
+                                            'Pmax_AMPA': round(0.1*i, 3),
+                                            'Pmax_NMDA': 0,
                                             'gtCa': 0,
+                                            'esyn': -70,
                                             'Mg_conc': 1.3,
                                             'alpha': 0.5,
                                             'beta': 0.1,
@@ -213,8 +214,8 @@ def main():
     plt.show()
 
     elapsed_time = time.time() - starttime
-    #pic = Picture(save_path)
-    #pic.run()
+    pic = Picture(save_path)
+    pic.run()
 
     print("elapsed_time:{0}".format(elapsed_time) + "[sec]")
     print("")

@@ -1,0 +1,10 @@
+* C:\Users\Kouhei\Documents\GitHub\hattori\Stim_simulation\LTspice\Draft1.asc
+R1 N001 N002 50
+R2 0 N002 50
+R3 N001 N003 50
+R4 0 N003 50
+R N002 N003 50
+V1 N001 0 5
+.dc V1 0 10 10ms
+.backanno
+.end

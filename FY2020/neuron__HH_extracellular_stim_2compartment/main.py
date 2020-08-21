@@ -9,14 +9,13 @@ import itertools
 import matplotlib.pyplot as plt
 
 
-
 starttime = time.time()
 elapsed_time = 0
 save_path = "C:/Users/Kouhei/Downloads"
 process = 6 #number of processors
 numneu = 2 # fix(2 compartment)
-simtime = 2000
-deltatime = 0.04
+simtime = 700
+deltatime = 0.02
 
 class Main():
     def __init__(self):
@@ -124,7 +123,7 @@ def main():
             for j in range(numneu):
                 ax.plot(res[k].Tsteps, res[k].V_extra[j], linewidth=3)
                 ax.plot(res[k].Tsteps, res[k].V[j], linewidth=3)
-            ax.set_xlim(998, 1006)
+            ax.set_xlim(498, 506)
             plt.tight_layout()
             plt.savefig(fig_folder_path+'/'+str(os.path.splitext(os.path.basename(filename))[0])+'.png')
             #plt.close(fig)

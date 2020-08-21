@@ -41,8 +41,8 @@ class Neuron_HH():
         self.tau_vextra = tau_vextra
         self.stim_amp = stim_amp
         # extracellular stimulation pattern
-        self.V_extra[0, int(1000 / self.dt):int(1000.1 / self.dt)] = self.stim_amp
-        self.V_extra[1, int(1000 / self.dt):int(1000.1 / self.dt)] = -self.stim_amp
+        self.V_extra[0, int(500 / self.dt):int(500.1 / self.dt)] = self.stim_amp
+        self.V_extra[1, int(500 / self.dt):int(500.1 / self.dt)] = -self.stim_amp
 
         #for i in range(int(50/self.dt)):
             #self.V_extra[0, int(1000 / self.dt)+i] = 50 * np.exp(- i*0.1*self.tau_vextra*self.dt) # exp decay
