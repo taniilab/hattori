@@ -25,10 +25,10 @@ starttime = time.time()
 elapsed_time = 0
 save_path = "H:/simulation/HH"
 
-process = 15  # number of processors
+process = 1  # number of processors
 numneu = 1
-simtime = 5000
-lump = 2500
+simtime = 2000
+lump = 1000
 num_lump = int(simtime/lump)
 dt = 0.04
 
@@ -37,7 +37,7 @@ class Main():
         self.parm = []
 
         #combination
-        self.i = 15
+        self.i = 1
         self.j = 1
         self.k = 1
         self.l = 1
@@ -70,7 +70,7 @@ class Main():
                                             'Mg_conc': 1.3,
                                             'alpha': 0.5,
                                             'beta': 0.1,
-                                            'D': 0.5,
+                                            'D': 0,
                                             'U_SE_AMPA':0.7,
                                             'U_SE_NMDA':0.03,
                                             'tau_rise_AMPA':1.1,
@@ -104,7 +104,7 @@ class Main():
                                                                             self.neuron.Pmax_AMPA,
                                                                             self.neuron.Pmax_NMDA,
                                                                             self.neuron.Mg_conc,
-                                                                            self.gkCa)
+                                                                            self.neuron.gkCa)
         df = pd.DataFrame(columns=[filename])
         df.to_csv(save_path + '/' + filename + '.csv')
         df = pd.DataFrame()
@@ -166,6 +166,40 @@ class Main():
             # Preparation for calculating the next lump
             self.neuron.Tsteps = self.neuron.Tsteps + lump
             self.neuron.V = np.fliplr(self.neuron.V)
+            self.neuron.INa = np.fliplr(self.neuron.INa)
+            self.neuron.m = np.fliplr(self.neuron.m)
+            self.neuron.h = np.fliplr(self.neuron.h)
+            self.neuron.alpha_m = np.fliplr(self.neuron.alpha_m)
+            self.neuron.alpha_h = np.fliplr(self.neuron.alpha_h)
+            self.neuron.beta_m = np.fliplr(self.neuron.beta_m)
+            self.neuron.beta_h = np.fliplr(self.neuron.beta_h)
+            self.neuron.IpNa = np.fliplr(self.neuron.IpNa)
+            self.neuron.pna = np.fliplr(self.neuron.pna)
+            self.neuron.alpha_pna = np.fliplr(self.neuron.alpha_pna)
+            self.neuron.beta_pna = np.fliplr(self.neuron.beta_pna)
+            self.neuron.IK = np.fliplr(self.neuron.IK)
+            self.neuron.n = np.fliplr(self.neuron.n)
+            self.neuron.alpha_n = np.fliplr(self.neuron.alpha_n)
+            self.neuron.beta_n = np.fliplr(self.neuron.beta_n)
+            self.neuron.Ileak = np.fliplr(self.neuron.Ileak)
+            self.neuron.Im = np.fliplr(self.neuron.Im)
+            self.neuron.p = np.fliplr(self.neuron.p)
+            self.neuron.p_inf = np.fliplr(self.neuron.p_inf)
+            self.neuron.tau_p = np.fliplr(self.neuron.tau_p)
+            self.neuron.ItCa = np.fliplr(self.neuron.ItCa)
+            self.neuron.u = np.fliplr(self.neuron.u)
+            self.neuron.s_inf = np.fliplr(self.neuron.s_inf)
+            self.neuron.u_inf = np.fliplr(self.neuron.u_inf)
+            self.neuron.tau_u = np.fliplr(self.neuron.tau_u)
+            self.neuron.IlCa = np.fliplr(self.neuron.IlCa)
+            self.neuron.q = np.fliplr(self.neuron.q)
+            self.neuron.r = np.fliplr(self.neuron.r)
+            self.neuron.alpha_q = np.fliplr(self.neuron.alpha_q)
+            self.neuron.alpha_r = np.fliplr(self.neuron.alpha_r)
+            self.neuron.beta_q = np.fliplr(self.neuron.beta_q)
+            self.neuron.beta_r = np.fliplr(self.neuron.beta_r)
+            self.neuron.IkCa = np.fliplr(self.neuron.IkCa)
+            self.neuron.ca_influx = np.fliplr(self.neuron.ca_influx)
             self.neuron.Isyn = np.fliplr(self.neuron.Isyn)
             self.neuron.Isyn[:, 1:] = 0
             self.neuron.IAMPA = np.fliplr(self.neuron.IAMPA)
@@ -195,98 +229,18 @@ class Main():
 
 
 def main():
+    d = datetime.datetime.today()
+    print("{0}/{1}/{2}/{3}:{4}:{5}".format(d.year, d.month, d.day, d.hour, d.minute, d.second))
     main = Main()
 
     for i in range(0, main.cycle_multiproc):
         pool = Pool(process)
         pool.map(main.simulate, range(process))
-
-        # for recording
-        tmp = []
-        for k in range(process):
-            tmp.append(res[k].N)
-
-        print(main.multiproc_counter)
-        main.multiproc_counter += process
-
-        # record
-        for k, j in itertools.product(range(process), range(tmp[k])):
-            d = datetime.datetime.today()
-
-            # generate file name
-            res[k].parm_dict = str(res[k].parm_dict)
-            res[k].parm_dict = res[k].parm_dict.replace(':', '_')
-            res[k].parm_dict = res[k].parm_dict.replace('{', '_')
-            res[k].parm_dict = res[k].parm_dict.replace('}', '_')
-            res[k].parm_dict = res[k].parm_dict.replace('\'', '')
-            res[k].parm_dict = res[k].parm_dict.replace(',', '_')
-            """
-            filename = (str(d.year) + '_' + str(d.month) + '_' +
-                        str(d.day) + '_' + str(d.hour) + '_' +
-                        str(d.minute) + '_' + str(d.second) + '_' +
-                        res[k].parm_dict + '_' + 'N' + str(j) + '_' + "HH.csv")
-            """
-            filename = (str(d.year) + '_' + str(d.month) + '_' +
-                        str(d.day) + '_' + str(d.hour) + '_' +
-                        str(d.minute) + '_' + str(d.second) + '_' +
-                        'N' + str(j) +
-                        "_P_AMPA" + str(res[k].Pmax_AMPA) + "_P_NMDA" + str(res[k].Pmax_NMDA) +
-                        "_Mg_conc" + str(res[k].Mg_conc) + '_' + 'gkCa' + str(res[k].gkCa) + "HH.csv")
-
-            df = pd.DataFrame({'T [ms]': res[k].Tsteps,
-                               'V [mV]': res[k].V[j],
-                               'I_K [uA]': res[k].IK[j],
-                               'I_Na [uA]': res[k].INa[j],
-                               'Ca_conc [nm?]': res[k].ca_influx[j],
-                               'I_kCa [uA]': res[k].IlCa[j],
-                               'I_m [uA]': res[k].Im[j],
-                               'I_leak [uA]': res[k].Ileak[j],
-                               'I_syn [uA]': res[k].Isyn[j],
-                               'I_AMPA [uA]': res[k].IAMPA[j],
-                               'I_NMDA [uA]': res[k].INMDA[j],
-                               'E_AMPA [uA]': res[k].E_AMPA[0, j],
-                               'E_NMDA [uA]': res[k].E_NMDA[0, j],
-                               'Iext [uA]': res[k].Iext[j],
-                               'I_noise [uA]': res[k].Inoise[j]})
-            config = pd.DataFrame(columns=[filename])
-            config.to_csv(save_path + '/' + filename)
-            df.to_csv(save_path + '/' + filename, mode='a')
         pool.close()
         pool.join()
-
-    # sample plotting
-    for i in range(0, process):
-        # initialize
-        ax = []
-        lines = []
-        tm = np.arange(0, res[i].allsteps*res[i].dt, res[i].dt)
-
-        # matrix
-        fig = plt.figure(figsize=(12, 12))
-        gs = grs.GridSpec(4, res[i].N)
-
-        for j in range(0, res[i].N):
-            ax.append(plt.subplot(gs[0, j]))
-            ax.append(plt.subplot(gs[1, j]))
-            ax.append(plt.subplot(gs[2, j]))
-            ax.append(plt.subplot(gs[3, j]))
-
-        # plot
-        for j in range(0, res[i].N):
-            lines.append([])
-            lines[j], = ax[j].plot(tm, res[i].V[j], color="indigo",
-                                   markevery=[0, -1])
-
-        ax[res[i].N].plot(tm, res[i].INa[0], color="coral", markevery=[0, -1])
-
-        ax[res[i].N+1].plot(tm, res[i].INMDA[0], color="coral",
-                           markevery=[0, -1])
-
-        ax[res[i].N+2].plot(tm, res[i].ca_influx[0], color="coral",
-                           markevery=[0, -1])
-        fig.tight_layout()
-
-    plt.show()
+        print("---------------------------\n")
+        main.process_counter += process
+        main.now_cycle_multiproc += 1
 
     pic = Picture(save_path)
     pic.run()

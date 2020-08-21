@@ -126,53 +126,39 @@ class Neuron_HH():
         self.ca_influx = 0 * np.ones((self.N, self.allsteps))
         self.tau_ca_influx = 2700
         self.ca_influx_step = 100
-
         # connection relationship
-        self.W = np.ones((self.N, self.N))
-
+        self.Syn_weight = np.ones((self.N, self.N))
         # synaptic current
         self.Isyn = np.zeros((self.N, self.allsteps))
         self.INMDA = np.zeros((self.N, self.allsteps))
         self.IAMPA = np.zeros((self.N, self.allsteps))
         self.Isyn_hist = np.zeros((self.N, self.N, 5))
-
         # synaptic conductance
         self.gsyn = np.zeros((self.N, self.N))
         self.gNMDA = np.zeros((self.N, self.N))
         self.gAMPA = np.zeros((self.N, self.N))
-
         # synaptic reversal potential
         self.esyn = esyn * np.ones((self.N, self.N))
         self.tau_syn = tau_syn
         self.Mg_conc = Mg_conc
-
         # maximal synaptic conductance
         self.Pmax_AMPA = Pmax_AMPA
         self.Pmax_NMDA = Pmax_NMDA
-
         # external input
         self.Iext_amp = Iext_amp
         self.Iext = np.zeros((self.N, self.allsteps))
-        self.Iext[0, int(1000 / self.dt):int(1005 / self.dt)] = self.Iext_amp
-        """
-        self.Iext[0, int(220/self.dt):int(225/self.dt)] = self.Iext_amp
-        self.Iext[0, int(240/self.dt):int(245/self.dt)] = self.Iext_amp
-        self.Iext[0, int(260/self.dt):int(265/self.dt)] = self.Iext_amp
-        self.Iext[0, int(280/self.dt):int(285/self.dt)] = self.Iext_amp
-        self.Iext[0, int(300/self.dt):int(305/self.dt)] = self.Iext_amp
-        self.Iext[0, int(320/self.dt):int(325/self.dt)] = self.Iext_amp
-        """
-
+        #self.Iext[0, int(1000 / self.dt):int(1005 / self.dt)] = self.Iext_amp
+        self.Iext[0, int(1000 / self.dt):int(1500 / self.dt)] = 2
+        #この書き方だとフリップに対応しない
         # firing time
         self.t_ap = -10000 * np.ones((self.N, self.N, 2))
-
+        self.t_fire = -10000 * np.ones((self.N, self.N))
+        self.t_fire_list = np.zeros((self.N, self.allsteps))
         # current step
         self.curstep = 0
-
         # noise palameter
         self.noise = noise
         self.Inoise = np.zeros((self.N, self.allsteps))
-
         self.dn = np.zeros((self.N, self.allsteps))
         self.ramda = ramda
         self.alpha = alpha
@@ -180,9 +166,7 @@ class Neuron_HH():
         self.D = D
         self.dWt = np.random.normal(0, self.dt ** (1 / 2), (self.N, self.allsteps))
         # self.g =np.random.randn(self.N, self.allsteps)
-
         self.fire_tmp = np.zeros(self.N)
-
         # dynamic synapse
         self.R_AMPA = np.ones((self.N, self.N, self.allsteps))
         self.R_NMDA = np.ones((self.N, self.N, self.allsteps))
@@ -201,19 +185,18 @@ class Neuron_HH():
         self.tau_inact_AMPA = tau_inact_AMPA
         self.tau_inact_NMDA = tau_inact_NMDA
 
-    def alpha_function(self, t):
+    def alpha_function(self, t, Pmax, tau):
         if t < 0:
             return 0
-        elif ((self.Pmax * t / self.tau_syn * 0.1) *
-              np.exp(-t / self.tau_syn * 0.1)) < 0.00001:
+        elif ((Pmax * t / tau) * np.exp(-t / tau)) < 10e-10:
             return 0
         else:
-            return (self.Pmax * t / self.tau_syn) * np.exp(-t / self.tau_syn)
+            return (Pmax * t / tau) * np.exp(-t / tau)
 
     def biexp_func(self, t, Pmax, t_rise, t_fall):
         if t < 0:
             return 0
-        elif Pmax * (np.exp(-t / t_fall) - np.exp(-t / t_rise)) < 0.00001:
+        elif Pmax * (np.exp(-t / t_fall) - np.exp(-t / t_rise)) < 10e-10:
             return 0
         else:
             return Pmax * (np.exp(-t / t_fall) - np.exp(-t / t_rise))
@@ -225,56 +208,26 @@ class Neuron_HH():
             return np.exp(- x / tau_rise)
 
     def calc_synaptic_input(self, i):
-        # recording fire time
-        if self.V[i, self.curstep - 1] > 0 and self.V[i, self.curstep] <= 0 and self.curstep * self.dt > 200:
-            self.t_ap[i, :, 1] = self.t_ap[i, :, 0]
-            self.t_ap[i, :, 0] = self.curstep * self.dt
-            self.fire_tmp[i] = self.curstep * self.dt
         # sum of the synaptic current for each neuron
         if self.syncp == 1:
             pass
         elif self.syncp == 2:
             pass
-        elif self.syncp == 3:
-            pass
-
-        # alpha function
-        elif self.syncp == 4:
-            for j in range(0, self.N):
-                self.gsyn[i, j] = \
-                    (self.alpha_function(self.curstep * self.dt -
-                                         self.t_ap[j, i, 0]) +
-                     self.alpha_function(self.curstep * self.dt -
-                                         self.t_ap[j, i, 1]))
-        # NMDA & AMPA
-        elif self.syncp == 5:
-            for j in range(0, self.N):
-
-                if self.curstep * self.dt > 200:
-                    # cite from "neuronal noise"
-                    self.gNMDA[i, j] = self.biexp_func(self.curstep * self.dt - self.t_ap[j, i, 0], self.Pmax_NMDA, 20,
-                                                       125) / (1 + (self.Mg_conc / 3.57) * np.exp(-0.062 * self.Vi))
-                    self.gAMPA[i, j] = self.biexp_func(self.curstep * self.dt - self.t_ap[j, i, 0], self.Pmax_AMPA, 0.8,
-                                                       5)
-                    self.gsyn[i, j] = self.gNMDA[i, j] + self.gAMPA[i, j]
-                else:
-                    self.gsyn[i, j] = 0
-
         # NMDA & AMPA with STP
-        elif self.syncp == 6:
+        elif self.syncp == 3:
             for j in range(0, self.N):
                 self.dR_AMPA = (self.dt * ((self.I_AMPA[i, j, self.curstep] / self.tau_rec_AMPA)
                                            - self.R_AMPA[i, j, self.curstep] * self.U_SE_AMPA * self.exp_decay(
-                            self.curstep * self.dt - self.t_ap[j, i, 0] - self.delay, self.tau_rise_AMPA)))
+                            self.curstep * self.dt - self.t_fire[j, i] - self.delay, self.tau_rise_AMPA)))
                 self.dR_NMDA = (self.dt * ((self.I_AMPA[i, j, self.curstep] / self.tau_rec_NMDA)
                                            - self.R_NMDA[i, j, self.curstep] * self.U_SE_NMDA * self.exp_decay(
-                            self.curstep * self.dt - self.t_ap[j, i, 0] - self.delay, self.tau_rise_NMDA)))
+                            self.curstep * self.dt - self.t_fire[j, i] - self.delay, self.tau_rise_NMDA)))
                 self.dE_AMPA = (self.dt * ((- self.E_AMPA[i, j, self.curstep] / self.tau_inact_AMPA)
                                            + self.U_SE_AMPA * self.R_AMPA[i, j, self.curstep] * self.exp_decay(
-                            self.curstep * self.dt - self.t_ap[j, i, 0] - self.delay, self.tau_rise_AMPA)))
+                            self.curstep * self.dt - self.t_fire[j, i] - self.delay, self.tau_rise_AMPA)))
                 self.dE_NMDA = (self.dt * ((- self.E_NMDA[i, j, self.curstep] / self.tau_inact_NMDA)
                                            + self.U_SE_NMDA * self.R_NMDA[i, j, self.curstep] * self.exp_decay(
-                            self.curstep * self.dt - self.t_ap[j, i, 0] - self.delay, self.tau_rise_NMDA)))
+                            self.curstep * self.dt - self.t_fire[j, i] - self.delay, self.tau_rise_NMDA)))
 
                 self.R_AMPA[i, j, self.curstep + 1] = self.R_AMPA[i, j, self.curstep] + self.dR_AMPA
                 self.R_NMDA[i, j, self.curstep + 1] = self.R_NMDA[i, j, self.curstep] + self.dR_NMDA
@@ -285,17 +238,33 @@ class Neuron_HH():
                 self.I_NMDA[i, j, self.curstep + 1] = 1 - self.R_NMDA[i, j, self.curstep + 1] - self.E_NMDA[
                     i, j, self.curstep + 1]
 
-                self.gNMDA[i, j] = self.Pmax_NMDA * (1 / 0.43) * self.E_NMDA[i, j, self.curstep] / (
-                            1 + (self.Mg_conc / 3.57) * np.exp(-0.062 * self.Vi))
                 self.gAMPA[i, j] = self.Pmax_AMPA * (1 / 0.37) * self.E_AMPA[i, j, self.curstep]
+                self.gNMDA[i, j] = self.Pmax_NMDA * (1 / 0.43) * self.E_NMDA[i, j, self.curstep] / \
+                                    (1 + (self.Mg_conc / 3.57) * np.exp(-0.062 * self.Vi))
+                # sum
+                for j in range(0, self.N):
+                    self.INMDAi[i] += self.Syn_weight[j, i] * self.gNMDA[i, j] * (self.esyn[i, j] - self.Vi[i])
+                    self.IAMPAi[i] += self.Syn_weight[j, i] * self.gAMPA[i, j] * (self.esyn[i, j] - self.Vi[i])
+                    self.Isyni[i] = self.INMDAi[i] + self.IAMPAi[i]
+        elif self.syncp == 4:
+            pass
+        # NMDA & AMPA
+        elif self.syncp == 5:
+            for j in range(0, self.N):
+
+                if self.curstep * self.dt > 200:
+                    # cite from "neuronal noise"
+                    self.gNMDA[i, j] = self.biexp_func(self.curstep * self.dt - self.t_fire[j, i], self.Pmax_NMDA, 20,
+                                                       125) / (1 + (self.Mg_conc / 3.57) * np.exp(-0.062 * self.Vi))
+                    self.gAMPA[i, j] = self.biexp_func(self.curstep * self.dt - self.t_fire[j, i], self.Pmax_AMPA, 0.8,
+                                                       5)
+                    self.gsyn[i, j] = self.gNMDA[i, j] + self.gAMPA[i, j]
+                else:
+                    self.gsyn[i, j] = 0
+        elif self.syncp == 6:
+            pass
         else:
             pass
-
-        # sum
-        for j in range(0, self.N):
-            self.INMDAi[i] += self.gNMDA[i, j] * (self.esyn[i, j] - self.Vi[i])
-            self.IAMPAi[i] += self.gAMPA[i, j] * (self.esyn[i, j] - self.Vi[i])
-            self.Isyni[i] = self.INMDAi[i] + self.IAMPAi[i]
 
     # activation functions
     # a / (1 + exp(b(v-c)))
@@ -370,8 +339,13 @@ class Neuron_HH():
         self.Inoisei = self.Inoise[:, self.curstep]
 
         # calculate synaptic input
-        for i in range(0, self.N):
-            self.calc_synaptic_input(i)
+        if self.Tsteps[self.curstep] > 50:
+            for i in range(0, self.N):
+                # mV
+                if self.V[i, self.curstep-1] >= 0 and self.V[i, self.curstep] < 0:
+                    self.t_fire[i, :] = self.Tsteps[self.curstep]
+                    self.t_fire_list[i, self.curstep] = self.Tsteps[self.curstep]
+                self.calc_synaptic_input(i)
 
         # Noise
         # 1 : gaussian white
@@ -466,11 +440,12 @@ class Neuron_HH():
         # self.pna[:, self.curstep+1] = self.pnai + self.k1pna * self.dt
         self.n[:, self.curstep + 1] = self.ni + self.k1n * self.dt
         self.p[:, self.curstep + 1] = self.pi + self.k1p * self.dt
-        if self.V[i, self.curstep - 1] > 0 and self.V[i, self.curstep] <= 0 and self.curstep * self.dt > 200:
+        if self.Tsteps[self.curstep] > 50 and self.V[i, self.curstep - 1] >= 0 and self.V[i, self.curstep] < 0:
             self.ca_influx[:, self.curstep + 1] = self.ca_influxi - (
-                        self.ca_influxi / self.tau_ca_influx) + self.dt + self.ca_influx_step
+                    self.ca_influxi / self.tau_ca_influx) + self.dt + self.ca_influx_step
         else:
             self.ca_influx[:, self.curstep + 1] = self.ca_influxi - (self.ca_influxi / self.tau_ca_influx) + self.dt
+
         """
         self.u[:, self.curstep+1] = self.ui + self.k1u * self.dt
         self.q[:, self.curstep+1] = self.qi + self.k1q * self.dt

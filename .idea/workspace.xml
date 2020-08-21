@@ -20,39 +20,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="00223603-4d51-4c4a-a2ac-217937368cd0" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/FY2020/LTspice/heatmap.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FY2020/first/act.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FY2020/first/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FY2020/first/neuron.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FY2020/first/picture_multi_thread.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CAWAII_Plotter/ddplot.py" beforeDir="false" afterPath="$PROJECT_DIR$/CAWAII_Plotter/ddplot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CAWAII_Plotter/save1.cfg" beforeDir="false" afterPath="$PROJECT_DIR$/CAWAII_Plotter/save1.cfg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FY2020/first/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/FY2020/first/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FY2020/first/neuron.py" beforeDir="false" afterPath="$PROJECT_DIR$/FY2020/first/neuron.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FY2020/first/picture_multi_thread.py" beforeDir="false" afterPath="$PROJECT_DIR$/FY2020/first/picture_multi_thread.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FY2020/neuron_LIF_LSM/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/FY2020/neuron_LIF_LSM/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FY2020/neuron__HH_extracellular_stim_2compartment/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/FY2020/neuron__HH_extracellular_stim_2compartment/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FY2020/neuron__HH_extracellular_stim_2compartment/neuron.py" beforeDir="false" afterPath="$PROJECT_DIR$/FY2020/neuron__HH_extracellular_stim_2compartment/neuron.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路.log" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路.op.raw" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路.op.raw" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路.raw" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路.raw" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200526.log" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200526.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200526.op.raw" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200526.op.raw" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200526.plt" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200526.plt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200526.raw" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200526.raw" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200529.asc" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200529.asc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200529.log" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200529.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200529.op.raw" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200529.op.raw" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200529.raw" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_20200529.raw" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_2compartment_tmp.asc" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_2compartment_tmp.asc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_2compartment_tmp.log" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_2compartment_tmp.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_2compartment_tmp.op.raw" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_2compartment_tmp.op.raw" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_2compartment_tmp.raw" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_2compartment_tmp.raw" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_proceedings用_20200727.asc" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_proceedings用_20200727.asc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_test.asc" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_test.asc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_test.log" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_test.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_test.op.raw" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_test.op.raw" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_test.raw" beforeDir="false" afterPath="$PROJECT_DIR$/Stim_simulation/LTspice/電圧刺激等価回路_test.raw" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/neuron_HH_gui/main_CUI2.py" beforeDir="false" afterPath="$PROJECT_DIR$/neuron_HH_gui/main_CUI2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/neuron_HH_gui/picture_multi_thread.py" beforeDir="false" afterPath="$PROJECT_DIR$/neuron_HH_gui/picture_multi_thread.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FY2020/neuron_LIF_LSM/neuron.py" beforeDir="false" afterPath="$PROJECT_DIR$/FY2020/neuron_LIF_LSM/neuron.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,27 +76,6 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FY2020/first/act.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="heatmap" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="hattori" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/FY2020/LTspice" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="C:\Users\Kouhei\Documents\GitHub\hattori\FY2020\LTspice\heatmap.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -195,20 +147,41 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="picture_multi_thread" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="hattori" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/FY2020/first" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FY2020/first/picture_multi_thread.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Python.main_ddplot" />
-      <item itemvalue="Python.heatmap" />
       <item itemvalue="Python.main_CUI2" />
       <item itemvalue="Python.act" />
       <item itemvalue="Python.main" />
+      <item itemvalue="Python.picture_multi_thread" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.main" />
-        <item itemvalue="Python.main_CUI2" />
         <item itemvalue="Python.main_ddplot" />
+        <item itemvalue="Python.picture_multi_thread" />
+        <item itemvalue="Python.main_CUI2" />
         <item itemvalue="Python.act" />
-        <item itemvalue="Python.heatmap" />
       </list>
     </recent_temporary>
   </component>
@@ -246,37 +219,37 @@
       <screen x="68" y="0" width="3772" height="2160" />
     </state>
     <state x="1795" y="648" key="FileChooserDialogImpl/68.0.3772.2160/-3840.0.1920.1040@68.0.3772.2160" timestamp="1595394051972" />
-    <state width="1388" height="343" key="GridCell.Tab.0.bottom" timestamp="1597899757000">
+    <state width="1767" height="292" key="GridCell.Tab.0.bottom" timestamp="1598022985985">
       <screen x="72" y="0" width="3768" height="2160" />
     </state>
     <state width="1580" height="310" key="GridCell.Tab.0.bottom/68.0.3772.2160/-3840.0.1920.1040@68.0.3772.2160" timestamp="1595819416493" />
     <state width="1292" height="346" key="GridCell.Tab.0.bottom/72.0.3768.2160/-3778.0.2498.1440@72.0.3768.2160" timestamp="1597735046898" />
     <state width="1802" height="310" key="GridCell.Tab.0.bottom/72.0.3768.2160/-3840.0.1920.1040@72.0.3768.2160" timestamp="1596012869619" />
-    <state width="1388" height="343" key="GridCell.Tab.0.bottom/72.0.3768.2160/-3840.0.2560.1400@72.0.3768.2160" timestamp="1597899757000" />
+    <state width="1767" height="292" key="GridCell.Tab.0.bottom/72.0.3768.2160/-3840.0.2560.1400@72.0.3768.2160" timestamp="1598022985985" />
     <state width="1286" height="346" key="GridCell.Tab.0.bottom/72.0.3768.2160@72.0.3768.2160" timestamp="1597588001542" />
-    <state width="1388" height="343" key="GridCell.Tab.0.center" timestamp="1597899757000">
+    <state width="1767" height="292" key="GridCell.Tab.0.center" timestamp="1598022985985">
       <screen x="72" y="0" width="3768" height="2160" />
     </state>
     <state width="1580" height="310" key="GridCell.Tab.0.center/68.0.3772.2160/-3840.0.1920.1040@68.0.3772.2160" timestamp="1595819416493" />
     <state width="1292" height="346" key="GridCell.Tab.0.center/72.0.3768.2160/-3778.0.2498.1440@72.0.3768.2160" timestamp="1597735046898" />
     <state width="1802" height="310" key="GridCell.Tab.0.center/72.0.3768.2160/-3840.0.1920.1040@72.0.3768.2160" timestamp="1596012869619" />
-    <state width="1388" height="343" key="GridCell.Tab.0.center/72.0.3768.2160/-3840.0.2560.1400@72.0.3768.2160" timestamp="1597899757000" />
+    <state width="1767" height="292" key="GridCell.Tab.0.center/72.0.3768.2160/-3840.0.2560.1400@72.0.3768.2160" timestamp="1598022985985" />
     <state width="1286" height="346" key="GridCell.Tab.0.center/72.0.3768.2160@72.0.3768.2160" timestamp="1597588001542" />
-    <state width="1388" height="343" key="GridCell.Tab.0.left" timestamp="1597899756999">
+    <state width="1767" height="292" key="GridCell.Tab.0.left" timestamp="1598022985985">
       <screen x="72" y="0" width="3768" height="2160" />
     </state>
     <state width="1580" height="310" key="GridCell.Tab.0.left/68.0.3772.2160/-3840.0.1920.1040@68.0.3772.2160" timestamp="1595819416492" />
     <state width="1292" height="346" key="GridCell.Tab.0.left/72.0.3768.2160/-3778.0.2498.1440@72.0.3768.2160" timestamp="1597735046898" />
     <state width="1802" height="310" key="GridCell.Tab.0.left/72.0.3768.2160/-3840.0.1920.1040@72.0.3768.2160" timestamp="1596012869619" />
-    <state width="1388" height="343" key="GridCell.Tab.0.left/72.0.3768.2160/-3840.0.2560.1400@72.0.3768.2160" timestamp="1597899756999" />
+    <state width="1767" height="292" key="GridCell.Tab.0.left/72.0.3768.2160/-3840.0.2560.1400@72.0.3768.2160" timestamp="1598022985985" />
     <state width="1286" height="346" key="GridCell.Tab.0.left/72.0.3768.2160@72.0.3768.2160" timestamp="1597588001542" />
-    <state width="1388" height="343" key="GridCell.Tab.0.right" timestamp="1597899757000">
+    <state width="1767" height="292" key="GridCell.Tab.0.right" timestamp="1598022985985">
       <screen x="72" y="0" width="3768" height="2160" />
     </state>
     <state width="1580" height="310" key="GridCell.Tab.0.right/68.0.3772.2160/-3840.0.1920.1040@68.0.3772.2160" timestamp="1595819416493" />
     <state width="1292" height="346" key="GridCell.Tab.0.right/72.0.3768.2160/-3778.0.2498.1440@72.0.3768.2160" timestamp="1597735046898" />
     <state width="1802" height="310" key="GridCell.Tab.0.right/72.0.3768.2160/-3840.0.1920.1040@72.0.3768.2160" timestamp="1596012869619" />
-    <state width="1388" height="343" key="GridCell.Tab.0.right/72.0.3768.2160/-3840.0.2560.1400@72.0.3768.2160" timestamp="1597899757000" />
+    <state width="1767" height="292" key="GridCell.Tab.0.right/72.0.3768.2160/-3840.0.2560.1400@72.0.3768.2160" timestamp="1598022985985" />
     <state width="1286" height="346" key="GridCell.Tab.0.right/72.0.3768.2160@72.0.3768.2160" timestamp="1597588001542" />
     <state x="1286" y="862" key="SettingsEditor" timestamp="1595394092831">
       <screen x="68" y="0" width="3772" height="2160" />
@@ -286,6 +259,10 @@
       <screen x="68" y="0" width="3772" height="2160" />
     </state>
     <state x="1552" y="415" width="927" height="957" key="org.intellij.images.editor.actions.BackgroundImageDialog/68.0.3772.2160/-3840.0.1920.1040@68.0.3772.2160" timestamp="1595394054185" />
+    <state x="1026" y="513" width="672" height="678" key="search.everywhere.popup" timestamp="1597991999152">
+      <screen x="72" y="0" width="3768" height="2160" />
+    </state>
+    <state x="1026" y="513" width="672" height="678" key="search.everywhere.popup/72.0.3768.2160/-3840.0.2560.1400@72.0.3768.2160" timestamp="1597991999152" />
   </component>
   <component name="masterDetails">
     <states>

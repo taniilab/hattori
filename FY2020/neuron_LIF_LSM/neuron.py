@@ -233,7 +233,6 @@ class Neuron_LIF():
                     self.Vi[i] = self.Vreset
                 self.calc_synaptic_input(i)
 
-
         # Noise
         # 1 : gaussian white
         # 2 : Ornstein-Uhlenbeck process

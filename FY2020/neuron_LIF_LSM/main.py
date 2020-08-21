@@ -361,13 +361,11 @@ def main():
     for i in range(0, main.cycle_multiproc):
         pool = Pool(process)
         pool.map(main.simulate, range(process))
-        
         pool.close()
         pool.join()
         print("---------------------------\n")
         main.process_counter += process
         main.now_cycle_multiproc += 1
-
 
     d = datetime.datetime.today()
     print("{0}/{1}/{2}/{3}:{4}:{5}".format(d.year, d.month, d.day, d.hour, d.minute, d.second))

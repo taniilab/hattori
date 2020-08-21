@@ -20,8 +20,8 @@ mpl.rcParams['agg.path.chunksize'] = 100000
 
 class Picture():
     def __init__(self,
-                 path='C:'):
-
+                 path='C:', process=1):
+        self.process = process
         self.nowdir = path
         self.csvs = path + '/' + '*.csv'
         self.files = {}
@@ -63,14 +63,14 @@ class Picture():
             df = pd.read_csv(file_, index_col=0, skiprows=1)
             filename = os.path.basename(file_).replace('.csv', '')
 
-            df.plot(x='T [ms]', y='V [mV]', figsize=(60, 20), title=str(filename), lw=0.5)
+            df.plot(x='T_0 [ms]', y='V_0 [mV]', figsize=(60, 20), title=str(filename), lw=0.5)
             plt.savefig(fname=self.nowdir + '/plots/voltage/' + filename + '.jpg',
                         dpi=350)
             # plt.show()
             plt.close()
 
             label1 = 'I_syn'
-            df.plot(x='T [ms]', y='I_syn [uA]', figsize=(60, 20), title=str(filename) + label1, lw=0.5)
+            df.plot(x='T_0 [ms]', y='I_syn_0 [uA]', figsize=(60, 20), title=str(filename) + label1, lw=0.5)
             plt.title(str(df_title));
             plt.savefig(fname=self.nowdir + '/plots/syn/' + filename + label1 + '.jpg',
                         dpi=350)
@@ -87,7 +87,6 @@ class Picture():
 
 
     def run(self):
-        self. process = 16
         self.unit_files = int(len(self.files)/self.process)
         self.csv_tmp_list = list(zip(*[iter(self.files)] * int(self.unit_files)))
         pool = Pool(self.process)
@@ -96,9 +95,10 @@ class Picture():
 
 def main():
     save_path = "H:/simulation/HH"
+    process = 15
     #save_path = "//192.168.13.10/Public/hattori/simulation/HH"
     #save_path = "//192.168.13.10/Public/hattori/simulation/HH/raw_data/2018_10_10_9_46_37(maindata)/Mg_1.0/"
-    pic = Picture(save_path)
+    pic = Picture(save_path, process)
     pic.run()
 
 
