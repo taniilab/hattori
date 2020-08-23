@@ -52,7 +52,7 @@ class Neuron_HH():
         # simulation time
         self.T = T
         # all time
-        self.Tsteps = np.arange(0, self.T, self.dt)
+        self.Tsteps = np.arange(0, self.T+self.dt, self.dt) # contains the buffer for array wrapping
         # number of time step
         self.allsteps = len(self.Tsteps)
 
@@ -148,7 +148,7 @@ class Neuron_HH():
         self.Iext_amp = Iext_amp
         self.Iext = np.zeros((self.N, self.allsteps))
         #self.Iext[0, int(1000 / self.dt):int(1005 / self.dt)] = self.Iext_amp
-        self.Iext[0, int(1000 / self.dt):int(1500 / self.dt)] = 2
+        #self.Iext[0, int(1000 / self.dt):int(1500 / self.dt)] = 2
         #この書き方だとフリップに対応しない
         # firing time
         self.t_ap = -10000 * np.ones((self.N, self.N, 2))
@@ -364,6 +364,17 @@ class Neuron_HH():
         else:
             pass
 
+        # external DC input
+        if 1000 <= self.Tsteps[self.curstep] < 1005:
+            self.Iext[0, self.curstep] = self.Iext_amp
+        """
+        if 500 <= self.Tsteps[self.curstep] < 700:
+            self.Iext[0, self.curstep] = 2
+        if 900 <= self.Tsteps[self.curstep] < 1300:
+            self.Iext[0, self.curstep] = 2
+        if 1400 <= self.Tsteps[self.curstep] < 1900:
+            self.Iext[0, self.curstep] = 2
+        """
         # solve a defferential equation
         # sodium
         self.alpha_mi = self.activation_func_ReLUlike(-0.32, self.Vth + 13, -1 / 4, self.Vth + 13, self.Vi)

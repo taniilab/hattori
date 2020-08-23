@@ -25,10 +25,10 @@ starttime = time.time()
 elapsed_time = 0
 save_path = "H:/simulation/HH"
 
-process = 1  # number of processors
+process = 16  # number of processors
 numneu = 1
-simtime = 2000
-lump = 1000
+simtime = 5000
+lump = 5000
 num_lump = int(simtime/lump)
 dt = 0.04
 
@@ -37,7 +37,7 @@ class Main():
         self.parm = []
 
         #combination
-        self.i = 1
+        self.i = 16
         self.j = 1
         self.k = 1
         self.l = 1
@@ -63,14 +63,14 @@ class Main():
                                             'gpNa': 0,
                                             #'gkCa': 0.00002,
                                             'gkCa': 0,
-                                            'Pmax_AMPA': round(0.1*i, 3),
-                                            'Pmax_NMDA': 0,
+                                            'Pmax_AMPA': 0.5,
+                                            'Pmax_NMDA': round(0.1*i, 3),
                                             'gtCa': 0,
                                             'esyn': -70,
                                             'Mg_conc': 1.3,
                                             'alpha': 0.5,
                                             'beta': 0.1,
-                                            'D': 0,
+                                            'D': 0.5,
                                             'U_SE_AMPA':0.7,
                                             'U_SE_NMDA':0.03,
                                             'tau_rise_AMPA':1.1,
@@ -219,6 +219,7 @@ class Main():
             self.neuron.I_NMDA = np.flip(self.neuron.I_NMDA, axis=2)
             self.neuron.I_NMDA[:, :, 1:] = 0
             self.neuron.Iext = np.fliplr(self.neuron.Iext)
+            self.neuron.Iext[:, 1:] = 0
             self.neuron.t_fire_list = 0 * self.neuron.t_fire_list
             self.neuron.Inoise = np.fliplr(self.neuron.Inoise)
             self.neuron.dn = np.fliplr(self.neuron.dn)
