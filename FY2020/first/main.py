@@ -25,19 +25,19 @@ starttime = time.time()
 elapsed_time = 0
 save_path = "H:/simulation/HH"
 
-process = 16  # number of processors
-numneu = 1
-simtime = 5000
-lump = 5000
+process = 20  # number of processors
+numneu = 2
+simtime = 50000
+lump = 50000
 num_lump = int(simtime/lump)
-dt = 0.04
+dt = 0.02
 
 class Main():
     def __init__(self):
         self.parm = []
 
         #combination
-        self.i = 16
+        self.i = 20
         self.j = 1
         self.k = 1
         self.l = 1
@@ -58,19 +58,19 @@ class Main():
                                             'T': lump,
                                             'dt': dt,
                                             'Iext_amp': 10,
-                                            'syncp': 6,
+                                            'syncp': 3,
                                             'noise': 2,
                                             'gpNa': 0,
                                             #'gkCa': 0.00002,
                                             'gkCa': 0,
                                             'Pmax_AMPA': 0.5,
-                                            'Pmax_NMDA': round(0.1*i, 3),
+                                            'Pmax_NMDA': 0.7,
                                             'gtCa': 0,
-                                            'esyn': -70,
-                                            'Mg_conc': 1.3,
-                                            'alpha': 0.5,
-                                            'beta': 0.1,
-                                            'D': 0.5,
+                                            'esyn': 0,
+                                            'Mg_conc': 1.6,
+                                            'alpha': 0,
+                                            'beta': 0,
+                                            'D': 0,
                                             'U_SE_AMPA':0.7,
                                             'U_SE_NMDA':0.03,
                                             'tau_rise_AMPA':1.1,
@@ -79,7 +79,8 @@ class Main():
                                             'tau_rec_NMDA':200,
                                             'tau_inact_AMPA':5,
                                             'tau_inact_NMDA':55,
-                                            'delay': 0}
+                                            'delay': 0,
+                                            'buf': i}
             self.parm_counter += 1
             self.overall_steps = int(self.i*self.j*self.k*self.l*simtime/(dt*process))
 
@@ -94,17 +95,18 @@ class Main():
         # record
         d = datetime.datetime.today()
         filename = "{0}_{1}_{2}_{3}_{4}_{5}_" \
-                   "N{6}_P_AMPA{7}_P_NMDA{8}_Mg_conc{9}_gkCa{10}_HH".format(d.year,
-                                                                            d.month,
-                                                                            d.day,
-                                                                            d.hour,
-                                                                            d.minute,
-                                                                            d.second,
-                                                                            numneu,
-                                                                            self.neuron.Pmax_AMPA,
-                                                                            self.neuron.Pmax_NMDA,
-                                                                            self.neuron.Mg_conc,
-                                                                            self.neuron.gkCa)
+                   "N{6}_P_AMPA{7}_P_NMDA{8}_Mg_conc{9}_gkCa{10}_buf{11}_HH".format(d.year,
+                                                                                    d.month,
+                                                                                    d.day,
+                                                                                    d.hour,
+                                                                                    d.minute,
+                                                                                    d.second,
+                                                                                    numneu,
+                                                                                    self.neuron.Pmax_AMPA,
+                                                                                    self.neuron.Pmax_NMDA,
+                                                                                    self.neuron.Mg_conc,
+                                                                                    self.neuron.gkCa,
+                                                                                    self.neuron.buf)
         df = pd.DataFrame(columns=[filename])
         df.to_csv(save_path + '/' + filename + '.csv')
         df = pd.DataFrame()
@@ -207,20 +209,15 @@ class Main():
             self.neuron.INMDA = np.fliplr(self.neuron.INMDA)
             self.neuron.INMDA[:, 1:] = 0
             self.neuron.R_AMPA = np.flip(self.neuron.R_AMPA, axis=2)
-            self.neuron.R_AMPA[:, :, 1:] = 0
             self.neuron.R_NMDA = np.flip(self.neuron.R_NMDA, axis=2)
-            self.neuron.R_NMDA[:, :, 1:] = 0
             self.neuron.E_AMPA = np.flip(self.neuron.E_AMPA, axis=2)
-            self.neuron.E_AMPA[:, :, 1:] = 0
             self.neuron.E_NMDA = np.flip(self.neuron.E_NMDA, axis=2)
-            self.neuron.E_NMDA[:, :, 1:] = 0
             self.neuron.I_AMPA = np.flip(self.neuron.I_AMPA, axis=2)
-            self.neuron.I_AMPA[:, :, 1:] = 0
             self.neuron.I_NMDA = np.flip(self.neuron.I_NMDA, axis=2)
-            self.neuron.I_NMDA[:, :, 1:] = 0
             self.neuron.Iext = np.fliplr(self.neuron.Iext)
             self.neuron.Iext[:, 1:] = 0
-            self.neuron.t_fire_list = 0 * self.neuron.t_fire_list
+            self.neuron.t_fire_list = np.fliplr(self.neuron.t_fire_list)
+            self.neuron.t_fire_list[:, 1:] = 0
             self.neuron.Inoise = np.fliplr(self.neuron.Inoise)
             self.neuron.dn = np.fliplr(self.neuron.dn)
             self.neuron.dWt = np.fliplr(self.neuron.dWt)
@@ -243,8 +240,8 @@ def main():
         main.process_counter += process
         main.now_cycle_multiproc += 1
 
-    pic = Picture(save_path)
-    pic.run()
+    #pic = Picture(save_path)
+    #pic.run()
 
     d = datetime.datetime.today()
     print("{0}/{1}/{2}/{3}:{4}:{5}".format(d.year, d.month, d.day, d.hour, d.minute, d.second))

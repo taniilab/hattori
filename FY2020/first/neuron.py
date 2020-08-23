@@ -8,7 +8,7 @@ import numpy as np
 
 
 class Neuron_HH():
-    def __init__(self, delay=20, syncp=1, N=1, dt=0.05, T=1000, Cm=1, Vth=-56.2,
+    def __init__(self, buf=0, delay=20, syncp=1, N=1, dt=0.05, T=1000, Cm=1, Vth=-56.2,
                  eNa=50, gNa=56, eK=-90, gK=5, eL=-70.3, gL=0.0205, gM=0.075,
                  tau_syn=5.26, esyn=0, gsyn=0.025, tau_max=608, eCa=120, gtCa=0.4, glCa=0.0001,
                  gpNa=0, gkCa=0,
@@ -18,7 +18,7 @@ class Neuron_HH():
                  U_SE_AMPA=0.3, U_SE_NMDA=0.03, tau_rise_AMPA=0.9, tau_rise_NMDA=70, tau_rec_AMPA=200, tau_rec_NMDA=200,
                  tau_inact_AMPA=5, tau_inact_NMDA=30):
 
-        self.set_neuron_palm(delay, syncp, N, dt, T, Cm, Vth,
+        self.set_neuron_palm(buf, delay, syncp, N, dt, T, Cm, Vth,
                              eNa, gNa, eK, gK, eL, gL, gM,
                              tau_syn, esyn, gsyn, tau_max, eCa, gtCa, glCa,
                              gpNa, gkCa,
@@ -28,7 +28,7 @@ class Neuron_HH():
                              U_SE_AMPA, U_SE_NMDA, tau_rise_AMPA, tau_rise_NMDA, tau_rec_AMPA, tau_rec_NMDA,
                              tau_inact_AMPA, tau_inact_NMDA)
 
-    def set_neuron_palm(self, delay=20, syncp=1, N=1, dt=0.05, T=5000, Cm=1, Vth=-56.2,
+    def set_neuron_palm(self,buf=0, delay=20, syncp=1, N=1, dt=0.05, T=5000, Cm=1, Vth=-56.2,
                         eNa=50, gNa=56, eK=-90, gK=5, eL=-70.3, gL=0.0205, gM=0.075,
                         tau_syn=5.26, esyn=0, gsyn=0.025, tau_max=608, eCa=120, gtCa=0.4, glCa=0.0001,
                         gpNa=0, gkCa=0,
@@ -39,6 +39,7 @@ class Neuron_HH():
                         tau_rec_NMDA=200, tau_inact_AMPA=5, tau_inact_NMDA=30):
 
         self.delay = delay
+        self.buf = buf
         # parameters (used by main.py)
         self.parm_dict = {}
         self.ratio = ratio
@@ -147,11 +148,8 @@ class Neuron_HH():
         # external input
         self.Iext_amp = Iext_amp
         self.Iext = np.zeros((self.N, self.allsteps))
-        #self.Iext[0, int(1000 / self.dt):int(1005 / self.dt)] = self.Iext_amp
-        #self.Iext[0, int(1000 / self.dt):int(1500 / self.dt)] = 2
-        #この書き方だとフリップに対応しない
+
         # firing time
-        self.t_ap = -10000 * np.ones((self.N, self.N, 2))
         self.t_fire = -10000 * np.ones((self.N, self.N))
         self.t_fire_list = np.zeros((self.N, self.allsteps))
         # current step
@@ -218,16 +216,16 @@ class Neuron_HH():
             for j in range(0, self.N):
                 self.dR_AMPA = (self.dt * ((self.I_AMPA[i, j, self.curstep] / self.tau_rec_AMPA)
                                            - self.R_AMPA[i, j, self.curstep] * self.U_SE_AMPA * self.exp_decay(
-                            self.curstep * self.dt - self.t_fire[j, i] - self.delay, self.tau_rise_AMPA)))
+                            self.Tsteps[self.curstep] - self.t_fire[j, i] - self.delay, self.tau_rise_AMPA)))
                 self.dR_NMDA = (self.dt * ((self.I_AMPA[i, j, self.curstep] / self.tau_rec_NMDA)
                                            - self.R_NMDA[i, j, self.curstep] * self.U_SE_NMDA * self.exp_decay(
-                            self.curstep * self.dt - self.t_fire[j, i] - self.delay, self.tau_rise_NMDA)))
+                            self.Tsteps[self.curstep] - self.t_fire[j, i] - self.delay, self.tau_rise_NMDA)))
                 self.dE_AMPA = (self.dt * ((- self.E_AMPA[i, j, self.curstep] / self.tau_inact_AMPA)
                                            + self.U_SE_AMPA * self.R_AMPA[i, j, self.curstep] * self.exp_decay(
-                            self.curstep * self.dt - self.t_fire[j, i] - self.delay, self.tau_rise_AMPA)))
+                            self.Tsteps[self.curstep] - self.t_fire[j, i] - self.delay, self.tau_rise_AMPA)))
                 self.dE_NMDA = (self.dt * ((- self.E_NMDA[i, j, self.curstep] / self.tau_inact_NMDA)
                                            + self.U_SE_NMDA * self.R_NMDA[i, j, self.curstep] * self.exp_decay(
-                            self.curstep * self.dt - self.t_fire[j, i] - self.delay, self.tau_rise_NMDA)))
+                            self.Tsteps[self.curstep] - self.t_fire[j, i] - self.delay, self.tau_rise_NMDA)))
 
                 self.R_AMPA[i, j, self.curstep + 1] = self.R_AMPA[i, j, self.curstep] + self.dR_AMPA
                 self.R_NMDA[i, j, self.curstep + 1] = self.R_NMDA[i, j, self.curstep] + self.dR_NMDA
@@ -240,7 +238,7 @@ class Neuron_HH():
 
                 self.gAMPA[i, j] = self.Pmax_AMPA * (1 / 0.37) * self.E_AMPA[i, j, self.curstep]
                 self.gNMDA[i, j] = self.Pmax_NMDA * (1 / 0.43) * self.E_NMDA[i, j, self.curstep] / \
-                                    (1 + (self.Mg_conc / 3.57) * np.exp(-0.062 * self.Vi))
+                                    (1 + (self.Mg_conc / 3.57) * np.exp(-0.062 * self.Vi[i]))
                 # sum
                 for j in range(0, self.N):
                     self.INMDAi[i] += self.Syn_weight[j, i] * self.gNMDA[i, j] * (self.esyn[i, j] - self.Vi[i])
@@ -250,6 +248,7 @@ class Neuron_HH():
             pass
         # NMDA & AMPA
         elif self.syncp == 5:
+            """
             for j in range(0, self.N):
 
                 if self.curstep * self.dt > 200:
@@ -261,6 +260,8 @@ class Neuron_HH():
                     self.gsyn[i, j] = self.gNMDA[i, j] + self.gAMPA[i, j]
                 else:
                     self.gsyn[i, j] = 0
+            """
+            pass
         elif self.syncp == 6:
             pass
         else:
@@ -365,8 +366,15 @@ class Neuron_HH():
             pass
 
         # external DC input
+
+        if 500 <= self.Tsteps[self.curstep] < 505:
+            self.Iext[0, self.curstep] = self.Iext_amp
+        if 600 <= self.Tsteps[self.curstep] < 605:
+            self.Iext[0, self.curstep] = self.Iext_amp
+        """
         if 1000 <= self.Tsteps[self.curstep] < 1005:
             self.Iext[0, self.curstep] = self.Iext_amp
+        """
         """
         if 500 <= self.Tsteps[self.curstep] < 700:
             self.Iext[0, self.curstep] = 2
