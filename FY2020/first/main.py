@@ -26,9 +26,9 @@ elapsed_time = 0
 save_path = "H:/simulation/HH"
 
 process = 20  # number of processors
-numneu = 2
-simtime = 50000
-lump = 50000
+numneu = 1
+simtime = 5000
+lump = 5000
 num_lump = int(simtime/lump)
 dt = 0.02
 
@@ -68,9 +68,9 @@ class Main():
                                             'gtCa': 0,
                                             'esyn': 0,
                                             'Mg_conc': 1.6,
-                                            'alpha': 0,
-                                            'beta': 0,
-                                            'D': 0,
+                                            'alpha': 0.5,
+                                            'beta': 0.1,
+                                            'D': 0.5,
                                             'U_SE_AMPA':0.7,
                                             'U_SE_NMDA':0.03,
                                             'tau_rise_AMPA':1.1,
