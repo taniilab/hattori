@@ -129,6 +129,11 @@ class Neuron_HH():
         self.ca_influx_step = 100
         # connection relationship
         self.Syn_weight = np.ones((self.N, self.N))
+
+        self.Syn_weight[0, 1] = 0
+        self.Syn_weight[1, 0] = 0
+        self.Syn_weight[1, 1] = 0
+
         # synaptic current
         self.Isyn = np.zeros((self.N, self.allsteps))
         self.INMDA = np.zeros((self.N, self.allsteps))

@@ -25,7 +25,7 @@ starttime = time.time()
 elapsed_time = 0
 save_path = "H:/simulation/HH"
 
-process = 20  # number of processors
+process = 1  # number of processors
 numneu = 2
 simtime = 5000
 lump = simtime
@@ -37,7 +37,7 @@ class Main():
         self.parm = []
 
         #combination
-        self.i = 20
+        self.i = 1
         self.j = 1
         self.k = 1
         self.l = 1
@@ -240,8 +240,8 @@ def main():
         main.process_counter += process
         main.now_cycle_multiproc += 1
 
-    pic = Picture(save_path)
-    pic.run()
+    #pic = Picture(save_path, process, numneu)
+    #pic.run()
 
     d = datetime.datetime.today()
     print("{0}/{1}/{2}/{3}:{4}:{5}".format(d.year, d.month, d.day, d.hour, d.minute, d.second))
