@@ -20,8 +20,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="00223603-4d51-4c4a-a2ac-217937368cd0" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/FY2020/first/ISI.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FY2020/first/isi2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FY2020/first/isi_hist.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FY2020/first/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/FY2020/first/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FY2020/first/picture_multi_thread.py" beforeDir="false" afterPath="$PROJECT_DIR$/FY2020/first/picture_multi_thread.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,7 +63,7 @@
     </key>
   </component>
   <component name="RunManager" selected="Python.main">
-    <configuration name="main (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="ISI" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="hattori" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -67,11 +71,53 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/FY2020/neuron__test__HH" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/FY2020/first" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FY2020/neuron__test__HH/main.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FY2020/first/ISI.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="isi2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="hattori" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/FY2020/first" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FY2020/first/isi2.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="isi_hist" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="hattori" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/FY2020/first" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FY2020/first/isi_hist.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -93,48 +139,6 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FY2020/first/main.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="main_CUI2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="hattori" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/neuron_HH_gui" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/neuron_HH_gui/main_CUI2.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="main_ddplot" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="hattori" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/CAWAII_Plotter" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/CAWAII_Plotter/main_ddplot.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -165,18 +169,18 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.main_ddplot" />
-      <item itemvalue="Python.main_CUI2" />
       <item itemvalue="Python.main" />
       <item itemvalue="Python.picture_multi_thread" />
-      <item itemvalue="Python.main (1)" />
+      <item itemvalue="Python.ISI" />
+      <item itemvalue="Python.isi2" />
+      <item itemvalue="Python.isi_hist" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.main" />
-        <item itemvalue="Python.main_CUI2" />
-        <item itemvalue="Python.main (1)" />
-        <item itemvalue="Python.main_ddplot" />
+        <item itemvalue="Python.isi_hist" />
+        <item itemvalue="Python.isi2" />
+        <item itemvalue="Python.ISI" />
         <item itemvalue="Python.picture_multi_thread" />
       </list>
     </recent_temporary>
@@ -215,37 +219,37 @@
       <screen x="68" y="0" width="3772" height="2160" />
     </state>
     <state x="1795" y="648" key="FileChooserDialogImpl/68.0.3772.2160/-3840.0.1920.1040@68.0.3772.2160" timestamp="1595394051972" />
-    <state width="1700" height="291" key="GridCell.Tab.0.bottom" timestamp="1598422481509">
+    <state width="1768" height="291" key="GridCell.Tab.0.bottom" timestamp="1598514166541">
       <screen x="72" y="0" width="3768" height="2160" />
     </state>
     <state width="1580" height="310" key="GridCell.Tab.0.bottom/68.0.3772.2160/-3840.0.1920.1040@68.0.3772.2160" timestamp="1595819416493" />
-    <state width="1292" height="346" key="GridCell.Tab.0.bottom/72.0.3768.2160/-3778.0.2498.1440@72.0.3768.2160" timestamp="1597735046898" />
+    <state width="1768" height="291" key="GridCell.Tab.0.bottom/72.0.3768.2160/-3778.0.2498.1440@72.0.3768.2160" timestamp="1598514166541" />
     <state width="1802" height="310" key="GridCell.Tab.0.bottom/72.0.3768.2160/-3840.0.1920.1040@72.0.3768.2160" timestamp="1596012869619" />
-    <state width="1700" height="291" key="GridCell.Tab.0.bottom/72.0.3768.2160/-3840.0.2560.1400@72.0.3768.2160" timestamp="1598422481509" />
+    <state width="1339" height="291" key="GridCell.Tab.0.bottom/72.0.3768.2160/-3840.0.2560.1400@72.0.3768.2160" timestamp="1598449448385" />
     <state width="1286" height="346" key="GridCell.Tab.0.bottom/72.0.3768.2160@72.0.3768.2160" timestamp="1597588001542" />
-    <state width="1700" height="291" key="GridCell.Tab.0.center" timestamp="1598422481509">
+    <state width="1768" height="291" key="GridCell.Tab.0.center" timestamp="1598514166541">
       <screen x="72" y="0" width="3768" height="2160" />
     </state>
     <state width="1580" height="310" key="GridCell.Tab.0.center/68.0.3772.2160/-3840.0.1920.1040@68.0.3772.2160" timestamp="1595819416493" />
-    <state width="1292" height="346" key="GridCell.Tab.0.center/72.0.3768.2160/-3778.0.2498.1440@72.0.3768.2160" timestamp="1597735046898" />
+    <state width="1768" height="291" key="GridCell.Tab.0.center/72.0.3768.2160/-3778.0.2498.1440@72.0.3768.2160" timestamp="1598514166541" />
     <state width="1802" height="310" key="GridCell.Tab.0.center/72.0.3768.2160/-3840.0.1920.1040@72.0.3768.2160" timestamp="1596012869619" />
-    <state width="1700" height="291" key="GridCell.Tab.0.center/72.0.3768.2160/-3840.0.2560.1400@72.0.3768.2160" timestamp="1598422481509" />
+    <state width="1339" height="291" key="GridCell.Tab.0.center/72.0.3768.2160/-3840.0.2560.1400@72.0.3768.2160" timestamp="1598449448385" />
     <state width="1286" height="346" key="GridCell.Tab.0.center/72.0.3768.2160@72.0.3768.2160" timestamp="1597588001542" />
-    <state width="1700" height="291" key="GridCell.Tab.0.left" timestamp="1598422481508">
+    <state width="1768" height="291" key="GridCell.Tab.0.left" timestamp="1598514166541">
       <screen x="72" y="0" width="3768" height="2160" />
     </state>
     <state width="1580" height="310" key="GridCell.Tab.0.left/68.0.3772.2160/-3840.0.1920.1040@68.0.3772.2160" timestamp="1595819416492" />
-    <state width="1292" height="346" key="GridCell.Tab.0.left/72.0.3768.2160/-3778.0.2498.1440@72.0.3768.2160" timestamp="1597735046898" />
+    <state width="1768" height="291" key="GridCell.Tab.0.left/72.0.3768.2160/-3778.0.2498.1440@72.0.3768.2160" timestamp="1598514166541" />
     <state width="1802" height="310" key="GridCell.Tab.0.left/72.0.3768.2160/-3840.0.1920.1040@72.0.3768.2160" timestamp="1596012869619" />
-    <state width="1700" height="291" key="GridCell.Tab.0.left/72.0.3768.2160/-3840.0.2560.1400@72.0.3768.2160" timestamp="1598422481508" />
+    <state width="1339" height="291" key="GridCell.Tab.0.left/72.0.3768.2160/-3840.0.2560.1400@72.0.3768.2160" timestamp="1598449448385" />
     <state width="1286" height="346" key="GridCell.Tab.0.left/72.0.3768.2160@72.0.3768.2160" timestamp="1597588001542" />
-    <state width="1700" height="291" key="GridCell.Tab.0.right" timestamp="1598422481509">
+    <state width="1768" height="291" key="GridCell.Tab.0.right" timestamp="1598514166541">
       <screen x="72" y="0" width="3768" height="2160" />
     </state>
     <state width="1580" height="310" key="GridCell.Tab.0.right/68.0.3772.2160/-3840.0.1920.1040@68.0.3772.2160" timestamp="1595819416493" />
-    <state width="1292" height="346" key="GridCell.Tab.0.right/72.0.3768.2160/-3778.0.2498.1440@72.0.3768.2160" timestamp="1597735046898" />
+    <state width="1768" height="291" key="GridCell.Tab.0.right/72.0.3768.2160/-3778.0.2498.1440@72.0.3768.2160" timestamp="1598514166541" />
     <state width="1802" height="310" key="GridCell.Tab.0.right/72.0.3768.2160/-3840.0.1920.1040@72.0.3768.2160" timestamp="1596012869619" />
-    <state width="1700" height="291" key="GridCell.Tab.0.right/72.0.3768.2160/-3840.0.2560.1400@72.0.3768.2160" timestamp="1598422481509" />
+    <state width="1339" height="291" key="GridCell.Tab.0.right/72.0.3768.2160/-3840.0.2560.1400@72.0.3768.2160" timestamp="1598449448385" />
     <state width="1286" height="346" key="GridCell.Tab.0.right/72.0.3768.2160@72.0.3768.2160" timestamp="1597588001542" />
     <state x="1286" y="862" key="SettingsEditor" timestamp="1595394092831">
       <screen x="68" y="0" width="3772" height="2160" />
