@@ -25,8 +25,8 @@ starttime = time.time()
 elapsed_time = 0
 save_path = "H:/simulation/HH"
 
-process = 15  # number of processors
-numneu = 2
+process = 20  # number of processors
+numneu = 1
 simtime = 5000
 lump = simtime
 num_lump = int(simtime/lump)
@@ -37,7 +37,7 @@ class Main():
         self.parm = []
 
         #combination
-        self.i = 15
+        self.i = 20
         self.j = 1
         self.k = 1
         self.l = 1
