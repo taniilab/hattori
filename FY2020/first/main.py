@@ -27,7 +27,7 @@ save_path = "H:/simulation/HH"
 
 process = 1  # number of processors
 numneu = 2
-simtime = 5000
+simtime = 1000
 lump = simtime
 num_lump = int(simtime/lump)
 dt = 0.02
