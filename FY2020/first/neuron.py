@@ -133,6 +133,7 @@ class Neuron_HH():
         self.Syn_weight[0, 1] = 0
         self.Syn_weight[1, 0] = 0
         self.Syn_weight[1, 1] = 0
+        print(self.Syn_weight)
 
         # synaptic current
         self.Isyn = np.zeros((self.N, self.allsteps))
@@ -232,6 +233,7 @@ class Neuron_HH():
                                            + self.U_SE_NMDA * self.R_NMDA[i, j, self.curstep] * self.exp_decay(
                             self.Tsteps[self.curstep] - self.t_fire[j, i] - self.delay, self.tau_rise_NMDA)))
 
+
                 self.R_AMPA[i, j, self.curstep + 1] = self.R_AMPA[i, j, self.curstep] + self.dR_AMPA
                 self.R_NMDA[i, j, self.curstep + 1] = self.R_NMDA[i, j, self.curstep] + self.dR_NMDA
                 self.E_AMPA[i, j, self.curstep + 1] = self.E_AMPA[i, j, self.curstep] + self.dE_AMPA
@@ -244,11 +246,11 @@ class Neuron_HH():
                 self.gAMPA[i, j] = self.Pmax_AMPA * (1 / 0.37) * self.E_AMPA[i, j, self.curstep]
                 self.gNMDA[i, j] = self.Pmax_NMDA * (1 / 0.43) * self.E_NMDA[i, j, self.curstep] / \
                                     (1 + (self.Mg_conc / 3.57) * np.exp(-0.062 * self.Vi[i]))
-                # sum
-                for j in range(0, self.N):
-                    self.INMDAi[i] += self.Syn_weight[j, i] * self.gNMDA[i, j] * (self.esyn[i, j] - self.Vi[i])
-                    self.IAMPAi[i] += self.Syn_weight[j, i] * self.gAMPA[i, j] * (self.esyn[i, j] - self.Vi[i])
-                    self.Isyni[i] = self.INMDAi[i] + self.IAMPAi[i]
+
+                self.INMDAi[i] += self.Syn_weight[j, i] * self.gNMDA[i, j] * (self.esyn[i, j] - self.Vi[i])
+                self.IAMPAi[i] += self.Syn_weight[j, i] * self.gAMPA[i, j] * (self.esyn[i, j] - self.Vi[i])
+                self.Isyni[i] = self.INMDAi[i] + self.IAMPAi[i]
+
         elif self.syncp == 4:
             pass
         # NMDA & AMPA
@@ -374,8 +376,10 @@ class Neuron_HH():
 
         if 500 <= self.Tsteps[self.curstep] < 505:
             self.Iext[0, self.curstep] = self.Iext_amp
+        """
         if 600 <= self.Tsteps[self.curstep] < 605:
             self.Iext[0, self.curstep] = self.Iext_amp
+        """
         """
         if 1000 <= self.Tsteps[self.curstep] < 1005:
             self.Iext[0, self.curstep] = self.Iext_amp
