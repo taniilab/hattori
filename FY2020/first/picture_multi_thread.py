@@ -110,8 +110,8 @@ class Picture():
 
 def main():
     save_path = "H:/simulation/HH"
-    process = 20
-    numneu = 2
+    process = 16
+    numneu = 1
     pic = Picture(save_path, process, numneu)
     pic.run()
 

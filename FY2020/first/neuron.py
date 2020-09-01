@@ -128,13 +128,13 @@ class Neuron_HH():
         self.tau_ca_influx = 2700
         self.ca_influx_step = 100
         # connection relationship
+        #(presynaptic cell, postsynaptic cell, allsteps)
         self.Syn_weight = np.ones((self.N, self.N))
-
-        self.Syn_weight[0, 1] = 0
-        self.Syn_weight[1, 0] = 0
+        """"
         self.Syn_weight[1, 1] = 0
-        print(self.Syn_weight)
-
+        self.Syn_weight[1, 0] = buf
+        self.Syn_weight[0, 1] = 1
+        """
         # synaptic current
         self.Isyn = np.zeros((self.N, self.allsteps))
         self.INMDA = np.zeros((self.N, self.allsteps))
@@ -146,11 +146,23 @@ class Neuron_HH():
         self.gAMPA = np.zeros((self.N, self.N))
         # synaptic reversal potential
         self.esyn = esyn * np.ones((self.N, self.N))
+        """
+        self.esyn[1, 1] = -70
+        self.esyn[1, 0] = -70
+        """
         self.tau_syn = tau_syn
         self.Mg_conc = Mg_conc
-        # maximal synaptic conductance
-        self.Pmax_AMPA = Pmax_AMPA
-        self.Pmax_NMDA = Pmax_NMDA
+        # maximal synaptic conductance (AMPA)
+        self.Pmax_AMPA_base = Pmax_AMPA
+        self.Pmax_NMDA_base = Pmax_NMDA
+        self.Pmax_AMPA = self.Pmax_AMPA_base * np.ones((self.N, self.N))
+        self.Pmax_NMDA = self.Pmax_NMDA_base * np.ones((self.N, self.N))
+        """
+        self.Pmax_AMPA[1, 1] = 0
+        self.Pmax_NMDA[0, 1] = 0
+        self.Pmax_NMDA[1, 0] = 0
+        self.Pmax_NMDA[1, 1] = 0
+        """
         # external input
         self.Iext_amp = Iext_amp
         self.Iext = np.zeros((self.N, self.allsteps))
@@ -172,6 +184,7 @@ class Neuron_HH():
         # self.g =np.random.randn(self.N, self.allsteps)
         self.fire_tmp = np.zeros(self.N)
         # dynamic synapse
+        #(presynaptic cell, postsynaptic cell, allsteps)
         self.R_AMPA = np.ones((self.N, self.N, self.allsteps))
         self.R_NMDA = np.ones((self.N, self.N, self.allsteps))
         self.E_AMPA = np.zeros((self.N, self.N, self.allsteps))
@@ -220,35 +233,35 @@ class Neuron_HH():
         # NMDA & AMPA with STP
         elif self.syncp == 3:
             for j in range(0, self.N):
-                self.dR_AMPA = (self.dt * ((self.I_AMPA[i, j, self.curstep] / self.tau_rec_AMPA)
-                                           - self.R_AMPA[i, j, self.curstep] * self.U_SE_AMPA * self.exp_decay(
+                self.dR_AMPA = (self.dt * ((self.I_AMPA[j, i, self.curstep] / self.tau_rec_AMPA)
+                                           - self.R_AMPA[j, i, self.curstep] * self.U_SE_AMPA * self.exp_decay(
                             self.Tsteps[self.curstep] - self.t_fire[j, i] - self.delay, self.tau_rise_AMPA)))
-                self.dR_NMDA = (self.dt * ((self.I_AMPA[i, j, self.curstep] / self.tau_rec_NMDA)
-                                           - self.R_NMDA[i, j, self.curstep] * self.U_SE_NMDA * self.exp_decay(
+                self.dR_NMDA = (self.dt * ((self.I_AMPA[j, i, self.curstep] / self.tau_rec_NMDA)
+                                           - self.R_NMDA[j, i, self.curstep] * self.U_SE_NMDA * self.exp_decay(
                             self.Tsteps[self.curstep] - self.t_fire[j, i] - self.delay, self.tau_rise_NMDA)))
-                self.dE_AMPA = (self.dt * ((- self.E_AMPA[i, j, self.curstep] / self.tau_inact_AMPA)
-                                           + self.U_SE_AMPA * self.R_AMPA[i, j, self.curstep] * self.exp_decay(
+                self.dE_AMPA = (self.dt * ((- self.E_AMPA[j, i, self.curstep] / self.tau_inact_AMPA)
+                                           + self.U_SE_AMPA * self.R_AMPA[j, i, self.curstep] * self.exp_decay(
                             self.Tsteps[self.curstep] - self.t_fire[j, i] - self.delay, self.tau_rise_AMPA)))
-                self.dE_NMDA = (self.dt * ((- self.E_NMDA[i, j, self.curstep] / self.tau_inact_NMDA)
-                                           + self.U_SE_NMDA * self.R_NMDA[i, j, self.curstep] * self.exp_decay(
+                self.dE_NMDA = (self.dt * ((- self.E_NMDA[j, i, self.curstep] / self.tau_inact_NMDA)
+                                           + self.U_SE_NMDA * self.R_NMDA[j, i, self.curstep] * self.exp_decay(
                             self.Tsteps[self.curstep] - self.t_fire[j, i] - self.delay, self.tau_rise_NMDA)))
 
 
-                self.R_AMPA[i, j, self.curstep + 1] = self.R_AMPA[i, j, self.curstep] + self.dR_AMPA
-                self.R_NMDA[i, j, self.curstep + 1] = self.R_NMDA[i, j, self.curstep] + self.dR_NMDA
-                self.E_AMPA[i, j, self.curstep + 1] = self.E_AMPA[i, j, self.curstep] + self.dE_AMPA
-                self.E_NMDA[i, j, self.curstep + 1] = self.E_NMDA[i, j, self.curstep] + self.dE_NMDA
-                self.I_AMPA[i, j, self.curstep + 1] = 1 - self.R_AMPA[i, j, self.curstep + 1] - self.E_AMPA[
+                self.R_AMPA[j, i, self.curstep + 1] = self.R_AMPA[j, i, self.curstep] + self.dR_AMPA
+                self.R_NMDA[j, i, self.curstep+1] = self.R_NMDA[j, i, self.curstep] + self.dR_NMDA
+                self.E_AMPA[j, i, self.curstep+1] = self.E_AMPA[j, i, self.curstep] + self.dE_AMPA
+                self.E_NMDA[j, i, self.curstep+1] = self.E_NMDA[j, i, self.curstep] + self.dE_NMDA
+                self.I_AMPA[j, i, self.curstep+1] = 1 - self.R_AMPA[j, i, self.curstep+1] - self.E_AMPA[
                     i, j, self.curstep + 1]
-                self.I_NMDA[i, j, self.curstep + 1] = 1 - self.R_NMDA[i, j, self.curstep + 1] - self.E_NMDA[
+                self.I_NMDA[j, i, self.curstep+1] = 1 - self.R_NMDA[j, i, self.curstep+1] - self.E_NMDA[
                     i, j, self.curstep + 1]
 
-                self.gAMPA[i, j] = self.Pmax_AMPA * (1 / 0.37) * self.E_AMPA[i, j, self.curstep]
-                self.gNMDA[i, j] = self.Pmax_NMDA * (1 / 0.43) * self.E_NMDA[i, j, self.curstep] / \
+                self.gAMPA[j, i] = self.Pmax_AMPA[j, i] * (1 / 0.37) * self.E_AMPA[j, i, self.curstep]
+                self.gNMDA[j, i] = self.Pmax_NMDA[j, i] * (1 / 0.43) * self.E_NMDA[j, i, self.curstep] / \
                                     (1 + (self.Mg_conc / 3.57) * np.exp(-0.062 * self.Vi[i]))
 
-                self.INMDAi[i] += self.Syn_weight[j, i] * self.gNMDA[i, j] * (self.esyn[i, j] - self.Vi[i])
-                self.IAMPAi[i] += self.Syn_weight[j, i] * self.gAMPA[i, j] * (self.esyn[i, j] - self.Vi[i])
+                self.INMDAi[i] += self.Syn_weight[j, i] * self.gNMDA[j, i] * (self.esyn[j, i] - self.Vi[i])
+                self.IAMPAi[i] += self.Syn_weight[j, i] * self.gAMPA[j, i] * (self.esyn[j, i] - self.Vi[i])
                 self.Isyni[i] = self.INMDAi[i] + self.IAMPAi[i]
 
         elif self.syncp == 4:

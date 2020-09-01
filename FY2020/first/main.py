@@ -19,14 +19,14 @@ import itertools
 from picture_multi_thread import Picture
 #import matplotlib as mpl
 # for overflow error
-#mpl.rcParams['agg.path.chunksize'] = 100000
+#mpl.rcParams['agg.path.chunksize'] = 100000ほくろ
 
 starttime = time.time()
 elapsed_time = 0
 save_path = "H:/simulation/HH"
 
-process = 5  # number of processors
-numneu = 2
+process = 20  # number of processors
+numneu = 1
 simtime = 5000
 lump = simtime
 num_lump = int(simtime/lump)
@@ -37,10 +37,10 @@ class Main():
         self.parm = []
 
         #combination
-        self.i = 5
-        self.j = 1
-        self.k = 1
-        self.l = 1
+        self.i = 16
+        self.j = 16
+        self.k = 2
+        self.l = 5
 
         self.cycle_multiproc = int(self.i * self.j*self.k*self.l/process)
         self.process_counter = 0
@@ -61,13 +61,13 @@ class Main():
                                             'syncp': 3,
                                             'noise': 2,
                                             'gpNa': 0,
-                                            #'gkCa': 0.00002,
-                                            'gkCa': 0,
-                                            'Pmax_AMPA': 0.5,
-                                            'Pmax_NMDA': 0.7,
+                                            'gkCa': 0.0002,
+                                            #'gkCa': 0,
+                                            'Pmax_AMPA': round(0.1*i, 3),
+                                            'Pmax_NMDA': round(0.1*j, 3),
                                             'gtCa': 0,
                                             'esyn': 0,
-                                            'Mg_conc': 1.6,
+                                            'Mg_conc': round(1.6+0.6*k, 3),
                                             'alpha': 0.5,
                                             'beta': 0.1,
                                             'D': 0.5,
@@ -80,7 +80,7 @@ class Main():
                                             'tau_inact_AMPA':5,
                                             'tau_inact_NMDA':55,
                                             'delay': 0,
-                                            'buf': i}
+                                            'buf': l}
             self.parm_counter += 1
             self.overall_steps = int(self.i*self.j*self.k*self.l*simtime/(dt*process))
 
@@ -102,8 +102,8 @@ class Main():
                                                                                     d.minute,
                                                                                     d.second,
                                                                                     numneu,
-                                                                                    self.neuron.Pmax_AMPA,
-                                                                                    self.neuron.Pmax_NMDA,
+                                                                                    self.neuron.Pmax_AMPA_base,
+                                                                                    self.neuron.Pmax_NMDA_base,
                                                                                     self.neuron.Mg_conc,
                                                                                     self.neuron.gkCa,
                                                                                     self.neuron.buf)
@@ -152,7 +152,7 @@ class Main():
                 df['I_K_{} [uA]'.format(k)] = self.neuron.IK[k]
                 df['I_Na_{} [uA]'.format(k)] = self.neuron.INa[k]
                 df['Ca_conc_{} [nm?]'.format(k)] = self.neuron.ca_influx[k]
-                df['I_kCa_{} [uA]'.format(k)] = self.neuron.IlCa[k]
+                df['I_kCa_{} [uA]'.format(k)] = self.neuron.IkCa[k]
                 df['I_m_{} [uA]'.format(k)] = self.neuron.Im[k]
                 df['I_leak_{} [uA]'.format(k)] = self.neuron.Ileak[k]
                 df['I_syn_{} [uA]'.format(k)] = self.neuron.Isyn[k]
