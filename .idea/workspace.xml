@@ -20,17 +20,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="00223603-4d51-4c4a-a2ac-217937368cd0" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/FY2020/first/acttest.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FY2020/first/heatmap.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FY2020/first/heatmap2.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FY2020/first/heatmap3.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FY2020/first/heatmap4.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FY2020/first/heatmap_plot.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FY2020/first/autocorrelogram.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CAWAII_Plotter/save1.cfg" beforeDir="false" afterPath="$PROJECT_DIR$/CAWAII_Plotter/save1.cfg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FY2020/first/act.py" beforeDir="false" afterPath="$PROJECT_DIR$/FY2020/first/act.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FY2020/first/acttest.py" beforeDir="false" afterPath="$PROJECT_DIR$/FY2020/first/acttest.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FY2020/first/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/FY2020/first/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FY2020/first/neuron.py" beforeDir="false" afterPath="$PROJECT_DIR$/FY2020/first/neuron.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FY2020/first/picture_multi_thread.py" beforeDir="false" afterPath="$PROJECT_DIR$/FY2020/first/picture_multi_thread.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,7 +61,7 @@
       <recent name="C:\Users\6969p\Documents\GitHub\hattori\old" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.acttest">
+  <component name="RunManager" selected="Python.main_ddplot">
     <configuration name="act" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="hattori" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -110,7 +104,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="heatmap4" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="autocorrelogram" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="hattori" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -122,7 +116,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FY2020/first/heatmap4.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FY2020/first/autocorrelogram.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -131,7 +125,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="heatmap_plot" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="hattori" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -143,7 +137,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FY2020/first/heatmap_plot.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FY2020/first/main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -174,19 +168,19 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.heatmap4" />
-      <item itemvalue="Python.heatmap_plot" />
       <item itemvalue="Python.main_ddplot" />
       <item itemvalue="Python.act" />
       <item itemvalue="Python.acttest" />
+      <item itemvalue="Python.autocorrelogram" />
+      <item itemvalue="Python.main" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.main_ddplot" />
+        <item itemvalue="Python.main" />
+        <item itemvalue="Python.autocorrelogram" />
         <item itemvalue="Python.acttest" />
         <item itemvalue="Python.act" />
-        <item itemvalue="Python.main_ddplot" />
-        <item itemvalue="Python.heatmap_plot" />
-        <item itemvalue="Python.heatmap4" />
       </list>
     </recent_temporary>
   </component>
@@ -220,39 +214,47 @@
       <screen x="72" y="0" width="3768" height="2160" />
     </state>
     <state x="2297" y="667" key="#test_(1)/72.0.3768.2160/-3840.0.2560.1400@72.0.3768.2160" timestamp="1596114318883" />
+    <state x="746" y="110" width="1608" height="1871" key="DiffContextDialog" timestamp="1599059946102">
+      <screen x="62" y="0" width="3778" height="2160" />
+    </state>
+    <state x="746" y="110" width="1608" height="1871" key="DiffContextDialog/62.0.3778.2160/-3778.0.2498.1440@62.0.3778.2160" timestamp="1599059946102" />
     <state x="1795" y="648" key="FileChooserDialogImpl" timestamp="1595394051972">
       <screen x="68" y="0" width="3772" height="2160" />
     </state>
     <state x="1795" y="648" key="FileChooserDialogImpl/68.0.3772.2160/-3840.0.1920.1040@68.0.3772.2160" timestamp="1595394051972" />
-    <state width="1764" height="466" key="GridCell.Tab.0.bottom" timestamp="1598951967150">
-      <screen x="72" y="0" width="3768" height="2160" />
+    <state width="1807" height="393" key="GridCell.Tab.0.bottom" timestamp="1599122315160">
+      <screen x="62" y="0" width="3778" height="2160" />
     </state>
+    <state width="1807" height="393" key="GridCell.Tab.0.bottom/62.0.3778.2160/-3778.0.2498.1440@62.0.3778.2160" timestamp="1599122315160" />
     <state width="1580" height="310" key="GridCell.Tab.0.bottom/68.0.3772.2160/-3840.0.1920.1040@68.0.3772.2160" timestamp="1595819416493" />
-    <state width="1764" height="466" key="GridCell.Tab.0.bottom/72.0.3768.2160/-3778.0.2498.1440@72.0.3768.2160" timestamp="1598951967150" />
+    <state width="1764" height="466" key="GridCell.Tab.0.bottom/72.0.3768.2160/-3778.0.2498.1440@72.0.3768.2160" timestamp="1598954272954" />
     <state width="1802" height="310" key="GridCell.Tab.0.bottom/72.0.3768.2160/-3840.0.1920.1040@72.0.3768.2160" timestamp="1596012869619" />
     <state width="1339" height="291" key="GridCell.Tab.0.bottom/72.0.3768.2160/-3840.0.2560.1400@72.0.3768.2160" timestamp="1598449448385" />
     <state width="1770" height="466" key="GridCell.Tab.0.bottom/72.0.3768.2160@72.0.3768.2160" timestamp="1598843522644" />
-    <state width="1764" height="466" key="GridCell.Tab.0.center" timestamp="1598951967150">
-      <screen x="72" y="0" width="3768" height="2160" />
+    <state width="1807" height="393" key="GridCell.Tab.0.center" timestamp="1599122315160">
+      <screen x="62" y="0" width="3778" height="2160" />
     </state>
+    <state width="1807" height="393" key="GridCell.Tab.0.center/62.0.3778.2160/-3778.0.2498.1440@62.0.3778.2160" timestamp="1599122315160" />
     <state width="1580" height="310" key="GridCell.Tab.0.center/68.0.3772.2160/-3840.0.1920.1040@68.0.3772.2160" timestamp="1595819416493" />
-    <state width="1764" height="466" key="GridCell.Tab.0.center/72.0.3768.2160/-3778.0.2498.1440@72.0.3768.2160" timestamp="1598951967150" />
+    <state width="1764" height="466" key="GridCell.Tab.0.center/72.0.3768.2160/-3778.0.2498.1440@72.0.3768.2160" timestamp="1598954272954" />
     <state width="1802" height="310" key="GridCell.Tab.0.center/72.0.3768.2160/-3840.0.1920.1040@72.0.3768.2160" timestamp="1596012869619" />
     <state width="1339" height="291" key="GridCell.Tab.0.center/72.0.3768.2160/-3840.0.2560.1400@72.0.3768.2160" timestamp="1598449448385" />
     <state width="1770" height="466" key="GridCell.Tab.0.center/72.0.3768.2160@72.0.3768.2160" timestamp="1598843522644" />
-    <state width="1764" height="466" key="GridCell.Tab.0.left" timestamp="1598951967150">
-      <screen x="72" y="0" width="3768" height="2160" />
+    <state width="1807" height="393" key="GridCell.Tab.0.left" timestamp="1599122315160">
+      <screen x="62" y="0" width="3778" height="2160" />
     </state>
+    <state width="1807" height="393" key="GridCell.Tab.0.left/62.0.3778.2160/-3778.0.2498.1440@62.0.3778.2160" timestamp="1599122315160" />
     <state width="1580" height="310" key="GridCell.Tab.0.left/68.0.3772.2160/-3840.0.1920.1040@68.0.3772.2160" timestamp="1595819416492" />
-    <state width="1764" height="466" key="GridCell.Tab.0.left/72.0.3768.2160/-3778.0.2498.1440@72.0.3768.2160" timestamp="1598951967150" />
+    <state width="1764" height="466" key="GridCell.Tab.0.left/72.0.3768.2160/-3778.0.2498.1440@72.0.3768.2160" timestamp="1598954272954" />
     <state width="1802" height="310" key="GridCell.Tab.0.left/72.0.3768.2160/-3840.0.1920.1040@72.0.3768.2160" timestamp="1596012869619" />
     <state width="1339" height="291" key="GridCell.Tab.0.left/72.0.3768.2160/-3840.0.2560.1400@72.0.3768.2160" timestamp="1598449448385" />
     <state width="1770" height="466" key="GridCell.Tab.0.left/72.0.3768.2160@72.0.3768.2160" timestamp="1598843522644" />
-    <state width="1764" height="466" key="GridCell.Tab.0.right" timestamp="1598951967150">
-      <screen x="72" y="0" width="3768" height="2160" />
+    <state width="1807" height="393" key="GridCell.Tab.0.right" timestamp="1599122315160">
+      <screen x="62" y="0" width="3778" height="2160" />
     </state>
+    <state width="1807" height="393" key="GridCell.Tab.0.right/62.0.3778.2160/-3778.0.2498.1440@62.0.3778.2160" timestamp="1599122315160" />
     <state width="1580" height="310" key="GridCell.Tab.0.right/68.0.3772.2160/-3840.0.1920.1040@68.0.3772.2160" timestamp="1595819416493" />
-    <state width="1764" height="466" key="GridCell.Tab.0.right/72.0.3768.2160/-3778.0.2498.1440@72.0.3768.2160" timestamp="1598951967150" />
+    <state width="1764" height="466" key="GridCell.Tab.0.right/72.0.3768.2160/-3778.0.2498.1440@72.0.3768.2160" timestamp="1598954272954" />
     <state width="1802" height="310" key="GridCell.Tab.0.right/72.0.3768.2160/-3840.0.1920.1040@72.0.3768.2160" timestamp="1596012869619" />
     <state width="1339" height="291" key="GridCell.Tab.0.right/72.0.3768.2160/-3840.0.2560.1400@72.0.3768.2160" timestamp="1598449448385" />
     <state width="1770" height="466" key="GridCell.Tab.0.right/72.0.3768.2160@72.0.3768.2160" timestamp="1598843522644" />
@@ -264,9 +266,10 @@
       <screen x="68" y="0" width="3772" height="2160" />
     </state>
     <state x="1552" y="415" width="927" height="957" key="org.intellij.images.editor.actions.BackgroundImageDialog/68.0.3772.2160/-3840.0.1920.1040@68.0.3772.2160" timestamp="1595394054185" />
-    <state x="1026" y="513" width="672" height="678" key="search.everywhere.popup" timestamp="1597991999152">
-      <screen x="72" y="0" width="3768" height="2160" />
+    <state x="1019" y="513" width="674" height="678" key="search.everywhere.popup" timestamp="1599105119693">
+      <screen x="62" y="0" width="3778" height="2160" />
     </state>
+    <state x="1019" y="513" width="674" height="678" key="search.everywhere.popup/62.0.3778.2160/-3778.0.2498.1440@62.0.3778.2160" timestamp="1599105119693" />
     <state x="1026" y="513" width="672" height="678" key="search.everywhere.popup/72.0.3768.2160/-3840.0.2560.1400@72.0.3768.2160" timestamp="1597991999152" />
   </component>
   <component name="masterDetails">

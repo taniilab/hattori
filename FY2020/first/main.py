@@ -37,10 +37,10 @@ class Main():
         self.parm = []
 
         #combination
-        self.i = 16
-        self.j = 16
-        self.k = 2
-        self.l = 5
+        self.i = 20
+        self.j = 1
+        self.k = 1
+        self.l = 1
 
         self.cycle_multiproc = int(self.i * self.j*self.k*self.l/process)
         self.process_counter = 0
@@ -63,11 +63,11 @@ class Main():
                                             'gpNa': 0,
                                             'gkCa': 0.0002,
                                             #'gkCa': 0,
-                                            'Pmax_AMPA': round(0.1*i, 3),
-                                            'Pmax_NMDA': round(0.1*j, 3),
+                                            'Pmax_AMPA': 0.6,
+                                            'Pmax_NMDA': 0.7,
                                             'gtCa': 0,
                                             'esyn': 0,
-                                            'Mg_conc': round(1.6+0.6*k, 3),
+                                            'Mg_conc': 1.0,
                                             'alpha': 0.5,
                                             'beta': 0.1,
                                             'D': 0.5,
@@ -80,7 +80,7 @@ class Main():
                                             'tau_inact_AMPA':5,
                                             'tau_inact_NMDA':55,
                                             'delay': 0,
-                                            'buf': l}
+                                            'buf': i}
             self.parm_counter += 1
             self.overall_steps = int(self.i*self.j*self.k*self.l*simtime/(dt*process))
 
@@ -240,8 +240,8 @@ def main():
         main.process_counter += process
         main.now_cycle_multiproc += 1
 
-    #pic = Picture(save_path, process, numneu)
-    #pic.run()
+    pic = Picture(save_path, process, numneu)
+    pic.run()
 
     d = datetime.datetime.today()
     print("{0}/{1}/{2}/{3}:{4}:{5}".format(d.year, d.month, d.day, d.hour, d.minute, d.second))
