@@ -387,7 +387,7 @@ class Neuron_HH():
 
         # external DC input
 
-        if 500 <= self.Tsteps[self.curstep] < 505:
+        if 1000 <= self.Tsteps[self.curstep] < 1005:
             self.Iext[0, self.curstep] = self.Iext_amp
         """
         if 600 <= self.Tsteps[self.curstep] < 605:

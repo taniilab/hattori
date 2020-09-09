@@ -4,7 +4,19 @@ import matplotlib.pyplot as plt
 from pandas.plotting import autocorrelation_plot
 
 spike_train = np.array([0,0,1,1,0,0,1,1,1,0,1,1,0,0,1,1,0,0,1,0,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1])
-window_size = 10
+
+#sin wave example
+x = np.arange(0,1000,0.1)
+x += 0.3*np.random.randn(len(x))
+data = np.sin(x)
+spike_train = []
+for i in range(len(data)):
+    if data[i] > 0.5:
+        spike_train.append(1)
+    else:
+        spike_train.append(0)
+
+window_size = 1000
 x = np.arange(0, window_size)
 correlograms = np.zeros(window_size)
 

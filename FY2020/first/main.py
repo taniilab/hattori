@@ -23,7 +23,7 @@ from picture_multi_thread import Picture
 
 starttime = time.time()
 elapsed_time = 0
-save_path = "H:/simulation/HH"
+save_path = "C:/sim"
 
 process = 20  # number of processors
 numneu = 1
@@ -37,10 +37,10 @@ class Main():
         self.parm = []
 
         #combination
-        self.i = 20
-        self.j = 1
+        self.i = 16
+        self.j = 16
         self.k = 1
-        self.l = 1
+        self.l = 5
 
         self.cycle_multiproc = int(self.i * self.j*self.k*self.l/process)
         self.process_counter = 0
@@ -63,11 +63,11 @@ class Main():
                                             'gpNa': 0,
                                             'gkCa': 0.0002,
                                             #'gkCa': 0,
-                                            'Pmax_AMPA': 0.6,
-                                            'Pmax_NMDA': 0.7,
+                                            'Pmax_AMPA': round(i*0.1, 3),
+                                            'Pmax_NMDA': round(j*0.1, 3),
                                             'gtCa': 0,
                                             'esyn': 0,
-                                            'Mg_conc': 1.0,
+                                            'Mg_conc': round(2.2+0*k, 3),
                                             'alpha': 0.5,
                                             'beta': 0.1,
                                             'D': 0.5,
@@ -80,7 +80,7 @@ class Main():
                                             'tau_inact_AMPA':5,
                                             'tau_inact_NMDA':55,
                                             'delay': 0,
-                                            'buf': i}
+                                            'buf': l}
             self.parm_counter += 1
             self.overall_steps = int(self.i*self.j*self.k*self.l*simtime/(dt*process))
 

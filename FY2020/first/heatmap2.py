@@ -22,7 +22,7 @@ sns.heatmap(dummy_data, cmap="BuPu_r", ax=ax)
 plt.show()
 """
 #read_path = "//192.168.13.10/Public/hattori/simulation/HH/raw_data/2018_10_11_14_0_47/Mg_conc0.1"
-read_path = "H:/simulation/HH/Mg1.0_CaK/"
+read_path = "C:/sim/Mg04/"
 
 nowdir = read_path
 list_duration_time = np.zeros((num_ampa, num_nmda))

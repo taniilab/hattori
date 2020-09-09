@@ -564,7 +564,7 @@ class Ui_MainWindow(object):
                                fontsize=float(self.xy_label_fsize_line.text()),
                                color="black")
             aaa = str(self.y_label_line.text())
-            self.ax.set_ylabel(aaa,
+            self.ax.set_ylabel(str(self.y_label_line.text()),
                                fontsize=float(self.xy_label_fsize_line.text()),
                                color="black")
             self.ax.tick_params(labelsize=str(self.ax_tick_fsize_line.text()), colors="black")

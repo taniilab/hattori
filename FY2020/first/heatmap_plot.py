@@ -9,8 +9,10 @@ import itertools
 
 #read_path = "//192.168.13.10/Public/hattori/simulation/heatmap/Mg_conc2.2/heat_ave.csv"
 #read_path = "//192.168.13.10/Public/ishida/simulation/HH_hattori/raw_data/2018_10_11_14_0_47/Mg_conc2.2/heatmap.csv"
-read_path = "H:\simulation\HH\Mg2.2_CaK/heatmap.csv"
-save_path = "H:\simulation\HH\Mg2.2_CaK//mg_04.jpg"
+Mg = "04"
+work_dir = "C:/sim/Mg" + str(Mg) + "/"
+read_path = work_dir + "heatmap.csv"
+save_path = work_dir + "/Mg" + str(Mg) +  ".jpg"
 
 target_dpi = 600
 config_dpi = 600

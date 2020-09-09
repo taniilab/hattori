@@ -32,38 +32,29 @@ for i in range(len(mem2)-1):
         spike_train2.append(0)
 
 print(len(spike_train))
-window_size = 100
+window_size = 60
 x = np.arange(0, window_size)
 correlograms = np.zeros(window_size)
 
-"""
-for i in range(len(spike_train)-window_size):
-    for j in range(window_size):
-        if spike_train[i] * spike_train[i+j] == 1:
-            correlograms.append(j)
-
-fig = plt.figure(figsize=(15, 10))
-ax = fig.add_subplot(221)
-ax_sptr = fig.add_subplot(222)
-ax.hist(correlograms, bins=50, color="black")
-ax_sptr.plot(spike_train)
-plt.tight_layout()
-plt.show()
-"""
+lw = 5
+ls = 20
 
 for i in range(len(spike_train)-window_size):
     for j in range(window_size):
         correlograms[j] += spike_train[i] * spike_train[i+j]
 
-fig = plt.figure(figsize=(30, 12))
-ax = fig.add_subplot(231)
+fig = plt.figure(figsize=(20, 20))
+ax = fig.add_subplot(231, xlim=(0, window_size), ylim=(0, 30))
 ax_sptr = fig.add_subplot(232)
 ax_raw = fig.add_subplot(233)
 ax.bar(x, correlograms, width=1, color="black", label="before")
-ax.ylim(0,30)
 ax_sptr.plot(spike_train)
 ax_raw.plot(t, mem[:, 2], marker='.')
-
+ax.spines["top"].set_linewidth(0)
+ax.spines["right"].set_linewidth(0)
+ax.spines["bottom"].set_linewidth(lw)
+ax.spines["left"].set_linewidth(lw)
+ax.tick_params(labelsize=ls)
 
 correlograms = np.zeros(window_size)
 
@@ -71,13 +62,17 @@ for i in range(len(spike_train2)-window_size):
     for j in range(window_size):
         correlograms[j] += spike_train2[i] * spike_train2[i+j]
 
-ax2 = fig.add_subplot(234)
+ax2 = fig.add_subplot(234, xlim=(0, window_size), ylim=(0, 30))
 ax2_sptr = fig.add_subplot(235)
 ax2_raw = fig.add_subplot(236)
 ax2.bar(x, correlograms, width=1, color="black", label="after")
-ax2.ylim(0,30)
 ax2_sptr.plot(spike_train2)
 ax2_raw.plot(t, mem2[:, 2], marker='.')
+ax2.spines["top"].set_linewidth(0)
+ax2.spines["right"].set_linewidth(0)
+ax2.spines["bottom"].set_linewidth(lw)
+ax2.spines["left"].set_linewidth(lw)
+ax2.tick_params(labelsize=ls)
 
 plt.legend()
 plt.tight_layout()
