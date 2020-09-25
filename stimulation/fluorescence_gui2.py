@@ -429,15 +429,15 @@ class Ui_MainWindow(object):
             print("End")
 
     def save_profile(self,cfg_path):
-        data = np.zeros(8, dtype=int)
-        data[0] = self.stim_waveform_line.text()
-        data[1] = self.stim_com_line.text()
-        data[2] = self.stim_amp_line.text()
-        data[3] = self.stim_count_line.text()
-        data[4] = self.stim_deltaV_line.text()
-        data[5] = self.stim_interval_line.text()
-        data[6] = self.stim_firststimulation_line.text()
-        data[7] = self.stim_secondstimulation_line.text()
+        data = []
+        data.append(int(self.stim_waveform_line.text()))
+        data.append(int(self.stim_com_line.text()))
+        data.append(float(self.stim_amp_line.text()))
+        data.append(int(self.stim_count_line.text()))
+        data.append(float(self.stim_deltaV_line.text()))
+        data.append(int(self.stim_interval_line.text()))
+        data.append(int(self.stim_firststimulation_line.text()))
+        data.append(int(self.stim_secondstimulation_line.text()))
         data2 = []
         data2.append(self.save_path_line.text())
         with open(cfg_path, 'w', newline="") as f:
@@ -499,8 +499,7 @@ class Ui_MainWindow(object):
             self.reset_stim_setting()
         else:
             if self.stim_counter != 0:
-                self.amplitude += round(float(self.stim_deltaV_line.text()), 1)
-                #self.amplitude += 0.2
+                self.amplitude += round(float(self.stim_deltaV_line.text()), 3)
 
             self.stim_counter += 1
             self.stim_for_csv = self.amplitude
