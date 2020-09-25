@@ -400,7 +400,7 @@ class Ui_MainWindow(object):
             self.timer.start()
 
             try:
-                self.stim_interval =int(self.stim_interval_line.text())
+                self.stim_interval =float(self.stim_interval_line.text())
                 self.stim_firststimulation = int(self.stim_firststimulation_line.text())
                 self.stim_secondstimulation = int(self.stim_secondstimulation_line.text())
             except:
@@ -500,6 +500,8 @@ class Ui_MainWindow(object):
         else:
             if self.stim_counter != 0:
                 self.amplitude += round(float(self.stim_deltaV_line.text()), 1)
+                #self.amplitude += 0.2
+
             self.stim_counter += 1
             self.stim_for_csv = self.amplitude
             self.send_command("WMA" + str(self.amplitude) + "\n")
