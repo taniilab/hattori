@@ -10,7 +10,7 @@ from multiprocessing import Pool
 from scipy.stats import norm
 import math
 
-path = "C:/Users/Kouhei/Desktop/test/"
+path = "C:/Users/Kouhei/Desktop/isi/"
 title = path + "for_hist.csv"
 
 df = pd.read_csv(title, skiprows=0)

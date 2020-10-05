@@ -449,7 +449,8 @@ class Neuron_HH():
         self.IlCai = self.glCa * self.qi**2 * self.ri * (self.eCa - self.Vi)
         """
         # K activated calcium
-        self.IkCai = self.gkCa * self.ca_influxi * (self.eK - self.Vi)
+        self.gkCa_now = self.gkCa *
+        self.IkCai = self.gkCa_now * self.ca_influxi * (self.eK - self.Vi)
 
         self.k1V = (self.INai +
                     self.IKi +
@@ -483,9 +484,9 @@ class Neuron_HH():
         self.p[:, self.curstep + 1] = self.pi + self.k1p * self.dt
         if self.Tsteps[self.curstep] > 50 and self.V[i, self.curstep - 1] >= 0 and self.V[i, self.curstep] < 0:
             self.ca_influx[:, self.curstep + 1] = self.ca_influxi - (
-                    self.ca_influxi / self.tau_ca_influx) + self.dt + self.ca_influx_step
+                    self.ca_influxi / self.tau_ca_influx)*self.dt + self.ca_influx_step
         else:
-            self.ca_influx[:, self.curstep + 1] = self.ca_influxi - (self.ca_influxi / self.tau_ca_influx) + self.dt
+            self.ca_influx[:, self.curstep + 1] = self.ca_influxi - (self.ca_influxi / self.tau_ca_influx)*self.dt
 
         """
         self.u[:, self.curstep+1] = self.ui + self.k1u * self.dt

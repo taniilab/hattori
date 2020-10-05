@@ -37,10 +37,10 @@ class Main():
         self.parm = []
 
         #combination
-        self.i = 16
-        self.j = 16
+        self.i = 20
+        self.j = 1
         self.k = 1
-        self.l = 5
+        self.l = 1
 
         self.cycle_multiproc = int(self.i * self.j*self.k*self.l/process)
         self.process_counter = 0
@@ -61,13 +61,14 @@ class Main():
                                             'syncp': 3,
                                             'noise': 2,
                                             'gpNa': 0,
-                                            'gkCa': 0.0002,
-                                            #'gkCa': 0,
-                                            'Pmax_AMPA': round(i*0.1, 3),
-                                            'Pmax_NMDA': round(j*0.1, 3),
+                                            'gkCa': round(0.000000005*i, 10),
+                                            #'gkCa': 0.0002,
+                                            'Pmax_AMPA': round(0.5, 3),
+                                            'Pmax_NMDA': round(0.7, 3),
                                             'gtCa': 0,
                                             'esyn': 0,
-                                            'Mg_conc': round(2.2+0*k, 3),
+                                            #'Mg_conc': round(2.2+0*k, 3),
+                                            'Mg_conc': 1.6,
                                             'alpha': 0.5,
                                             'beta': 0.1,
                                             'D': 0.5,

@@ -21,14 +21,7 @@
   <component name="ChangeListManager">
     <list default="true" id="00223603-4d51-4c4a-a2ac-217937368cd0" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CAWAII_Plotter/ddplot.py" beforeDir="false" afterPath="$PROJECT_DIR$/CAWAII_Plotter/ddplot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FY2020/first/acttest.py" beforeDir="false" afterPath="$PROJECT_DIR$/FY2020/first/acttest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FY2020/first/autocorrelogram.py" beforeDir="false" afterPath="$PROJECT_DIR$/FY2020/first/autocorrelogram.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FY2020/first/heatmap.py" beforeDir="false" afterPath="$PROJECT_DIR$/FY2020/first/heatmap.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FY2020/first/heatmap2.py" beforeDir="false" afterPath="$PROJECT_DIR$/FY2020/first/heatmap2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FY2020/first/heatmap3.py" beforeDir="false" afterPath="$PROJECT_DIR$/FY2020/first/heatmap3.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FY2020/first/heatmap4.py" beforeDir="false" afterPath="$PROJECT_DIR$/FY2020/first/heatmap4.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FY2020/first/heatmap_plot.py" beforeDir="false" afterPath="$PROJECT_DIR$/FY2020/first/heatmap_plot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FY2020/first/isi_hist.py" beforeDir="false" afterPath="$PROJECT_DIR$/FY2020/first/isi_hist.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FY2020/first/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/FY2020/first/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FY2020/first/neuron.py" beforeDir="false" afterPath="$PROJECT_DIR$/FY2020/first/neuron.py" afterDir="false" />
     </list>
@@ -67,8 +60,8 @@
       <recent name="C:\Users\6969p\Documents\GitHub\hattori\old" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.main_ddplot">
-    <configuration name="heatmap" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.main">
+    <configuration name="autocorrelogram" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="hattori" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -80,7 +73,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FY2020/first/heatmap.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FY2020/first/autocorrelogram.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -89,7 +82,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="heatmap2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="isi_hist" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="hattori" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -101,7 +94,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FY2020/first/heatmap2.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FY2020/first/isi_hist.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -110,7 +103,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="heatmap3" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="hattori" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -122,28 +115,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FY2020/first/heatmap3.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="heatmap_plot" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="hattori" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/FY2020/first" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FY2020/first/heatmap_plot.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FY2020/first/main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -173,20 +145,41 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="timethodex" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="hattori" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/calcium_imaging/calcium analyser" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/calcium_imaging/calcium analyser/timethodex.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <list>
-      <item itemvalue="Python.heatmap3" />
-      <item itemvalue="Python.heatmap2" />
-      <item itemvalue="Python.heatmap" />
-      <item itemvalue="Python.heatmap_plot" />
       <item itemvalue="Python.main_ddplot" />
+      <item itemvalue="Python.isi_hist" />
+      <item itemvalue="Python.timethodex" />
+      <item itemvalue="Python.autocorrelogram" />
+      <item itemvalue="Python.main" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.main" />
         <item itemvalue="Python.main_ddplot" />
-        <item itemvalue="Python.heatmap_plot" />
-        <item itemvalue="Python.heatmap" />
-        <item itemvalue="Python.heatmap2" />
-        <item itemvalue="Python.heatmap3" />
+        <item itemvalue="Python.autocorrelogram" />
+        <item itemvalue="Python.timethodex" />
+        <item itemvalue="Python.isi_hist" />
       </list>
     </recent_temporary>
   </component>
@@ -228,49 +221,65 @@
       <screen x="68" y="0" width="3772" height="2160" />
     </state>
     <state x="1795" y="648" key="FileChooserDialogImpl/68.0.3772.2160/-3840.0.1920.1040@68.0.3772.2160" timestamp="1595394051972" />
-    <state width="2550" height="311" key="GridCell.Tab.0.bottom" timestamp="1599613112994">
-      <screen x="72" y="0" width="3768" height="2160" />
+    <state width="2075" height="249" key="GridCell.Tab.0.bottom" timestamp="1601887239155">
+      <screen x="62" y="0" width="3778" height="2160" />
     </state>
     <state width="1838" height="253" key="GridCell.Tab.0.bottom/62.0.1858.1080/-3778.0.2498.1440@62.0.1858.1080" timestamp="1599186141784" />
+    <state width="2075" height="249" key="GridCell.Tab.0.bottom/62.0.3778.2160/-3778.0.1858.1080/3840.0.1536.824@62.0.3778.2160" timestamp="1601887239155" />
     <state width="1812" height="393" key="GridCell.Tab.0.bottom/62.0.3778.2160/-3778.0.2498.1440@62.0.3778.2160" timestamp="1599184638417" />
+    <state width="3818" height="273" key="GridCell.Tab.0.bottom/64.0.3776.2160/-3716.0.1796.1080/3840.0.1536.824@64.0.3776.2160" timestamp="1601279466705" />
+    <state width="1835" height="294" key="GridCell.Tab.0.bottom/64.0.3776.2160/-3778.0.3778.2160@64.0.3776.2160" timestamp="1600826521541" />
     <state width="1580" height="310" key="GridCell.Tab.0.bottom/68.0.3772.2160/-3840.0.1920.1040@68.0.3772.2160" timestamp="1595819416493" />
     <state width="2391" height="311" key="GridCell.Tab.0.bottom/72.0.3768.2160/-3778.0.2498.1440@72.0.3768.2160" timestamp="1599565332372" />
     <state width="2550" height="311" key="GridCell.Tab.0.bottom/72.0.3768.2160/-3778.0.3778.2160@72.0.3768.2160" timestamp="1599613112994" />
     <state width="1802" height="310" key="GridCell.Tab.0.bottom/72.0.3768.2160/-3840.0.1920.1040@72.0.3768.2160" timestamp="1596012869619" />
     <state width="1339" height="291" key="GridCell.Tab.0.bottom/72.0.3768.2160/-3840.0.2560.1400@72.0.3768.2160" timestamp="1598449448385" />
+    <state width="1835" height="274" key="GridCell.Tab.0.bottom/72.0.3768.2160/-3840.0.3840.2120@72.0.3768.2160" timestamp="1599901289348" />
     <state width="1770" height="466" key="GridCell.Tab.0.bottom/72.0.3768.2160@72.0.3768.2160" timestamp="1598843522644" />
-    <state width="2550" height="311" key="GridCell.Tab.0.center" timestamp="1599613112994">
-      <screen x="72" y="0" width="3768" height="2160" />
+    <state width="2075" height="249" key="GridCell.Tab.0.center" timestamp="1601887239155">
+      <screen x="62" y="0" width="3778" height="2160" />
     </state>
     <state width="1838" height="253" key="GridCell.Tab.0.center/62.0.1858.1080/-3778.0.2498.1440@62.0.1858.1080" timestamp="1599186141784" />
+    <state width="2075" height="249" key="GridCell.Tab.0.center/62.0.3778.2160/-3778.0.1858.1080/3840.0.1536.824@62.0.3778.2160" timestamp="1601887239155" />
     <state width="1812" height="393" key="GridCell.Tab.0.center/62.0.3778.2160/-3778.0.2498.1440@62.0.3778.2160" timestamp="1599184638417" />
+    <state width="3818" height="273" key="GridCell.Tab.0.center/64.0.3776.2160/-3716.0.1796.1080/3840.0.1536.824@64.0.3776.2160" timestamp="1601279466705" />
+    <state width="1835" height="294" key="GridCell.Tab.0.center/64.0.3776.2160/-3778.0.3778.2160@64.0.3776.2160" timestamp="1600826521541" />
     <state width="1580" height="310" key="GridCell.Tab.0.center/68.0.3772.2160/-3840.0.1920.1040@68.0.3772.2160" timestamp="1595819416493" />
     <state width="2391" height="311" key="GridCell.Tab.0.center/72.0.3768.2160/-3778.0.2498.1440@72.0.3768.2160" timestamp="1599565332372" />
     <state width="2550" height="311" key="GridCell.Tab.0.center/72.0.3768.2160/-3778.0.3778.2160@72.0.3768.2160" timestamp="1599613112994" />
     <state width="1802" height="310" key="GridCell.Tab.0.center/72.0.3768.2160/-3840.0.1920.1040@72.0.3768.2160" timestamp="1596012869619" />
     <state width="1339" height="291" key="GridCell.Tab.0.center/72.0.3768.2160/-3840.0.2560.1400@72.0.3768.2160" timestamp="1598449448385" />
+    <state width="1835" height="274" key="GridCell.Tab.0.center/72.0.3768.2160/-3840.0.3840.2120@72.0.3768.2160" timestamp="1599901289348" />
     <state width="1770" height="466" key="GridCell.Tab.0.center/72.0.3768.2160@72.0.3768.2160" timestamp="1598843522644" />
-    <state width="2550" height="311" key="GridCell.Tab.0.left" timestamp="1599613112994">
-      <screen x="72" y="0" width="3768" height="2160" />
+    <state width="2075" height="249" key="GridCell.Tab.0.left" timestamp="1601887239155">
+      <screen x="62" y="0" width="3778" height="2160" />
     </state>
     <state width="1838" height="253" key="GridCell.Tab.0.left/62.0.1858.1080/-3778.0.2498.1440@62.0.1858.1080" timestamp="1599186141784" />
+    <state width="2075" height="249" key="GridCell.Tab.0.left/62.0.3778.2160/-3778.0.1858.1080/3840.0.1536.824@62.0.3778.2160" timestamp="1601887239155" />
     <state width="1812" height="393" key="GridCell.Tab.0.left/62.0.3778.2160/-3778.0.2498.1440@62.0.3778.2160" timestamp="1599184638417" />
+    <state width="3818" height="273" key="GridCell.Tab.0.left/64.0.3776.2160/-3716.0.1796.1080/3840.0.1536.824@64.0.3776.2160" timestamp="1601279466705" />
+    <state width="1835" height="294" key="GridCell.Tab.0.left/64.0.3776.2160/-3778.0.3778.2160@64.0.3776.2160" timestamp="1600826521541" />
     <state width="1580" height="310" key="GridCell.Tab.0.left/68.0.3772.2160/-3840.0.1920.1040@68.0.3772.2160" timestamp="1595819416492" />
     <state width="2391" height="311" key="GridCell.Tab.0.left/72.0.3768.2160/-3778.0.2498.1440@72.0.3768.2160" timestamp="1599565332372" />
     <state width="2550" height="311" key="GridCell.Tab.0.left/72.0.3768.2160/-3778.0.3778.2160@72.0.3768.2160" timestamp="1599613112994" />
     <state width="1802" height="310" key="GridCell.Tab.0.left/72.0.3768.2160/-3840.0.1920.1040@72.0.3768.2160" timestamp="1596012869619" />
     <state width="1339" height="291" key="GridCell.Tab.0.left/72.0.3768.2160/-3840.0.2560.1400@72.0.3768.2160" timestamp="1598449448385" />
+    <state width="1835" height="274" key="GridCell.Tab.0.left/72.0.3768.2160/-3840.0.3840.2120@72.0.3768.2160" timestamp="1599901289348" />
     <state width="1770" height="466" key="GridCell.Tab.0.left/72.0.3768.2160@72.0.3768.2160" timestamp="1598843522644" />
-    <state width="2550" height="311" key="GridCell.Tab.0.right" timestamp="1599613112994">
-      <screen x="72" y="0" width="3768" height="2160" />
+    <state width="2075" height="249" key="GridCell.Tab.0.right" timestamp="1601887239155">
+      <screen x="62" y="0" width="3778" height="2160" />
     </state>
     <state width="1838" height="253" key="GridCell.Tab.0.right/62.0.1858.1080/-3778.0.2498.1440@62.0.1858.1080" timestamp="1599186141784" />
+    <state width="2075" height="249" key="GridCell.Tab.0.right/62.0.3778.2160/-3778.0.1858.1080/3840.0.1536.824@62.0.3778.2160" timestamp="1601887239155" />
     <state width="1812" height="393" key="GridCell.Tab.0.right/62.0.3778.2160/-3778.0.2498.1440@62.0.3778.2160" timestamp="1599184638417" />
+    <state width="3818" height="273" key="GridCell.Tab.0.right/64.0.3776.2160/-3716.0.1796.1080/3840.0.1536.824@64.0.3776.2160" timestamp="1601279466705" />
+    <state width="1835" height="294" key="GridCell.Tab.0.right/64.0.3776.2160/-3778.0.3778.2160@64.0.3776.2160" timestamp="1600826521541" />
     <state width="1580" height="310" key="GridCell.Tab.0.right/68.0.3772.2160/-3840.0.1920.1040@68.0.3772.2160" timestamp="1595819416493" />
     <state width="2391" height="311" key="GridCell.Tab.0.right/72.0.3768.2160/-3778.0.2498.1440@72.0.3768.2160" timestamp="1599565332372" />
     <state width="2550" height="311" key="GridCell.Tab.0.right/72.0.3768.2160/-3778.0.3778.2160@72.0.3768.2160" timestamp="1599613112994" />
     <state width="1802" height="310" key="GridCell.Tab.0.right/72.0.3768.2160/-3840.0.1920.1040@72.0.3768.2160" timestamp="1596012869619" />
     <state width="1339" height="291" key="GridCell.Tab.0.right/72.0.3768.2160/-3840.0.2560.1400@72.0.3768.2160" timestamp="1598449448385" />
+    <state width="1835" height="274" key="GridCell.Tab.0.right/72.0.3768.2160/-3840.0.3840.2120@72.0.3768.2160" timestamp="1599901289348" />
     <state width="1770" height="466" key="GridCell.Tab.0.right/72.0.3768.2160@72.0.3768.2160" timestamp="1598843522644" />
     <state x="1286" y="862" key="SettingsEditor" timestamp="1595394092831">
       <screen x="68" y="0" width="3772" height="2160" />
