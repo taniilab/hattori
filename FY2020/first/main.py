@@ -27,18 +27,18 @@ save_path = "C:/sim"
 
 process = 20  # number of processors
 numneu = 1
-simtime = 5000
+simtime = 2000
 lump = simtime
 num_lump = int(simtime/lump)
-dt = 0.02
+dt = 0.04
 
 class Main():
     def __init__(self):
         self.parm = []
 
         #combination
-        self.i = 20
-        self.j = 1
+        self.i = 15
+        self.j = 16
         self.k = 1
         self.l = 1
 
@@ -61,10 +61,10 @@ class Main():
                                             'syncp': 3,
                                             'noise': 2,
                                             'gpNa': 0,
-                                            'gkCa': round(0.000000005*i, 10),
-                                            #'gkCa': 0.0002,
-                                            'Pmax_AMPA': round(0.5, 3),
-                                            'Pmax_NMDA': round(0.7, 3),
+                                            #'gkCa': round(0.000000005*i, 10),
+                                            'gkCa': 0.2, #mS uM*-1
+                                            'Pmax_AMPA': round(0.1*i, 3),
+                                            'Pmax_NMDA': round(0.1*j, 3),
                                             'gtCa': 0,
                                             'esyn': 0,
                                             #'Mg_conc': round(2.2+0*k, 3),

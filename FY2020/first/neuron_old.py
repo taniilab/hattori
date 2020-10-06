@@ -125,7 +125,7 @@ class Neuron_HH():
         self.IkCa = 0 * np.ones((self.N, self.allsteps))
         self.gkCa = gkCa * np.ones(self.N)
         self.ca_influx = 0 * np.ones((self.N, self.allsteps))
-        self.tau_ca_influx = 50
+        self.tau_ca_influx = 2700
         self.ca_influx_step = 100
         # connection relationship
         #(presynaptic cell, postsynaptic cell, allsteps)
@@ -449,8 +449,8 @@ class Neuron_HH():
         self.IlCai = self.glCa * self.qi**2 * self.ri * (self.eCa - self.Vi)
         """
         # K activated calcium
-        self.gkCa_now = self.gkCa * self.ca_influxi / 1000
-        self.IkCai = self.gkCa * self.ca_influxi * (self.eK - self.Vi)
+        self.gkCa_now = self.gkCa *
+        self.IkCai = self.gkCa_now * self.ca_influxi * (self.eK - self.Vi)
 
         self.k1V = (self.INai +
                     self.IKi +
