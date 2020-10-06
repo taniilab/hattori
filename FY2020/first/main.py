@@ -62,7 +62,7 @@ class Main():
                                             'noise': 2,
                                             'gpNa': 0,
                                             #'gkCa': round(0.000000005*i, 10),
-                                            'gkCa': 0.2, #mS uM*-1
+                                            'gkCa': 0.0002, #mS uM*-1
                                             'Pmax_AMPA': round(0.1*i, 3),
                                             'Pmax_NMDA': round(0.1*j, 3),
                                             'gtCa': 0,

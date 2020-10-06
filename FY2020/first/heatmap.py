@@ -7,9 +7,8 @@ import os
 import glob
 import itertools
 
-
-num_ampa = 16
-num_nmda = 16
+num_ampa = 12
+num_nmda = 12
 
 png_path = "//192.168.13.10/Public/hattori/" + \
        "seaborn_heatmap_list2.png"
@@ -22,7 +21,8 @@ sns.heatmap(dummy_data, cmap="BuPu_r", ax=ax)
 plt.show()
 """
 #read_path = "//192.168.13.10/Public/hattori/simulation/HH/raw_data/2018_10_11_14_0_47/Mg_conc0.1"
-read_path = "C:/sim/Mg22/"
+read_path = "C:/sim/raw_data/test/"
+#read_path = "D:/"
 
 nowdir = read_path
 list_duration_time = np.zeros((num_ampa, num_nmda))
@@ -42,7 +42,7 @@ for i, j in itertools.product(range(num_ampa), range(num_nmda)):
         t_ap = []
         voltage = df['V_0 [mV]']
         time = df['T_0 [ms]']
-        dt2 = 0.02
+        dt2 = 0.04
 
         for l in range(0, len(time)):
             if voltage[l] > 10:
