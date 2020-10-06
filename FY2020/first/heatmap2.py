@@ -7,7 +7,6 @@ import os
 import glob
 import itertools
 
-
 num_ampa = 16
 num_nmda = 16
 
@@ -22,7 +21,8 @@ sns.heatmap(dummy_data, cmap="BuPu_r", ax=ax)
 plt.show()
 """
 #read_path = "//192.168.13.10/Public/hattori/simulation/HH/raw_data/2018_10_11_14_0_47/Mg_conc0.1"
-read_path = "C:/sim/Mg04/"
+read_path = "C:/sim/raw_data/Mg1_6/"
+#read_path = "D:/"
 
 nowdir = read_path
 list_duration_time = np.zeros((num_ampa, num_nmda))

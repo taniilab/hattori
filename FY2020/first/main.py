@@ -27,20 +27,20 @@ save_path = "C:/sim"
 
 process = 20  # number of processors
 numneu = 1
-simtime = 2000
+simtime = 5000
 lump = simtime
 num_lump = int(simtime/lump)
-dt = 0.04
+dt = 0.02
 
 class Main():
     def __init__(self):
         self.parm = []
 
         #combination
-        self.i = 15
+        self.i = 16
         self.j = 16
-        self.k = 1
-        self.l = 1
+        self.k = 2
+        self.l = 5
 
         self.cycle_multiproc = int(self.i * self.j*self.k*self.l/process)
         self.process_counter = 0
@@ -67,8 +67,8 @@ class Main():
                                             'Pmax_NMDA': round(0.1*j, 3),
                                             'gtCa': 0,
                                             'esyn': 0,
-                                            #'Mg_conc': round(2.2+0*k, 3),
-                                            'Mg_conc': 1.6,
+                                            'Mg_conc': round(1.0+0.6*k, 3),
+                                            #'Mg_conc': 1.6,
                                             'alpha': 0.5,
                                             'beta': 0.1,
                                             'D': 0.5,
