@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 starttime = time.time()
 elapsed_time = 0
-save_path = "C:/Users/Kouhei/Downloads"
+save_path = "G:/Box/Personal/Paper/second/electrochemistry/実験data/HH_simulation"
 process = 6 #number of processors
 numneu = 2 # fix(2 compartment)
 simtime = 700
@@ -40,7 +40,8 @@ class Main():
             self.parm[self.parm_counter] = {'N': numneu,
                                             'T': simtime,
                                             'dt': deltatime,
-                                            'g_intra': 5,
+                                            'g_extra': 10,
+                                            'g_intra': 10,
                                             #'tau_vextra':round(10*i*i, 4)
                                             'stim_amp': round(10+10*i, 4)}
             self.parm_counter += 1

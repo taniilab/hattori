@@ -14,11 +14,11 @@ import numpy as np
 
 class Neuron_HH():
     def __init__(self, N=2, dt=0.05, T=5000, Cm=1, Vth=-56.2,
-                        eNa=50, gNa=56, eK=-90, gK=5, eL=-70.3, gL=0.0205, g_intra=3, tau_vextra=1, stim_amp=10):
-        self.set_neuron_palm(N, dt, T, Cm, Vth, eNa, gNa, eK, gK, eL, gL, g_intra, tau_vextra, stim_amp)
+                        eNa=50, gNa=56, eK=-90, gK=6, eL=-70.3, gL=0.0205, g_extra=1, g_intra=3, tau_vextra=1, stim_amp=10):
+        self.set_neuron_palm(N, dt, T, Cm, Vth, eNa, gNa, eK, gK, eL, gL, g_extra,  g_intra, tau_vextra, stim_amp)
 
     def set_neuron_palm(self, N=2, dt=0.05, T=5000, Cm=1, Vth=-56.2,
-                        eNa=55, gNa=120, eK=-72, gK=36, eL=-49.387, gL=0.3, g_intra=3, tau_vextra=1, stim_amp=10):
+                        eNa=55, gNa=120, eK=-72, gK=36, eL=-49.387, gL=0.3, g_extra=1, g_intra=3, tau_vextra=1, stim_amp=10):
 
         # parameters (used by main.py)
         self.parm_dict = {}
@@ -33,7 +33,8 @@ class Neuron_HH():
         # number of time step
         self.allsteps = len(self.Tsteps)
         # HH model
-        self.surface = 1e-5 # cm^2
+        #self.surface = 1e-5 # cm^2
+        self.surface = 1
         self.Cm = Cm * self.surface
         self.Vth = Vth
         self.V_intra = -65 * np.ones((self.N, self.allsteps))
@@ -74,7 +75,6 @@ class Neuron_HH():
         self.Ileak = 0 * np.ones((self.N, self.allsteps))
         self.eL = eL * np.ones(self.N)
         self.gL = gL * np.ones(self.N) * self.surface
-
         self.Isyn = np.zeros((self.N, self.allsteps))
 
         # firing time
@@ -83,9 +83,8 @@ class Neuron_HH():
 
         # 2 compartment model
         self.Ilink = 0 * np.ones((self.N, self.allsteps))
-        #self.g_extra = 0
+        self.g_extra = g_extra * self.surface
         self.g_intra = g_intra  * self.surface
-
         # current step
         self.curstep = 0
 
@@ -148,8 +147,8 @@ class Neuron_HH():
         self.k1n = self.alpha_ni * (1 - self.ni) - self.beta_ni * self.ni
 
         # first order Euler method
-        self.Ilinki[0] = self.g_intra * (self.V_intrai[1] - self.V_intrai[0])
-        self.Ilinki[1] = self.g_intra * (self.V_intrai[0] - self.V_intrai[1])
+        self.Ilinki[0] = self.g_intra * (self.V_intrai[1] - self.V_intrai[0]) + self.g_extra * (self.V_extrai[1] - self.V_extrai[0])
+        self.Ilinki[1] = self.g_intra * (self.V_intrai[0] - self.V_intrai[1]) + self.g_extra * (self.V_extrai[0] - self.V_extrai[1])
         self.V_intra[0, self.curstep + 1] = self.V_intrai[0] + (1/self.Cm)*(self.INai[0] + self.IKi[0] + self.Ileaki[0] + self.Ilinki[0]) * self.dt
         self.V_intra[1, self.curstep + 1] = self.V_intrai[1] + (1/self.Cm)*(self.INai[1] + self.IKi[1] + self.Ileaki[1] + self.Ilinki[1]) * self.dt
 
