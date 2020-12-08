@@ -40,7 +40,7 @@ class Main():
             self.parm[self.parm_counter] = {'N': numneu,
                                             'T': simtime,
                                             'dt': deltatime,
-                                            'g_extra': 10,
+                                            'g_extra': 0.01,
                                             'g_intra': 10,
                                             #'tau_vextra':round(10*i*i, 4)
                                             'stim_amp': round(10+10*i, 4)}
