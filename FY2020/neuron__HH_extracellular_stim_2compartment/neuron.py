@@ -147,10 +147,14 @@ class Neuron_HH():
         self.k1n = self.alpha_ni * (1 - self.ni) - self.beta_ni * self.ni
 
         # first order Euler method
-        self.Ilinki[0] = self.g_intra * (self.V_intrai[1] - self.V_intrai[0]) + self.g_extra * (self.V_extrai[1] - self.V_extrai[0])
-        self.Ilinki[1] = self.g_intra * (self.V_intrai[0] - self.V_intrai[1]) + self.g_extra * (self.V_extrai[0] - self.V_extrai[1])
+        #おかしい
+        self.Ilinki[0] = self.g_intra * (self.V_intrai[1] - self.V_intrai[0])
+        self.Ilinki[1] = self.g_intra * (self.V_intrai[0] - self.V_intrai[1]) - self.g_extra * (self.V_extrai[0] - self.V_extrai[1])
         self.V_intra[0, self.curstep + 1] = self.V_intrai[0] + (1/self.Cm)*(self.INai[0] + self.IKi[0] + self.Ileaki[0] + self.Ilinki[0]) * self.dt
         self.V_intra[1, self.curstep + 1] = self.V_intrai[1] + (1/self.Cm)*(self.INai[1] + self.IKi[1] + self.Ileaki[1] + self.Ilinki[1]) * self.dt
+        if  self.curstep < int(500 / self.dt) or int(500.1 / self.dt) < self.curstep:
+            self.V_extra[0, self.curstep + 1] = self.V_extrai[0] + self.g_extra * (self.V_extrai[1] - self.V_extrai[0])
+            self.V_extra[1, self.curstep + 1] = self.V_extrai[1] + self.g_extra * (self.V_extrai[0] - self.V_extrai[1])
 
         self.m[:, self.curstep + 1] = self.mi + self.k1m * self.dt
         self.h[:, self.curstep + 1] = self.hi + self.k1h * self.dt
