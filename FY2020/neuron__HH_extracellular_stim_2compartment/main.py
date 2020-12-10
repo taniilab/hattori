@@ -40,7 +40,7 @@ class Main():
             self.parm[self.parm_counter] = {'N': numneu,
                                             'T': simtime,
                                             'dt': deltatime,
-                                            'g_extra': 0.01,
+                                            'g_extra': 0,
                                             'g_intra': 10,
                                             #'tau_vextra':round(10*i*i, 4)
                                             'stim_amp': round(10+10*i, 4)}
@@ -94,13 +94,15 @@ def main():
             res[k].parm_dict = res[k].parm_dict.replace('\'', '')
             res[k].parm_dict = res[k].parm_dict.replace(',', '_')
 
-            filename = "{0}_{1}_{2}_{3}_{4}_{5}_gintra{6}_HH.csv".format(d.year,
-                                                                     d.month,
-                                                                     d.day,
-                                                                     d.hour,
-                                                                     d.minute,
-                                                                     d.second,
-                                                                     res[k].g_intra)
+            filename = "{0}_{1}_{2}_{3}_{4}_{5}_gextra{6}_gintra{7}_stim_amp{8}_HH.csv".format(d.year,
+                                                                                               d.month,
+                                                                                               d.day,
+                                                                                               d.hour,
+                                                                                               d.minute,
+                                                                                               d.second,
+                                                                                               res[k].g_intra,
+                                                                                               res[k].g_extra,
+                                                                                               res[k].stim_amp)
             df = pd.DataFrame()
             for j in range(numneu):
                 df['T_{} [ms]'.format(j)]       = res[k].Tsteps
