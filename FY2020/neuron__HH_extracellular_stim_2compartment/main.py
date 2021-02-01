@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 starttime = time.time()
 elapsed_time = 0
-save_path = "G:/Box/Personal/Paper/second/electrochemistry/実験data/HH_simulation"
+save_path = "G:/Box/Personal/Paper/second/electrochemistry/expdata/HH_simulation"
 process = 6 #number of processors
 numneu = 2 # fix(2 compartment)
 simtime = 700

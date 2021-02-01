@@ -3,9 +3,6 @@
 # programmed by Kouhei Hattori of Waseda University
 
 """
-今後実装予定(時期未定)の機能
-・二軸プロット
-・日本語対応
 
 ●どうしても軸名に日本語を使いたい場合
 1. まず日本語化モジュールをインストール
