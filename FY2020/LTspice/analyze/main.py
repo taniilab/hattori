@@ -3,9 +3,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sb
 
-path = "C:/Users/Kouhei/Documents/GitHub/hattori/Stim_simulation/LTspice/"
-filename = "re電圧刺激等価回路_20210128_paramstep_r5_r6_50_3000_118_cathode.csv"
-range_param = 26
+path = "C:/Users/Kouhei/Documents/GitHub/hattori/Stim_simulation/LTspice/20210210/"
+filename = "re電圧刺激等価回路_20210210_1ニューロン位置依存性.csv"
+#filename = "re電圧刺激等価回路_20210128_paramstep_r5_r6_50_3000_118_cathode.csv"
+range_param = 19
 num_param = range_param * range_param
 df = pd.read_csv(path+filename, skiprows=1, names=["A", "B"])
 print(df)
@@ -30,3 +31,6 @@ print(peak_list.shape)
 plt.figure(figsize=(25, 20))
 sb.heatmap(peak_list, square=True, cmap='gray')
 plt.show()
+
+plt.figure()
+print()

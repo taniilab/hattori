@@ -43,7 +43,7 @@ class Main():
                                             'g_extra': 0,
                                             'g_intra': 10,
                                             'tau_vextra':0.5,
-                                            'stim_amp': round(10+10*i, 4)}
+                                            'stim_amp': round(30+5*i, 4)}
             self.parm_counter += 1
             self.overall_steps = int(self.i*self.j*self.k*self.l*simtime/(deltatime*process))
 
