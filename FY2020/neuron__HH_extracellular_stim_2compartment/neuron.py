@@ -42,12 +42,12 @@ class Neuron_HH():
         self.tau_vextra = tau_vextra
         self.stim_amp = stim_amp
         # extracellular stimulation pattern
-        self.V_extra[0, int(500 / self.dt):int(500.1 / self.dt)] = self.stim_amp
-        self.V_extra[1, int(500 / self.dt):int(500.1 / self.dt)] = -self.stim_amp
+        #self.V_extra[0, int(500 / self.dt):int(500.1 / self.dt)] = self.stim_amp
+        #self.V_extra[1, int(500 / self.dt):int(500.1 / self.dt)] = -self.stim_amp
 
-        #for i in range(int(50/self.dt)):
-            #self.V_extra[0, int(1000 / self.dt)+i] = 50 * np.exp(- i*0.1*self.tau_vextra*self.dt) # exp decay
-            #self.V_extra[1, int(1000 / self.dt)+i] = -50 * np.exp(- i*0.1*self.tau_vextra*self.dt)
+        for i in range(int(10/self.dt)):
+            self.V_extra[0, int(500 / self.dt)+i] = self.stim_amp * np.exp(- i*(1/self.tau_vextra)*self.dt) # exp decay
+            self.V_extra[1, int(500 / self.dt)+i] = -self.stim_amp * np.exp(- i*(1/self.tau_vextra)*self.dt)
 
         self.k1V = 0 * np.ones(self.N)
 
@@ -151,7 +151,7 @@ class Neuron_HH():
         self.Ilinki[1] = self.g_intra * (self.V_intrai[0] - self.V_intrai[1])
         self.V_intra[0, self.curstep + 1] = self.V_intrai[0] + (1/self.Cm)*(self.INai[0] + self.IKi[0] + self.Ileaki[0] + self.Ilinki[0]) * self.dt
         self.V_intra[1, self.curstep + 1] = self.V_intrai[1] + (1/self.Cm)*(self.INai[1] + self.IKi[1] + self.Ileaki[1] + self.Ilinki[1]) * self.dt
-        if  self.curstep < int(500 / self.dt) or int(500.1 / self.dt) < self.curstep:
+        if  self.curstep < int(500 / self.dt) or int(510 / self.dt) < self.curstep:
             self.V_extra[0, self.curstep + 1] = self.V_extrai[0] + self.dt * self.g_extra * (self.V_extrai[1] - self.V_extrai[0])
             self.V_extra[1, self.curstep + 1] = self.V_extrai[1] + self.dt * self.g_extra * (self.V_extrai[0] - self.V_extrai[1])
 
