@@ -71,6 +71,7 @@ class Neuron_HH():
         self.INa = 0 * np.ones((self.N, self.allsteps))
         self.eNa = eNa * np.ones(self.N)
         self.gNa = gNa * np.ones(self.N) * self.surface
+        self.gNa[1] = 300 * self.surface
         self.m = 0.5 * np.ones((self.N, self.allsteps))
         self.h = 0.06 * np.ones((self.N, self.allsteps))
         self.alpha_m = 0 * np.ones((self.N, self.allsteps))
