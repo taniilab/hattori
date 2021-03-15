@@ -124,7 +124,7 @@ class Ui_MainWindow(object):
         self.stim_offset_w = QtWidgets.QWidget()
         self.stim_offset_w.setLayout(self.layout_stim_offset)
 
-        self.stim_interval_label = QtWidgets.QLabel("Interval of stimuli")
+        self.stim_interval_label = QtWidgets.QLabel("Interval of stimuli [ms]")
         self.def_stim_interval = "1"
         self.stim_interval_line = QtWidgets.QLineEdit(self.def_stim_interval)
         self.stim_interval_line.setValidator(QtGui.QIntValidator())
@@ -134,7 +134,7 @@ class Ui_MainWindow(object):
         self.stim_interval_w = QtWidgets.QWidget()
         self.stim_interval_w.setLayout(self.layout_stim_interval)
 
-        self.stim_firststimulation_label = QtWidgets.QLabel("First Stimulation(-1=disabled)")
+        self.stim_firststimulation_label = QtWidgets.QLabel("First Stimulation(-1=disabled) [ms]")
         self.def_stim_firststimulation = "60"
         self.stim_firststimulation_line = QtWidgets.QLineEdit(self.def_stim_firststimulation)
         self.layout_stim_firststimulation = QtWidgets.QHBoxLayout()
@@ -144,7 +144,7 @@ class Ui_MainWindow(object):
         self.stim_firststimulation_w.setLayout(self.layout_stim_firststimulation)
         self.first_stim_flag = False
 
-        self.stim_secondstimulation_label = QtWidgets.QLabel("Second Stimulation(-1=disabled)")
+        self.stim_secondstimulation_label = QtWidgets.QLabel("Second Stimulation(-1=disabled) [ms]")
         self.def_stim_secondstimulation = "180"
         self.stim_secondstimulation_line = QtWidgets.QLineEdit(self.def_stim_secondstimulation)
         self.layout_stim_secondstimulation = QtWidgets.QHBoxLayout()
@@ -328,8 +328,8 @@ class Ui_MainWindow(object):
         kb.add_hotkey('shift+F', lambda: self.plot_position())
 
         # Auto Stimulation System
-        self.stim_interval = 5
-        self.stim_firststimulation = 60
+        self.stim_interval = 5000
+        self.stim_firststimulation = 60000
         self.stim_secondstimulation = -1
 
         # FG initialization
@@ -348,8 +348,8 @@ class Ui_MainWindow(object):
             self.send_command("WMA0" + "\n")# 0 V
             self.FG_init_state += 1
         elif self.FG_init_state == 1:
-            print(int(self.stim_freq_line.text()*1000))
-            self.send_command("WMF" + str(int(self.stim_freq_line.text()*1000)) + "\n")
+            print(int(self.stim_freq_line.text())*1000)
+            self.send_command("WMF" + str(int(self.stim_freq_line.text())*1000) + "\n")
             #self.send_command("WMF200000" + "\n")# 200mhzF
             #self.send_command("WMF2000000" + "\n")# 2Hz
             self.FG_init_state += 1
@@ -444,6 +444,7 @@ class Ui_MainWindow(object):
         data = []
         data.append(int(self.stim_waveform_line.text()))
         data.append(int(self.stim_com_line.text()))
+        data.append(int(self.stim_freq_line.text()))
         data.append(float(self.stim_amp_line.text()))
         data.append(int(self.stim_count_line.text()))
         data.append(float(self.stim_deltaV_line.text()))
@@ -465,14 +466,16 @@ class Ui_MainWindow(object):
         with open(cfg_path,'r') as f:
             reader = csv.reader(f)
             l = [row for row in reader]
+            print(l)
             self.stim_waveform_line.setText(l[0][0])
             self.stim_com_line.setText(l[0][1])
-            self.stim_amp_line.setText(l[0][2])
-            self.stim_count_line.setText(l[0][3])
-            self.stim_deltaV_line.setText(l[0][4])
-            self.stim_interval_line.setText(l[0][5])
-            self.stim_firststimulation_line.setText(l[0][6])
-            self.stim_secondstimulation_line.setText(l[0][7])
+            self.stim_freq_line.setText(l[0][2])
+            self.stim_amp_line.setText(l[0][3])
+            self.stim_count_line.setText(l[0][4])
+            self.stim_deltaV_line.setText(l[0][5])
+            self.stim_interval_line.setText(l[0][6])
+            self.stim_firststimulation_line.setText(l[0][7])
+            self.stim_secondstimulation_line.setText(l[0][8])
             self.save_path_line.setText(l[1][0])
 
         return
@@ -520,13 +523,16 @@ class Ui_MainWindow(object):
             self.vline = pg.InfiniteLine(angle=90, movable=False)
             self.p1.addItem(self.vline, ignoreBounds=True)
             self.vline.setPos(self.index[-1])
-            self.timer_stim_reset.start(200)
+            self.timer_stim_reset.start(100)
 
     def stimulate_interval_fix(self):
         # 5秒以上の刺激に対応する.
         # 刺激導入後200ミリ秒後に呼び出され、amplitudeをリセットする
-        self.send_command("WMA0\n")
+        #テタヌス刺激の場合、コメントアウト
+        #self.send_command("WMA0\n")
         self.timer_stim_reset.stop()
+
+
 
     def reset_stim_setting(self):
         self.amplitude = 0
@@ -583,8 +589,7 @@ class Ui_MainWindow(object):
         df = pd.DataFrame(columns=[self.tm, self.stim_for_csv, self.gray])
 
         # Auto Stimulation System
-
-        self.stim_interval = int(self.stim_interval_line.text())
+        self.stim_interval = float(self.stim_interval_line.text())
         self.stim_firststimulation = int(self.stim_firststimulation_line.text())-self.stim_interval
         self.stim_secondstimulation = int(self.stim_secondstimulation_line.text())-self.stim_interval
 
@@ -595,7 +600,7 @@ class Ui_MainWindow(object):
             self.first_stim_flag = True
             #self.stim_amp = self.stim_amp_line.text()
             self.amplitude = float(self.stim_amp_line.text())
-            self.timer_stim.start(self.stim_interval*1000)  # 5s
+            self.timer_stim.start(self.stim_interval)  # 5s
             self.stim_button.setStyleSheet("background-color: rgb(100,230,180)")
             self.stim_button.setText("Stimulating ...")
 
@@ -606,7 +611,7 @@ class Ui_MainWindow(object):
             self.second_stim_flag = True
             #self.stim_amp = self.stim_amp_line.text()
             self.amplitude = float(self.stim_amp_line.text())
-            self.timer_stim.start(self.stim_interval*1000)  # 5s
+            self.timer_stim.start(self.stim_interval)  # 5s
             self.stim_button.setStyleSheet("background-color: rgb(100,230,180)")
             self.stim_button.setText("Stimulating ...")
 
