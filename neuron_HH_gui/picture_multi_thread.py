@@ -87,7 +87,7 @@ class Picture():
 
 
     def run(self):
-        self. process = 3
+        self. process = 16
         self.unit_files = int(len(self.files)/self.process)
         self.csv_tmp_list = list(zip(*[iter(self.files)] * int(self.unit_files)))
         pool = Pool(self.process)
@@ -95,9 +95,9 @@ class Picture():
 
 
 def main():
-    #save_path = "Z:/Box Sync/Personal/tmp_data/"
+    save_path = "H:/simulation/HH"
     #save_path = "//192.168.13.10/Public/hattori/simulation/HH"
-    save_path = "//192.168.13.10/Public/hattori/simulation/HH/raw_data/2018_10_10_9_46_37(maindata)/Mg_1.0/"
+    #save_path = "//192.168.13.10/Public/hattori/simulation/HH/raw_data/2018_10_10_9_46_37(maindata)/Mg_1.0/"
     pic = Picture(save_path)
     pic.run()
 
