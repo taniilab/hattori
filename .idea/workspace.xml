@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="00223603-4d51-4c4a-a2ac-217937368cd0" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/stimulation/pulse_generate.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/stimulation/fluorescence_gui2.py" beforeDir="false" afterPath="$PROJECT_DIR$/stimulation/fluorescence_gui2.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/stimulation/previous.cfg" beforeDir="false" afterPath="$PROJECT_DIR$/stimulation/previous.cfg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stimulation/save1.cfg" beforeDir="false" afterPath="$PROJECT_DIR$/stimulation/save1.cfg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/stimulation/save2.cfg" beforeDir="false" afterPath="$PROJECT_DIR$/stimulation/save2.cfg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/stimulation/save3.cfg" beforeDir="false" afterPath="$PROJECT_DIR$/stimulation/save3.cfg" afterDir="false" />
     </list>
@@ -20,7 +17,7 @@
     <session id="-1695537669">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="2" />
+          <entry key="project.closed" value="3" />
           <entry key="project.open.time.0" value="3" />
           <entry key="project.open.time.1" value="1" />
           <entry key="project.opened" value="4" />
@@ -38,23 +35,23 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="834" />
+          <entry key="py" value="838" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="834" />
+          <entry key="Python" value="838" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/stimulation/fluorescence_gui2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="548">
-              <caret line="531" column="9" selection-start-line="531" selection-start-column="9" selection-end-line="531" selection-end-column="9" />
+            <state relative-caret-position="288">
+              <caret line="509" lean-forward="true" selection-start-line="509" selection-end-line="509" />
               <folding>
                 <element signature="e#392#434#0" expanded="true" />
               </folding>
@@ -62,9 +59,13 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/stimulation/pulse_generate.py">
-          <provider selected="true" editor-type-id="text-editor" />
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="221">
+              <caret line="22" column="14" lean-forward="true" selection-start-line="22" selection-start-column="14" selection-end-line="22" selection-end-column="14" />
+            </state>
+          </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
@@ -341,7 +342,7 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.14674635" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.14674635" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -428,6 +429,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/stimulation/fluorescence_gui2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="288">
+          <caret line="509" lean-forward="true" selection-start-line="509" selection-end-line="509" />
+          <folding>
+            <element signature="e#392#434#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/stimulation/main_stim_and_plot.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="272">
@@ -439,15 +450,9 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/stimulation/pulse_generate.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/stimulation/fluorescence_gui2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="548">
-          <caret line="531" column="9" selection-start-line="531" selection-start-column="9" selection-end-line="531" selection-end-column="9" />
-          <folding>
-            <element signature="e#392#434#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="221">
+          <caret line="22" column="14" lean-forward="true" selection-start-line="22" selection-start-column="14" selection-end-line="22" selection-end-column="14" />
         </state>
       </provider>
     </entry>

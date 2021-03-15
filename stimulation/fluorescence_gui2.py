@@ -523,13 +523,13 @@ class Ui_MainWindow(object):
             self.vline = pg.InfiniteLine(angle=90, movable=False)
             self.p1.addItem(self.vline, ignoreBounds=True)
             self.vline.setPos(self.index[-1])
-            self.timer_stim_reset.start(100)
+            self.timer_stim_reset.start(200)
 
     def stimulate_interval_fix(self):
         # 5秒以上の刺激に対応する.
         # 刺激導入後200ミリ秒後に呼び出され、amplitudeをリセットする
         #テタヌス刺激の場合、コメントアウト
-        #self.send_command("WMA0\n")
+        self.send_command("WMA0\n")
         self.timer_stim_reset.stop()
 
 
