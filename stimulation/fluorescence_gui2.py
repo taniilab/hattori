@@ -79,6 +79,15 @@ class Ui_MainWindow(object):
         self.stim_waveform_w = QtWidgets.QWidget()
         self.stim_waveform_w.setLayout(self.layout_stim_waveform)
 
+        self.stim_freq_label = QtWidgets.QLabel("Frequency [mhz]")
+        self.def_stim_freq = "200"
+        self.stim_freq_line = QtWidgets.QLineEdit(self.def_stim_freq)
+        self.layout_stim_freq = QtWidgets.QHBoxLayout()
+        self.layout_stim_freq.addWidget(self.stim_freq_label)
+        self.layout_stim_freq.addWidget(self.stim_freq_line)
+        self.stim_freq_w = QtWidgets.QWidget()
+        self.stim_freq_w.setLayout(self.layout_stim_freq)
+
         self.stim_amp_label = QtWidgets.QLabel("Initial amplitude (peak to peak) [V]")
         self.def_stim_amp = "1"
         self.stim_amp_line = QtWidgets.QLineEdit(self.def_stim_amp)
@@ -228,6 +237,7 @@ class Ui_MainWindow(object):
 
         self.splitter_left.addWidget(self.stim_waveform_w)
         self.splitter_left.addWidget(self.stim_com_w)
+        self.splitter_left.addWidget(self.stim_freq_w)
         self.splitter_left.addWidget(self.stim_amp_w)
         self.splitter_left.addWidget(self.stim_count_w)
         self.splitter_left.addWidget(self.stim_deltaV_w)
@@ -338,7 +348,9 @@ class Ui_MainWindow(object):
             self.send_command("WMA0" + "\n")# 0 V
             self.FG_init_state += 1
         elif self.FG_init_state == 1:
-            self.send_command("WMF200000" + "\n")# 200mhzF
+            print(int(self.stim_freq_line.text()*1000))
+            self.send_command("WMF" + str(int(self.stim_freq_line.text()*1000)) + "\n")
+            #self.send_command("WMF200000" + "\n")# 200mhzF
             #self.send_command("WMF2000000" + "\n")# 2Hz
             self.FG_init_state += 1
         elif self.FG_init_state == 2:
