@@ -62,7 +62,7 @@ class Ui_MainWindow(object):
         self.item_0 = QtWidgets.QTreeWidgetItem(self.treeWidget)
 
         self.stim_com_label = QtWidgets.QLabel("COM")
-        self.def_stim_com = "9"
+        self.def_stim_com = "10"
         self.stim_com_line = QtWidgets.QLineEdit(self.def_stim_com)
         self.layout_stim_com = QtWidgets.QHBoxLayout()
         self.layout_stim_com.addWidget(self.stim_com_label)
@@ -70,14 +70,32 @@ class Ui_MainWindow(object):
         self.stim_com_w = QtWidgets.QWidget()
         self.stim_com_w.setLayout(self.layout_stim_com)
 
-        self.stim_waveform_label = QtWidgets.QLabel("Waveform number(34~: arbitary)")
-        self.def_stim_waveform = "34"
+        self.stim_waveform_label = QtWidgets.QLabel("Arbitrary wave number(1-64)")
+        self.def_stim_waveform = "1"
         self.stim_waveform_line = QtWidgets.QLineEdit(self.def_stim_waveform)
         self.layout_stim_waveform = QtWidgets.QHBoxLayout()
         self.layout_stim_waveform.addWidget(self.stim_waveform_label)
         self.layout_stim_waveform.addWidget(self.stim_waveform_line)
         self.stim_waveform_w = QtWidgets.QWidget()
         self.stim_waveform_w.setLayout(self.layout_stim_waveform)
+
+        self.stim_tetanus_or_tbs_label = QtWidgets.QLabel("Tetanus or Theta-burst (long-term stimulation) ?")
+        self.stim_tetanus_or_tbs_box = QtWidgets.QCheckBox()
+        self.layout_stim_tetanus_or_tbs = QtWidgets.QHBoxLayout()
+        self.layout_stim_tetanus_or_tbs.addWidget(self.stim_tetanus_or_tbs_label)
+        self.layout_stim_tetanus_or_tbs.addWidget(self.stim_tetanus_or_tbs_box)
+        self.stim_tetanus_or_tbs_w = QtWidgets.QWidget()
+        self.stim_tetanus_or_tbs_w.setLayout(self.layout_stim_tetanus_or_tbs)
+
+
+        self.stim_lts_duration_label = QtWidgets.QLabel("Stimulation duration (Tetanus or Theta-burst only) (ms)")
+        self.def_stim_lts_duration = "1000"
+        self.stim_lts_duration_line = QtWidgets.QLineEdit(self.def_stim_lts_duration)
+        self.layout_stim_lts_duration = QtWidgets.QHBoxLayout()
+        self.layout_stim_lts_duration.addWidget(self.stim_lts_duration_label)
+        self.layout_stim_lts_duration.addWidget(self.stim_lts_duration_line)
+        self.stim_lts_duration_w = QtWidgets.QWidget()
+        self.stim_lts_duration_w.setLayout(self.layout_stim_lts_duration)
 
         self.stim_freq_label = QtWidgets.QLabel("Frequency [mhz]")
         self.def_stim_freq = "200"
@@ -125,7 +143,7 @@ class Ui_MainWindow(object):
         self.stim_offset_w.setLayout(self.layout_stim_offset)
 
         self.stim_interval_label = QtWidgets.QLabel("Interval of stimuli [ms]")
-        self.def_stim_interval = "1"
+        self.def_stim_interval = "10000"
         self.stim_interval_line = QtWidgets.QLineEdit(self.def_stim_interval)
         self.stim_interval_line.setValidator(QtGui.QIntValidator())
         self.layout_stim_interval = QtWidgets.QHBoxLayout()
@@ -135,7 +153,7 @@ class Ui_MainWindow(object):
         self.stim_interval_w.setLayout(self.layout_stim_interval)
 
         self.stim_firststimulation_label = QtWidgets.QLabel("First Stimulation(-1=disabled) [ms]")
-        self.def_stim_firststimulation = "60"
+        self.def_stim_firststimulation = "60000"
         self.stim_firststimulation_line = QtWidgets.QLineEdit(self.def_stim_firststimulation)
         self.layout_stim_firststimulation = QtWidgets.QHBoxLayout()
         self.layout_stim_firststimulation.addWidget(self.stim_firststimulation_label)
@@ -145,7 +163,7 @@ class Ui_MainWindow(object):
         self.first_stim_flag = False
 
         self.stim_secondstimulation_label = QtWidgets.QLabel("Second Stimulation(-1=disabled) [ms]")
-        self.def_stim_secondstimulation = "180"
+        self.def_stim_secondstimulation = "-1"
         self.stim_secondstimulation_line = QtWidgets.QLineEdit(self.def_stim_secondstimulation)
         self.layout_stim_secondstimulation = QtWidgets.QHBoxLayout()
         self.layout_stim_secondstimulation.addWidget(self.stim_secondstimulation_label)
@@ -235,8 +253,10 @@ class Ui_MainWindow(object):
         self.start_button.setStyleSheet("background-color: rgb(230,230,230)")
         self.start_button.clicked.connect(self.on_click_start)
 
-        self.splitter_left.addWidget(self.stim_waveform_w)
         self.splitter_left.addWidget(self.stim_com_w)
+        self.splitter_left.addWidget(self.stim_waveform_w)
+        self.splitter_left.addWidget(self.stim_tetanus_or_tbs_w)
+        self.splitter_left.addWidget(self.stim_lts_duration_w)
         self.splitter_left.addWidget(self.stim_freq_w)
         self.splitter_left.addWidget(self.stim_amp_w)
         self.splitter_left.addWidget(self.stim_count_w)
@@ -348,13 +368,11 @@ class Ui_MainWindow(object):
             self.send_command("WMA0" + "\n")# 0 V
             self.FG_init_state += 1
         elif self.FG_init_state == 1:
-            print(int(self.stim_freq_line.text())*1000)
             self.send_command("WMF" + str(int(self.stim_freq_line.text())*1000) + "\n")
             #self.send_command("WMF200000" + "\n")# 200mhzF
-            #self.send_command("WMF2000000" + "\n")# 2Hz
             self.FG_init_state += 1
         elif self.FG_init_state == 2:
-            self.send_command("WMW" + self.stim_waveform_line.text() + "\n")# WMW34 -> arbitary wave 1
+            self.send_command("WMW" + str(int(self.stim_waveform_line.text())+33) + "\n")# arbitrary wave only
             self.FG_init_state += 1
         elif self.FG_init_state == 3:
             self.send_command("WMO" + self.stim_offset_line.text() +"\n")# offset 0 V
@@ -442,8 +460,10 @@ class Ui_MainWindow(object):
 
     def save_profile(self,cfg_path):
         data = []
-        data.append(int(self.stim_waveform_line.text()))
         data.append(int(self.stim_com_line.text()))
+        data.append(int(self.stim_waveform_line.text()))
+        data.append(int(self.stim_tetanus_or_tbs_box.isChecked()))
+        data.append(int(self.stim_lts_duration_line.text()))
         data.append(int(self.stim_freq_line.text()))
         data.append(float(self.stim_amp_line.text()))
         data.append(int(self.stim_count_line.text()))
@@ -467,15 +487,20 @@ class Ui_MainWindow(object):
             reader = csv.reader(f)
             l = [row for row in reader]
             print(l)
-            self.stim_waveform_line.setText(l[0][0])
-            self.stim_com_line.setText(l[0][1])
-            self.stim_freq_line.setText(l[0][2])
-            self.stim_amp_line.setText(l[0][3])
-            self.stim_count_line.setText(l[0][4])
-            self.stim_deltaV_line.setText(l[0][5])
-            self.stim_interval_line.setText(l[0][6])
-            self.stim_firststimulation_line.setText(l[0][7])
-            self.stim_secondstimulation_line.setText(l[0][8])
+            self.stim_com_line.setText(l[0][0])
+            self.stim_waveform_line.setText(l[0][1])
+            if l[0][2] == "1":
+                self.stim_tetanus_or_tbs_box.setCheckState(2)#checked
+            else:
+                self.stim_tetanus_or_tbs_box.setCheckState(0)#unchecked
+            self.stim_lts_duration_line.setText(l[0][3])
+            self.stim_freq_line.setText(l[0][4])
+            self.stim_amp_line.setText(l[0][5])
+            self.stim_count_line.setText(l[0][6])
+            self.stim_deltaV_line.setText(l[0][7])
+            self.stim_interval_line.setText(l[0][8])
+            self.stim_firststimulation_line.setText(l[0][9])
+            self.stim_secondstimulation_line.setText(l[0][10])
             self.save_path_line.setText(l[1][0])
 
         return
@@ -523,12 +548,14 @@ class Ui_MainWindow(object):
             self.vline = pg.InfiniteLine(angle=90, movable=False)
             self.p1.addItem(self.vline, ignoreBounds=True)
             self.vline.setPos(self.index[-1])
-            self.timer_stim_reset.start(200)
+            if self.stim_tetanus_or_tbs_box.isChecked() == True:
+                self.timer_stim_reset.start(int(self.stim_lts_duration_line.text()))
+            else:
+                self.timer_stim_reset.start(200)
 
     def stimulate_interval_fix(self):
         # 5秒以上の刺激に対応する.
-        # 刺激導入後200ミリ秒後に呼び出され、amplitudeをリセットする
-        #テタヌス刺激の場合、コメントアウト
+        # 刺激導入後200ミリ(テタヌス、シータバーストの場合はself.stim_lts_duration_line)秒後に呼び出され、amplitudeをリセットする
         self.send_command("WMA0\n")
         self.timer_stim_reset.stop()
 
@@ -591,10 +618,10 @@ class Ui_MainWindow(object):
         self.stim_firststimulation = int(self.stim_firststimulation_line.text())-self.stim_interval
         self.stim_secondstimulation = int(self.stim_secondstimulation_line.text())-self.stim_interval
 
-        if (self.first_stim_flag == False and self.ms_start_flag == True and time.time() - self.start_time > self.stim_firststimulation):
+        if (self.first_stim_flag == False and self.ms_start_flag == True and 1000*(time.time() - self.start_time) > self.stim_firststimulation):
             print("Auto Stimulation System starts...[FIRST STIMULATION]")
-            print("Interval of Stimulation:" + str(self.stim_interval) + "seconds")
-            print("Start time of Stimulation:" + str(self.stim_firststimulation) + "seconds")
+            print("Interval of Stimulation:" + str(self.stim_interval) + "milliseconds")
+            print("Start time of Stimulation:" + str(self.stim_firststimulation) + "milliseconds")
             self.first_stim_flag = True
             #self.stim_amp = self.stim_amp_line.text()
             self.amplitude = float(self.stim_amp_line.text())
@@ -602,10 +629,10 @@ class Ui_MainWindow(object):
             self.stim_button.setStyleSheet("background-color: rgb(100,230,180)")
             self.stim_button.setText("Stimulating ...")
 
-        if (self.second_stim_flag == False and self.ms_start_flag == True and time.time() - self.start_time > self.stim_secondstimulation):
+        if (self.second_stim_flag == False and self.ms_start_flag == True and 1000*(time.time() - self.start_time) > self.stim_secondstimulation):
             print("Auto Stimulation System starts...[SECOND STIMULATION]")
-            print("Interval of Stimulation:" + str(self.stim_interval) + "seconds")
-            print("Start time of Stimulation:" + str(self.stim_secondstimulation) + "seconds")
+            print("Interval of Stimulation:" + str(self.stim_interval) + "milliseconds")
+            print("Start time of Stimulation:" + str(self.stim_secondstimulation) + "milliseconds")
             self.second_stim_flag = True
             #self.stim_amp = self.stim_amp_line.text()
             self.amplitude = float(self.stim_amp_line.text())

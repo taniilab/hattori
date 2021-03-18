@@ -2,9 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="00223603-4d51-4c4a-a2ac-217937368cd0" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/stimulation/pulse_generate.py" beforeDir="false" afterPath="$PROJECT_DIR$/stimulation/pulse_generate.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stimulation/tetanus_0.5m_9.5m_100hz_1s.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/stimulation/tetanus_100hz_1s.fy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stimulation/fluorescence_gui2.py" beforeDir="false" afterPath="$PROJECT_DIR$/stimulation/fluorescence_gui2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stimulation/previous.cfg" beforeDir="false" afterPath="$PROJECT_DIR$/stimulation/previous.cfg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stimulation/save1.cfg" beforeDir="false" afterPath="$PROJECT_DIR$/stimulation/save1.cfg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stimulation/save2.cfg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stimulation/save3.cfg" beforeDir="false" afterPath="$PROJECT_DIR$/stimulation/save3.cfg" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -24,33 +26,33 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="4" />
+          <entry key="py" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="4" />
+          <entry key="Python" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="1515" />
+          <entry key="py" value="2229" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="1515" />
+          <entry key="Python" value="2229" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/stimulation/fluorescence_gui2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="140">
-              <caret line="164" selection-start-line="164" selection-end-line="164" />
+            <state relative-caret-position="656">
+              <caret line="557" column="64" lean-forward="true" selection-start-line="557" selection-start-column="64" selection-end-line="557" selection-end-column="64" />
               <folding>
                 <element signature="e#392#434#0" expanded="true" />
               </folding>
@@ -58,11 +60,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/stimulation/pulse_generate.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="96">
-              <caret line="6" column="6" lean-forward="true" selection-start-line="6" selection-start-column="6" selection-end-line="6" selection-end-column="6" />
+            <state relative-caret-position="160">
+              <caret line="10" column="16" lean-forward="true" selection-start-line="10" selection-start-column="16" selection-end-line="10" selection-end-column="16" />
             </state>
           </provider>
         </entry>
@@ -70,8 +72,11 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/stimulation/main_stim_and_plot.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="16">
-              <caret line="1" column="26" selection-start-line="1" selection-start-column="26" selection-end-line="1" selection-end-column="26" />
+            <state relative-caret-position="272">
+              <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
+              <folding>
+                <element signature="e#0#10#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -92,7 +97,6 @@
       <find>timer_FG_init</find>
       <find>FG_initialization</find>
       <find>x.append(0)</find>
-      <find>freq</find>
       <find>interval of</find>
       <find>stim_interval_line</find>
       <find>stim_interval</find>
@@ -102,13 +106,25 @@
       <find>stimulate_interval_fix</find>
       <find>timer_stim_reset</find>
       <find>offset</find>
-      <find>initia</find>
       <find>for i in range(1):</find>
+      <find>stim_waveform_line</find>
+      <find>for i in range(62):</find>
+      <find>freq</find>
+      <find>200</find>
+      <find>initi</find>
+      <find>initia</find>
+      <find>interval</find>
+      <find>seconds</find>
+      <find>stimulate</find>
+      <find>first</find>
+      <find>ms_start_flag</find>
     </findStrings>
     <replaceStrings>
       <replace>x += &quot;1\n&quot;</replace>
       <replace>x += &quot;0\n&quot;</replace>
       <replace>for i in range(10):</replace>
+      <replace>for i in range(62):</replace>
+      <replace>lts_duration</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -122,8 +138,8 @@
         <option value="$PROJECT_DIR$/neuron_HH_gui/neuron.py" />
         <option value="$PROJECT_DIR$/CAWAII_Plotter/main_ddplot.py" />
         <option value="$PROJECT_DIR$/stimulation/main_stim_and_plot.py" />
-        <option value="$PROJECT_DIR$/stimulation/fluorescence_gui2.py" />
         <option value="$PROJECT_DIR$/stimulation/pulse_generate.py" />
+        <option value="$PROJECT_DIR$/stimulation/fluorescence_gui2.py" />
       </list>
     </option>
   </component>
@@ -197,7 +213,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.pulse_generate">
+  <component name="RunManager" selected="Python.main_stim_and_plot">
     <configuration name="main_CUI2" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="hattori" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -312,8 +328,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.pulse_generate" />
         <item itemvalue="Python.main_stim_and_plot" />
+        <item itemvalue="Python.pulse_generate" />
         <item itemvalue="Python.main_ddplot" />
         <item itemvalue="Python.test" />
         <item itemvalue="Python.main_CUI2" />
@@ -450,25 +466,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/stimulation/main_stim_and_plot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="16">
-          <caret line="1" column="26" selection-start-line="1" selection-start-column="26" selection-end-line="1" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/stimulation/fluorescence_gui2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="140">
-          <caret line="164" selection-start-line="164" selection-end-line="164" />
+        <state relative-caret-position="272">
+          <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
           <folding>
-            <element signature="e#392#434#0" expanded="true" />
+            <element signature="e#0#10#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/stimulation/pulse_generate.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="96">
-          <caret line="6" column="6" lean-forward="true" selection-start-line="6" selection-start-column="6" selection-end-line="6" selection-end-column="6" />
+        <state relative-caret-position="160">
+          <caret line="10" column="16" lean-forward="true" selection-start-line="10" selection-start-column="16" selection-end-line="10" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/stimulation/fluorescence_gui2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="656">
+          <caret line="557" column="64" lean-forward="true" selection-start-line="557" selection-start-column="64" selection-end-line="557" selection-end-column="64" />
+          <folding>
+            <element signature="e#392#434#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
