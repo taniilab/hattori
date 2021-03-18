@@ -41,10 +41,11 @@ for i in range(6167):
 
 #テタヌス
 for j in range(100):
-    for i in range(4):
-        x += "1\n"
-        counter += 1
-    for i in range(78):
+    x += "-1\n"
+    counter += 1
+    x += "1\n"
+    counter += 1
+    for i in range(80):
         x += "0\n"
         counter += 1
 
@@ -92,6 +93,6 @@ counter += 1
 print(counter)
 #print(x)
 #f = open(path+'TBS_0.5m_9.5m_5cycle_200mhz_.txt', 'w')
-f = open(path+'tetanus_0.5m_9.5m_100hz_1s.txt', 'w')
+f = open(path+'tetanus_100hz_1s.fy', 'w')
 f.write(x)
 f.close()

@@ -532,8 +532,6 @@ class Ui_MainWindow(object):
         self.send_command("WMA0\n")
         self.timer_stim_reset.stop()
 
-
-
     def reset_stim_setting(self):
         self.amplitude = 0
         self.stim_counter = 0
