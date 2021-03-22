@@ -43,11 +43,11 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.centralWidget.sizePolicy().hasHeightForWidth())
         self.centralWidget.setSizePolicy(sizePolicy)
         self.centralWidget.setObjectName("centralWidget")
-        self.centralWidget.setStyleSheet("QLabel {font: 11pt Arial}"
-                                         "QComboBox {font: 11pt Arial; font-weight: bold}"
-                                         "QCheckBox {font: 11pt Arial; font-weight: bold}"
-                                         "QLineEdit {font: 11pt Arial; font-weight: bold}"
-                                         "QPushButton{font: 13pt 游ゴシック; font-weight: bold}")
+        self.centralWidget.setStyleSheet("QLabel {font: 10pt Arial}"
+                                         "QComboBox {font: 10pt Arial; font-weight: bold}"
+                                         "QCheckBox {font: 10pt Arial; font-weight: bold}"
+                                         "QLineEdit {font: 10pt Arial; font-weight: bold}"
+                                         "QPushButton{font: 10pt 游ゴシック; font-weight: bold}")
 
         self.splitter = QtWidgets.QSplitter(self.centralWidget)
         self.splitter.setGeometry(QtCore.QRect(0, 0, 1481, 941))
